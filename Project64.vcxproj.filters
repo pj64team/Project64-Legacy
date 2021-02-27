@@ -1,0 +1,516 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{6fe5a404-27c9-4b04-840c-d6b115b39793}</UniqueIdentifier>
+      <Extensions>cpp;c;cxx;rc;def;r;odl;idl;hpj;bat</Extensions>
+    </Filter>
+    <Filter Include="Source Files\Debugger Source">
+      <UniqueIdentifier>{eba9a5ef-cf7d-4db2-b2af-4a301afb6fff}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\General Source">
+      <UniqueIdentifier>{b794c654-9162-402c-98d3-eaf1a7435642}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Zlib Source">
+      <UniqueIdentifier>{500c7cae-17df-494b-9fa1-36a78c46255a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Plugin Source">
+      <UniqueIdentifier>{2ca13adb-0ac4-4e5f-98d2-bc5f5d51d6fb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\X86 Opcodes Source">
+      <UniqueIdentifier>{19791725-dbe0-4186-b1a9-f6904367441a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Lang Source">
+      <UniqueIdentifier>{7a404f70-bc07-4860-b08b-e34f75480404}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{7d77057a-389a-4786-9f8b-563a88510212}</UniqueIdentifier>
+      <Extensions>h;hpp;hxx;hm;inl</Extensions>
+    </Filter>
+    <Filter Include="Header Files\Debugger Headers">
+      <UniqueIdentifier>{e4fdbb68-871e-4bd6-b374-f844f22faadb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\General Header">
+      <UniqueIdentifier>{7227b0c8-6023-4967-859d-36a2c7b60c4c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\CPU Header">
+      <UniqueIdentifier>{baec7fbf-537c-4906-bae3-c2bfec5494ba}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\CPU Header\Save Chips headers">
+      <UniqueIdentifier>{88d6d629-3384-4395-90e7-65353ef87f57}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Zlib Header">
+      <UniqueIdentifier>{31849a03-28d6-477f-bb84-61ef4162340f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Plugin Header">
+      <UniqueIdentifier>{19a75cb1-af13-43a4-9405-f28bedb8f8ea}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\X86 Opcodes Headers">
+      <UniqueIdentifier>{d0acf807-f84f-46a2-969a-b237b8971db1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Lang Header">
+      <UniqueIdentifier>{25c97a0b-f19e-43bf-aa8d-d2fe2fba96ec}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{08ddf8d5-ad30-491c-aec8-c74547460d7a}</UniqueIdentifier>
+      <Extensions>ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe</Extensions>
+    </Filter>
+    <Filter Include="Source Files\CPU Source">
+      <UniqueIdentifier>{41a02665-96b0-480d-8292-2eb7e22e27f0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\CPU Source\Save Chips">
+      <UniqueIdentifier>{578ac748-582b-44bf-90ed-775c3c974d74}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\General Source\Settings Api 2">
+      <UniqueIdentifier>{46a311cd-c148-4272-818a-86090b12be1b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\General Header\Settings Api 2">
+      <UniqueIdentifier>{f467e0bd-d869-492c-930a-09d9cbf98618}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Lib Files">
+      <UniqueIdentifier>{e8877f6e-d284-4c15-84e8-18cf809faa07}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="BreakPoints.c">
+      <Filter>Source Files\Debugger Source</Filter>
+    </ClCompile>
+    <ClCompile Include="CPU Log.c">
+      <Filter>Source Files\Debugger Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Logging.c">
+      <Filter>Source Files\Debugger Source</Filter>
+    </ClCompile>
+    <ClCompile Include="mapping.c">
+      <Filter>Source Files\Debugger Source</Filter>
+    </ClCompile>
+    <ClCompile Include="r4300i Commands.c">
+      <Filter>Source Files\Debugger Source</Filter>
+    </ClCompile>
+    <ClCompile Include="r4300i Memory.c">
+      <Filter>Source Files\Debugger Source</Filter>
+    </ClCompile>
+    <ClCompile Include="r4300i Registers.c">
+      <Filter>Source Files\Debugger Source</Filter>
+    </ClCompile>
+    <ClCompile Include="TLB Display.c">
+      <Filter>Source Files\Debugger Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Main.c">
+      <Filter>Source Files\General Source</Filter>
+    </ClCompile>
+    <ClCompile Include="main2.cpp">
+      <Filter>Source Files\General Source</Filter>
+    </ClCompile>
+    <ClCompile Include="MemTest.cpp">
+      <Filter>Source Files\General Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Profiling.c">
+      <Filter>Source Files\General Source</Filter>
+    </ClCompile>
+    <ClCompile Include="RomBrowser.c">
+      <Filter>Source Files\General Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Settings.c">
+      <Filter>Source Files\General Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Win32Timer.c">
+      <Filter>Source Files\General Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Eeprom.c">
+      <Filter>Source Files\CPU Source\Save Chips</Filter>
+    </ClCompile>
+    <ClCompile Include="FlashRam.c">
+      <Filter>Source Files\CPU Source\Save Chips</Filter>
+    </ClCompile>
+    <ClCompile Include="Mempak.c">
+      <Filter>Source Files\CPU Source\Save Chips</Filter>
+    </ClCompile>
+    <ClCompile Include="Sram.c">
+      <Filter>Source Files\CPU Source\Save Chips</Filter>
+    </ClCompile>
+    <ClCompile Include="CPU.c">
+      <Filter>Source Files\CPU Source</Filter>
+    </ClCompile>
+    <ClCompile Include="DMA.c">
+      <Filter>Source Files\CPU Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Exception.c">
+      <Filter>Source Files\CPU Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Interpreter CPU.c">
+      <Filter>Source Files\CPU Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Interpreter Ops.c">
+      <Filter>Source Files\CPU Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Memory.c">
+      <Filter>Source Files\CPU Source</Filter>
+    </ClCompile>
+    <ClCompile Include="pif.c">
+      <Filter>Source Files\CPU Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Recompiler CPU.c">
+      <Filter>Source Files\CPU Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Recompiler Fpu Ops.c">
+      <Filter>Source Files\CPU Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Recompiler Ops.c">
+      <Filter>Source Files\CPU Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Registers.c">
+      <Filter>Source Files\CPU Source</Filter>
+    </ClCompile>
+    <ClCompile Include="rom.c">
+      <Filter>Source Files\CPU Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Sync CPU.c">
+      <Filter>Source Files\CPU Source</Filter>
+    </ClCompile>
+    <ClCompile Include="TLB.c">
+      <Filter>Source Files\CPU Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Plugin.c">
+      <Filter>Source Files\Plugin Source</Filter>
+    </ClCompile>
+    <ClCompile Include="x86 fpu.c">
+      <Filter>Source Files\X86 Opcodes Source</Filter>
+    </ClCompile>
+    <ClCompile Include="X86.c">
+      <Filter>Source Files\X86 Opcodes Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Language.cpp">
+      <Filter>Source Files\Lang Source</Filter>
+    </ClCompile>
+    <ClCompile Include="n64_cic_nus_6105.c">
+      <Filter>Source Files\CPU Source</Filter>
+    </ClCompile>
+    <ClCompile Include="RomTools_Common.c">
+      <Filter>Source Files\General Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Real-Time Clock.c">
+      <Filter>Source Files\CPU Source</Filter>
+    </ClCompile>
+    <ClCompile Include="EmulateAI.c">
+      <Filter>Source Files\Plugin Source</Filter>
+    </ClCompile>
+    <ClCompile Include="MemDump.c">
+      <Filter>Source Files\Debugger Source</Filter>
+    </ClCompile>
+    <ClCompile Include="CheatSearch.c">
+      <Filter>Source Files\General Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Cheat.c">
+      <Filter>Source Files\General Source</Filter>
+    </ClCompile>
+    <ClCompile Include="CheatSearch_Input.c">
+      <Filter>Source Files\General Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Settings Api.c">
+      <Filter>Source Files\General Source\Settings Api 2</Filter>
+    </ClCompile>
+    <ClCompile Include="FileHandler.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Compression\unzip.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Compression\zip.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Compression\ioapi.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Compression\crc32.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Compression\inflate.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Compression\zutil.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Compression\inftrees.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Compression\inffast.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Compression\deflate.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Compression\compress.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Compression\gzclose.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Compression\gzlib.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Compression\gzread.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Compression\gzwrite.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Compression\infback.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Compression\trees.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Compression\uncompr.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Compression\adler32.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="CheatSearch_Dev.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="CheatSearch_Search.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="BreakPoints.h">
+      <Filter>Header Files\Debugger Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="CPU Log.h">
+      <Filter>Header Files\Debugger Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Debugger.h">
+      <Filter>Header Files\Debugger Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Logging.h">
+      <Filter>Header Files\Debugger Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Mapping.h">
+      <Filter>Header Files\Debugger Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="r4300i Commands.h">
+      <Filter>Header Files\Debugger Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="r4300i Memory.h">
+      <Filter>Header Files\Debugger Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="r4300i Registers.h">
+      <Filter>Header Files\Debugger Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="tlb Display.h">
+      <Filter>Header Files\Debugger Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="HTMLHELP.H">
+      <Filter>Header Files\General Header</Filter>
+    </ClInclude>
+    <ClInclude Include="main.h">
+      <Filter>Header Files\General Header</Filter>
+    </ClInclude>
+    <ClInclude Include="Profiling.h">
+      <Filter>Header Files\General Header</Filter>
+    </ClInclude>
+    <ClInclude Include="resource.h">
+      <Filter>Header Files\General Header</Filter>
+    </ClInclude>
+    <ClInclude Include="RomBrowser.h">
+      <Filter>Header Files\General Header</Filter>
+    </ClInclude>
+    <ClInclude Include="Settings.h">
+      <Filter>Header Files\General Header</Filter>
+    </ClInclude>
+    <ClInclude Include="Types.h">
+      <Filter>Header Files\General Header</Filter>
+    </ClInclude>
+    <ClInclude Include="Win32Timer.h">
+      <Filter>Header Files\General Header</Filter>
+    </ClInclude>
+    <ClInclude Include="Eeprom.h">
+      <Filter>Header Files\CPU Header\Save Chips headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Flashram.h">
+      <Filter>Header Files\CPU Header\Save Chips headers</Filter>
+    </ClInclude>
+    <ClInclude Include="mempak.h">
+      <Filter>Header Files\CPU Header\Save Chips headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Sram.h">
+      <Filter>Header Files\CPU Header\Save Chips headers</Filter>
+    </ClInclude>
+    <ClInclude Include="CPU.h">
+      <Filter>Header Files\CPU Header</Filter>
+    </ClInclude>
+    <ClInclude Include="DMA.h">
+      <Filter>Header Files\CPU Header</Filter>
+    </ClInclude>
+    <ClInclude Include="Exception.h">
+      <Filter>Header Files\CPU Header</Filter>
+    </ClInclude>
+    <ClInclude Include="Interpreter CPU.h">
+      <Filter>Header Files\CPU Header</Filter>
+    </ClInclude>
+    <ClInclude Include="Interpreter Ops.h">
+      <Filter>Header Files\CPU Header</Filter>
+    </ClInclude>
+    <ClInclude Include="Memory.h">
+      <Filter>Header Files\CPU Header</Filter>
+    </ClInclude>
+    <ClInclude Include="OpCode.h">
+      <Filter>Header Files\CPU Header</Filter>
+    </ClInclude>
+    <ClInclude Include="pif.h">
+      <Filter>Header Files\CPU Header</Filter>
+    </ClInclude>
+    <ClInclude Include="Recompiler CPU.h">
+      <Filter>Header Files\CPU Header</Filter>
+    </ClInclude>
+    <ClInclude Include="Recompiler Ops.h">
+      <Filter>Header Files\CPU Header</Filter>
+    </ClInclude>
+    <ClInclude Include="Registers.h">
+      <Filter>Header Files\CPU Header</Filter>
+    </ClInclude>
+    <ClInclude Include="Rom.h">
+      <Filter>Header Files\CPU Header</Filter>
+    </ClInclude>
+    <ClInclude Include="Sync CPU.h">
+      <Filter>Header Files\CPU Header</Filter>
+    </ClInclude>
+    <ClInclude Include="tlb.h">
+      <Filter>Header Files\CPU Header</Filter>
+    </ClInclude>
+    <ClInclude Include="Plugin.h">
+      <Filter>Header Files\Plugin Header</Filter>
+    </ClInclude>
+    <ClInclude Include="X86.h">
+      <Filter>Header Files\X86 Opcodes Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Language.h">
+      <Filter>Header Files\Lang Header</Filter>
+    </ClInclude>
+    <ClInclude Include="MemTest.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="n64_cic_nus_6105.h">
+      <Filter>Header Files\General Header</Filter>
+    </ClInclude>
+    <ClInclude Include="RomTools_Common.h">
+      <Filter>Header Files\General Header</Filter>
+    </ClInclude>
+    <ClInclude Include="Real-Time Clock.h">
+      <Filter>Header Files\CPU Header</Filter>
+    </ClInclude>
+    <ClInclude Include="resource_cheat.h">
+      <Filter>Header Files\General Header</Filter>
+    </ClInclude>
+    <ClInclude Include="resource_cheatsearch.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="EmulateAI.h">
+      <Filter>Header Files\Plugin Header</Filter>
+    </ClInclude>
+    <ClInclude Include="MemDump.h">
+      <Filter>Header Files\General Header</Filter>
+    </ClInclude>
+    <ClInclude Include="Cheats.h">
+      <Filter>Header Files\General Header</Filter>
+    </ClInclude>
+    <ClInclude Include="CheatSearch.h">
+      <Filter>Header Files\General Header</Filter>
+    </ClInclude>
+    <ClInclude Include="CheatSearch_Input.h">
+      <Filter>Header Files\General Header</Filter>
+    </ClInclude>
+    <ClInclude Include="Settings Api.h">
+      <Filter>Header Files\General Header\Settings Api 2</Filter>
+    </ClInclude>
+    <ClInclude Include="Settings Common Defines.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="FileHandler.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Compression\unzip.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Compression\zconf.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Compression\zip.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Compression\zlib.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Compression\ioapi.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Compression\crc32.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Compression\inflate.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Compression\zutil.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Compression\inftrees.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Compression\gzguts.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Compression\inffast.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Compression\inffixed.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Compression\deflate.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Compression\trees.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="CheatSearch_Dev.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="CheatSearch_Search.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="PJ64.rc">
+      <Filter>Resource Files</Filter>
+    </ResourceCompile>
+    <ResourceCompile Include="PJ64_Cheat.rc">
+      <Filter>Resource Files</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="left.ico">
+      <Filter>Resource Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="pj64.ico">
+      <Filter>Resource Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="right.ico">
+      <Filter>Resource Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="tri-state.bmp">
+      <Filter>Resource Files</Filter>
+    </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="PJ64.BMP">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="About.txt">
+      <Filter>Resource Files</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Library Include="Compression\zlibstat.lib" />
+  </ItemGroup>
+</Project>

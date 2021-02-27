@@ -1,0 +1,993 @@
+// Microsoft Visual C++ generated resource script.
+//
+#include "resource.h"
+
+#define APSTUDIO_READONLY_SYMBOLS
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 2 resource.
+//
+#include "afxres.h"
+
+/////////////////////////////////////////////////////////////////////////////
+#undef APSTUDIO_READONLY_SYMBOLS
+
+/////////////////////////////////////////////////////////////////////////////
+// English (United States) resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
+LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
+#pragma code_page(1252)
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Bitmap
+//
+
+IDB_BITMAP1             BITMAP                  "tri-state.bmp"
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// TEXT
+//
+
+IDR_ABOUT_TXT           TEXT                    "About.txt"
+#endif    // English (United States) resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+/////////////////////////////////////////////////////////////////////////////
+// English (United Kingdom) resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENG)
+LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_UK
+#pragma code_page(1252)
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Bitmap
+//
+
+IDB_BITMAP2             BITMAP                  "PJ64.BMP"
+#endif    // English (United Kingdom) resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+/////////////////////////////////////////////////////////////////////////////
+// English (Australia) resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENA)
+LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_AUS
+#pragma code_page(1252)
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Bitmap
+//
+
+IDB_PJ64LOGO            BITMAP                  "PJ64_2.bmp"
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Dialog
+//
+
+IDD_Debugger_MemDump DIALOGEX 0, 0, 268, 111
+STYLE DS_SHELLFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Memory Dump"
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    DEFPUSHBUTTON   "Dump",IDOK,156,90,50,14
+    PUSHBUTTON      "Cancel",IDCANCEL,210,90,50,14
+    GROUPBOX        "Range",IDC_STATIC,6,6,252,78
+    COMBOBOX        IDC_MD_RANGE,12,24,240,54,CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
+    EDITTEXT        IDC_MD_RANGESTART,42,42,79,12,ES_AUTOHSCROLL
+    EDITTEXT        IDC_MD_RANGEEND,174,42,79,12,ES_AUTOHSCROLL
+    LTEXT           "Start",IDC_STATIC,12,44,17,8
+    LTEXT           "End",IDC_STATIC,144,44,13,8
+    COMBOBOX        IDC_MD_FORMAT,42,60,210,30,CBS_DROPDOWN | WS_VSCROLL | WS_TABSTOP
+    LTEXT           "Format",IDC_STATIC,12,62,24,8
+END
+
+ROM_INFO_DIALOG DIALOGEX 0, 0, 229, 202
+STYLE DS_SHELLFONT | DS_MODALFRAME | DS_CENTER | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Rom Information"
+FONT 8, "MS Shell Dlg", 0, 0, 0x1
+BEGIN
+    DEFPUSHBUTTON   "&Close",IDC_CLOSE_BUTTON,159,180,64,14
+    GROUPBOX        "",IDC_STATIC,6,0,217,175
+    LTEXT           "ROM Name:",IDC_ROM_NAME,11,16,64,9
+    EDITTEXT        IDC_INFO_ROMNAME,77,15,139,13,ES_AUTOHSCROLL | ES_READONLY,WS_EX_CLIENTEDGE | WS_EX_STATICEDGE
+    LTEXT           "File Name:",IDC_FILE_NAME,11,31,64,9
+    EDITTEXT        IDC_INFO_FILENAME,77,30,139,13,ES_AUTOHSCROLL | ES_READONLY,WS_EX_CLIENTEDGE | WS_EX_STATICEDGE
+    LTEXT           "Rom Size:",IDC_ROM_SIZE,11,60,64,9
+    EDITTEXT        IDC_INFO_ROMSIZE,77,60,139,13,ES_AUTOHSCROLL | ES_READONLY,WS_EX_CLIENTEDGE | WS_EX_STATICEDGE
+    LTEXT           "Cartridge ID:",IDC_CART_ID,11,76,64,9
+    EDITTEXT        IDC_INFO_CARTID,77,75,139,13,ES_AUTOHSCROLL | ES_READONLY,WS_EX_CLIENTEDGE | WS_EX_STATICEDGE
+    LTEXT           "Manufacturer:",IDC_MANUFACTURER,11,92,64,9
+    EDITTEXT        IDC_INFO_MANUFACTURER,77,90,139,13,ES_AUTOHSCROLL | ES_READONLY,WS_EX_CLIENTEDGE | WS_EX_STATICEDGE
+    LTEXT           "Country:",IDC_COUNTRY,11,108,64,9
+    EDITTEXT        IDC_INFO_COUNTRY,77,105,139,13,ES_AUTOHSCROLL | ES_READONLY,WS_EX_CLIENTEDGE | WS_EX_STATICEDGE
+    LTEXT           "CRC1:",IDC_CRC1,11,121,64,9
+    EDITTEXT        IDC_INFO_CRC1,77,120,139,13,ES_AUTOHSCROLL | ES_READONLY,WS_EX_CLIENTEDGE | WS_EX_STATICEDGE
+    LTEXT           "CRC2:",IDC_CRC2,11,137,64,9
+    EDITTEXT        IDC_INFO_CRC2,77,135,139,13,ES_AUTOHSCROLL | ES_READONLY,WS_EX_CLIENTEDGE | WS_EX_STATICEDGE
+    LTEXT           "CIC Chip:",IDC_CIC_CHIP,11,153,64,9
+    EDITTEXT        IDC_INFO_CIC,77,150,139,13,ES_AUTOHSCROLL | ES_READONLY,WS_EX_CLIENTEDGE | WS_EX_STATICEDGE
+    LTEXT           "Location:",IDC_LOCATION,11,45,64,10
+    EDITTEXT        IDC_INFO_LOCATION,77,45,139,12,ES_AUTOHSCROLL | ES_READONLY
+END
+
+MEMORY DIALOGEX 0, 0, 186, 95
+STYLE DS_SHELLFONT | DS_MODALFRAME | WS_MINIMIZEBOX | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Memory"
+FONT 8, "MS Shell Dlg"
+BEGIN
+    EDITTEXT        IDC_ADDR_EDIT,7,7,66,12,ES_UPPERCASE
+    DEFPUSHBUTTON   "&Close",IDC_CLOSE_BUTTON,7,21,68,12
+END
+
+BLANK DIALOGEX 0, 0, 186, 94
+STYLE DS_SHELLFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Dialog"
+FONT 8, "MS Shell Dlg"
+BEGIN
+END
+
+IDD_Settings_PlugSel DIALOGEX 0, 0, 231, 206
+STYLE DS_SHELLFONT | DS_MODALFRAME | DS_CENTER | WS_POPUP | WS_VISIBLE
+EXSTYLE WS_EX_TOOLWINDOW
+FONT 8, "MS Shell Dlg", 0, 0, 0x1
+BEGIN
+    GROUPBOX        " Graphics: ",IDC_GFX_NAME,10,30,214,29
+    COMBOBOX        GFX_LIST,17,41,155,79,CBS_DROPDOWNLIST | CBS_SORT | WS_VSCROLL | WS_TABSTOP
+    GROUPBOX        " Audio: ",IDC_AUDIO_NAME,10,65,214,29
+    COMBOBOX        AUDIO_LIST,17,75,155,79,CBS_DROPDOWNLIST | CBS_SORT | WS_VSCROLL | WS_TABSTOP
+    GROUPBOX        " Controller: ",IDC_CONT_NAME,10,104,214,29
+    COMBOBOX        CONT_LIST,17,114,155,79,CBS_DROPDOWNLIST | CBS_SORT | WS_VSCROLL | WS_TABSTOP
+    GROUPBOX        " Reality Signal Processor: ",IDC_RSP_NAME,10,139,214,29
+    COMBOBOX        RSP_LIST,17,150,155,79,CBS_DROPDOWNLIST | CBS_SORT | WS_VSCROLL | WS_TABSTOP
+    PUSHBUTTON      "About",GFX_ABOUT,176,41,44,13,WS_DISABLED
+    PUSHBUTTON      "About",AUDIO_ABOUT,176,75,44,13,WS_DISABLED
+    PUSHBUTTON      "About",CONT_ABOUT,176,114,44,13,WS_DISABLED
+    PUSHBUTTON      "About",RSP_ABOUT,176,150,44,13,WS_DISABLED
+END
+
+IDD_TLB DIALOGEX 0, 0, 290, 317
+STYLE DS_SHELLFONT | DS_MODALFRAME | DS_CENTER | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "TLB"
+FONT 8, "MS Shell Dlg"
+BEGIN
+    LTEXT           "View:",IDC_STATIC,10,7,25,11
+    CONTROL         "TLB Entries",IDC_TLB_ENTRIES,"Button",BS_AUTORADIOBUTTON,40,7,65,11
+    CONTROL         "TLB Rules",IDC_TLB_RULES,"Button",BS_AUTORADIOBUTTON,111,7,55,11
+    CONTROL         "List1",IDC_LIST,"SysListView32",LVS_REPORT | LVS_SORTASCENDING | WS_BORDER | WS_TABSTOP,7,21,276,289
+    CONTROL         "List1",IDC_LIST2,"SysListView32",LVS_REPORT | LVS_SORTASCENDING | NOT WS_VISIBLE | WS_BORDER | WS_TABSTOP,7,21,276,289
+END
+
+IDD_Logging_Registers DIALOGEX 0, 0, 200, 154
+STYLE DS_SHELLFONT | DS_CONTROL | WS_CHILD
+EXSTYLE WS_EX_CONTROLPARENT
+FONT 8, "MS Shell Dlg", 0, 0, 0x1
+BEGIN
+    GROUPBOX        "",IDC_STATIC,5,6,188,141
+    CONTROL         "Include RDRAM Registers accesses",IDC_RDRAM,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,11,16,178,9
+    CONTROL         "Include SP Registers accesses",IDC_SP_REG,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,11,29,178,9
+    CONTROL         "Include DP Command Registers accesses",IDC_DPC_REG,
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,11,42,178,9
+    CONTROL         "Include DP Span Registers accesses",IDC_DPS_REG,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,11,55,178,9
+    CONTROL         "Include MIPS Interface (MI) Registers accesses",IDC_MI_REG,
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,11,68,178,9
+    CONTROL         "Include Video Interface (VI) Registers accesses",IDC_VI_REG,
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,11,81,178,9
+    CONTROL         "Include Audio Interface (AI) Registers accesses",IDC_AI_REG,
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,11,94,178,9
+    CONTROL         "Include Peripheral Interface (PI) Registers accesses",IDC_PI_REG,
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,11,107,178,9
+    CONTROL         "Include RDRAM Interface (RI) Registers accesses",IDC_RI_REG,
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,11,120,178,9
+    CONTROL         "Include Serial Interface (SI) Registers accesses",IDC_SI_REG,
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,11,133,178,9
+END
+
+IDD_Logging_PifRam DIALOGEX 0, 0, 200, 154
+STYLE DS_SHELLFONT | DS_CONTROL | WS_CHILD
+EXSTYLE WS_EX_CONTROLPARENT
+FONT 8, "MS Shell Dlg", 0, 0, 0x1
+BEGIN
+    GROUPBOX        "",IDC_STATIC,7,7,188,141
+    CONTROL         "Include Serial Interface DMA tansfers",IDC_SI_DMA,
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,23,20,148,9
+    CONTROL         "Include direct writing to Pif Ram",IDC_DIRECT_WRITE,
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,23,41,148,9
+    CONTROL         "Include data DMAed to Pif Ram",IDC_DMA_WRITE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,23,62,148,9
+    CONTROL         "Include direct reads to Pif Ram",IDC_DIRECT_READ,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,23,83,148,9
+    CONTROL         "Include data DMAed from Pif Ram",IDC_DMA_READ,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,23,104,148,9
+    CONTROL         "Include data for controller pak",IDC_CONT_PAK,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,23,124,148,9
+END
+
+IDD_Logging_General DIALOGEX 0, 0, 200, 154
+STYLE DS_SHELLFONT | DS_CONTROL | WS_CHILD
+EXSTYLE WS_EX_CONTROLPARENT
+FONT 8, "MS Shell Dlg", 0, 0, 0x1
+BEGIN
+    GROUPBOX        "",IDC_STATIC,5,6,188,141
+    CONTROL         "Include changes of CP0 registers",IDC_CP0_WRITE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,22,25,143,9
+    CONTROL         "Include Reading from CP0 registers",IDC_CP0_READ,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,22,39,143,9
+    CONTROL         "Include cache operations",IDC_CACHE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,22,53,143,9
+    CONTROL         "Include Exceptions",IDC_EXCEPTIONS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,22,67,143,9
+    CONTROL         "Do not log interrupts",IDC_INTERRUPTS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,32,80,116,9
+    CONTROL         "Include TLB modifications",IDC_TLB,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,22,95,143,9
+    CONTROL         "Include Read from Rom Header",IDC_ROM_HEADER,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,22,109,143,9
+    CONTROL         "Include unkown Memory accesses",IDC_UNKOWN,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,22,123,143,9
+END
+
+IDD_Settings_Directory DIALOGEX 0, 0, 231, 206
+STYLE DS_SHELLFONT | DS_MODALFRAME | WS_POPUP
+FONT 8, "MS Shell Dlg"
+BEGIN
+    GROUPBOX        "Plugin Directoy",IDC_DIR_FRAME1,7,3,217,38
+    CONTROL         "$AppPath\\Plugin\\",IDC_PLUGIN_DEFAULT,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,14,14,179,8
+    CONTROL         "",IDC_PLUGIN_OTHER,"Button",BS_AUTORADIOBUTTON,14,24,11,12
+    EDITTEXT        IDC_PLUGIN_DIR,26,24,170,12,ES_AUTOHSCROLL
+    PUSHBUTTON      "...",IDC_SELECT_PLUGIN_DIR,201,24,14,12
+    GROUPBOX        "Rom Directory",IDC_DIR_FRAME2,7,43,217,38
+    CONTROL         "Last folder that a rom was open from.",IDC_ROM_DEFAULT,
+                    "Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,14,52,179,8
+    CONTROL         "",IDC_ROM_OTHER,"Button",BS_AUTORADIOBUTTON,14,63,11,12
+    EDITTEXT        IDC_ROM_DIR,26,62,170,12,ES_AUTOHSCROLL
+    PUSHBUTTON      "...",IDC_SELECT_ROM_DIR,201,62,14,12
+    GROUPBOX        "N64 Auto saves",IDC_DIR_FRAME3,7,82,217,38
+    CONTROL         "$AppPath\\Save\\",IDC_AUTO_DEFAULT,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,14,92,179,8
+    CONTROL         "",IDC_AUTO_OTHER,"Button",BS_AUTORADIOBUTTON,14,103,11,12
+    EDITTEXT        IDC_AUTO_DIR,26,103,170,12,ES_AUTOHSCROLL
+    PUSHBUTTON      "...",IDC_SELECT_AUTO_DIR,201,103,14,12
+    GROUPBOX        "Instant saves",IDC_DIR_FRAME4,7,121,217,38
+    CONTROL         "$AppPath\\Save\\",IDC_INSTANT_DEFAULT,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,14,132,179,8
+    CONTROL         "",IDC_INSTANT_OTHER,"Button",BS_AUTORADIOBUTTON,14,143,11,12
+    EDITTEXT        IDC_INSTANT_DIR,26,142,170,12,ES_AUTOHSCROLL
+    PUSHBUTTON      "...",IDC_SELECT_INSTANT_DIR,202,142,14,12
+    GROUPBOX        "Screenshots",IDC_DIR_FRAME5,7,161,217,38,WS_TABSTOP
+    CONTROL         "$AppPath\\Screenshots\\",IDC_SNAP_DEFAULT,"Button",BS_AUTORADIOBUTTON | WS_GROUP | WS_TABSTOP,14,172,179,8
+    CONTROL         "",IDC_SNAP_OTHER,"Button",BS_AUTORADIOBUTTON,14,182,11,12
+    EDITTEXT        IDC_SNAP_DIR,26,182,170,12,ES_AUTOHSCROLL
+    PUSHBUTTON      "...",IDC_SELECT_SNAP_DIR,203,182,14,12
+END
+
+IDD_Settings_Options DIALOGEX 0, 0, 231, 206
+STYLE DS_SHELLFONT | DS_MODALFRAME | WS_POPUP
+FONT 8, "MS Shell Dlg"
+BEGIN
+    CTEXT           "Most of these changes will not take effect till a new rom is opened or current rom is reset.",IDC_INFO,4,10,223,22
+    GROUPBOX        "",IDC_STATIC,2,119,227,63
+    CONTROL         "Always overwrite default settings with ones from ini?",IDC_USEINI,
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,6,145,218,11
+    CONTROL         "Automatically compress instant saves",IDC_ZIP,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,6,161,218,11
+    GROUPBOX        "Core Defaults",IDC_CORE_DEFAULTS,4,37,223,78
+    LTEXT           "CPU core style:",IDC_TEXT2,9,49,108,12
+    COMBOBOX        IDC_CPU_TYPE,118,48,105,49,CBS_DROPDOWNLIST | CBS_SORT | WS_VSCROLL | WS_TABSTOP
+    LTEXT           "Self-mod code method:",IDC_TEXT3,9,65,108,12
+    COMBOBOX        IDC_SELFMOD,118,64,105,49,CBS_DROPDOWNLIST | CBS_SORT | WS_VSCROLL | WS_TABSTOP
+    LTEXT           "Default Memory Size:",IDC_TEXT4,9,82,108,12
+    COMBOBOX        IDC_RDRAM_SIZE,118,80,105,49,CBS_DROPDOWNLIST | CBS_SORT | WS_VSCROLL | WS_TABSTOP
+    LTEXT           "Advanced Block Linking:",IDC_TEXT5,9,98,108,12
+    COMBOBOX        IDC_ABL,118,96,105,49,CBS_DROPDOWNLIST | CBS_SORT | WS_VSCROLL | WS_TABSTOP
+    CONTROL         "Start Emulation when rom is opened?",IDC_START_ON_ROM_OPEN,
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,6,129,218,11
+END
+
+IDD_MANAGECHEATS DIALOGEX 0, 0, 412, 226
+STYLE DS_SHELLFONT | DS_MODALFRAME | DS_SETFOREGROUND | DS_CENTER | WS_POPUP | WS_CAPTION | WS_SYSMENU
+EXSTYLE WS_EX_RIGHT | WS_EX_RTLREADING | WS_EX_LEFTSCROLLBAR
+CAPTION "Cheats"
+FONT 8, "MS Shell Dlg", 0, 0, 0x1
+BEGIN
+    PUSHBUTTON      "Button1",IDC_STATE,195,5,20,20,BS_ICON | BS_FLAT,WS_EX_TRANSPARENT
+END
+
+IDD_Cheats_List DIALOGEX 0, 0, 201, 221
+STYLE DS_SHELLFONT | DS_CONTROL | WS_CHILD
+EXSTYLE WS_EX_CONTROLPARENT
+FONT 8, "MS Shell Dlg", 0, 0, 0x1
+BEGIN
+    GROUPBOX        "Cheats",IDC_CHEATSFRAME,0,0,199,160
+    PUSHBUTTON      "Unmark All",IDC_UNMARK,122,145,69,11
+    GROUPBOX        " Notes: ",IDC_NOTESFRAME,0,165,199,51
+    EDITTEXT        IDC_NOTES,5,175,188,36,ES_MULTILINE | ES_READONLY | ES_WANTRETURN | NOT WS_BORDER | WS_VSCROLL
+END
+
+IDD_Cheats_CodeEx DIALOGEX 0, 0, 186, 153
+STYLE DS_SHELLFONT | DS_MODALFRAME | DS_CENTER | WS_POPUP | WS_VISIBLE | WS_CAPTION | WS_SYSMENU
+EXSTYLE WS_EX_TOOLWINDOW
+CAPTION "Code Extensions"
+FONT 8, "MS Shell Dlg", 0, 0, 0x1
+BEGIN
+    LTEXT           "Please choose a value to be used for:",IDC_NOTE,7,7,172,9
+    LTEXT           "",IDC_CHEAT_NAME,7,17,172,9
+    LISTBOX         IDC_CHEAT_LIST,7,31,172,96,LBS_USETABSTOPS | LBS_NOINTEGRALHEIGHT | WS_VSCROLL | WS_TABSTOP
+    DEFPUSHBUTTON   "OK",IDOK,74,132,50,14
+    PUSHBUTTON      "Cancel",IDCANCEL,129,132,50,14
+END
+
+IDD_Cheats_Range DIALOGEX 0, 0, 183, 127
+STYLE DS_SHELLFONT | DS_MODALFRAME | DS_CENTER | WS_POPUP | WS_VISIBLE | WS_CAPTION | WS_SYSMENU
+EXSTYLE WS_EX_TOOLWINDOW
+CAPTION "Quantity Digit"
+FONT 8, "MS Shell Dlg", 0, 0, 0x1
+BEGIN
+    LTEXT           "Please choose a value for:",IDC_DIGITAL_TEXT,7,7,169,9
+    LTEXT           "",IDC_CHEAT_NAME,7,17,169,9
+    LTEXT           "&Value",IDC_VALUE_TEXT,14,32,22,9
+    EDITTEXT        IDC_VALUE,38,31,48,12,ES_UPPERCASE | ES_AUTOHSCROLL
+    LTEXT           "from blah to blah",IDC_RANGE,95,32,74,11
+    LTEXT           "&Notes:",IDC_NOTES_TEXT,7,53,66,9
+    EDITTEXT        IDC_NOTES,7,62,169,36,ES_MULTILINE | ES_READONLY | ES_WANTRETURN | WS_VSCROLL
+    DEFPUSHBUTTON   "OK",IDOK,74,106,50,14
+    PUSHBUTTON      "Cancel",IDCANCEL,126,106,50,14
+END
+
+IDD_Settings_ShellInt DIALOGEX 0, 0, 231, 206
+STYLE DS_SHELLFONT | DS_MODALFRAME | WS_POPUP
+FONT 8, "MS Shell Dlg"
+BEGIN
+    GROUPBOX        "",IDC_STATIC,5,13,218,168
+    LTEXT           "File extension association:",IDC_SHELL_INT_TEXT,73,37,85,8
+    CONTROL         ".v64",IDC_V64,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,97,50,37,9
+    CONTROL         ".z64",IDC_Z64,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,97,64,37,9
+    CONTROL         ".n64",IDC_N64,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,97,78,37,9
+    CONTROL         ".rom",IDC_ROM,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,97,92,37,9
+    CONTROL         ".jap",IDC_JAP,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,97,106,37,9
+    CONTROL         ".pal",IDC_PAL,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,97,120,37,9
+    CONTROL         ".usa",IDC_USA,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,97,134,37,9
+END
+
+IDD_Settings_RomBrowser DIALOGEX 0, 0, 231, 206
+STYLE DS_SHELLFONT | DS_MODALFRAME | WS_POPUP
+FONT 8, "MS Shell Dlg"
+BEGIN
+    GROUPBOX        "",IDC_STATIC,2,12,225,40
+    LTEXT           "Max # of Roms Remembered (Max 10):",IDC_ROMSEL_TEXT1,11,22,145,8
+    EDITTEXT        IDC_REMEMBER,159,20,26,12,ES_AUTOHSCROLL | ES_NUMBER
+    LTEXT           "roms",IDC_ROMSEL_TEXT2,189,22,31,8
+    LTEXT           "Max # of Rom Dirs Remembered (Max 10):",IDC_ROMSEL_TEXT3,10,37,145,8
+    EDITTEXT        IDC_REMEMBERDIR,159,35,26,12,ES_AUTOHSCROLL | ES_NUMBER
+    LTEXT           "dirs",IDC_ROMSEL_TEXT4,189,37,31,8
+    GROUPBOX        "",IDC_STATIC,2,55,225,132
+    CONTROL         "Use Rom Browser",IDC_USE_ROMBROWSER,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,9,68,97,10
+    CONTROL         "Use Directory recursion",IDC_RECURSION,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,121,68,96,10
+    LTEXT           "Available fields",IDC_ROMSEL_TEXT5,9,85,77,8
+    LISTBOX         IDC_AVALIABLE,9,97,80,80,LBS_SORT | LBS_NOINTEGRALHEIGHT | WS_VSCROLL | WS_TABSTOP
+    LTEXT           "Show fields in this order:",IDC_ROMSEL_TEXT6,142,85,81,8
+    LISTBOX         IDC_USING,141,97,81,66,LBS_NOINTEGRALHEIGHT | WS_VSCROLL | WS_TABSTOP
+    PUSHBUTTON      "Add ->",IDC_ADD,93,97,45,12
+    PUSHBUTTON      "<- Remove",IDC_REMOVE,93,113,45,12
+    PUSHBUTTON      "Up",IDC_UP,141,166,38,11
+    PUSHBUTTON      "Down",IDC_DOWN,186,166,36,11
+END
+
+IDD_About_Ini DIALOGEX 0, 0, 185, 250
+STYLE DS_SHELLFONT | DS_MODALFRAME | DS_CENTER | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "About INI Files"
+FONT 8, "MS Shell Dlg"
+BEGIN
+    GROUPBOX        "ROM Database (.RDB)",IDC_RDB,5,46,175,59
+    LTEXT           "Author:",IDC_RDB_AUTHOR,12,57,166,8
+    LTEXT           "Version:",IDC_RDB_VERSION,12,67,166,8
+    LTEXT           "Date:",IDC_RDB_DATE,12,76,166,8
+    PUSHBUTTON      "visit home page",IDC_RDB_HOME,12,87,163,13
+    GROUPBOX        "Cheat Code file (.CHT)",IDC_CHT,6,107,175,59
+    LTEXT           "Author:",IDC_CHT_AUTHOR,13,118,166,8
+    LTEXT           "Version:",IDC_CHT_VERSION,13,128,166,8
+    LTEXT           "Date:",IDC_CHT_DATE,14,137,166,8
+    PUSHBUTTON      "visit home page",IDC_CHT_HOME,13,148,163,13
+    GROUPBOX        " Current Language ",IDC_LAN,5,3,175,42
+    LTEXT           "Author:",IDC_LAN_AUTHOR,13,14,166,8
+    LTEXT           "Version:",IDC_LAN_VERSION,13,24,166,8
+    LTEXT           "Date:",IDC_LAN_DATE,13,34,166,8
+    GROUPBOX        "Extended Rom Info (.RDX)",IDC_RDX,6,168,175,59
+    LTEXT           "Author:",IDC_RDX_AUTHOR,13,178,166,8
+    LTEXT           "Version:",IDC_RDX_VERSION,13,188,166,8
+    PUSHBUTTON      "visit home page",IDC_RDX_HOME,15,210,163,13
+    LTEXT           "Date:",IDC_RDX_DATE,13,198,166,8
+    PUSHBUTTON      "OK",IDOK,134,230,47,13
+END
+
+IDD_Settings_General DIALOGEX 0, 0, 231, 206
+STYLE DS_SHELLFONT | DS_MODALFRAME | WS_POPUP
+FONT 8, "MS Shell Dlg"
+BEGIN
+    GROUPBOX        "",-1,10,39,209,113
+    CONTROL         "Pause emulation when window is not active?",IDC_AUTOSLEEP,
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,18,61,198,8
+    CONTROL         "On loading a ROM go to full screen",IDC_LOAD_FULLSCREEN,
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,18,83,198,8
+    CONTROL         "Remember selected cheats",IDC_REMEMBER_CHEAT,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,18,105,198,8
+    CONTROL         "Hide Advanced Settings",IDC_BASIC_MODE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,18,127,198,8
+END
+
+IDD_Settings_RomNotes DIALOGEX 0, 0, 231, 206
+STYLE DS_SHELLFONT | DS_MODALFRAME | WS_POPUP
+FONT 8, "MS Shell Dlg"
+BEGIN
+    GROUPBOX        "",IDC_STATIC,11,20,209,155
+    LTEXT           "Rom Status:",IDC_STATUS_TEXT,17,33,90,10
+    COMBOBOX        IDC_STATUS,104,32,112,49,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
+    LTEXT           "Core Note:",IDC_CORE,17,52,96,9
+    EDITTEXT        IDC_CORE_NOTES,17,63,199,40,ES_MULTILINE | ES_AUTOVSCROLL
+    LTEXT           "Plugin Note:",IDC_PLUGIN,17,111,96,9
+    EDITTEXT        IDC_PLUGIN_NOTE,16,121,200,40,ES_MULTILINE | ES_AUTOVSCROLL
+END
+
+IDD_Cheats_Main DIALOGEX 0, 0, 196, 230
+STYLE DS_SHELLFONT | WS_POPUP | WS_CAPTION | WS_SYSMENU | WS_THICKFRAME
+CAPTION "Cheats"
+FONT 8, "MS Shell Dlg"
+BEGIN
+END
+
+IDD_Cheats_Add DIALOGEX 0, 0, 191, 215
+STYLE DS_SHELLFONT | DS_MODALFRAME | DS_CENTER | WS_POPUP | WS_VISIBLE | WS_CAPTION | WS_SYSMENU
+EXSTYLE WS_EX_TOOLWINDOW
+CAPTION "Add Cheat"
+FONT 8, "MS Shell Dlg", 0, 0, 0x1
+BEGIN
+    EDITTEXT        IDC_CODE_NAME,44,12,139,12,ES_AUTOHSCROLL
+    EDITTEXT        IDC_CHEAT_CODES,7,50,70,90,ES_MULTILINE | ES_UPPERCASE | ES_AUTOVSCROLL | ES_AUTOHSCROLL | ES_WANTRETURN | WS_VSCROLL
+    EDITTEXT        IDC_CHEAT_OPTIONS,82,50,101,90,ES_MULTILINE | ES_AUTOVSCROLL | ES_AUTOHSCROLL | ES_WANTRETURN | WS_DISABLED | WS_VSCROLL | WS_HSCROLL
+    EDITTEXT        IDC_NOTES,7,160,176,30,ES_MULTILINE | WS_VSCROLL
+    PUSHBUTTON      "Add Cheat",IDC_ADD,98,198,60,15,WS_DISABLED,WS_EX_CLIENTEDGE
+    PUSHBUTTON      "New Cheat",IDC_NEWCHEAT,31,198,60,15,0,WS_EX_CLIENTEDGE
+    GROUPBOX        "",IDC_ADDCHEATSFRAME,2,0,188,145
+    LTEXT           "Name:",IDC_NAME,7,13,33,8
+    GROUPBOX        "Cheat Notes",IDC_CHEATNOTES,2,150,188,45
+    LTEXT           "Code:",IDC_CODE,7,30,68,10
+    LTEXT           "Options:",IDC_LABEL_OPTIONS,82,30,102,10,WS_DISABLED
+    LTEXT           "<address> <value>",IDC_CODE_DES,7,40,70,10
+    LTEXT           "<value> <label>",IDC_LABEL_OPTIONS_FORMAT,82,40,102,10,WS_DISABLED
+END
+
+IDD_Cheats_Edit DIALOGEX 0, 0, 191, 215
+STYLE DS_SHELLFONT | DS_MODALFRAME | DS_CENTER | WS_POPUP | WS_VISIBLE | WS_CAPTION | WS_SYSMENU
+EXSTYLE WS_EX_TOOLWINDOW
+CAPTION "Edit Cheat"
+FONT 8, "MS Shell Dlg", 0, 0, 0x1
+BEGIN
+    EDITTEXT        IDC_CODE_NAME,45,12,138,12,ES_AUTOHSCROLL
+    EDITTEXT        IDC_CHEAT_CODES,7,50,70,90,ES_MULTILINE | ES_UPPERCASE | ES_AUTOVSCROLL | ES_AUTOHSCROLL | ES_WANTRETURN | WS_VSCROLL
+    EDITTEXT        IDC_CHEAT_OPTIONS,82,50,101,90,ES_MULTILINE | ES_AUTOVSCROLL | ES_AUTOHSCROLL | ES_WANTRETURN | WS_DISABLED | WS_VSCROLL | WS_HSCROLL
+    EDITTEXT        IDC_NOTES,7,160,176,30,ES_MULTILINE | WS_VSCROLL
+    PUSHBUTTON      "Update Cheat",IDC_ADD,65,198,60,15,WS_DISABLED,WS_EX_CLIENTEDGE
+    GROUPBOX        "",IDC_ADDCHEATSFRAME,2,0,188,145
+    LTEXT           "Name:",IDC_NAME,7,13,36,8
+    GROUPBOX        "Cheat Notes",IDC_CHEATNOTES,2,150,188,45
+    LTEXT           "Code:",IDC_CODE,7,30,70,10
+    LTEXT           "Options:",IDC_LABEL_OPTIONS,82,30,101,10,WS_DISABLED
+    LTEXT           "<address> <value>",IDC_CODE_DES,7,40,70,10
+    LTEXT           "<value> <label>",IDC_LABEL_OPTIONS_FORMAT,82,40,101,10,WS_DISABLED
+END
+
+IDD_Settings_Rom DIALOGEX 0, 0, 233, 206
+STYLE DS_SHELLFONT | DS_MODALFRAME | WS_POPUP
+FONT 8, "MS Shell Dlg", 0, 0, 0x0
+BEGIN
+    GROUPBOX        "",IDC_STATIC,4,20,224,180
+    LTEXT           "CPU core style:",IDC_CPU_TYPE_TEXT,11,33,111,10
+    COMBOBOX        IDC_CPU_TYPE,124,31,99,49,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
+    LTEXT           "Self-modifying code Method:",IDC_SELFMOD_TEXT,11,49,111,10
+    COMBOBOX        IDC_SELFMOD,124,48,99,49,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
+    LTEXT           "Memory Size:",IDC_MEMORY_SIZE_TEXT,11,66,111,10
+    COMBOBOX        IDC_RDRAM_SIZE,124,65,99,49,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
+    LTEXT           "Advanced Block Linking:",IDC_BLOCK_LINKING_TEXT,11,83,111,10
+    COMBOBOX        IDC_BLOCK_LINKING,124,82,99,49,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
+    LTEXT           "Default Save type:",IDC_SAVE_TYPE_TEXT,11,100,111,10
+    COMBOBOX        IDC_SAVE_TYPE,124,99,99,49,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
+    LTEXT           "Counter Factor:",IDC_COUNTFACT_TEXT,11,119,111,10
+    COMBOBOX        IDC_COUNTFACT,124,116,99,49,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
+    CONTROL         "Larger Compile Buffer",IDC_LARGE_COMPILE_BUFFER,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,11,132,111,11
+    CONTROL         "Use TLB",IDC_USE_TLB,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,124,132,99,11
+    CONTROL         "Register caching",IDC_ROM_REGCACHE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,11,145,111,11
+    CONTROL         "SP Hack",IDC_ROM_SPHACK,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,124,145,99,11
+    CONTROL         "RSP Audio Signal",IDC_AUDIO_SIGNAL,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,11,158,111,11
+    CONTROL         "Delay SI Interrupt",IDC_DELAY_SI,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,124,158,99,11
+    CONTROL         "Delay RDP Interrupt",IDC_DELAY_RDP,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,11,171,111,11
+    CONTROL         "Delay RSP Interrupt",IDC_DELAY_RSP,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,124,171,99,11
+    CONTROL         "Emulate AI",IDC_EMULATE_AI,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,11,184,111,11
+END
+
+IDD_LangSelect DIALOGEX 0, 0, 269, 147
+STYLE DS_SHELLFONT | DS_MODALFRAME | DS_CENTER | WS_POPUP | WS_VISIBLE | WS_CAPTION
+EXSTYLE WS_EX_TOOLWINDOW
+CAPTION "Welcome to"
+FONT 8, "MS Shell Dlg", 0, 0, 0x1
+BEGIN
+    DEFPUSHBUTTON   "OK",IDOK,210,129,50,12
+    LTEXT           "Please Select Language",IDC_STATIC,3,109,86,9
+    COMBOBOX        IDC_LANG_SEL,5,128,112,118,CBS_DROPDOWNLIST | CBS_SORT | WS_VSCROLL | WS_TABSTOP
+    CONTROL         "IDB_BITMAP2",IDC_STATIC,"Static",SS_BITMAP | SS_CENTERIMAGE | SS_SUNKEN,1,2,266,101,WS_EX_CLIENTEDGE
+    CONTROL         "",IDC_STATIC,"Static",SS_ETCHEDHORZ,3,122,258,1
+    CONTROL         "",IDC_STATIC,"Static",SS_ETCHEDHORZ,3,107,260,1
+END
+
+IDD_About DIALOGEX 0, 0, 303, 315
+STYLE DS_SHELLFONT | DS_MODALFRAME | DS_3DLOOK | DS_CENTER | WS_POPUP | WS_CAPTION | WS_SYSMENU
+EXSTYLE WS_EX_CLIENTEDGE
+CAPTION "About Project64"
+FONT 8, "MS Shell Dlg", 0, 0, 0x1
+BEGIN
+    CONTROL         130,IDB_PJ64LOGO,"Static",SS_BITMAP | SS_CENTERIMAGE | SS_SUNKEN | WS_BORDER,0,0,303,315,WS_EX_DLGMODALFRAME | WS_EX_CLIENTEDGE | WS_EX_STATICEDGE
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// DESIGNINFO
+//
+
+#ifdef APSTUDIO_INVOKED
+GUIDELINES DESIGNINFO
+BEGIN
+    IDD_Debugger_MemDump, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 261
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 104
+    END
+
+    "ROM_INFO_DIALOG", DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 223
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 192
+    END
+
+    "MEMORY", DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 179
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 87
+    END
+
+    "BLANK", DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 179
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 87
+    END
+
+    IDD_Settings_PlugSel, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 222
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 131
+    END
+
+    IDD_TLB, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 283
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 310
+    END
+
+    IDD_Logging_Registers, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 193
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 147
+    END
+
+    IDD_Logging_PifRam, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 193
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 147
+    END
+
+    IDD_Logging_General, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 193
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 147
+    END
+
+    IDD_Settings_Directory, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 224
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 199
+    END
+
+    IDD_Settings_Options, DIALOG
+    BEGIN
+        LEFTMARGIN, 4
+        RIGHTMARGIN, 230
+        TOPMARGIN, 4
+        BOTTOMMARGIN, 200
+    END
+
+    IDD_MANAGECHEATS, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 405
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 219
+    END
+
+    IDD_Cheats_List, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 194
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 214
+    END
+
+    IDD_Cheats_CodeEx, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 179
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 146
+    END
+
+    IDD_Cheats_Range, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 176
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 120
+    END
+
+    IDD_Settings_ShellInt, DIALOG
+    BEGIN
+        LEFTMARGIN, 4
+        TOPMARGIN, 4
+        BOTTOMMARGIN, 200
+    END
+
+    IDD_Settings_RomBrowser, DIALOG
+    BEGIN
+        LEFTMARGIN, 4
+        TOPMARGIN, 4
+        BOTTOMMARGIN, 200
+    END
+
+    IDD_About_Ini, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 178
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 243
+    END
+
+    IDD_Settings_General, DIALOG
+    BEGIN
+        LEFTMARGIN, 4
+        RIGHTMARGIN, 230
+        TOPMARGIN, 4
+        BOTTOMMARGIN, 200
+    END
+
+    IDD_Settings_RomNotes, DIALOG
+    BEGIN
+        LEFTMARGIN, 4
+        TOPMARGIN, 4
+        BOTTOMMARGIN, 200
+    END
+
+    IDD_Cheats_Main, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 189
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 223
+    END
+
+    IDD_Cheats_Add, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 184
+        TOPMARGIN, 7
+    END
+
+    IDD_Cheats_Edit, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 184
+        TOPMARGIN, 7
+    END
+
+    IDD_Settings_Rom, DIALOG
+    BEGIN
+        LEFTMARGIN, 4
+        RIGHTMARGIN, 231
+        TOPMARGIN, 4
+        BOTTOMMARGIN, 200
+    END
+
+    IDD_LangSelect, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 267
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 141
+    END
+
+    IDD_About, DIALOG
+    BEGIN
+        RIGHTMARGIN, 299
+    END
+END
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Icon
+//
+
+// Icon with lowest ID value placed first to ensure application icon
+// remains consistent on all systems.
+IDI_RIGHT               ICON                    "right.ico"
+IDI_LEFT                ICON                    "left.ico"
+ICON                    ICON                    "pj64.ico"
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Menu
+//
+
+MAIN_MENU MENU
+BEGIN
+    POPUP "&File"
+    BEGIN
+        MENUITEM "&Open Rom",                   ID_FILE_OPEN_ROM
+        MENUITEM "Rom &Info....",               ID_FILE_ROM_INFO, GRAYED
+        MENUITEM SEPARATOR
+        MENUITEM "Start Emulation\tF11",        ID_FILE_STARTEMULATION, GRAYED
+        MENUITEM "&End Emulation\tF12",         ID_FILE_ENDEMULATION, GRAYED
+        MENUITEM SEPARATOR
+        MENUITEM "Language",                    1
+        MENUITEM SEPARATOR
+        MENUITEM "Choose Rom Directory...",     ID_FILE_ROMDIRECTORY
+        MENUITEM "Refresh Rom List\tF5",        ID_FILE_REFRESHROMLIST
+        MENUITEM SEPARATOR
+        MENUITEM "Recent Rom",                  65535
+        POPUP "Recent Rom Directories"
+        BEGIN
+            MENUITEM "None Here",                   1100
+        END
+        MENUITEM SEPARATOR
+        MENUITEM "E&xit",                       ID_FILE_EXIT
+    END
+    POPUP "&System"
+    BEGIN
+        MENUITEM "&Reset\tF1",                  ID_CPU_RESET, GRAYED
+        MENUITEM "&Pause\tF2",                  ID_CPU_PAUSE, GRAYED
+        MENUITEM "Generate Bitmap\tF3",         ID_SYSTEM_GENERATEBITMAP, GRAYED
+        MENUITEM SEPARATOR
+        MENUITEM "Limit FPS\tF4",               ID_SYSTEM_LIMITFPS
+        MENUITEM SEPARATOR
+        MENUITEM "&Save\tF5",                   ID_CPU_SAVE, GRAYED
+        MENUITEM "Save As...\tCtrl+S",          ID_CPU_SAVEAS, GRAYED
+        MENUITEM "&Restore\tF7",                ID_CPU_RESTORE, GRAYED
+        MENUITEM "Load...\tCtrl+L",             ID_CPU_LOAD, GRAYED
+        MENUITEM SEPARATOR
+        POPUP "Current Save S&tate", GRAYED
+        BEGIN
+            MENUITEM "Default\t~",                  ID_CURRENTSAVE_DEFAULT
+            MENUITEM SEPARATOR
+            MENUITEM "Slot 1\t1",                   ID_CURRENTSAVE_1
+            MENUITEM "Slot 2\t2",                   ID_CURRENTSAVE_2
+            MENUITEM "Slot 3\t3",                   ID_CURRENTSAVE_3
+            MENUITEM "Slot 4\t4",                   ID_CURRENTSAVE_4
+            MENUITEM "Slot 5\t5",                   ID_CURRENTSAVE_5
+            MENUITEM "Slot 6\t6",                   ID_CURRENTSAVE_6
+            MENUITEM "Slot 7\t7",                   ID_CURRENTSAVE_7
+            MENUITEM "Slot 8\t8",                   ID_CURRENTSAVE_8
+            MENUITEM "Slot 9\t9",                   ID_CURRENTSAVE_9
+            MENUITEM "Slot 10\t0",                  ID_CURRENTSAVE_0
+        END
+        MENUITEM SEPARATOR
+        MENUITEM "Cheats...\tCtrl+C",           ID_OPTIONS_CHEATS, GRAYED
+        MENUITEM "Cheat Search\tCtrl+R",        ID_SYSTEM_CHEATSEARCH, GRAYED
+        MENUITEM "GS Button\tF9",               ID_SYSTEM_GSBUTTON, GRAYED
+    END
+    POPUP "&Options"
+    BEGIN
+        MENUITEM "&Full Screen\tAlt+Enter",     ID_OPTIONS_FULLSCREEN, GRAYED
+        MENUITEM "&Always On &Top\tCtrl+A",     ID_OPTIONS_ALWAYSONTOP, GRAYED
+        MENUITEM SEPARATOR
+        MENUITEM "Configure Graphics Plugin...", ID_OPTIONS_CONFIG_GFX, GRAYED
+        MENUITEM "Configure Audio Plugin...",   ID_OPTIONS_CONFIG_AUDIO, GRAYED
+        MENUITEM "Configure Controller Plugin...", ID_OPTIONS_CONFIG_CONTROL, GRAYED
+        MENUITEM "Configure RSP Plugin...",     ID_OPTIONS_CONFIG_RSP, GRAYED
+        MENUITEM SEPARATOR
+        MENUITEM "Show CPU usage %",            ID_OPTIONS_SHOWCPUUSAGE
+        MENUITEM "&Settings...\tCtrl+T",        ID_OPTIONS_SETTINGS
+    END
+    POPUP "&Debugger"
+    BEGIN
+        MENUITEM "Set Breakpoint...",           ID_DEBUGGER_SETBREAKPOINT
+        MENUITEM SEPARATOR
+        POPUP "&R4300i"
+        BEGIN
+            MENUITEM "R4300i &Commands...",         ID_DEBUGGER_R4300ICOMMANDS
+            MENUITEM "R4300i &Registers...",        ID_DEBUGGER_R4300IREGISTERS, GRAYED
+        END
+        MENUITEM "Memory...",                   ID_DEBUGGER_MEMORY, GRAYED
+        MENUITEM "TLB Entries...",              ID_DEBUGGER_TLBENTRIES, GRAYED
+        MENUITEM SEPARATOR
+        MENUITEM "Call Stack....",              ID_DEBUGGER_CALLSTACK
+        MENUITEM SEPARATOR
+        POPUP "Logging"
+        BEGIN
+            MENUITEM "Log Options",                 ID_DEBUGGER_LOGOPTIONS
+            MENUITEM "Generate Log",                ID_DEBUGGER_GENERATELOG
+        END
+        POPUP "P&rofiling"
+        BEGIN
+            MENUITEM "&On",                         ID_OPTIONS_PROFILING_ON
+            MENUITEM "O&ff",                        ID_OPTIONS_PROFILING_OFF
+            MENUITEM SEPARATOR
+            MENUITEM "Reset Stats",                 ID_OPTIONS_PROFILING_RESETSTATS
+            MENUITEM "Generate Log",                ID_OPTIONS_PROFILING_GENERATELOG
+            MENUITEM SEPARATOR
+            MENUITEM "Log Individual Blocks",       ID_OPTIONS_PROFILING_LOGINDIVIDUALBLOCKS
+        END
+        POPUP "&Mappings"
+        BEGIN
+            MENUITEM "&Open Map file ...",          ID_OPTIONS_MAPPINGS_OPENMAPFILE
+            MENUITEM "&Close Map File",             ID_OPTIONS_MAPPINGS_CLOSEMAPFILE, GRAYED
+            MENUITEM SEPARATOR
+            MENUITEM "&Auto Load Map File",         ID_OPTIONS_MAPPINGS_AUTOLOADMAPFILE
+        END
+        POPUP "Settings"
+        BEGIN
+            MENUITEM "Show Unhandled &Memory Accesses", ID_DEBUGGER_SHOWUNHANDLEDMEMORYACCESSES
+            MENUITEM "Show Load/Store &TLB Misses", ID_DEBUGGER_SHOWTLBMISSES
+            MENUITEM "Show Dlist/Alist count",      ID_DEBUGGER_SHOWDLISTALISTCOUNT
+            MENUITEM "Show &Pif Ram Errors",        ID_DEBUGGER_SHOWPIFRAMERRORS
+            MENUITEM "Show Compile Memory",         ID_DEBUGGER_SHOWCOMPMEM
+        END
+    END
+    POPUP "&Help"
+    BEGIN
+        MENUITEM "&User Manual...",             ID_HELP_CONTENTS
+        MENUITEM "&Game FAQ...",                ID_HELP_GAMEFAQ
+        MENUITEM SEPARATOR
+        MENUITEM "Support &Forum",              ID_HELP_SUPPORTFORUM
+        MENUITEM "&Homepage",                   ID_HELP_HOMEPAGE
+        MENUITEM SEPARATOR
+        MENUITEM "About &INI Files",            ID_HELP_ABOUTSETTINGFILES
+        MENUITEM "&About Project 64",           ID_HELP_ABOUT
+    END
+END
+
+IDR_POPUP MENU
+BEGIN
+    POPUP "PopupMenu"
+    BEGIN
+        MENUITEM "Play Game",                   ID_PLAYGAME
+        MENUITEM SEPARATOR
+        MENUITEM "Refresh Rom List",            ID_FILE_REFRESHROMLIST
+        MENUITEM "Choose Rom Directory...",     ID_FILE_ROMDIRECTORY
+        MENUITEM SEPARATOR
+        MENUITEM "Rom Information",             ID_POPUPMENU_ROMINFORMATION
+        MENUITEM SEPARATOR
+        MENUITEM "Edit Game Settings",          ID_EDITSETTINGS
+        MENUITEM "Edit Cheats",                 ID_EDITCHEATS
+    END
+END
+
+IDR_CHEAT_MENU MENU
+BEGIN
+    POPUP "Popup"
+    BEGIN
+        MENUITEM "Add New Cheat...",            ID_POPUP_ADDNEWCHEAT
+        MENUITEM "Edit",                        ID_POPUP_EDIT
+        MENUITEM SEPARATOR
+        MENUITEM "Delete",                      ID_POPUP_DELETE
+    END
+END
+
+
+#ifdef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// TEXTINCLUDE
+//
+
+1 TEXTINCLUDE 
+BEGIN
+    "resource.h\0"
+END
+
+2 TEXTINCLUDE 
+BEGIN
+    "#include ""afxres.h""\r\n"
+    "\0"
+END
+
+3 TEXTINCLUDE 
+BEGIN
+    "\r\n"
+    "\0"
+END
+
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Accelerator
+//
+
+IDR_WINDOWMODE ACCELERATORS
+BEGIN
+    "L",            ID_CPU_LOAD,            VIRTKEY, CONTROL, NOINVERT
+    "S",            ID_CPU_SAVEAS,          VIRTKEY, CONTROL, NOINVERT
+    "O",            ID_FILE_OPEN_ROM,       VIRTKEY, CONTROL, NOINVERT
+    "A",            ID_OPTIONS_ALWAYSONTOP, VIRTKEY, CONTROL, NOINVERT
+    "C",            ID_OPTIONS_CHEATS,      VIRTKEY, CONTROL, NOINVERT
+    "T",            ID_OPTIONS_SETTINGS,    VIRTKEY, CONTROL, NOINVERT
+    "R",            ID_SYSTEM_CHEATSEARCH,  VIRTKEY, CONTROL, NOINVERT
+END
+
+IDR_ROMBROWSER ACCELERATORS
+BEGIN
+    "O",            ID_FILE_OPEN_ROM,       VIRTKEY, CONTROL, NOINVERT
+    "T",            ID_OPTIONS_SETTINGS,    VIRTKEY, CONTROL, NOINVERT
+    VK_F11,         ID_FILE_STARTEMULATION, VIRTKEY, NOINVERT
+    VK_F5,          ID_FILE_REFRESHROMLIST, VIRTKEY, NOINVERT
+END
+
+IDR_CPURUNNING ACCELERATORS
+BEGIN
+    "0",            ID_CURRENTSAVE_0,       VIRTKEY, NOINVERT
+    "1",            ID_CURRENTSAVE_1,       VIRTKEY, NOINVERT
+    "2",            ID_CURRENTSAVE_2,       VIRTKEY, NOINVERT
+    "3",            ID_CURRENTSAVE_3,       VIRTKEY, NOINVERT
+    "4",            ID_CURRENTSAVE_4,       VIRTKEY, NOINVERT
+    "5",            ID_CURRENTSAVE_5,       VIRTKEY, NOINVERT
+    "6",            ID_CURRENTSAVE_6,       VIRTKEY, NOINVERT
+    "7",            ID_CURRENTSAVE_7,       VIRTKEY, NOINVERT
+    "8",            ID_CURRENTSAVE_8,       VIRTKEY, NOINVERT
+    "9",            ID_CURRENTSAVE_9,       VIRTKEY, NOINVERT
+    VK_ESCAPE,      ID_OPTIONS_FULLSCREEN,  VIRTKEY, NOINVERT
+    VK_F1,          ID_CPU_RESET,           VIRTKEY, NOINVERT
+    VK_F12,         ID_FILE_ENDEMULATION,   VIRTKEY, NOINVERT
+    VK_F2,          ID_CPU_PAUSE,           VIRTKEY, NOINVERT
+    VK_F3,          ID_SYSTEM_GENERATEBITMAP, VIRTKEY, NOINVERT
+    VK_F4,          ID_SYSTEM_LIMITFPS,     VIRTKEY, NOINVERT
+    VK_F5,          ID_CPU_SAVE,            VIRTKEY, NOINVERT
+    VK_F7,          ID_CPU_RESTORE,         VIRTKEY, NOINVERT
+    VK_F9,          ID_SYSTEM_GSBUTTON,     VIRTKEY, NOINVERT
+    VK_PAUSE,       ID_CPU_PAUSE,           VIRTKEY, NOINVERT
+    VK_RETURN,      ID_OPTIONS_FULLSCREEN,  VIRTKEY, ALT, NOINVERT
+    "`",            ID_CURRENTSAVE_DEFAULT, ASCII,  NOINVERT
+END
+
+#endif    // English (Australia) resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+
+#ifndef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 3 resource.
+//
+
+
+/////////////////////////////////////////////////////////////////////////////
+#endif    // not APSTUDIO_INVOKED
+

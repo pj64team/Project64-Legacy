@@ -1,0 +1,408 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release External|Win32">
+      <Configuration>Release External</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <SccProjectName>Svn</SccProjectName>
+    <SccLocalPath>Svn</SccLocalPath>
+    <ProjectName>Project64</ProjectName>
+    <SccAuxPath>Svn</SccAuxPath>
+    <SccProvider>SubversionScc</SccProvider>
+    <ProjectGuid>{AC366B6C-F277-056E-0EE8-B3ED4CCDFDA5}</ProjectGuid>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseOfMfc>false</UseOfMfc>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v142</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release External|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseOfMfc>false</UseOfMfc>
+    <CharacterSet>MultiByte</CharacterSet>
+    <WholeProgramOptimization>false</WholeProgramOptimization>
+    <PlatformToolset>v142</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseOfMfc>false</UseOfMfc>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v142</PlatformToolset>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.Cpp.UpgradeFromVC60.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release External|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.Cpp.UpgradeFromVC60.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.Cpp.UpgradeFromVC60.props" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <OutDir>..\PJ64_1.6.1\</OutDir>
+    <IntDir>.\Debug\</IntDir>
+    <LinkIncremental>true</LinkIncremental>
+    <TargetName>$(ProjectName)_Debug</TargetName>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release External|Win32'">
+    <OutDir>..\PJ64_1.6.1\</OutDir>
+    <IntDir>.\Release_External\</IntDir>
+    <LinkIncremental>false</LinkIncremental>
+    <TargetName>$(ProjectName)_1.6.1</TargetName>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <RunCodeAnalysis>false</RunCodeAnalysis>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <IntDir>.\Release\</IntDir>
+    <LinkIncremental>false</LinkIncremental>
+    <OutDir>..\PJ64_1.6.1\</OutDir>
+    <TargetName>$(ProjectName)_Release</TargetName>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+      <InlineFunctionExpansion>Default</InlineFunctionExpansion>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <Optimization>Disabled</Optimization>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <WarningLevel>Level4</WarningLevel>
+      <MinimalRebuild>false</MinimalRebuild>
+      <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
+      <AdditionalIncludeDirectories>C:\Development\PJ64 Source C++ 6.0;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AssemblerListingLocation>.\Debug\</AssemblerListingLocation>
+      <BrowseInformation>true</BrowseInformation>
+      <PrecompiledHeaderOutputFile>.\Debug\Project64.pch</PrecompiledHeaderOutputFile>
+      <ObjectFileName>.\Debug\</ObjectFileName>
+      <ProgramDataBaseFileName>.\Debug\</ProgramDataBaseFileName>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <ExceptionHandling>false</ExceptionHandling>
+      <CompileAs>Default</CompileAs>
+      <TreatWarningAsError>false</TreatWarningAsError>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+    </ClCompile>
+    <Midl>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <TypeLibraryName>.\Debug\Project64.tlb</TypeLibraryName>
+      <MkTypLibCompatible>true</MkTypLibCompatible>
+      <TargetEnvironment>Win32</TargetEnvironment>
+    </Midl>
+    <ResourceCompile>
+      <Culture>0x0c09</Culture>
+      <AdditionalIncludeDirectories>c:\development\PJ64 Source C++ 6.0\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ResourceCompile>
+    <Bscmake>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <OutputFile>.\Debug\Project64.bsc</OutputFile>
+    </Bscmake>
+    <Link>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <SubSystem>Windows</SubSystem>
+      <IgnoreSpecificDefaultLibraries>libc;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
+      <OutputFile>..\PJ64_1.6.1\Project64_Debug.exe</OutputFile>
+      <AdditionalLibraryDirectories>C:\Development\PJ64 Source C++ 6.0;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>Compression/zlibstat.lib;htmlhelp.lib;winmm.lib;comctl32.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <DataExecutionPrevention>false</DataExecutionPrevention>
+      <Profile>false</Profile>
+    </Link>
+    <Manifest>
+      <AdditionalManifestFiles>
+      </AdditionalManifestFiles>
+    </Manifest>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release External|Win32'">
+    <ClCompile>
+      <Optimization>MaxSpeed</Optimization>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <WarningLevel>Level4</WarningLevel>
+      <AdditionalIncludeDirectories>C:\Development\PJ64 Source C++ 6.0;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>EXTERNAL_RELEASE;WIN32;NDEBUG;_WINDOWS;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AssemblerListingLocation>.\Release_External\</AssemblerListingLocation>
+      <BrowseInformation>true</BrowseInformation>
+      <PrecompiledHeaderOutputFile>.\Release_External\Project64.pch</PrecompiledHeaderOutputFile>
+      <ObjectFileName>.\Release_External\</ObjectFileName>
+      <ProgramDataBaseFileName>.\Release_External\</ProgramDataBaseFileName>
+      <CallingConvention>FastCall</CallingConvention>
+      <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
+      <EnablePREfast>false</EnablePREfast>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <StringPooling>true</StringPooling>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <TreatWarningAsError>false</TreatWarningAsError>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <FavorSizeOrSpeed>Neither</FavorSizeOrSpeed>
+    </ClCompile>
+    <Midl>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <TypeLibraryName>.\Release_External\Project64.tlb</TypeLibraryName>
+      <MkTypLibCompatible>true</MkTypLibCompatible>
+      <TargetEnvironment>Win32</TargetEnvironment>
+    </Midl>
+    <ResourceCompile>
+      <Culture>0x0c09</Culture>
+      <PreprocessorDefinitions>NDEBUG;EXTERNAL_RELEASE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ResourceCompile>
+    <Bscmake>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <OutputFile>.\Release_External\Project64.bsc</OutputFile>
+    </Bscmake>
+    <Link>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <SubSystem>Windows</SubSystem>
+      <IgnoreSpecificDefaultLibraries>LIBC;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
+      <OutputFile>..\PJ64_1.6.1\Project64_1.6.1.exe</OutputFile>
+      <AdditionalLibraryDirectories>C:\Development\PJ64 Source C++ 6.0;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>Compression/zlibstat.lib;htmlhelp.lib;winmm.lib;comctl32.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalOptions> /NXCOMPAT:NO %(AdditionalOptions)</AdditionalOptions>
+      <DataExecutionPrevention>false</DataExecutionPrevention>
+      <Profile>false</Profile>
+      <TargetMachine>MachineX86</TargetMachine>
+    </Link>
+    <Manifest>
+      <GenerateCategoryTags>true</GenerateCategoryTags>
+    </Manifest>
+    <Manifest>
+      <EnableDPIAwareness>true</EnableDPIAwareness>
+    </Manifest>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
+      <StringPooling>true</StringPooling>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <Optimization>MaxSpeed</Optimization>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <WarningLevel>Level4</WarningLevel>
+      <AdditionalIncludeDirectories>C:\Development\PJ64 Source C++ 6.0;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AssemblerListingLocation>.\Release\</AssemblerListingLocation>
+      <BrowseInformation>true</BrowseInformation>
+      <PrecompiledHeaderOutputFile>.\Release\Project64.pch</PrecompiledHeaderOutputFile>
+      <ObjectFileName>.\Release\</ObjectFileName>
+      <ProgramDataBaseFileName>.\Release\</ProgramDataBaseFileName>
+      <TreatWarningAsError>false</TreatWarningAsError>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+    </ClCompile>
+    <Midl>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <TypeLibraryName>.\Release\Project64.tlb</TypeLibraryName>
+      <MkTypLibCompatible>true</MkTypLibCompatible>
+      <TargetEnvironment>Win32</TargetEnvironment>
+    </Midl>
+    <ResourceCompile>
+      <Culture>0x0c09</Culture>
+      <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ResourceCompile>
+    <Bscmake>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <OutputFile>.\Release\Project64.bsc</OutputFile>
+    </Bscmake>
+    <Link>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <SubSystem>Windows</SubSystem>
+      <OutputFile>..\PJ64_1.6.1\Project64_Release.exe</OutputFile>
+      <AdditionalLibraryDirectories>C:\Development\PJ64 Source C++ 6.0;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>Compression/zlibstat.lib;htmlhelp.lib;winmm.lib;comctl32.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <DataExecutionPrevention>false</DataExecutionPrevention>
+      <IgnoreSpecificDefaultLibraries>libc;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
+      <Profile>true</Profile>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="BreakPoints.c" />
+    <ClCompile Include="CheatSearch.c" />
+    <ClCompile Include="CheatSearch_Dev.c" />
+    <ClCompile Include="CheatSearch_Input.c" />
+    <ClCompile Include="CheatSearch_Search.c" />
+    <ClCompile Include="Compression\adler32.c" />
+    <ClCompile Include="Compression\compress.c" />
+    <ClCompile Include="Compression\crc32.c" />
+    <ClCompile Include="Compression\deflate.c" />
+    <ClCompile Include="Compression\gzclose.c" />
+    <ClCompile Include="Compression\gzlib.c" />
+    <ClCompile Include="Compression\gzread.c" />
+    <ClCompile Include="Compression\gzwrite.c" />
+    <ClCompile Include="Compression\infback.c" />
+    <ClCompile Include="Compression\inffast.c" />
+    <ClCompile Include="Compression\inflate.c" />
+    <ClCompile Include="Compression\inftrees.c" />
+    <ClCompile Include="Compression\ioapi.c" />
+    <ClCompile Include="Compression\trees.c" />
+    <ClCompile Include="Compression\uncompr.c" />
+    <ClCompile Include="Compression\unzip.c" />
+    <ClCompile Include="Compression\zip.c" />
+    <ClCompile Include="Compression\zutil.c" />
+    <ClCompile Include="CPU Log.c" />
+    <ClCompile Include="EmulateAI.c" />
+    <ClCompile Include="Logging.c" />
+    <ClCompile Include="mapping.c" />
+    <ClCompile Include="MemDump.c" />
+    <ClCompile Include="n64_cic_nus_6105.c" />
+    <ClCompile Include="FileHandler.cpp" />
+    <ClCompile Include="r4300i Commands.c" />
+    <ClCompile Include="r4300i Memory.c" />
+    <ClCompile Include="r4300i Registers.c" />
+    <ClCompile Include="Real-Time Clock.c" />
+    <ClCompile Include="RomTools_Common.c" />
+    <ClCompile Include="Settings Api.c" />
+    <ClCompile Include="TLB Display.c" />
+    <ClCompile Include="Cheat.c" />
+    <ClCompile Include="Main.c" />
+    <ClCompile Include="main2.cpp" />
+    <ClCompile Include="MemTest.cpp" />
+    <ClCompile Include="Profiling.c" />
+    <ClCompile Include="RomBrowser.c" />
+    <ClCompile Include="Settings.c" />
+    <ClCompile Include="Win32Timer.c" />
+    <ClCompile Include="Eeprom.c" />
+    <ClCompile Include="FlashRam.c" />
+    <ClCompile Include="Mempak.c" />
+    <ClCompile Include="Sram.c" />
+    <ClCompile Include="CPU.c" />
+    <ClCompile Include="DMA.c" />
+    <ClCompile Include="Exception.c" />
+    <ClCompile Include="Interpreter CPU.c" />
+    <ClCompile Include="Interpreter Ops.c" />
+    <ClCompile Include="Memory.c" />
+    <ClCompile Include="pif.c" />
+    <ClCompile Include="Recompiler CPU.c" />
+    <ClCompile Include="Recompiler Fpu Ops.c" />
+    <ClCompile Include="Recompiler Ops.c" />
+    <ClCompile Include="Registers.c" />
+    <ClCompile Include="rom.c" />
+    <ClCompile Include="Sync CPU.c" />
+    <ClCompile Include="TLB.c" />
+    <ClCompile Include="Plugin.c" />
+    <ClCompile Include="x86 fpu.c" />
+    <ClCompile Include="X86.c" />
+    <ClCompile Include="Language.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="BreakPoints.h" />
+    <ClInclude Include="CheatSearch.h" />
+    <ClInclude Include="CheatSearch_Dev.h" />
+    <ClInclude Include="CheatSearch_Input.h" />
+    <ClInclude Include="CheatSearch_Search.h" />
+    <ClInclude Include="Compression\crc32.h" />
+    <ClInclude Include="Compression\deflate.h" />
+    <ClInclude Include="Compression\gzguts.h" />
+    <ClInclude Include="Compression\inffast.h" />
+    <ClInclude Include="Compression\inffixed.h" />
+    <ClInclude Include="Compression\inflate.h" />
+    <ClInclude Include="Compression\inftrees.h" />
+    <ClInclude Include="Compression\ioapi.h" />
+    <ClInclude Include="Compression\trees.h" />
+    <ClInclude Include="Compression\unzip.h" />
+    <ClInclude Include="Compression\zconf.h" />
+    <ClInclude Include="Compression\zip.h" />
+    <ClInclude Include="Compression\zlib.h" />
+    <ClInclude Include="Compression\zutil.h" />
+    <ClInclude Include="CPU Log.h" />
+    <ClInclude Include="Debugger.h" />
+    <ClInclude Include="EmulateAI.h" />
+    <ClInclude Include="Logging.h" />
+    <ClInclude Include="Mapping.h" />
+    <ClInclude Include="MemDump.h" />
+    <ClInclude Include="n64_cic_nus_6105.h" />
+    <ClInclude Include="FileHandler.h" />
+    <ClInclude Include="r4300i Commands.h" />
+    <ClInclude Include="r4300i Memory.h" />
+    <ClInclude Include="r4300i Registers.h" />
+    <ClInclude Include="Real-Time Clock.h" />
+    <ClInclude Include="resource_cheat.h" />
+    <ClInclude Include="resource_cheatsearch.h" />
+    <ClInclude Include="RomTools_Common.h" />
+    <ClInclude Include="Settings Api.h" />
+    <ClInclude Include="Settings Common Defines.h" />
+    <ClInclude Include="tlb Display.h" />
+    <ClInclude Include="Cheats.h" />
+    <ClInclude Include="HTMLHELP.H" />
+    <ClInclude Include="main.h" />
+    <ClInclude Include="Profiling.h" />
+    <ClInclude Include="resource.h" />
+    <ClInclude Include="RomBrowser.h" />
+    <ClInclude Include="Settings.h" />
+    <ClInclude Include="Types.h" />
+    <ClInclude Include="Win32Timer.h" />
+    <ClInclude Include="Eeprom.h" />
+    <ClInclude Include="Flashram.h" />
+    <ClInclude Include="mempak.h" />
+    <ClInclude Include="Sram.h" />
+    <ClInclude Include="CPU.h" />
+    <ClInclude Include="DMA.h" />
+    <ClInclude Include="Exception.h" />
+    <ClInclude Include="Interpreter CPU.h" />
+    <ClInclude Include="Interpreter Ops.h" />
+    <ClInclude Include="Memory.h" />
+    <ClInclude Include="OpCode.h" />
+    <ClInclude Include="pif.h" />
+    <ClInclude Include="Recompiler CPU.h" />
+    <ClInclude Include="Recompiler Ops.h" />
+    <ClInclude Include="Registers.h" />
+    <ClInclude Include="Rom.h" />
+    <ClInclude Include="Sync CPU.h" />
+    <ClInclude Include="tlb.h" />
+    <ClInclude Include="Plugin.h" />
+    <ClInclude Include="X86.h" />
+    <ClInclude Include="Language.h" />
+    <ClInclude Include="MemTest.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="left.ico" />
+    <CustomBuild Include="pj64.ico">
+      <DeploymentContent>true</DeploymentContent>
+    </CustomBuild>
+    <CustomBuild Include="right.ico" />
+    <CustomBuild Include="tri-state.bmp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="PJ64.rc" />
+    <ResourceCompile Include="PJ64_Cheat.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="About.txt" />
+    <None Include="PJ64.BMP" />
+  </ItemGroup>
+  <ItemGroup>
+    <Library Include="Compression\zlibstat.lib">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release External|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+    </Library>
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+  <ProjectExtensions>
+    <VisualStudio>
+      <UserProperties RESOURCE_FILE="PJ64.rc" />
+    </VisualStudio>
+  </ProjectExtensions>
+</Project>
