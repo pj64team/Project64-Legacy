@@ -43,7 +43,7 @@
 DWORD RomFileSize;
 int RomRamSize, RomSaveUsing, RomCPUType, RomSelfMod,
 	RomUseTlb, RomUseLinking, RomCF, RomUseLargeBuffer, RomUseCache,
-	RomDelaySI, RomSPHack, RomAudioSignal, RomDelayRDP, RomDelayRSP, RomEmulateAI;
+	RomDelaySI, RomSPHack, RomAudioSignal, RomDelayRDP, RomDelayRSP, RomEmulateAI, RomModVIS;
 char CurrentFileName[MAX_PATH+1] = {""}, RomName[MAX_PATH+1] = {""};
 char LastRoms[10][MAX_PATH+1], LastDirs[10][MAX_PATH+1];
 BYTE RomHeader[0x1000];
@@ -563,8 +563,8 @@ void LoadRomOptions ( void ) {
 	CPU_Type = SystemCPU_Type;
 	if (RomCPUType != CPU_Default) { CPU_Type = RomCPUType; }
 	CountPerOp = RomCF;
-	if (CountPerOp < 1)  { CountPerOp = Default_CountPerOp; }
-	if (CountPerOp > 6)  { CountPerOp = Default_CountPerOp; }
+	if (CountPerOp < 1 || CountPerOp > 6) 
+		CountPerOp = Default_CountPerOp;
 
 	SaveUsing = RomSaveUsing;
 	SelfModCheck = SystemSelfModCheck;
@@ -580,6 +580,7 @@ void LoadRomOptions ( void ) {
 	DisableRegCaching = !RomUseCache;
 	if (UseIni && RomUseLinking == 0 ) { UseLinking = TRUE; }
 	if (UseIni && RomUseLinking == 1 ) { UseLinking = FALSE; }
+	ModVI = RomModVIS;
 
 	switch(GetRomRegion(ROM)) {
 	case PAL_Region:
@@ -627,10 +628,14 @@ void ReadRomOptions (void) {
 	RomUseCache       = TRUE;
 	RomUseLargeBuffer = FALSE;
 	RomUseLinking     = -1;
-	RomDelayRDP       = FALSE;
-	RomDelayRSP       = FALSE;
 	RomEmulateAI      = FALSE;
-	modVI             = 1500;
+	RomModVIS         = 1500;
+
+	// To do!
+	// These two were made automatic some time ago
+	// Test and remove all references in the code if every game it fixed still works
+	RomDelayRDP = FALSE;
+	RomDelayRSP = FALSE;
 
 	if (strlen(RomName) != 0) {
 		char Identifier[100], *String = NULL;
@@ -685,7 +690,11 @@ void ReadRomOptions (void) {
 		RomDelayRSP = Settings_HasSetting(RDS_NAME, Identifier, "Delay RSP");
 		RomDelayRDP = Settings_HasSetting(RDS_NAME, Identifier, "Delay RDP");
 		RomEmulateAI = Settings_HasSetting(RDS_NAME, Identifier, "Emulate AI");
-		modVI = Settings_ReadInt(RDS_NAME, Identifier, "VI", modVI);
+		RomModVIS = Settings_ReadInt(RDS_NAME, Identifier, "VI", RomModVIS);
+		// To do!
+		// Provide a defined way of setting a minimum and maximum value for VI, using 500 and 4500 for now (3x lower and 3x higher)
+		if (RomModVIS > 4500 || RomModVIS < 500)
+			RomModVIS = 1500;
 	}
 }
 
@@ -1153,6 +1162,13 @@ void SaveRomOptions (void) {
 		Settings_Write(RDS_NAME, Identifier, "Linking", "Off"); break;
 	default:
 		Settings_Write(RDS_NAME, Identifier, "Linking", "Global"); break;
+	}
+
+	if (RomModVIS == 1500)
+		Settings_Delete(RDS_NAME, Identifier, "VI");
+	else {
+		sprintf(String, "%d", RomModVIS);
+		Settings_Write(RDS_NAME, Identifier, "VI", String);
 	}
 }
 

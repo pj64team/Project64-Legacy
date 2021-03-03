@@ -137,7 +137,7 @@ extern HWND hMainWindow, hHiddenWin, hStatusWnd;
 extern char CurrentSave[256];
 extern HMENU hMainMenu;
 extern HINSTANCE hInst;
-extern DWORD modVI;
+extern DWORD ModVI;
 
 /******** Function Prototype *********/
 DWORD AsciiToHex          ( char * HexValue );

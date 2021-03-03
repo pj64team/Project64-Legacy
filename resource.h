@@ -235,8 +235,6 @@
 #define IDC_CHEATNOTES                  1217
 #define IDC_CODE_DES                    1218
 #define IDC_LANG_SEL                    1219
-#define IDC_DELAY_RDP                   1238
-#define IDC_DELAY_RSP                   1239
 #define IDC_EMULATE_AI                  1240
 #define IDC_ABOUT_VER                   1240
 #define IDC_ABOUT_SCROLL                1244
@@ -247,7 +245,14 @@
 #define IDC_MD_FORMAT                   1248
 #define IDC_BUTTON1                     1249
 #define IDC_Close                       1249
+#define IDC_VIS_RESET                   1249
 #define IDC_COMMAND1                    1250
+#define IDC_VIS                         1251
+#define IDC_GENSET_TEXT                 1252
+#define IDC_RECOMPSET_TEXT              1253
+#define IDC_VIS_TEXT                    1254
+#define IDC_CHECK2                      1256
+#define IDC_EDIT1                       1257
 #define ID_FILE_OPEN_ROM                40001
 #define ID_FILE_ROM_INFO                40002
 #define ID_FILE_EXIT                    40005
@@ -325,9 +330,9 @@
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        179
+#define _APS_NEXT_RESOURCE_VALUE        180
 #define _APS_NEXT_COMMAND_VALUE         40169
-#define _APS_NEXT_CONTROL_VALUE         1251
+#define _APS_NEXT_CONTROL_VALUE         1258
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif

@@ -179,6 +179,16 @@ BOOL CALLBACK CheatSearchDlgProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lPa
 					int item = ((LPNMITEMACTIVATE) lParam)->iItem;
 					CODEENTRY tmp;
 
+					tmp.Address = 0;
+					tmp.Value = 0;
+					tmp.numBits = search.searchNumBits;
+					tmp.Enabled = FALSE;
+					strcpy(tmp.Name, "");
+					strcpy(tmp.Note, "");
+					strcpy(tmp.Text, "");
+
+					cheat_dev.modify = &tmp;
+
 					// Double clicking on the empty space in the list for the cheat dev area will add a new entry
 					if (item == -1) {
 						if(DialogBox(hInst, MAKEINTRESOURCE(IDD_Cheats_Search_Edit), hDlg, (DLGPROC)CheatSearch_Add_Proc) == IDOK) {
@@ -964,7 +974,7 @@ LRESULT CALLBACK CheatSearch_Add_Proc (HWND hDlg, UINT uMsg, WPARAM wParam, LPAR
 			VALUE_HEX.hWnd = GetDlgItem(hDlg, IDT_CSE_VALUE_HEX);
 			VALUE_HEX.callBack = (WNDPROC)SetWindowLongPtr(VALUE_HEX.hWnd, GWLP_WNDPROC, (LONG_PTR)HexEditControlProc);
 			VALUE_HEX.value = cheat_dev.modify->Value;
-			if(search.searchNumBits == bits8)
+			if(cheat_dev.modify->numBits == bits8)
 				VALUE_HEX.max_value = 0xFF;
 			else
 				VALUE_HEX.max_value = 0xFFFF;
@@ -973,7 +983,7 @@ LRESULT CALLBACK CheatSearch_Add_Proc (HWND hDlg, UINT uMsg, WPARAM wParam, LPAR
 			VALUE_DEC.hWnd = GetDlgItem(hDlg, IDT_CSE_VALUE_DEC);
 			VALUE_DEC.callBack = (WNDPROC)SetWindowLongPtr(VALUE_DEC.hWnd, GWLP_WNDPROC, (LONG_PTR)DecEditControlProc);
 			VALUE_DEC.value = cheat_dev.modify->Value;
-			if(search.searchNumBits == bits8)
+			if(cheat_dev.modify->numBits == bits8)
 				VALUE_DEC.max_value = 0xFF;
 			else
 				VALUE_DEC.max_value = 0xFFFF;

@@ -1042,7 +1042,7 @@ void RefreshScreen (void ){
 		if (VI_V_SYNC_REG == 0) {
 			VI_INTR_TIME = 500000;
 		} else {
-			VI_INTR_TIME = (VI_V_SYNC_REG + 1) * modVI;
+			VI_INTR_TIME = (VI_V_SYNC_REG + 1) * ModVI;
 			if ((VI_V_SYNC_REG % 1) != 0) {
 				VI_INTR_TIME -= 38;
 			}

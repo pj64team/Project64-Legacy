@@ -57,7 +57,7 @@ HWND hMainWindow, hHiddenWin, hStatusWnd, hCheatSearchDlg;
 char CurrentSave[256];
 HMENU hMainMenu;
 HINSTANCE hInst;
-DWORD modVI;
+DWORD ModVI;
 
 void MenuSetText ( HMENU hMenu, int MenuPos, char * Title, char * ShotCut );
 void RomInfo     ( void );

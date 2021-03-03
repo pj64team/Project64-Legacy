@@ -1284,9 +1284,12 @@ LRESULT CALLBACK CheatEditProc (HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lPar
 
 				RomID(Identifier, RomHeader);
 				
+				/* Disabling this for now as it was causing a crash.
+				* It doesn't help that I've forgotten how/why this was wanted.
 				// Support updating a grouped options, String will contain the redirection
 				sprintf(Key, CHT_ENT_S, CheatNo, Ext[type]);
 				Settings_Read(CDB_NAME, Identifier, Key, STR_EMPTY, &String);
+				*/
 
 				//Delete old Entries
 				for (type = 0; type < (sizeof(Ext) / sizeof(char *)); type ++) {
@@ -1320,7 +1323,8 @@ LRESULT CALLBACK CheatEditProc (HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lPar
 					if (cheat) { free(cheat); cheat = NULL; }
 				}
 
-				if (String) { free(String); String = NULL; }
+				// This is related to the above commented section (Before The deletion of old entries)
+				//if (String) { free(String); String = NULL; }
 
 				CheatLen = SendDlgItemMessage(hDlg,IDC_NOTES,WM_GETTEXTLENGTH,0,0) + 5;
 				if (CheatLen > 5) {
