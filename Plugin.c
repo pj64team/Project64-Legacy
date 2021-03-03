@@ -682,10 +682,6 @@ void ShutdownPlugins (void) {
 	FreeLibrary(hControllerDll);
 	FreeLibrary(hGfxDll);
 	FreeLibrary(hRspDll);
-	GfxRomClosed = NULL;
-	RSPRomClosed = NULL;
-	AiRomClosed = NULL;
-	ContRomClosed = NULL;
 	PluginsInitilized = FALSE;
 }
 
