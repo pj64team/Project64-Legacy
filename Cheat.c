@@ -838,7 +838,8 @@ int ReadCodeString (HWND hDlg) {
 	memset(codestring, '\0', 2048);
 
 	numlines = SendDlgItemMessage(hDlg, IDC_CHEAT_CODES, EM_GETLINECOUNT, 0, 0);
-	if (numlines == 0) { validcodes = FALSE; }
+	if (numlines == 0)
+		validcodes = FALSE;
 	
 	for (linecount=0; linecount<numlines; linecount++) //read line after line (bypassing limitation GetDlgItemText)
 	{
@@ -847,9 +848,16 @@ int ReadCodeString (HWND hDlg) {
 		//str[0] = sizeof(str) > 255?255:sizeof(str);
 		*(LPWORD)str = sizeof(str);
 		len = SendDlgItemMessage(hDlg, IDC_CHEAT_CODES, EM_GETLINE, (WPARAM)linecount, (LPARAM)(LPCSTR)str);
-		str[len] = 0;
 
-		if (len <= 0) { continue; }
+		if (len <= 0)
+			continue;
+
+		// Sloppy code was written here, the [128] (129th character, out of 128...) was being assigned 0
+		// This is just a quick fix, this needs to be redone to use allocated memory to ignore pesky issues like this
+		if (len > 128)
+			len = 127;
+
+		str[len] = 0;
 
 		for (i=0; i<128; i++) {
 			if (((str[i] >= 'A') && (str[i] <= 'F')) || ((str[i] >= '0') && (str[i] <= '9'))) { // Is hexvalue
@@ -858,7 +866,8 @@ int ReadCodeString (HWND hDlg) {
 			if ((str[i] == ' ') || (str[i] == '?')) {
 				tempformat[i] = str[i];
 			}
-			if (str[i] == 0) { break; }
+			if (str[i] == 0)
+				break;
 		}
 		if (strcmp(tempformat, formatnormal) == 0) {
 			strcat(codestring, ",");
@@ -886,7 +895,8 @@ int ReadCodeString (HWND hDlg) {
 				nooptions = FALSE;
 				validoptions = FALSE;
 			}
-			else validcodes = FALSE;
+			else
+				validcodes = FALSE;
 		}
 		else {
 			validcodes = FALSE;
@@ -993,8 +1003,6 @@ void ReadOptionsString(HWND hDlg)
 
 ********************************************************************************************/
 LRESULT CALLBACK CheatAddProc (HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam) {
-	char str[1024];
-
 	switch (uMsg) {
 	case WM_INITDIALOG:
 		SetWindowText(hDlg,GS(CHEAT_ADDCHEAT_FRAME));
@@ -1026,7 +1034,6 @@ LRESULT CALLBACK CheatAddProc (HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
 		case IDC_CHEAT_CODES:
 			if (HIWORD(wParam) == EN_CHANGE) {
 				ReadCodeString(hDlg);
-				GetDlgItemText(hDlg, IDC_CHEAT_CODES, str, 1024);
 				if ((codeformat > 0) && !IsWindowEnabled(GetDlgItem(hDlg, IDC_LABEL_OPTIONS)) ) {
 					EnableWindow(GetDlgItem(hDlg, IDC_LABEL_OPTIONS), TRUE);
 					EnableWindow(GetDlgItem(hDlg, IDC_LABEL_OPTIONS_FORMAT), TRUE);
@@ -1038,7 +1045,8 @@ LRESULT CALLBACK CheatAddProc (HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
 					EnableWindow(GetDlgItem(hDlg, IDC_CHEAT_OPTIONS), FALSE);
 				}
 
-				if (!nooptions) ReadOptionsString(hDlg);
+				if (!nooptions)
+					ReadOptionsString(hDlg);
 
 				if (validcodes && (validoptions || nooptions) && SendDlgItemMessage(hDlg,IDC_CODE_NAME,EM_LINELENGTH,0,0) > 0){
 					EnableWindow(GetDlgItem(hDlg, IDC_ADD), TRUE);
@@ -1255,7 +1263,8 @@ LRESULT CALLBACK CheatEditProc (HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lPar
 					EnableWindow(GetDlgItem(hDlg, IDC_CHEAT_OPTIONS), FALSE);
 				}
 
-				if (!nooptions) ReadOptionsString(hDlg);
+				if (!nooptions)
+					ReadOptionsString(hDlg);
 
 				if (validcodes && (validoptions || nooptions) && SendDlgItemMessage(hDlg,IDC_CODE_NAME,EM_LINELENGTH,0,0) > 0){
 					EnableWindow(GetDlgItem(hDlg, IDC_ADD), TRUE);
