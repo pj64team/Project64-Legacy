@@ -32,17 +32,17 @@
 #include "debugger.h"
 #include "plugin.h"
 
-void * R4300i_Opcode[64];
-void * R4300i_Special[64];
-void * R4300i_Regimm[32];
-void * R4300i_CoP0[32];
-void * R4300i_CoP0_Function[64];
-void * R4300i_CoP1[32];
-void * R4300i_CoP1_BC[32];
-void * R4300i_CoP1_S[64];
-void * R4300i_CoP1_D[64];
-void * R4300i_CoP1_W[64];
-void * R4300i_CoP1_L[64];
+void(__fastcall* R4300i_Opcode[64])(void);
+void(__fastcall* R4300i_Special[64])(void);
+void(__fastcall* R4300i_Regimm[32])(void);
+void(__fastcall* R4300i_CoP0[32])(void);
+void(__fastcall* R4300i_CoP0_Function[64])(void);
+void(__fastcall* R4300i_CoP1[32])(void);
+void(__fastcall* R4300i_CoP1_BC[32])(void);
+void(__fastcall* R4300i_CoP1_S[64])(void);
+void(__fastcall* R4300i_CoP1_D[64])(void);
+void(__fastcall* R4300i_CoP1_W[64])(void);
+void(__fastcall* R4300i_CoP1_L[64])(void);
 
 void _fastcall R4300i_opcode_SPECIAL (void) {
 	((void (_fastcall *)()) R4300i_Special[ Opcode.REG.funct ])();
@@ -735,7 +735,9 @@ void ExecuteInterpreterOpCode (void) {
 void StartInterpreterCPU (void ) { 
 	//DWORD Value, Value2, Addr = 0x80031000;
 
-	CoInitialize(NULL);
+	if (CoInitialize(NULL) != S_OK)
+		return;
+
 	NextInstruction = NORMAL;
 
 	if (GfxRomOpen != NULL) { GfxRomOpen(); }

@@ -28,4 +28,4 @@ void ExecuteInterpreterOpCode ( void );
 void StartInterpreterCPU      ( void );
 void TestInterpreterJump      ( DWORD PC, DWORD TargetPC, int Reg1, int Reg2 );
 
-extern void * R4300i_Opcode[64];
+extern void (__fastcall *R4300i_Opcode[64])(void);
