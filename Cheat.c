@@ -67,7 +67,8 @@ int codeformat;
 int numcodes;
 int numoptions;
 
-int ReadCodeString (HWND hDlg);
+void VerifyInput(HWND hDlg);
+void ReadCodeString (HWND hDlg);
 void ReadOptionsString(HWND hDlg);
 /********************************************************************************************/
 
@@ -566,7 +567,8 @@ void ChangeRomCheats(HWND hwndOwner) {
 	strncpy(CurrentFileName,CurrentRBFileName,sizeof(CurrentFileName));	
 	OrigFileSize = RomFileSize;
 	LoadRomHeader();
-	if (!RememberCheats) { DisableAllCheats(); }
+	if (!RememberCheats)
+		DisableAllCheats();
 	
 	ManageCheats(hwndOwner);
 
@@ -757,9 +759,12 @@ LRESULT CALLBACK CheatsCodeQuantProc (HWND hDlg, UINT uMsg, WPARAM wParam, LPARA
 					if (SelStop == 0) { SelStop = strlen(szTmp2); SelStart = SelStop; }
 					SendDlgItemMessage(hDlg,IDC_VALUE,EM_SETSEL,(WPARAM)SelStart,(LPARAM)SelStop);
 				} else {
-					WORD NewSelStart, NewSelStop;
+					WORD NewSelStart = 0, NewSelStop = 0;
 					SendDlgItemMessage(hDlg,IDC_VALUE,EM_GETSEL,(WPARAM)&NewSelStart,(LPARAM)&NewSelStop);
-					if (NewSelStart != 0) { SelStart = NewSelStart; SelStop = NewSelStop; }
+					if (NewSelStart != 0) {
+						SelStart = NewSelStart;
+						SelStop = NewSelStop;
+					}
 				}
 			}
 			break;
@@ -821,15 +826,66 @@ BOOL CheatUsesCodeExtensions (char * CheatString) {
 	return CodeExtension;
 }
 
-int ReadCodeString (HWND hDlg) {
-	int numlines, linecount, len;
-	char str[128];
-	int i;
+void VerifyInput(HWND hDlg) {
+	int len, i;
+	char* str, * corrected, * found;
+	BOOLEAN modified = FALSE;
+
+	len = Edit_GetTextLength(GetDlgItem(hDlg, IDC_CHEAT_CODES));
+
+	str = (char*)malloc(sizeof(char) * (len + 1));	// Include NULL character
+	if (str == NULL)
+		return;
+
+	// Absolute worst case, the input is nothing but \n missing \r in front so double the size
+	corrected = (char*)malloc(sizeof(char) * (len + 1) * 2);
+	if (corrected == NULL) {
+		free(str);
+		return;
+	}
+	memset(corrected, 0, (len + 1) * 2);
+
+	Edit_GetText(GetDlgItem(hDlg, IDC_CHEAT_CODES), str, len + 1);
+
+	found = strtok(str, "\n");
+	while (found != NULL) {
+		strcat(corrected, found);
+
+		found = strtok(NULL, "\n");
+
+		// Correct the end of the line if need be
+		if (found != NULL) {
+			i = strlen(corrected);
+			if (corrected[i - 1] != '\r') {
+				strcat(corrected, "\r\n");
+				modified = TRUE;
+			}
+			else
+				strcat(corrected, "\n");
+		}
+	}
+
+	// To prevent the caret from being moved unnecessarily (while editing for example) only update if the text needed carriage returns
+	if (modified)
+		Edit_SetText(GetDlgItem(hDlg, IDC_CHEAT_CODES), corrected);
+
+
+	// Cleanup of allocated memory
+	if (str != NULL)
+		free(str);
+
+	if (corrected != NULL)
+		free(corrected);
+}
+
+void ReadCodeString (HWND hDlg) {
+	int numlines, linecount, len, i;
+	char str[128], tempformat[128];	// tempformat is essentially a copy of str with hex values replaced with X and ' ' and ? kept
 	char* formatnormal =   "XXXXXXXX XXXX";
 	char* formatoptionlb = "XXXXXXXX XX??";
 	char* formatoptionw =  "XXXXXXXX ????";
-	char tempformat[128];
 
+	// Global Variables set
 	validcodes = TRUE;
 	nooptions = TRUE;
 	codeformat = -1;
@@ -841,7 +897,7 @@ int ReadCodeString (HWND hDlg) {
 	if (numlines == 0)
 		validcodes = FALSE;
 	
-	for (linecount=0; linecount<numlines; linecount++) //read line after line (bypassing limitation GetDlgItemText)
+	for (linecount = 0; linecount < numlines; linecount++) //read line after line (bypassing limitation GetDlgItemText)
 	{
 		memset(tempformat, 0, sizeof(tempformat));
 
@@ -852,14 +908,14 @@ int ReadCodeString (HWND hDlg) {
 		if (len <= 0)
 			continue;
 
-		// Sloppy code was written here, the [128] (129th character, out of 128...) was being assigned 0
+		// Sloppy code was written here, on very long entries the [128] (129th character, out of maximum 128...) was being assigned 0
 		// This is just a quick fix, this needs to be redone to use allocated memory to ignore pesky issues like this
-		if (len > 128)
+		if (len >= 128)
 			len = 127;
 
 		str[len] = 0;
 
-		for (i=0; i<128; i++) {
+		for (i = 0; i < 128; i++) {
 			if (((str[i] >= 'A') && (str[i] <= 'F')) || ((str[i] >= '0') && (str[i] <= '9'))) { // Is hexvalue
 				tempformat[i] = 'X';
 			}
@@ -869,11 +925,13 @@ int ReadCodeString (HWND hDlg) {
 			if (str[i] == 0)
 				break;
 		}
+
 		if (strcmp(tempformat, formatnormal) == 0) {
 			strcat(codestring, ",");
 			strcat(codestring, str);
 			numcodes++;
-			if (codeformat < 0) codeformat = 0;
+			if (codeformat < 0)
+				codeformat = 0;
 		}
 		else if (strcmp(tempformat, formatoptionlb) == 0) {
 			if (codeformat != 2) {
@@ -884,7 +942,8 @@ int ReadCodeString (HWND hDlg) {
 				nooptions = FALSE;
 				validoptions = FALSE;
 			}
-			else validcodes = FALSE;
+			else
+				validcodes = FALSE;
 		}
 		else if (strcmp(tempformat, formatoptionw) == 0) {
 			if (codeformat != 1) {
@@ -902,8 +961,6 @@ int ReadCodeString (HWND hDlg) {
 			validcodes = FALSE;
 		}
 	}
-
-	return 0;
 }
 
 void ReadOptionsString(HWND hDlg)
@@ -1033,6 +1090,7 @@ LRESULT CALLBACK CheatAddProc (HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
 			break;
 		case IDC_CHEAT_CODES:
 			if (HIWORD(wParam) == EN_CHANGE) {
+				VerifyInput(hDlg);
 				ReadCodeString(hDlg);
 				if ((codeformat > 0) && !IsWindowEnabled(GetDlgItem(hDlg, IDC_LABEL_OPTIONS)) ) {
 					EnableWindow(GetDlgItem(hDlg, IDC_LABEL_OPTIONS), TRUE);
@@ -1054,6 +1112,13 @@ LRESULT CALLBACK CheatAddProc (HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
 				else {
 					EnableWindow(GetDlgItem(hDlg, IDC_ADD), FALSE);
 				}
+			}
+
+			// Depending on the source the data copied into the edit box may not be "Windows" friendly terminated
+			// So, scan for \n and make sure it has a \r before it... \n will be \r\n as per Windows standards
+			// Note that Windows XP did not have this same behavior, \n was accepted just fine
+			if (HIWORD(wParam) == EN_UPDATE) {
+
 			}
 			break;
 
@@ -1251,6 +1316,7 @@ LRESULT CALLBACK CheatEditProc (HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lPar
 			break;
 		case IDC_CHEAT_CODES:
 			if (HIWORD(wParam) == EN_CHANGE) {
+				VerifyInput(hDlg);
 				ReadCodeString(hDlg);
 				if ((codeformat > 0) && !IsWindowEnabled(GetDlgItem(hDlg, IDC_LABEL_OPTIONS)) ) {
 					EnableWindow(GetDlgItem(hDlg, IDC_LABEL_OPTIONS), TRUE);
@@ -1321,11 +1387,11 @@ LRESULT CALLBACK CheatEditProc (HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lPar
 				if (validoptions) {
 					cheat = (char *)malloc(strlen(optionsstring) + 1);
 					strcpy(cheat, optionsstring+1);
-
+					/* See above for reason of commenting out
 					if (strlen(String) > 0 && String[0] != '$')
 						// Update the group if one was used
 						strncpy(NewCheatName, String, sizeof(NewCheatName));
-					else
+					else*/
 						// Otherwise just add a new options group
 						sprintf(NewCheatName,CHT_ENT_O,CheatNo);
 					Settings_Write(CDB_NAME, Identifier, NewCheatName, cheat);
@@ -1722,7 +1788,6 @@ void CloseCheatWindow (void) {
 ********************************************************************************************/
 BOOL LoadCheatExt(char *CheatName, char *CheatExt, int MaxCheatExtLen) {
 	char String[350], Identifier[100], *Val = NULL;
-	BOOL found;
 	
 	RomID(Identifier, RomHeader);
 	sprintf(String, "%s.exten", CheatName);
