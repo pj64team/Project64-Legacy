@@ -867,26 +867,30 @@ void SaveRomList (void) {
 	CloseHandle(hFile);
 }
 
+// This is sort of a hack, it's designed to force SHBrowseForFolder to scroll down to the selected folder
+// It seems to not have worked until BFFM_SELCHANGED was included
 int CALLBACK SelectRomDirCallBack(HWND hwnd,DWORD uMsg,DWORD lp, DWORD lpData) {
   switch(uMsg)
   {
     case BFFM_INITIALIZED:
       // WParam is TRUE since you are passing a path.
       // It would be FALSE if you were passing a pidl.
-      if (lpData)
-      {
-        SendMessage((HWND)hwnd,BFFM_SETSELECTION,TRUE,lpData);
-      }
-      break;
+		if (lpData)
+			SendMessage((HWND)hwnd, BFFM_SETSELECTION, TRUE, lpData);
+		break;
+
+	case BFFM_SELCHANGED:
+		SendMessage((HWND)hwnd, BFFM_SETSELECTION, TRUE, lpData);
+		break;
   } 
   return 0;
 }
 
 void SelectRomDir (void) {
-	char Buffer[MAX_PATH], Directory[255];
+	char Buffer[MAX_PATH], Directory[260];
 	char RomDirectory[MAX_PATH+1];
 	LPITEMIDLIST pidl;
-	BROWSEINFO bi = {0};	// To Do! Check on XP to see if this still crashes
+	BROWSEINFO bi = {0};	// Initialization to 0 prevents XP crash
 
 	Settings_GetDirectory(RomDir, RomDirectory, sizeof(RomDirectory));
 
@@ -897,6 +901,7 @@ void SelectRomDir (void) {
 	bi.ulFlags = BIF_RETURNFSANCESTORS | BIF_RETURNONLYFSDIRS | BIF_NEWDIALOGSTYLE;
 	bi.lpfn = (BFFCALLBACK)SelectRomDirCallBack;
 	bi.lParam = (DWORD)RomDirectory;
+
 	if ((pidl = SHBrowseForFolder(&bi)) != NULL) {
 		if (SHGetPathFromIDList(pidl, Directory)) {
 			int len = strlen(Directory);

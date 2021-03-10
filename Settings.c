@@ -286,10 +286,12 @@ int CALLBACK SelectDirCallBack(HWND hwnd,DWORD uMsg,DWORD lp, DWORD lpData) {
       // WParam is TRUE since you are passing a path.
       // It would be FALSE if you were passing a pidl.
       if (lpData)
-      {
-        SendMessage((HWND)hwnd,BFFM_SETSELECTION,TRUE,lpData);
-      }
+		  SendMessage((HWND)hwnd, BFFM_SETSELECTION, TRUE, lpData);
       break;
+
+	case BFFM_SELCHANGED:
+		SendMessage((HWND)hwnd, BFFM_SETSELECTION, TRUE, lpData);
+		break;
   } 
   return 0;
 }
