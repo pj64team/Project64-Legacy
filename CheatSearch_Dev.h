@@ -13,6 +13,7 @@ typedef struct CODEENTRY {
 	BYTE Enabled;
 	BYTE Activator;
 	NUMBITS numBits;
+	SEARCHBY searchBy;
 } CODEENTRY;
 
 // Used to write the results to file

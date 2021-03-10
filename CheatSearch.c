@@ -161,6 +161,7 @@ BOOL CALLBACK CheatSearchDlgProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lPa
 					tmp.Value = hit.value;
 					tmp.numBits = search.searchNumBits;
 					tmp.Enabled = FALSE;
+					tmp.searchBy = search.searchBy;
 					strcpy(tmp.Name, "");
 					strcpy(tmp.Note, "");
 					strcpy(tmp.Text, "");
@@ -183,6 +184,7 @@ BOOL CALLBACK CheatSearchDlgProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lPa
 					tmp.Value = 0;
 					tmp.numBits = search.searchNumBits;
 					tmp.Enabled = FALSE;
+					tmp.searchBy = search.searchBy;
 					strcpy(tmp.Name, "");
 					strcpy(tmp.Note, "");
 					strcpy(tmp.Text, "");
@@ -939,7 +941,7 @@ LRESULT CALLBACK CheatSearch_Add_Proc (HWND hDlg, UINT uMsg, WPARAM wParam, LPAR
 		ADDR_HEX.value = cheat_dev.modify->Address;
 		ADDR_HEX.max_value = RdramSize - 1;
 
-		if (search.searchBy == searchbyvalue) {
+		if (cheat_dev.modify->searchBy == searchbyvalue) {
 			Edit_Enable(GetDlgItem(hDlg, IDT_CSE_VALUE_HEX), TRUE);
 			Edit_Enable(GetDlgItem(hDlg, IDT_CSE_VALUE_DEC), TRUE);
 			Edit_Enable(GetDlgItem(hDlg, IDT_CSE_TEXT), FALSE);
@@ -997,7 +999,7 @@ LRESULT CALLBACK CheatSearch_Add_Proc (HWND hDlg, UINT uMsg, WPARAM wParam, LPAR
 		}
 
 		// Searching by text
-		else if (search.searchBy == searchbytext) {
+		else if (cheat_dev.modify->searchBy == searchbytext) {
 			Edit_Enable(GetDlgItem(hDlg, IDT_CSE_VALUE_HEX), FALSE);
 			Edit_Enable(GetDlgItem(hDlg, IDT_CSE_VALUE_DEC), FALSE);
 			Edit_Enable(GetDlgItem(hDlg, IDT_CSE_TEXT), TRUE);
@@ -1050,7 +1052,7 @@ LRESULT CALLBACK CheatSearch_Add_Proc (HWND hDlg, UINT uMsg, WPARAM wParam, LPAR
 				cheat_dev.modify->Address = (DWORD)strtoul(s, NULL, 16);
 
 				// Search by VALUE
-				if (search.searchBy == searchbyvalue) {
+				if (cheat_dev.modify->searchBy == searchbyvalue) {
 					// Value
 					Edit_GetText(GetDlgItem(hDlg, IDT_CSE_VALUE_DEC), s, STRING_MAX);
 					cheat_dev.modify->Value = (WORD)strtoul(s, NULL, 10);
@@ -1064,7 +1066,7 @@ LRESULT CALLBACK CheatSearch_Add_Proc (HWND hDlg, UINT uMsg, WPARAM wParam, LPAR
 				}
 
 				// Search by TEXT
-				else if (search.searchBy == searchbytext) {
+				else if (cheat_dev.modify->searchBy == searchbytext) {
 					Edit_GetText(GetDlgItem(hDlg, IDT_CSE_TEXT), cheat_dev.modify->Text, STRING_MAX);
 				}
 
@@ -1091,7 +1093,12 @@ LRESULT CALLBACK CheatSearch_Add_Proc (HWND hDlg, UINT uMsg, WPARAM wParam, LPAR
 				Edit_GetText((HWND)lParam, strValue, 6);	// Maximum of FFFF plus 2 characters, 1 overflow and 1 newline
 				VALUE_HEX.value = AsciiToHex(strValue);
 				if (VALUE_HEX.value != VALUE_DEC.value) {
-					if (search.searchNumBits == bits8) {VALUE_HEX.max_value = 0xFF;} else {VALUE_HEX.max_value = 0xFFFF;}
+
+					if (cheat_dev.modify->numBits == bits8) 
+						VALUE_HEX.max_value = 0xFF;
+					else 
+						VALUE_HEX.max_value = 0xFFFF;
+
 					if (VALUE_HEX.value > VALUE_HEX.max_value) {
 						VALUE_HEX.value = VALUE_HEX.max_value;
 						sprintf_s(strValue, 5, "%X", VALUE_HEX.max_value);
@@ -1114,7 +1121,12 @@ LRESULT CALLBACK CheatSearch_Add_Proc (HWND hDlg, UINT uMsg, WPARAM wParam, LPAR
 				VALUE_DEC.value = atoi(strValue);
 
 				if (VALUE_DEC.value != VALUE_HEX.value) {
-					if (search.searchNumBits == bits8) {VALUE_DEC.max_value = 0xFF;} else {VALUE_DEC.max_value = 0xFFFF;}
+
+					if (cheat_dev.modify->numBits == bits8) {
+						VALUE_DEC.max_value = 0xFF;}
+					else
+						VALUE_DEC.max_value = 0xFFFF;
+
 					if (VALUE_DEC.value > VALUE_DEC.max_value) {
 						sprintf_s(strValue, 6, "%u", VALUE_DEC.max_value);
 						Edit_SetText((HWND)lParam, strValue);
