@@ -279,21 +279,39 @@ BOOL CALLBACK DefaultOptionsProc (HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lP
 	return TRUE;
 }
 
-int CALLBACK SelectDirCallBack(HWND hwnd,DWORD uMsg,DWORD lp, DWORD lpData) {
-  switch(uMsg)
-  {
-    case BFFM_INITIALIZED:
-      // WParam is TRUE since you are passing a path.
-      // It would be FALSE if you were passing a pidl.
-      if (lpData)
-		  SendMessage((HWND)hwnd, BFFM_SETSELECTION, TRUE, lpData);
-      break;
+// Windows 7 and higher has a bugged SHBrowseForFolder when using BIF_NEWDIALOGSTYLE
+// This is a work-around, it enumerates through the child windows until the tree view of the dialog is hit and then
+//	ensures the selected element is visible.
+// This behavior is not apparent in XP or Vista and it is suggested to use the new FolderBrowserDialog
+static BOOL CALLBACK EnumCallback(HWND hWndChild, LPARAM lParam)
+{
+	char szClass[MAX_PATH];
+	HTREEITEM hNode;
+	if (GetClassName(hWndChild, szClass, sizeof(szClass)) && strcmp(szClass, "SysTreeView32") == 0) {
+		hNode = TreeView_GetSelection(hWndChild);    // found the tree view window
+		TreeView_EnsureVisible(hWndChild, hNode);   // ensure its selection is visible
+		return(FALSE);   // done; stop enumerating
+	}
+	return(TRUE);       // continue enumerating
+}
+
+// This is sort of a hack, it's designed to force SHBrowseForFolder to scroll down to the selected folder
+// It seems to not have worked until BFFM_SELCHANGED was included
+int CALLBACK SelectDirCallBack(HWND hwnd, DWORD uMsg, DWORD lp, DWORD lpData) {
+	switch (uMsg)
+	{
+	case BFFM_INITIALIZED:
+		// lpData is TRUE since you are passing a path.
+		// It would be FALSE if you were passing a pidl.
+		if (lpData)
+			SendMessage((HWND)hwnd, BFFM_SETSELECTION, TRUE, lpData);
+		break;
 
 	case BFFM_SELCHANGED:
-		SendMessage((HWND)hwnd, BFFM_SETSELECTION, TRUE, lpData);
+		EnumChildWindows(hwnd, EnumCallback, NULL);
 		break;
-  } 
-  return 0;
+	}
+	return 0;
 }
 
 BOOL CALLBACK DirSelectProc (HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam) {
