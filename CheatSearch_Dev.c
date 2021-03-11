@@ -38,8 +38,8 @@ void CS_RemoveCodeAt(CS_DEV *dev, DWORD location) {
 	DWORD count;
 	
 	// Cannot swap if there are less than 2 items
-	if (location >= 2) {
-		for (count = location; count < dev->num_stored - 2; count++) {
+	if ((dev->num_stored - location) >= 2) {
+		for (count = location; count < dev->num_stored - 1; count++) {
 			CS_SwapDev(dev, count, count + 1);
 		}
 	}
