@@ -25,10 +25,10 @@ using namespace std;
 class FileStuff {
 public:
 	FileStuff();
-	FileStuff(char *filename);
+	FileStuff(char *_filename);
 	~FileStuff();
 
-	void SetFileName(char *filename);
+	void SetFileName(char *_filename);
 	string GetFileName();
 
 	// An entry will be sorted as such
@@ -75,4 +75,4 @@ private:
 	void FindEntry(string search);
 };
 #endif
-#endif
+#endif}

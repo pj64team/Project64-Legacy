@@ -21,7 +21,7 @@ HANDLE gLVMutex = CreateMutex(NULL, FALSE, NULL);
 // WRITE_ENTRY is a normal write to file, this will remove any duplicate settings
 // DELETE_SETTING is a removal of the setting and (optional) value pair
 // DELETE_ENTRY will remove the entire entry from it's [id] and including all setting/value pairs underneath it
-enum supported_writes {WRITE_ENTRY, DELETE_SETTING, DELETE_ENTRY};
+enum class supported_writes {WRITE_ENTRY, DELETE_SETTING, DELETE_ENTRY};
 
 // The function prototypes (Used to communicate with the class)
 FileStuff *GetTheFile(char *filename);
@@ -41,11 +41,11 @@ FileStuff::FileStuff() {
 	this->last_offset = 0;
 }
 
-FileStuff::FileStuff(char *filename) {
+FileStuff::FileStuff(char *_filename) {
 	this->buffer.clear();
 	this->entry_start = this->buffer.end();
 	this->entry_end = this->buffer.end();
-	this->SetFileName(filename);
+	this->SetFileName(_filename);
 	this->last_offset = 0;
 }
 
@@ -54,16 +54,16 @@ FileStuff::~FileStuff() {
 	this->buffer.shrink_to_fit();
 }
 
-void FileStuff::SetFileName(char *filename) {
+void FileStuff::SetFileName(char *_filename) {
 	char path[MAX_PATH];
 	string::size_type pos;
 
-	this->filename = filename;
+	this->filename = _filename;
 	
 	// Create the full path to be used to open the file
 	GetModuleFileName(NULL, path, MAX_PATH);
     pos = string(path).find_last_of("\\/");
-	this->fullpath = string(path).substr(0, pos) + "\\Config\\" + filename;
+	this->fullpath = string(path).substr(0, pos) + "\\Config\\" + _filename;
 }
 
 string FileStuff::GetFileName() {
@@ -103,7 +103,7 @@ void FileStuff::SortEntry(string search) {
 	// This sort does not currently handle spaces or comments, if they are in new lines they will be moved to the top
 	std::sort(this->entry_start + 1, this->entry_end, 
 		[](const string& a, const string& b) {
-		for (int count = 0; count < a.length() && count < b.length(); count++) {
+		for (unsigned int count = 0; count < a.length() && count < b.length(); count++) {
 
 			// The same character, keep on checking
 			if (a[count] == b[count])
@@ -162,7 +162,10 @@ string FileStuff::GetValue(char *id, char *setting, char *def, bool fetch) {
 	else {
 		found = find_if(this->entry_start, this->entry_end, [setting, len](string p) { return p.compare(0, len, setting) == 0; });
 		if (found != this->entry_end)
-			value = string(setting);
+			if (setting == NULL)
+				value = "";
+			else
+				value = string(setting);
 	}
 
 	if (value.empty())
@@ -225,14 +228,16 @@ void FileStuff::AddSettingValue(char *id, char *setting, char *value) {
 	else {
 		char* delstr = (char*)malloc(sizeof(char) * strlen(setting) + 2);
 
-		strcpy(delstr, setting);
+		if (delstr != NULL) {
+			strcpy(delstr, setting);
 
-		if (value != NULL && strlen(value) != 0)
-			strcat(delstr, "=");
+			if (value != NULL && strlen(value) != 0)
+				strcat(delstr, "=");
 
-		this->RemoveSetting(id, delstr);
+			this->RemoveSetting(id, delstr);
 
-		free(delstr);
+			free(delstr);
+		}
 	}
 	
 	// Insert the new setting/value pair into the file buffer
@@ -408,7 +413,7 @@ string ReadHandler(char *filename, char *id, char *setting, char *def, BOOLEAN g
 
 	// Some kind of error!?
 	if (wait_result != WAIT_OBJECT_0)
-		return NULL;
+		return def;
 
 	// Fetch the handle to the file
 	file = GetTheFile(filename);
@@ -448,19 +453,19 @@ void WriteHandler(char *filename, char *id, char *setting, char *value, supporte
 
 	// Make any modifications to the file buffer before writing to file
 	switch (write_type) {
-	case WRITE_ENTRY:
+	case supported_writes::WRITE_ENTRY:
 		file->AddSettingValue(id, setting, value);
 		break;
-	case DELETE_ENTRY:
+	case supported_writes::DELETE_ENTRY:
 		file->RemoveEntry(id);
 		break;
-	case DELETE_SETTING:
+	case supported_writes::DELETE_SETTING:
 		file->RemoveSetting(id, setting);
 		break;
 	}
 
 	// If the entry was not deleted then sort the section
-	if (write_type != DELETE_ENTRY)
+	if (write_type != supported_writes::DELETE_ENTRY)
 		file->SortEntry(built_id);
 
 	file->WriteToFile();
@@ -498,13 +503,13 @@ int FetchIntValue(char *filename, char *id, char *setting, int def) {
 }
 
 void Write(char *filename, char *id, char *setting, char *value) {
-	WriteHandler(filename, id, setting, value, WRITE_ENTRY);
+	WriteHandler(filename, id, setting, value, supported_writes::WRITE_ENTRY);
 }
 
 void Delete(char *filename, char *id, char *setting) {
-	WriteHandler(filename, id, setting, NULL, DELETE_SETTING);
+	WriteHandler(filename, id, setting, NULL, supported_writes::DELETE_SETTING);
 }
 
 void DeleteAll(char *filename, char *id) {
-	WriteHandler(filename, id, NULL, NULL, DELETE_ENTRY);
+	WriteHandler(filename, id, NULL, NULL, supported_writes::DELETE_ENTRY);
 }
