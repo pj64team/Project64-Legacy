@@ -72,7 +72,7 @@ string FileStuff::GetFileName() {
 
 void FileStuff::SortEntry(string search) {
 	vector<string>::iterator found;
-	const static string s[] = {"Good Name=", "Internal Name="};
+	const static string s[] = {"Good Name=", "Internal Name=", "Name="};
 
 	// regex to exactly match a game ID [00000000-00000000-C:00]
 	// Comments are optional at the end but they can be read as well
@@ -84,7 +84,7 @@ void FileStuff::SortEntry(string search) {
 	if (this->entry_start == this->buffer.end() || this->entry_end == this->buffer.begin())
 		return;
 	
-	// Only prioritize Good Name and Internal name if this is a game entry
+	// Only prioritize Good Name, Internal Name, and Name if this is a game entry
 	// The format is [xxxxxxxx-xxxxxxxx-C:xx] where x are hex characters
 	if (regex_match(*this->entry_start, expr)) {
 		for (size_t i = 0; i < sizeof(s) / sizeof(s[0]); i++) {
@@ -101,7 +101,25 @@ void FileStuff::SortEntry(string search) {
 		--this->entry_end;
 
 	// This sort does not currently handle spaces or comments, if they are in new lines they will be moved to the top
-	std::sort(this->entry_start + 1, this->entry_end);
+	std::sort(this->entry_start + 1, this->entry_end, 
+		[](const string& a, const string& b) {
+		for (int count = 0; count < a.length() && count < b.length(); count++) {
+
+			// The same character, keep on checking
+			if (a[count] == b[count])
+				continue;
+
+			// Check the next character (if available)
+			// This is to prevent Cheat10= coming before Cheat2=
+			if (count + 1 < a.length() && count + 1 < b.length())
+				if ((a[count + 1] == '=' || a[count + 1] == '_') && b[count + 1] >= '0' && b[count + 1] <= '9')
+					return true;
+
+			return a[count] < b[count];
+		}
+		// These two are the same so it doesn't matter, just say a is less than
+		return true;
+	});
 }
 
 string FileStuff::GetValue(char *id, char *setting, char *def, bool fetch) {
