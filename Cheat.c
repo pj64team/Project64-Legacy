@@ -1170,7 +1170,7 @@ LRESULT CALLBACK CheatAddProc (HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
 				Settings_Write(CDB_NAME, Identifier, NewCheatName, cheat);
 				if (cheat) { free(cheat); cheat = NULL; }
 
-				if (validoptions) {
+				if (!nooptions && validoptions) {
 					cheat = (char *)malloc(strlen(optionsstring) + 1);
 					strcpy(cheat, optionsstring + 1);
 					sprintf(NewCheatName, CHT_ENT_O, CheatNo);
