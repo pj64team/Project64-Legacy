@@ -804,16 +804,16 @@ void Search(HWND hDlg) {
 		else {
 			struct CS_RESULTS tmp;
 			WORD buffer_value;
-			DWORD bufferAddress, count;
+			DWORD bufferAddress, count2;
 			CS_HITS *hit;
 			BOOL matched;
 
 			CS_InitResults(&tmp);
 
 			// Subsequent searches of Hex/Dec values
-			for (count = 0; count < results.num_stored; count++) {
+			for (count2 = 0; count2 < results.num_stored; count2++) {
 
-				hit = CS_GetHit(&results, count);
+				hit = CS_GetHit(&results, count2);
 
 				if (search.searchNumBits == bits8) {
 					bufferAddress = hit->address + dwstartAddress - 1;
@@ -1359,7 +1359,7 @@ char *ResultsToString(void) {
 
 // Called on CPU.c's RefreshScreen () on each VI
 void Apply_CheatSearchDev () {
-	int counter;
+	DWORD counter;
 	GAMESHARK_CODE code;
 	CODEENTRY *curr;
 
@@ -1374,7 +1374,7 @@ void Apply_CheatSearchDev () {
 				ApplyCheatEntry(&code, TRUE);
 			}
 			else {
-				int count;
+				DWORD count;
 
 				for (count = 0; count < strlen(curr->Text); count++) {
 					code.Command = 0x80 << 24 ^ curr->Address + count;
@@ -1558,6 +1558,7 @@ DWORD WINAPI LiveUpdate(LPVOID arg) {
 	HANDLE hList;
 
 	hList = (HANDLE)arg;
+	wait_result = 0;
 
 	/*
 	int count = 0;
