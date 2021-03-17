@@ -6,8 +6,10 @@
 #define PAL_Region 2
 
 void CountryCodeToString (char string[], BYTE Country, int length);
+void CountryCodeToShortString(char string[], BYTE Country, int length);
 int GetRomRegion (BYTE *Country);
 void GetRomName (char *Name, BYTE *RomData);
+void GetRomFullName(char* FullName, BYTE* RomData, char* FullPath);
 void GetRomCartID (char *ID, BYTE *RomData);
 void GetRomManufacturer (BYTE *Manufacturer, BYTE *RomData);
 void GetRomCountry (BYTE *Country, BYTE *RomData);

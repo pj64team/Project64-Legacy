@@ -360,7 +360,7 @@ void FillRomExtensionInfo(ROM_INFO *pRomInfo) {
 
 	//Rom Settings
 	if (RomBrowserFields[RB_GoodName].Pos >= 0) {
-		Settings_Read(RDS_NAME, Identifier, "Good Name", GS(RB_NOT_GOOD_FILE), &read);
+		Settings_Read(RDS_NAME, Identifier, "Name", GS(RB_NOT_GOOD_FILE), &read);
 		strncpy(pRomInfo->GoodName, read, sizeof(pRomInfo->GoodName));
 		if (read) free(read);
 	}
@@ -917,6 +917,8 @@ void SelectRomDir(void) {
 	bi.lpfn = (BFFCALLBACK)SelectRomDirCallBack;
 	bi.lParam = (DWORD)RomDirectory;
 
+	CoInitialize(NULL);
+
 	if ((pidl = SHBrowseForFolder(&bi)) != NULL) {
 		if (SHGetPathFromIDList(pidl, Directory)) {
 			int len = strlen(Directory);
@@ -929,6 +931,8 @@ void SelectRomDir(void) {
 			RefreshRomBrowser();
 		}
 	}
+
+	CoUninitialize();
 }
 
 void SetRomBrowserMaximized (BOOL Maximized) {

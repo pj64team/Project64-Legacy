@@ -42,74 +42,74 @@
 
 DWORD RomFileSize;
 int RomRamSize, RomSaveUsing, RomCPUType, RomSelfMod,
-	RomUseTlb, RomUseLinking, RomCF, RomUseLargeBuffer, RomUseCache,
-	RomDelaySI, RomSPHack, RomAudioSignal, RomDelayRDP, RomDelayRSP, RomEmulateAI, RomModVIS;
-char CurrentFileName[MAX_PATH+1] = {""}, RomName[MAX_PATH+1] = {""};
-char LastRoms[10][MAX_PATH+1], LastDirs[10][MAX_PATH+1];
+RomUseTlb, RomUseLinking, RomCF, RomUseLargeBuffer, RomUseCache,
+RomDelaySI, RomSPHack, RomAudioSignal, RomDelayRDP, RomDelayRSP, RomEmulateAI, RomModVIS;
+char CurrentFileName[MAX_PATH + 1] = { "" }, RomName[MAX_PATH + 1] = { "" }, RomFullName[MAX_PATH + 1] = { "" };
+char LastRoms[10][MAX_PATH + 1], LastDirs[10][MAX_PATH + 1];
 BYTE RomHeader[0x1000];
 DWORD PrevCRC1, PrevCRC2;
 
-BOOL IsValidRomImage ( BYTE Test[4] );
+BOOL IsValidRomImage(BYTE Test[4]);
 
-void AddRecentDir(HWND hWnd, char * addition) {
+void AddRecentDir(HWND hWnd, char* addition) {
 	int count;
 
 	if (addition != NULL && RomDirsToRemember > 0) {
-		char Dir[MAX_PATH+1];
+		char Dir[MAX_PATH + 1];
 		BOOL bFound = FALSE;
 
-		strcpy(Dir,addition);
-		for (count = 0; count < RomDirsToRemember && !bFound; count ++ ) {
+		strcpy(Dir, addition);
+		for (count = 0; count < RomDirsToRemember && !bFound; count++) {
 			if (strcmp(addition, LastDirs[count]) == 0) {
 				if (count != 0) {
-					memmove(&LastDirs[1],&LastDirs[0],sizeof(LastDirs[0]) * count);
+					memmove(&LastDirs[1], &LastDirs[0], sizeof(LastDirs[0]) * count);
 				}
 				bFound = TRUE;
 			}
 		}
 
-		if (bFound == FALSE) { memmove(&LastDirs[1],&LastDirs[0],sizeof(LastDirs[0]) * (RomDirsToRemember - 1)); }
-		strcpy(LastDirs[0],Dir);
+		if (bFound == FALSE) { memmove(&LastDirs[1], &LastDirs[0], sizeof(LastDirs[0]) * (RomDirsToRemember - 1)); }
+		strcpy(LastDirs[0], Dir);
 		SaveRecentDirs();
 	}
 	SetupMenu(hMainWindow);
 }
 
-void AddRecentFile(HWND hWnd, char * addition) {
+void AddRecentFile(HWND hWnd, char* addition) {
 	int count;
 
 	if (addition != NULL && RomsToRemember > 0) {
-		char Rom[MAX_PATH+1];
+		char Rom[MAX_PATH + 1];
 		BOOL bFound = FALSE;
 
-		strcpy(Rom,addition);
-		for (count = 0; count < RomsToRemember && !bFound; count ++ ) {
+		strcpy(Rom, addition);
+		for (count = 0; count < RomsToRemember && !bFound; count++) {
 			if (strcmp(addition, LastRoms[count]) == 0) {
 				if (count != 0) {
-					memmove(&LastRoms[1],&LastRoms[0],sizeof(LastRoms[0]) * count);
+					memmove(&LastRoms[1], &LastRoms[0], sizeof(LastRoms[0]) * count);
 				}
 				bFound = TRUE;
 			}
 		}
 
-		if (bFound == FALSE) { memmove(&LastRoms[1],&LastRoms[0],sizeof(LastRoms[0]) * (RomsToRemember - 1)); }
-		strcpy(LastRoms[0],Rom);
+		if (bFound == FALSE) { memmove(&LastRoms[1], &LastRoms[0], sizeof(LastRoms[0]) * (RomsToRemember - 1)); }
+		strcpy(LastRoms[0], Rom);
 		SaveRecentFiles();
 	}
 	SetupMenu(hMainWindow);
 }
 
-void ByteSwapRom (BYTE * Rom, DWORD RomLen) {
+void ByteSwapRom(BYTE* Rom, DWORD RomLen) {
 	DWORD count;
 
 	// Comment this out for now, otherwise it causes a hang with the new LoadRomRecalcCRCs
 	//SendMessage( hStatusWnd, SB_SETTEXT, 0, (LPARAM)GS(MSG_BYTESWAP) );
-	switch (*((DWORD *)&Rom[0])) {
+	switch (*((DWORD*)&Rom[0])) {
 	case 0x12408037:
-		for( count = 0 ; count < RomLen; count += 4 ) {
-			Rom[count] ^= Rom[count+2];
+		for (count = 0; count < RomLen; count += 4) {
+			Rom[count] ^= Rom[count + 2];
 			Rom[count + 2] ^= Rom[count];
-			Rom[count] ^= Rom[count+2];
+			Rom[count] ^= Rom[count + 2];
 			Rom[count + 1] ^= Rom[count + 3];
 			Rom[count + 3] ^= Rom[count + 1];
 			Rom[count + 1] ^= Rom[count + 3];
@@ -117,10 +117,10 @@ void ByteSwapRom (BYTE * Rom, DWORD RomLen) {
 		break;
 	case 0x40072780:
 	case 0x40123780:
-		for( count = 0 ; count < RomLen; count += 4 ) {
-			Rom[count] ^= Rom[count+3];
+		for (count = 0; count < RomLen; count += 4) {
+			Rom[count] ^= Rom[count + 3];
 			Rom[count + 3] ^= Rom[count];
-			Rom[count] ^= Rom[count+3];
+			Rom[count] ^= Rom[count + 3];
 			Rom[count + 1] ^= Rom[count + 2];
 			Rom[count + 2] ^= Rom[count + 1];
 			Rom[count + 1] ^= Rom[count + 2];
@@ -132,50 +132,50 @@ void ByteSwapRom (BYTE * Rom, DWORD RomLen) {
 	}
 }
 
-int ChooseN64RomToOpen ( void ) {
+int ChooseN64RomToOpen(void) {
 	OPENFILENAME openfilename;
-	char FileName[256],Directory[255];
+	char FileName[256], Directory[255];
 
 	memset(&FileName, 0, sizeof(FileName));
 	memset(&openfilename, 0, sizeof(openfilename));
 
 	Settings_GetDirectory(RomDir, Directory, sizeof(Directory));
 
-	openfilename.lStructSize  = sizeof( openfilename );
-	openfilename.hwndOwner    = hMainWindow;
-	openfilename.lpstrFilter  = "N64 ROMs (*.zip, *.?64, *.rom, *.usa, *.jap, *.pal, *.bin)\0*.?64;*.zip;*.bin;*.rom;*.usa;*.jap;*.pal\0All files (*.*)\0*.*\0";
-	openfilename.lpstrFile    = FileName;
-	openfilename.lpstrInitialDir    = Directory;
-	openfilename.nMaxFile     = MAX_PATH;
-	openfilename.Flags        = OFN_FILEMUSTEXIST | OFN_HIDEREADONLY;
+	openfilename.lStructSize = sizeof(openfilename);
+	openfilename.hwndOwner = hMainWindow;
+	openfilename.lpstrFilter = "N64 ROMs (*.zip, *.?64, *.rom, *.usa, *.jap, *.pal, *.bin)\0*.?64;*.zip;*.bin;*.rom;*.usa;*.jap;*.pal\0All files (*.*)\0*.*\0";
+	openfilename.lpstrFile = FileName;
+	openfilename.lpstrInitialDir = Directory;
+	openfilename.nMaxFile = MAX_PATH;
+	openfilename.Flags = OFN_FILEMUSTEXIST | OFN_HIDEREADONLY;
 
-	if (GetOpenFileName (&openfilename)) {
-		strcpy(CurrentFileName,FileName);
+	if (GetOpenFileName(&openfilename)) {
+		strcpy(CurrentFileName, FileName);
 		return TRUE;
 	}
 
 	return FALSE;
 }
 
-void EnableOpenMenuItems (void) {
+void EnableOpenMenuItems(void) {
 	SetupMenu(hMainWindow);
 }
 
-BOOL IsValidRomImage ( BYTE Test[4] ) {
-	if ( *((DWORD *)&Test[0]) == 0x40123780 ) { return TRUE; }
-	if ( *((DWORD *)&Test[0]) == 0x12408037 ) { return TRUE; }
-	if ( *((DWORD *)&Test[0]) == 0x80371240 ) { return TRUE; }
-	if ( *((DWORD *)&Test[0]) == 0x40072780 ) { return TRUE; }
+BOOL IsValidRomImage(BYTE Test[4]) {
+	if (*((DWORD*)&Test[0]) == 0x40123780) { return TRUE; }
+	if (*((DWORD*)&Test[0]) == 0x12408037) { return TRUE; }
+	if (*((DWORD*)&Test[0]) == 0x80371240) { return TRUE; }
+	if (*((DWORD*)&Test[0]) == 0x40072780) { return TRUE; }
 	return FALSE;
 }
 
-BOOL LoadDataFromRomFile(char * FileName,BYTE * Data,int DataLen, int * RomSize) {
+BOOL LoadDataFromRomFile(char* FileName, BYTE* Data, int DataLen, int* RomSize) {
 	BYTE Test[4];
 	int count;
 
-	if (_strnicmp(&FileName[strlen(FileName)-4], ".ZIP",4) == 0 ){
+	if (_strnicmp(&FileName[strlen(FileName) - 4], ".ZIP", 4) == 0) {
 		int len, port = 0, FoundRom;
-	    unz_file_info info;
+		unz_file_info info;
 		char zname[132];
 		unzFile file;
 		file = unzOpen(FileName);
@@ -183,22 +183,22 @@ BOOL LoadDataFromRomFile(char * FileName,BYTE * Data,int DataLen, int * RomSize)
 
 		port = unzGoToFirstFile(file);
 		FoundRom = FALSE;
-		while(port == UNZ_OK && FoundRom == FALSE) {
-			unzGetCurrentFileInfo(file, &info, zname, 128, NULL,0, NULL,0);
-		    if (unzLocateFile(file, zname, 1) != UNZ_OK ) {
+		while (port == UNZ_OK && FoundRom == FALSE) {
+			unzGetCurrentFileInfo(file, &info, zname, 128, NULL, 0, NULL, 0);
+			if (unzLocateFile(file, zname, 1) != UNZ_OK) {
 				unzClose(file);
 				return FALSE;
 			}
-			if( unzOpenCurrentFile(file) != UNZ_OK ) {
+			if (unzOpenCurrentFile(file) != UNZ_OK) {
 				unzClose(file);
 				return FALSE;
 			}
-			unzReadCurrentFile(file,Test,4);
+			unzReadCurrentFile(file, Test, 4);
 			if (IsValidRomImage(Test)) {
 				FoundRom = TRUE;
 				RomFileSize = info.uncompressed_size;
-				memcpy(Data,Test,4);
-				len = unzReadCurrentFile(file,&Data[4],DataLen - 4) + 4;
+				memcpy(Data, Test, 4);
+				len = unzReadCurrentFile(file, &Data[4], DataLen - 4) + 4;
 
 				if ((int)DataLen != len) {
 					unzCloseCurrentFile(file);
@@ -206,7 +206,7 @@ BOOL LoadDataFromRomFile(char * FileName,BYTE * Data,int DataLen, int * RomSize)
 					return FALSE;
 				}
 				*RomSize = info.uncompressed_size;
-				if(unzCloseCurrentFile(file) == UNZ_CRCERROR) {
+				if (unzCloseCurrentFile(file) == UNZ_CRCERROR) {
 					unzClose(file);
 					return FALSE;
 				}
@@ -222,32 +222,33 @@ BOOL LoadDataFromRomFile(char * FileName,BYTE * Data,int DataLen, int * RomSize)
 			unzClose(file);
 			return FALSE;
 		}
-	} else {
+	}
+	else {
 		DWORD dwRead;
 		HANDLE hFile;
 
-		hFile = CreateFile(FileName,GENERIC_READ,FILE_SHARE_READ,NULL,
-			OPEN_EXISTING,FILE_ATTRIBUTE_NORMAL | FILE_FLAG_RANDOM_ACCESS,
+		hFile = CreateFile(FileName, GENERIC_READ, FILE_SHARE_READ, NULL,
+			OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL | FILE_FLAG_RANDOM_ACCESS,
 			NULL);
 
-		if (hFile == INVALID_HANDLE_VALUE) {  return FALSE; }
+		if (hFile == INVALID_HANDLE_VALUE) { return FALSE; }
 
-		SetFilePointer(hFile,0,0,FILE_BEGIN);
-		ReadFile(hFile,Test,4,&dwRead,NULL);
-		if (!IsValidRomImage(Test)) { CloseHandle( hFile ); return FALSE; }
-		RomFileSize = GetFileSize(hFile,NULL);
-		SetFilePointer(hFile,0,0,FILE_BEGIN);
-		if (!ReadFile(hFile,Data,DataLen,&dwRead,NULL)) { CloseHandle( hFile ); return FALSE; }
-		*RomSize = GetFileSize(hFile,NULL);
-		CloseHandle( hFile );
+		SetFilePointer(hFile, 0, 0, FILE_BEGIN);
+		ReadFile(hFile, Test, 4, &dwRead, NULL);
+		if (!IsValidRomImage(Test)) { CloseHandle(hFile); return FALSE; }
+		RomFileSize = GetFileSize(hFile, NULL);
+		SetFilePointer(hFile, 0, 0, FILE_BEGIN);
+		if (!ReadFile(hFile, Data, DataLen, &dwRead, NULL)) { CloseHandle(hFile); return FALSE; }
+		*RomSize = GetFileSize(hFile, NULL);
+		CloseHandle(hFile);
 	}
 
-	switch (*((DWORD *)&Data[0])) {
+	switch (*((DWORD*)&Data[0])) {
 	case 0x12408037:
-		for( count = 0 ; count < DataLen; count += 4 ) {
-			Data[count] ^= Data[count+2];
+		for (count = 0; count < DataLen; count += 4) {
+			Data[count] ^= Data[count + 2];
 			Data[count + 2] ^= Data[count];
-			Data[count] ^= Data[count+2];
+			Data[count] ^= Data[count + 2];
 			Data[count + 1] ^= Data[count + 3];
 			Data[count + 3] ^= Data[count + 1];
 			Data[count + 1] ^= Data[count + 3];
@@ -255,10 +256,10 @@ BOOL LoadDataFromRomFile(char * FileName,BYTE * Data,int DataLen, int * RomSize)
 		break;
 	case 0x40072780:
 	case 0x40123780:
-		for( count = 0 ; count < DataLen; count += 4 ) {
-			Data[count] ^= Data[count+3];
+		for (count = 0; count < DataLen; count += 4) {
+			Data[count] ^= Data[count + 3];
 			Data[count + 3] ^= Data[count];
-			Data[count] ^= Data[count+3];
+			Data[count] ^= Data[count + 3];
 			Data[count + 1] ^= Data[count + 2];
 			Data[count + 2] ^= Data[count + 1];
 			Data[count + 1] ^= Data[count + 2];
@@ -269,17 +270,17 @@ BOOL LoadDataFromRomFile(char * FileName,BYTE * Data,int DataLen, int * RomSize)
 
 	// Made a bad assumption here, this function is also called by the rom browser on scan so doing a full check of the crc causes a massive slowdown
 	// Only do a check when the CRCs both read 0
-	if (*(DWORD *)&Data[0x10] == 0 && *(DWORD *)&Data[0x14] == 0) {
-		PrevCRC1 = *(DWORD *)&Data[0x10];
-		PrevCRC2 = *(DWORD *)&Data[0x14];	
+	if (*(DWORD*)&Data[0x10] == 0 && *(DWORD*)&Data[0x14] == 0) {
+		PrevCRC1 = *(DWORD*)&Data[0x10];
+		PrevCRC2 = *(DWORD*)&Data[0x14];
 		LoadRomRecalcCRCs(FileName, &Data[0x10], &Data[0x14]);
 	}
 
 	return TRUE;
 }
 
-void CreateRecentDirList (HMENU hMenu) {
-	char String[256], *read;
+void CreateRecentDirList(HMENU hMenu) {
+	char String[256], * read;
 	int count;
 	HMENU hSubMenu;
 	MENUITEMINFO menuinfo;
@@ -291,43 +292,44 @@ void CreateRecentDirList (HMENU hMenu) {
 		if (read) free(read);
 	}
 
-	hSubMenu = GetSubMenu(hMenu,0);
+	hSubMenu = GetSubMenu(hMenu, 0);
 	DeleteMenu(hSubMenu, MenuLocOfUsedDirs, MF_BYPOSITION);
 	if (BasicMode || !RomListVisible()) { return; }
 	memset(&menuinfo, 0, sizeof(MENUITEMINFO));
 	menuinfo.cbSize = sizeof(MENUITEMINFO);
-	menuinfo.fMask = MIIM_TYPE|MIIM_ID;
+	menuinfo.fMask = MIIM_TYPE | MIIM_ID;
 	menuinfo.fType = MFT_STRING;
 	menuinfo.fState = MFS_ENABLED;
 	menuinfo.dwTypeData = String;
 	menuinfo.cch = 256;
 
-	sprintf(String,"None");
+	sprintf(String, "None");
 	InsertMenuItem(hSubMenu, MenuLocOfUsedDirs, TRUE, &menuinfo);
 	hSubMenu = CreateMenu();
 
 	if (strlen(LastDirs[0]) == 0) {
 		menuinfo.wID = ID_FILE_RECENT_DIR;
-		sprintf(String,"None");
+		sprintf(String, "None");
 		InsertMenuItem(hSubMenu, 0, TRUE, &menuinfo);
 	}
-	menuinfo.fMask = MIIM_TYPE|MIIM_ID;
-	for (count = 0; count < RomDirsToRemember; count ++ ) {
+	menuinfo.fMask = MIIM_TYPE | MIIM_ID;
+	for (count = 0; count < RomDirsToRemember; count++) {
 		if (strlen(LastDirs[count]) == 0) { break; }
 		menuinfo.wID = ID_FILE_RECENT_DIR + count;
-		sprintf(String,"&%d %s",(count + 1) % 10,LastDirs[count]);
+		sprintf(String, "&%d %s", (count + 1) % 10, LastDirs[count]);
 		InsertMenuItem(hSubMenu, count, TRUE, &menuinfo);
 	}
-	ModifyMenu(GetSubMenu(hMenu,0),MenuLocOfUsedDirs,MF_POPUP|MF_BYPOSITION,(DWORD)hSubMenu,GS(MENU_RECENT_DIR));
+	ModifyMenu(GetSubMenu(hMenu, 0), MenuLocOfUsedDirs, MF_POPUP | MF_BYPOSITION, (DWORD)hSubMenu, GS(MENU_RECENT_DIR));
 	if (strlen(LastDirs[0]) == 0 || CPURunning || RomDirsToRemember == 0) {
-		EnableMenuItem(GetSubMenu(hMenu,0),MenuLocOfUsedDirs,MF_BYPOSITION|MFS_DISABLED);
-	} else {
-		EnableMenuItem(GetSubMenu(hMenu,0),MenuLocOfUsedDirs,MF_BYPOSITION|MFS_ENABLED);
+		EnableMenuItem(GetSubMenu(hMenu, 0), MenuLocOfUsedDirs, MF_BYPOSITION | MFS_DISABLED);
+	}
+	else {
+		EnableMenuItem(GetSubMenu(hMenu, 0), MenuLocOfUsedDirs, MF_BYPOSITION | MFS_ENABLED);
 	}
 }
 
 void CreateRecentFileList(HMENU hMenu) {
-	char String[256], *read;
+	char String[256], * read;
 	int count;
 
 	for (count = 0; count < RomsToRemember; count++) {
@@ -341,7 +343,7 @@ void CreateRecentFileList(HMENU hMenu) {
 		HMENU hSubMenu;
 		MENUITEMINFO menuinfo;
 
-		hSubMenu = GetSubMenu(hMenu,0);
+		hSubMenu = GetSubMenu(hMenu, 0);
 		DeleteMenu(hSubMenu, MenuLocOfUsedFiles, MF_BYPOSITION);
 		if (strlen(LastRoms[0]) == 0) {
 			DeleteMenu(hSubMenu, MenuLocOfUsedFiles, MF_BYPOSITION);
@@ -349,74 +351,76 @@ void CreateRecentFileList(HMENU hMenu) {
 
 		memset(&menuinfo, 0, sizeof(MENUITEMINFO));
 		menuinfo.cbSize = sizeof(MENUITEMINFO);
-		menuinfo.fMask = MIIM_TYPE|MIIM_ID;
+		menuinfo.fMask = MIIM_TYPE | MIIM_ID;
 		menuinfo.fType = MFT_STRING;
 		menuinfo.fState = MFS_ENABLED;
 		menuinfo.dwTypeData = String;
 		menuinfo.cch = 256;
-		for (count = 0; count < RomsToRemember; count ++ ) {
+		for (count = 0; count < RomsToRemember; count++) {
 			if (strlen(LastRoms[count]) == 0) { break; }
 			menuinfo.wID = ID_FILE_RECENT_FILE + count;
-			sprintf(String,"&%d %s",(count + 1) % 10,LastRoms[count]);
+			sprintf(String, "&%d %s", (count + 1) % 10, LastRoms[count]);
 			InsertMenuItem(hSubMenu, MenuLocOfUsedFiles + count, TRUE, &menuinfo);
 		}
-	} else {
+	}
+	else {
 		HMENU hSubMenu;
 		MENUITEMINFO menuinfo;
 
 		memset(&menuinfo, 0, sizeof(MENUITEMINFO));
 		menuinfo.cbSize = sizeof(MENUITEMINFO);
-		menuinfo.fMask = MIIM_TYPE|MIIM_ID;
+		menuinfo.fMask = MIIM_TYPE | MIIM_ID;
 		menuinfo.fType = MFT_STRING;
 		menuinfo.fState = MFS_ENABLED;
 		menuinfo.dwTypeData = String;
 		menuinfo.cch = 256;
 
-		hSubMenu = GetSubMenu(hMenu,0);
+		hSubMenu = GetSubMenu(hMenu, 0);
 		DeleteMenu(hSubMenu, MenuLocOfUsedFiles, MF_BYPOSITION);
-		sprintf(String,"None");
+		sprintf(String, "None");
 		InsertMenuItem(hSubMenu, MenuLocOfUsedFiles, TRUE, &menuinfo);
 		hSubMenu = CreateMenu();
 
 		if (strlen(LastRoms[0]) == 0) {
 			menuinfo.wID = ID_FILE_RECENT_DIR;
-			sprintf(String,"None");
+			sprintf(String, "None");
 			InsertMenuItem(hSubMenu, 0, TRUE, &menuinfo);
 		}
-		menuinfo.fMask = MIIM_TYPE|MIIM_ID;
-		for (count = 0; count < RomsToRemember; count ++ ) {
+		menuinfo.fMask = MIIM_TYPE | MIIM_ID;
+		for (count = 0; count < RomsToRemember; count++) {
 			if (strlen(LastRoms[count]) == 0) { break; }
 			menuinfo.wID = ID_FILE_RECENT_FILE + count;
-			sprintf(String,"&%d %s",(count + 1) % 10,LastRoms[count]);
+			sprintf(String, "&%d %s", (count + 1) % 10, LastRoms[count]);
 			InsertMenuItem(hSubMenu, count, TRUE, &menuinfo);
 		}
-		ModifyMenu(GetSubMenu(hMenu,0),MenuLocOfUsedFiles,MF_POPUP|MF_BYPOSITION,(DWORD)hSubMenu,GS(MENU_RECENT_ROM));
+		ModifyMenu(GetSubMenu(hMenu, 0), MenuLocOfUsedFiles, MF_POPUP | MF_BYPOSITION, (DWORD)hSubMenu, GS(MENU_RECENT_ROM));
 		if (strlen(LastRoms[0]) == 0) {
-			EnableMenuItem(GetSubMenu(hMenu,0),MenuLocOfUsedFiles,MF_BYPOSITION|MFS_DISABLED);
-		} else {
-			EnableMenuItem(GetSubMenu(hMenu,0),MenuLocOfUsedFiles,MF_BYPOSITION|MFS_ENABLED);
+			EnableMenuItem(GetSubMenu(hMenu, 0), MenuLocOfUsedFiles, MF_BYPOSITION | MFS_DISABLED);
+		}
+		else {
+			EnableMenuItem(GetSubMenu(hMenu, 0), MenuLocOfUsedFiles, MF_BYPOSITION | MFS_ENABLED);
 		}
 	}
 }
 
-void LoadRecentRom (DWORD Index) {
+void LoadRecentRom(DWORD Index) {
 	DWORD ThreadID;
 
 	Index -= ID_FILE_RECENT_FILE;
-	if (Index < 0 || Index > (DWORD)RomsToRemember) { return; }
-	strcpy(CurrentFileName,LastRoms[Index]);
+	if (Index < 0 || Index >(DWORD)RomsToRemember) { return; }
+	strcpy(CurrentFileName, LastRoms[Index]);
 	CreateThread(NULL, 0, OpenChosenFile, NULL, 0, &ThreadID);
 }
 
 
-BOOL LoadRomHeader ( void ) {
-	char drive[_MAX_DRIVE] ,FileName[_MAX_DIR],dir[_MAX_DIR], ext[_MAX_EXT];
+BOOL LoadRomHeader(void) {
+	char drive[_MAX_DRIVE], FileName[_MAX_DIR], dir[_MAX_DIR], ext[_MAX_EXT];
 	BYTE Test[4];
 	int count;
 
-	if (_strnicmp(&CurrentFileName[strlen(CurrentFileName)-4], ".ZIP",4) == 0 ){
+	if (_strnicmp(&CurrentFileName[strlen(CurrentFileName) - 4], ".ZIP", 4) == 0) {
 		int port = 0, FoundRom;
-	    unz_file_info info;
+		unz_file_info info;
 		char zname[132];
 		unzFile file;
 		file = unzOpen(CurrentFileName);
@@ -427,30 +431,30 @@ BOOL LoadRomHeader ( void ) {
 
 		port = unzGoToFirstFile(file);
 		FoundRom = FALSE;
-		while(port == UNZ_OK && FoundRom == FALSE) {
-			unzGetCurrentFileInfo(file, &info, zname, 128, NULL,0, NULL,0);
-		    if (unzLocateFile(file, zname, 1) != UNZ_OK ) {
+		while (port == UNZ_OK && FoundRom == FALSE) {
+			unzGetCurrentFileInfo(file, &info, zname, 128, NULL, 0, NULL, 0);
+			if (unzLocateFile(file, zname, 1) != UNZ_OK) {
 				unzClose(file);
 				DisplayError(GS(MSG_FAIL_ZIP));
 				return FALSE;
 			}
-			if( unzOpenCurrentFile(file) != UNZ_OK ) {
+			if (unzOpenCurrentFile(file) != UNZ_OK) {
 				unzClose(file);
 				DisplayError(GS(MSG_FAIL_OPEN_ZIP));
 				return FALSE;
 			}
-			unzReadCurrentFile(file,Test,4);
+			unzReadCurrentFile(file, Test, 4);
 			if (IsValidRomImage(Test)) {
 				RomFileSize = info.uncompressed_size;
 				FoundRom = TRUE;
-				memcpy(RomHeader,Test,4);
-				unzReadCurrentFile(file,&RomHeader[4],sizeof(RomHeader) - 4);
-				if(unzCloseCurrentFile(file) == UNZ_CRCERROR) {
+				memcpy(RomHeader, Test, 4);
+				unzReadCurrentFile(file, &RomHeader[4], sizeof(RomHeader) - 4);
+				if (unzCloseCurrentFile(file) == UNZ_CRCERROR) {
 					unzClose(file);
 					DisplayError(GS(MSG_FAIL_OPEN_ZIP));
 					return FALSE;
 				}
-				_splitpath( CurrentFileName, drive, dir, FileName, ext );
+				_splitpath(CurrentFileName, drive, dir, FileName, ext);
 				unzClose(file);
 			}
 			if (FoundRom == FALSE) {
@@ -459,67 +463,52 @@ BOOL LoadRomHeader ( void ) {
 			}
 		}
 		if (FoundRom == FALSE) {
-		    DisplayError(GS(MSG_FAIL_OPEN_ZIP));
-		    unzClose(file);
+			DisplayError(GS(MSG_FAIL_OPEN_ZIP));
+			unzClose(file);
 			return FALSE;
 		}
-	} else {
+	}
+	else {
 		DWORD dwRead;
 		HANDLE hFile;
 
-		hFile = CreateFile(CurrentFileName,GENERIC_READ,FILE_SHARE_READ,NULL,
-			OPEN_EXISTING,FILE_ATTRIBUTE_NORMAL | FILE_FLAG_RANDOM_ACCESS,
+		hFile = CreateFile(CurrentFileName, GENERIC_READ, FILE_SHARE_READ, NULL,
+			OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL | FILE_FLAG_RANDOM_ACCESS,
 			NULL);
 
 		if (hFile == INVALID_HANDLE_VALUE) {
-			SendMessage( hStatusWnd, SB_SETTEXT, 0, (LPARAM)"" );
+			SendMessage(hStatusWnd, SB_SETTEXT, 0, (LPARAM)"");
 			DisplayError(GS(MSG_FAIL_OPEN_IMAGE));
 			return FALSE;
 		}
 
-		SetFilePointer(hFile,0,0,FILE_BEGIN);
-		ReadFile(hFile,Test,4,&dwRead,NULL);
+		SetFilePointer(hFile, 0, 0, FILE_BEGIN);
+		ReadFile(hFile, Test, 4, &dwRead, NULL);
 		if (!IsValidRomImage(Test)) {
-			CloseHandle( hFile );
-			SendMessage( hStatusWnd, SB_SETTEXT, 0, (LPARAM)"" );
+			CloseHandle(hFile);
+			SendMessage(hStatusWnd, SB_SETTEXT, 0, (LPARAM)"");
 			DisplayError(GS(MSG_FAIL_IMAGE));
 			return FALSE;
 		}
-		SetFilePointer(hFile,0,0,FILE_BEGIN);
-		ReadFile(hFile,RomHeader,sizeof(RomHeader),&dwRead,NULL);
-		RomFileSize = GetFileSize(hFile,NULL);	// Read rom size for uncompressed roms
-		CloseHandle( hFile );
+		SetFilePointer(hFile, 0, 0, FILE_BEGIN);
+		ReadFile(hFile, RomHeader, sizeof(RomHeader), &dwRead, NULL);
+		RomFileSize = GetFileSize(hFile, NULL);	// Read rom size for uncompressed roms
+		CloseHandle(hFile);
 	}
-	ByteSwapRom(RomHeader,sizeof(RomHeader));
-	memcpy(&RomName[0],&RomHeader[0x20],20);
-	for( count = 0 ; count < 20; count += 4 ) {
-		RomName[count] ^= RomName[count+3];
-		RomName[count + 3] ^= RomName[count];
-		RomName[count] ^= RomName[count+3];
-		RomName[count + 1] ^= RomName[count + 2];
-		RomName[count + 2] ^= RomName[count + 1];
-		RomName[count + 1] ^= RomName[count + 2];
-	}
-	for( count = 19 ; count >= 0; count -- ) {
-		if (RomName[count] == ' ') {
-			RomName[count] = '\0';
-		} else if (RomName[count] == '\0') {
-		} else {
-			count = -1;
-		}
-	}
-	RomName[20] = '\0';
+	ByteSwapRom(RomHeader, sizeof(RomHeader));
+	GetRomName(RomName, RomHeader);
 	if (strlen(RomName) == 0)
 		_splitpath(CurrentFileName, NULL, NULL, RomName, NULL);
-	
+	GetRomFullName(RomFullName, RomHeader, CurrentFileName);
+
 	// Bad CRCs, we are forced to recalculate (This means loading the entire rom into memory)
-	if (*(DWORD *)&RomHeader[0x10] == 0 || *(DWORD *)&RomHeader[0x14] == 0)
+	if (*(DWORD*)&RomHeader[0x10] == 0 || *(DWORD*)&RomHeader[0x14] == 0)
 		LoadRomRecalcCRCs(CurrentFileName, &RomHeader[0x10], &RomHeader[0x14]);
 
 	return TRUE;
 }
 
-void LoadRomOptions ( void ) {
+void LoadRomOptions(void) {
 	DWORD NewRamSize;
 
 	ReadRomOptions();
@@ -528,42 +517,44 @@ void LoadRomOptions ( void ) {
 	if ((int)RomRamSize < 0) { NewRamSize = SystemRdramSize; }
 
 	if (RomUseLargeBuffer) {
-		if (VirtualAlloc(RecompCode, LargeCompileBufferSize, MEM_COMMIT, PAGE_EXECUTE_READWRITE)==NULL) {
+		if (VirtualAlloc(RecompCode, LargeCompileBufferSize, MEM_COMMIT, PAGE_EXECUTE_READWRITE) == NULL) {
 			DisplayError(GS(MSG_MEM_ALLOC_ERROR));
 			ExitThread(0);
 		}
-	} else {
-		VirtualFree(RecompCode, LargeCompileBufferSize,MEM_DECOMMIT);
-		if (VirtualAlloc(RecompCode, NormalCompileBufferSize, MEM_COMMIT, PAGE_EXECUTE_READWRITE)==NULL) {
+	}
+	else {
+		VirtualFree(RecompCode, LargeCompileBufferSize, MEM_DECOMMIT);
+		if (VirtualAlloc(RecompCode, NormalCompileBufferSize, MEM_COMMIT, PAGE_EXECUTE_READWRITE) == NULL) {
 			DisplayError(GS(MSG_MEM_ALLOC_ERROR));
 			ExitThread(0);
 		}
 	}
 	if (NewRamSize != RdramSize) {
 		if (RdramSize == 0x400000) {
-			if (VirtualAlloc(N64MEM + 0x400000, 0x400000, MEM_COMMIT, PAGE_READWRITE)==NULL) {
+			if (VirtualAlloc(N64MEM + 0x400000, 0x400000, MEM_COMMIT, PAGE_READWRITE) == NULL) {
 				DisplayError(GS(MSG_MEM_ALLOC_ERROR));
 				ExitThread(0);
 			}
-			if (VirtualAlloc((BYTE *)JumpTable + 0x400000, 0x400000, MEM_COMMIT, PAGE_READWRITE)==NULL) {
+			if (VirtualAlloc((BYTE*)JumpTable + 0x400000, 0x400000, MEM_COMMIT, PAGE_READWRITE) == NULL) {
 				DisplayError(GS(MSG_MEM_ALLOC_ERROR));
 				ExitThread(0);
 			}
-			if (VirtualAlloc((BYTE *)DelaySlotTable + (0x400000 >> 0xA), (0x400000 >> 0xA), MEM_COMMIT, PAGE_READWRITE)==NULL) {
+			if (VirtualAlloc((BYTE*)DelaySlotTable + (0x400000 >> 0xA), (0x400000 >> 0xA), MEM_COMMIT, PAGE_READWRITE) == NULL) {
 				DisplayError(GS(MSG_MEM_ALLOC_ERROR));
 				ExitThread(0);
 			}
-		} else {
-			VirtualFree(N64MEM + 0x400000, 0x400000,MEM_DECOMMIT);
-			VirtualFree((BYTE *)JumpTable + 0x400000, 0x400000,MEM_DECOMMIT);
-			VirtualFree((BYTE *)DelaySlotTable + (0x400000 >> 0xA), (0x400000 >> 0xA),MEM_DECOMMIT);
+		}
+		else {
+			VirtualFree(N64MEM + 0x400000, 0x400000, MEM_DECOMMIT);
+			VirtualFree((BYTE*)JumpTable + 0x400000, 0x400000, MEM_DECOMMIT);
+			VirtualFree((BYTE*)DelaySlotTable + (0x400000 >> 0xA), (0x400000 >> 0xA), MEM_DECOMMIT);
 		}
 	}
 	RdramSize = NewRamSize;
 	CPU_Type = SystemCPU_Type;
 	if (RomCPUType != CPU_Default) { CPU_Type = RomCPUType; }
 	CountPerOp = RomCF;
-	if (CountPerOp < 1 || CountPerOp > 6) 
+	if (CountPerOp < 1 || CountPerOp > 6)
 		CountPerOp = Default_CountPerOp;
 
 	SaveUsing = RomSaveUsing;
@@ -578,11 +569,11 @@ void LoadRomOptions ( void ) {
 	SPHack = RomSPHack;
 	UseLinking = SystemABL;
 	DisableRegCaching = !RomUseCache;
-	if (UseIni && RomUseLinking == 0 ) { UseLinking = TRUE; }
-	if (UseIni && RomUseLinking == 1 ) { UseLinking = FALSE; }
+	if (UseIni && RomUseLinking == 0) { UseLinking = TRUE; }
+	if (UseIni && RomUseLinking == 1) { UseLinking = FALSE; }
 	ModVI = RomModVIS;
 
-	switch(GetRomRegion(ROM)) {
+	switch (GetRomRegion(ROM)) {
 	case PAL_Region:
 		EmuAI_SetFrameRate(50);
 		Timer_Initialize((double)50); break;
@@ -593,43 +584,43 @@ void LoadRomOptions ( void ) {
 	}
 }
 
-void RemoveRecentDirList (HWND hWnd) {
+void RemoveRecentDirList(HWND hWnd) {
 	HMENU hMenu;
 	int count;
 
-    hMenu = GetMenu(hWnd);
-	for (count = 0; count < RomDirsToRemember; count ++ ) {
+	hMenu = GetMenu(hWnd);
+	for (count = 0; count < RomDirsToRemember; count++) {
 		DeleteMenu(hMenu, ID_FILE_RECENT_DIR + count, MF_BYCOMMAND);
 	}
-	memset(LastRoms[0],0,sizeof(LastRoms[0]));
+	memset(LastRoms[0], 0, sizeof(LastRoms[0]));
 }
 
-void RemoveRecentList (HWND hWnd) {
+void RemoveRecentList(HWND hWnd) {
 	HMENU hMenu;
 	int count;
 
-    hMenu = GetMenu(hWnd);
-	for (count = 0; count < RomsToRemember; count ++ ) {
+	hMenu = GetMenu(hWnd);
+	for (count = 0; count < RomsToRemember; count++) {
 		DeleteMenu(hMenu, ID_FILE_RECENT_FILE + count, MF_BYCOMMAND);
 	}
-	memset(LastRoms[0],0,sizeof(LastRoms[0]));
+	memset(LastRoms[0], 0, sizeof(LastRoms[0]));
 }
 
-void ReadRomOptions (void) {
-	RomRamSize        = -1;
-	RomSaveUsing      = Auto;
-	RomCF             = -1;
-	RomCPUType        = CPU_Default;
-	RomSelfMod        = ModCode_Default;
-	RomUseTlb         = TRUE;
-	RomDelaySI        = FALSE;
-	RomAudioSignal    = FALSE;
-	RomSPHack         = FALSE;
-	RomUseCache       = TRUE;
+void ReadRomOptions(void) {
+	RomRamSize = -1;
+	RomSaveUsing = Auto;
+	RomCF = -1;
+	RomCPUType = CPU_Default;
+	RomSelfMod = ModCode_Default;
+	RomUseTlb = TRUE;
+	RomDelaySI = FALSE;
+	RomAudioSignal = FALSE;
+	RomSPHack = FALSE;
+	RomUseCache = TRUE;
 	RomUseLargeBuffer = FALSE;
-	RomUseLinking     = -1;
-	RomEmulateAI      = FALSE;
-	RomModVIS         = 1500;
+	RomUseLinking = -1;
+	RomEmulateAI = FALSE;
+	RomModVIS = 1500;
 
 	// To do!
 	// These two were made automatic some time ago
@@ -637,8 +628,8 @@ void ReadRomOptions (void) {
 	RomDelayRDP = FALSE;
 	RomDelayRSP = FALSE;
 
-	if (strlen(RomName) != 0) {
-		char Identifier[100], *String = NULL;
+	if (strlen(RomFullName) != 0) {
+		char Identifier[100], * String = NULL;
 
 		RomID(Identifier, RomHeader);
 
@@ -647,36 +638,36 @@ void ReadRomOptions (void) {
 			RomCF = -1;
 
 		Settings_Read(RDS_NAME, Identifier, "Save Type", "", &String);
-		if (strcmp(String,"4kbit Eeprom") == 0)       { RomSaveUsing = Eeprom_4K; }
-		else if (strcmp(String,"16kbit Eeprom") == 0) { RomSaveUsing = Eeprom_16K; }
-		else if (strcmp(String,"Sram") == 0)          { RomSaveUsing = Sram; }
-		else if (strcmp(String,"FlashRam") == 0)      { RomSaveUsing = FlashRam; }
-		else                                          { RomSaveUsing = Auto; }
+		if (strcmp(String, "4kbit Eeprom") == 0) { RomSaveUsing = Eeprom_4K; }
+		else if (strcmp(String, "16kbit Eeprom") == 0) { RomSaveUsing = Eeprom_16K; }
+		else if (strcmp(String, "Sram") == 0) { RomSaveUsing = Sram; }
+		else if (strcmp(String, "FlashRam") == 0) { RomSaveUsing = FlashRam; }
+		else { RomSaveUsing = Auto; }
 		if (String) free(String);
 
 		if (UseIni) {
 			Settings_Read(RDS_NAME, Identifier, STR_CPUTYPE, "", &String);
-			if (strcmp(String,"Interpreter") == 0)       { RomCPUType = CPU_Interpreter; }
-			else if (strcmp(String,"Recompiler") == 0)   { RomCPUType = CPU_Recompiler; }
-			else if (strcmp(String,"SyncCores") == 0)    { RomCPUType = CPU_SyncCores; }
-			else                                         { RomCPUType = CPU_Default; }
+			if (strcmp(String, "Interpreter") == 0) { RomCPUType = CPU_Interpreter; }
+			else if (strcmp(String, "Recompiler") == 0) { RomCPUType = CPU_Recompiler; }
+			else if (strcmp(String, "SyncCores") == 0) { RomCPUType = CPU_SyncCores; }
+			else { RomCPUType = CPU_Default; }
 			if (String) free(String);
 
 			Settings_Read(RDS_NAME, Identifier, "Self-modifying code Method", "", &String);
-			if (strcmp(String,"None") == 0)                      { RomSelfMod = ModCode_None; }
-			else if (strcmp(String,"Cache") == 0)                { RomSelfMod = ModCode_Cache; }
-			else if (strcmp(String,"Protected Memory") == 0)     { RomSelfMod = ModCode_ProtectedMemory; }
-			else if (strcmp(String,"Check Memory") == 0)         { RomSelfMod = ModCode_CheckMemoryCache; }
-			else if (strcmp(String,"Check Memory & cache") == 0) { RomSelfMod = ModCode_CheckMemoryCache; }
-			else if (strcmp(String,"Check Memory Advance") == 0) { RomSelfMod = ModCode_CheckMemory2; }
-			else if (strcmp(String,"Change Memory") == 0)        { RomSelfMod = ModCode_ChangeMemory; }
-			else                                                 { RomSelfMod = ModCode_Default; }
+			if (strcmp(String, "None") == 0) { RomSelfMod = ModCode_None; }
+			else if (strcmp(String, "Cache") == 0) { RomSelfMod = ModCode_Cache; }
+			else if (strcmp(String, "Protected Memory") == 0) { RomSelfMod = ModCode_ProtectedMemory; }
+			else if (strcmp(String, "Check Memory") == 0) { RomSelfMod = ModCode_CheckMemoryCache; }
+			else if (strcmp(String, "Check Memory & cache") == 0) { RomSelfMod = ModCode_CheckMemoryCache; }
+			else if (strcmp(String, "Check Memory Advance") == 0) { RomSelfMod = ModCode_CheckMemory2; }
+			else if (strcmp(String, "Change Memory") == 0) { RomSelfMod = ModCode_ChangeMemory; }
+			else { RomSelfMod = ModCode_Default; }
 			if (String) free(String);
 		}
-		
+
 		Settings_Read(RDS_NAME, Identifier, "Linking", "", &String);
-		if (strcmp(String,"On") == 0) { RomUseLinking = 0; }
-		if (strcmp(String,"Off") == 0) { RomUseLinking = 1; }
+		if (strcmp(String, "On") == 0) { RomUseLinking = 0; }
+		if (strcmp(String, "Off") == 0) { RomUseLinking = 1; }
 		if (String) free(String);
 
 		if (Settings_HasSetting(RDS_NAME, Identifier, "ExpansionPak"))
@@ -698,19 +689,20 @@ void ReadRomOptions (void) {
 	}
 }
 
-void OpenN64Image ( void ) {
+void OpenN64Image(void) {
 	DWORD ThreadID;
 
-	SendMessage( hStatusWnd, SB_SETTEXT, 0, (LPARAM)GS(MSG_CHOOSE_IMAGE) );
+	SendMessage(hStatusWnd, SB_SETTEXT, 0, (LPARAM)GS(MSG_CHOOSE_IMAGE));
 	if (ChooseN64RomToOpen()) {
 		CreateThread(NULL, 0, OpenChosenFile, NULL, 0, &ThreadID);
-	} else {
+	}
+	else {
 		EnableOpenMenuItems();
 	}
 }
 
-void SetNewFileDirectory (void ) {
-	char Directory[255], CurrentDir[255], drive[_MAX_DRIVE], dir[_MAX_DIR], *String = NULL;
+void SetNewFileDirectory(void) {
+	char Directory[255], CurrentDir[255], drive[_MAX_DRIVE], dir[_MAX_DIR], * String = NULL;
 
 	Settings_Read(APPS_NAME, "Directories", "Use Default Rom", STR_TRUE, &String);
 
@@ -719,19 +711,19 @@ void SetNewFileDirectory (void ) {
 		return;
 	}
 	if (String) free(String);
-	
+
 	_splitpath(CurrentFileName, drive, dir, NULL, NULL);
-	sprintf(Directory,"%s%s", drive, dir);
-	
+	sprintf(Directory, "%s%s", drive, dir);
+
 	Settings_GetDirectory(RomDir, CurrentDir, sizeof(CurrentDir));
 	if (strcmp(CurrentDir, Directory) == 0) { return; }
 	SetRomDirectory(Directory);
 	RefreshRomBrowser();
 }
 
-DWORD WINAPI OpenChosenFile ( LPVOID lpArgs ) {
+DWORD WINAPI OpenChosenFile(LPVOID lpArgs) {
 #define ReadFromRomSection	0x40000000 // Adjusted from 40000 to 400000
-	char drive[_MAX_DRIVE] ,FileName[_MAX_DIR],dir[_MAX_DIR], ext[_MAX_EXT];
+	char drive[_MAX_DRIVE], FileName[_MAX_DIR], dir[_MAX_DIR], ext[_MAX_EXT];
 	char WinTitle[300], MapFile[_MAX_PATH];
 	char Message[100];
 	BYTE Test[4];
@@ -741,31 +733,31 @@ DWORD WINAPI OpenChosenFile ( LPVOID lpArgs ) {
 		DisplayError(GS(MSG_PLUGIN_NOT_INIT));
 		return 0;
 	}
-	EnableMenuItem(hMainMenu,ID_FILE_OPEN_ROM,MFS_DISABLED|MF_BYCOMMAND);
-	for (count = 0; count < (int)RomsToRemember; count ++ ) {
+	EnableMenuItem(hMainMenu, ID_FILE_OPEN_ROM, MFS_DISABLED | MF_BYCOMMAND);
+	for (count = 0; count < (int)RomsToRemember; count++) {
 		if (strlen(LastRoms[count]) == 0) { break; }
-		EnableMenuItem(hMainMenu,ID_FILE_RECENT_FILE + count,MFS_DISABLED|MF_BYCOMMAND);
+		EnableMenuItem(hMainMenu, ID_FILE_RECENT_FILE + count, MFS_DISABLED | MF_BYCOMMAND);
 	}
 	HideRomBrowser();
 	CloseCheatWindow();
 
 	{
 		HMENU hMenu = GetMenu(hMainWindow);
-		for (count = 0; count < 10; count ++) {
-			EnableMenuItem(hMenu,count,MFS_DISABLED|MF_BYPOSITION);
+		for (count = 0; count < 10; count++) {
+			EnableMenuItem(hMenu, count, MFS_DISABLED | MF_BYPOSITION);
 		}
 		DrawMenuBar(hMainWindow);
-	}	
+	}
 	Sleep(100); // Adjusted down to 100ms from 1000ms
 	CloseCpu();
 #if (!defined(EXTERNAL_RELEASE))
 	ResetMappings();
 #endif
 	SetNewFileDirectory();
-	strcpy(MapFile,CurrentFileName);
-	if (_strnicmp(&CurrentFileName[strlen(CurrentFileName)-4], ".ZIP",4) == 0 ){
+	strcpy(MapFile, CurrentFileName);
+	if (_strnicmp(&CurrentFileName[strlen(CurrentFileName) - 4], ".ZIP", 4) == 0) {
 		int len, port = 0, FoundRom;
-	    unz_file_info info;
+		unz_file_info info;
 		char zname[132];
 		unzFile file;
 		file = unzOpen(CurrentFileName);
@@ -778,23 +770,23 @@ DWORD WINAPI OpenChosenFile ( LPVOID lpArgs ) {
 
 		port = unzGoToFirstFile(file);
 		FoundRom = FALSE;
-		while(port == UNZ_OK && FoundRom == FALSE) {
-			unzGetCurrentFileInfo(file, &info, zname, 128, NULL,0, NULL,0);
-		    if (unzLocateFile(file, zname, 1) != UNZ_OK ) {
+		while (port == UNZ_OK && FoundRom == FALSE) {
+			unzGetCurrentFileInfo(file, &info, zname, 128, NULL, 0, NULL, 0);
+			if (unzLocateFile(file, zname, 1) != UNZ_OK) {
 				unzClose(file);
 				DisplayError(GS(MSG_FAIL_ZIP));
 				EnableOpenMenuItems();
 				ShowRomList(hMainWindow);
 				return 0;
 			}
-			if( unzOpenCurrentFile(file) != UNZ_OK ) {
+			if (unzOpenCurrentFile(file) != UNZ_OK) {
 				unzClose(file);
 				DisplayError(GS(MSG_FAIL_OPEN_ZIP));
 				EnableOpenMenuItems();
 				ShowRomList(hMainWindow);
 				return 0;
 			}
-			unzReadCurrentFile(file,Test,4);
+			unzReadCurrentFile(file, Test, 4);
 			if (IsValidRomImage(Test)) {
 				FoundRom = TRUE;
 				RomFileSize = info.uncompressed_size;
@@ -806,13 +798,13 @@ DWORD WINAPI OpenChosenFile ( LPVOID lpArgs ) {
 					ShowRomList(hMainWindow);
 					return 0;
 				}
-				memcpy(ROM,Test,4);
+				memcpy(ROM, Test, 4);
 				//len = unzReadCurrentFile(file,&ROM[4],RomFileSize - 4) + 4;
 				len = 4;
 				for (count = 4; count < (int)RomFileSize; count += ReadFromRomSection) {
-					len += unzReadCurrentFile(file,&ROM[count],ReadFromRomSection);
-					sprintf(Message,"%s: %.2f%c",GS(MSG_LOADED),((float)len/(float)RomFileSize) * 100.0f,'%');
-					SendMessage( hStatusWnd, SB_SETTEXT, 0, (LPARAM)Message );
+					len += unzReadCurrentFile(file, &ROM[count], ReadFromRomSection);
+					sprintf(Message, "%s: %.2f%c", GS(MSG_LOADED), ((float)len / (float)RomFileSize) * 100.0f, '%');
+					SendMessage(hStatusWnd, SB_SETTEXT, 0, (LPARAM)Message);
 					Sleep(10); // Adjusted down to 10ms from 100ms
 				}
 				if ((int)RomFileSize != len) {
@@ -832,15 +824,15 @@ DWORD WINAPI OpenChosenFile ( LPVOID lpArgs ) {
 					ShowRomList(hMainWindow);
 					return 0;
 				}
-				if(unzCloseCurrentFile(file) == UNZ_CRCERROR) {
+				if (unzCloseCurrentFile(file) == UNZ_CRCERROR) {
 					unzClose(file);
 					DisplayError(GS(MSG_FAIL_OPEN_ZIP));
 					EnableOpenMenuItems();
 					ShowRomList(hMainWindow);
 					return 0;
 				}
-				AddRecentFile(hMainWindow,CurrentFileName);
-				_splitpath( CurrentFileName, drive, dir, FileName, ext );
+				AddRecentFile(hMainWindow, CurrentFileName);
+				_splitpath(CurrentFileName, drive, dir, FileName, ext);
 				unzClose(file);
 			}
 			if (FoundRom == FALSE) {
@@ -849,8 +841,8 @@ DWORD WINAPI OpenChosenFile ( LPVOID lpArgs ) {
 			}
 		}
 		if (FoundRom == FALSE) {
-		    DisplayError(GS(MSG_FAIL_OPEN_ZIP));
-		    unzClose(file);
+			DisplayError(GS(MSG_FAIL_OPEN_ZIP));
+			unzClose(file);
 			EnableOpenMenuItems();
 			ShowRomList(hMainWindow);
 			return 0;
@@ -860,88 +852,89 @@ DWORD WINAPI OpenChosenFile ( LPVOID lpArgs ) {
 			OpenZipMapFile(MapFile);
 		}
 #endif
-	} else {
+	}
+	else {
 		DWORD dwRead, dwToRead, TotalRead;
 		HANDLE hFile;
 
-		hFile = CreateFile(CurrentFileName,GENERIC_READ,FILE_SHARE_READ,NULL,
-			OPEN_EXISTING,FILE_ATTRIBUTE_NORMAL | FILE_FLAG_RANDOM_ACCESS,
+		hFile = CreateFile(CurrentFileName, GENERIC_READ, FILE_SHARE_READ, NULL,
+			OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL | FILE_FLAG_RANDOM_ACCESS,
 			NULL);
 
 		if (hFile == INVALID_HANDLE_VALUE) {
-			SendMessage( hStatusWnd, SB_SETTEXT, 0, (LPARAM)"" );
+			SendMessage(hStatusWnd, SB_SETTEXT, 0, (LPARAM)"");
 			DisplayError(GS(MSG_FAIL_OPEN_IMAGE));
 			EnableOpenMenuItems();
 			ShowRomList(hMainWindow);
 			return 0;
 		}
 
-		SetFilePointer(hFile,0,0,FILE_BEGIN);
-		ReadFile(hFile,Test,4,&dwRead,NULL);
+		SetFilePointer(hFile, 0, 0, FILE_BEGIN);
+		ReadFile(hFile, Test, 4, &dwRead, NULL);
 		if (!IsValidRomImage(Test)) {
-			CloseHandle( hFile );
-			SendMessage( hStatusWnd, SB_SETTEXT, 0, (LPARAM)"" );
+			CloseHandle(hFile);
+			SendMessage(hStatusWnd, SB_SETTEXT, 0, (LPARAM)"");
 			DisplayError(GS(MSG_FAIL_IMAGE));
 			EnableOpenMenuItems();
 			ShowRomList(hMainWindow);
 			return 0;
 		}
-		RomFileSize = GetFileSize(hFile,NULL);
+		RomFileSize = GetFileSize(hFile, NULL);
 
 		if (!Allocate_ROM()) {
-			CloseHandle( hFile );
-			SendMessage( hStatusWnd, SB_SETTEXT, 0, (LPARAM)"" );
+			CloseHandle(hFile);
+			SendMessage(hStatusWnd, SB_SETTEXT, 0, (LPARAM)"");
 			DisplayError(GS(MSG_MEM_ALLOC_ERROR));
 			EnableOpenMenuItems();
-				ShowRomList(hMainWindow);
+			ShowRomList(hMainWindow);
 			return 0;
 		}
 
-		SendMessage( hStatusWnd, SB_SETTEXT, 0, (LPARAM)GS(MSG_LOADING) );
-		SetFilePointer(hFile,0,0,FILE_BEGIN);
+		SendMessage(hStatusWnd, SB_SETTEXT, 0, (LPARAM)GS(MSG_LOADING));
+		SetFilePointer(hFile, 0, 0, FILE_BEGIN);
 
 		TotalRead = 0;
 		for (count = 0; count < (int)RomFileSize; count += ReadFromRomSection) {
 			dwToRead = RomFileSize - count;
 			if (dwToRead > ReadFromRomSection) { dwToRead = ReadFromRomSection; }
 
-			if (!ReadFile(hFile,&ROM[count],dwToRead,&dwRead,NULL)) {
-				CloseHandle( hFile );
-				SendMessage( hStatusWnd, SB_SETTEXT, 0, (LPARAM)"" );
+			if (!ReadFile(hFile, &ROM[count], dwToRead, &dwRead, NULL)) {
+				CloseHandle(hFile);
+				SendMessage(hStatusWnd, SB_SETTEXT, 0, (LPARAM)"");
 				DisplayError(GS(MSG_FAIL_OPEN_IMAGE));
 				EnableOpenMenuItems();
 				ShowRomList(hMainWindow);
 				return 0;
 			}
 			TotalRead += dwRead;
-			sprintf(Message,"%s: %.2f%c",GS(MSG_LOADED),((float)TotalRead/(float)RomFileSize) * 100.0f,'%');
-			SendMessage( hStatusWnd, SB_SETTEXT, 0, (LPARAM)Message );
+			sprintf(Message, "%s: %.2f%c", GS(MSG_LOADED), ((float)TotalRead / (float)RomFileSize) * 100.0f, '%');
+			SendMessage(hStatusWnd, SB_SETTEXT, 0, (LPARAM)Message);
 			Sleep(10); // Adjusted down to 10ms from 100ms
 		}
 		dwRead = TotalRead;
 
 		if (RomFileSize != dwRead) {
-			CloseHandle( hFile );
-			SendMessage( hStatusWnd, SB_SETTEXT, 0, (LPARAM)"" );
+			CloseHandle(hFile);
+			SendMessage(hStatusWnd, SB_SETTEXT, 0, (LPARAM)"");
 			DisplayError(GS(MSG_FAIL_OPEN_IMAGE));
 			EnableOpenMenuItems();
 			ShowRomList(hMainWindow);
 			return 0;
 		}
-		CloseHandle( hFile );
-		AddRecentFile(hMainWindow,CurrentFileName);
-		_splitpath( CurrentFileName, drive, dir, FileName, ext );
+		CloseHandle(hFile);
+		AddRecentFile(hMainWindow, CurrentFileName);
+		_splitpath(CurrentFileName, drive, dir, FileName, ext);
 	}
 	ByteSwapRom(ROM, RomFileSize);
-	memcpy(RomHeader,ROM,sizeof(RomHeader));
+	memcpy(RomHeader, ROM, sizeof(RomHeader));
 	RecalculateCRCs(ROM, RomFileSize);
-	
+
 	// Blind copy of the recalculated CRC1 and CRC2, no checks needed really
-	*(DWORD *)&RomHeader[0x10] = *(DWORD *)&ROM[0x10];
-	*(DWORD *)&RomHeader[0x14] = *(DWORD *)&ROM[0x14];
-	
+	*(DWORD*)&RomHeader[0x10] = *(DWORD*)&ROM[0x10];
+	*(DWORD*)&RomHeader[0x14] = *(DWORD*)&ROM[0x14];
+
 	// Bypass hardware checks on ALECK64
-	if (GetCicChipID(ROM) == 10) {		
+	if (GetCicChipID(ROM) == 10) {
 		ROM[0x67c] = 0;
 		ROM[0x67d] = 0;
 		ROM[0x67e] = 0;
@@ -951,52 +944,36 @@ DWORD WINAPI OpenChosenFile ( LPVOID lpArgs ) {
 #ifdef ROM_IN_MAPSPACE
 	{
 		DWORD OldProtect;
-		VirtualProtect(ROM,RomFileSize,PAGE_READONLY, &OldProtect);
+		VirtualProtect(ROM, RomFileSize, PAGE_READONLY, &OldProtect);
 	}
 #endif
-	SendMessage( hStatusWnd, SB_SETTEXT, 0, (LPARAM)"" );
+	SendMessage(hStatusWnd, SB_SETTEXT, 0, (LPARAM)"");
 #if (!defined(EXTERNAL_RELEASE))
 	if (AutoLoadMapFile) {
-		char *p;
+		char* p;
 
-		p = strrchr(MapFile,'.');
+		p = strrchr(MapFile, '.');
 		if (p != NULL) {
 			*p = '\0';
 		}
-		strcat(MapFile,".cod");
+		strcat(MapFile, ".cod");
 		if (OpenMapFile(MapFile)) {
-			p = strrchr(MapFile,'.');
+			p = strrchr(MapFile, '.');
 			if (p != NULL) {
 				*p = '\0';
 			}
-			strcat(MapFile,".map");
+			strcat(MapFile, ".map");
 			OpenMapFile(MapFile);
 		}
 	}
 #endif
 
-	memcpy(&RomName[0],(void *)(ROM + 0x20),20);
-	for( count = 0 ; count < 20; count += 4 ) {
-		RomName[count] ^= RomName[count+3];
-		RomName[count + 3] ^= RomName[count];
-		RomName[count] ^= RomName[count+3];
-		RomName[count + 1] ^= RomName[count + 2];
-		RomName[count + 2] ^= RomName[count + 1];
-		RomName[count + 1] ^= RomName[count + 2];
-	}
-	for( count = 19 ; count >= 0; count -- ) {
-		if (RomName[count] == ' ') {
-			RomName[count] = '\0';
-		} else if (RomName[count] == '\0') {
-		} else {
-			count = -1;
-		}
-	}
-	RomName[20] = '\0';
-	if (strlen(RomName) == 0) { strcpy(RomName,FileName); }
-	sprintf( WinTitle, "%s - %s", RomName, AppName);
+	GetRomName(RomName, ROM);
+	if (strlen(RomName) == 0)
+		strcpy(RomName, FileName);
+	sprintf(WinTitle, "%s - %s", RomName, AppName);
 
-	for( count = 0 ; count < (int)strlen(RomName); count ++ ) {
+	for (count = 0; count < (int)strlen(RomName); count++) {
 		switch (RomName[count]) {
 		case '/':
 		case '\\':
@@ -1007,19 +984,21 @@ DWORD WINAPI OpenChosenFile ( LPVOID lpArgs ) {
 			break;
 		}
 	}
-	SetWindowText(hMainWindow,WinTitle);
+	SetWindowText(hMainWindow, WinTitle);
+
+	GetRomFullName(RomFullName, ROM, FileName);
 
 	if (!RememberCheats) { DisableAllCheats(); }
 	EnableOpenMenuItems();
 	//if (RomBrowser) { SetupPlugins(hMainWindow); }
-	SetCurrentSaveState(hMainWindow,ID_CURRENTSAVE_DEFAULT);
-	sprintf(WinTitle,"%s - [ %s ]",GS(MSG_LOADED),FileName);
-	SendMessage( hStatusWnd, SB_SETTEXT, 0, (LPARAM)WinTitle );
+	SetCurrentSaveState(hMainWindow, ID_CURRENTSAVE_DEFAULT);
+	sprintf(WinTitle, "%s - [ %s ]", GS(MSG_LOADED), FileName);
+	SendMessage(hStatusWnd, SB_SETTEXT, 0, (LPARAM)WinTitle);
 	if (AutoStart) {
 		StartEmulation();
 		Sleep(100);
 		if (AutoFullScreen) {
-			char Status[100], Identifier[100], result[100], *read;
+			char Status[100], Identifier[100], result[100], * read;
 
 			RomID(Identifier, RomHeader);
 
@@ -1032,14 +1011,14 @@ DWORD WINAPI OpenChosenFile ( LPVOID lpArgs ) {
 			strncpy(result, read, sizeof(result));
 			if (read) free(read);
 			if (strcmp(result, STR_TRUE) == 0) {
-				SendMessage(hMainWindow,WM_COMMAND,ID_OPTIONS_FULLSCREEN,0);
+				SendMessage(hMainWindow, WM_COMMAND, ID_OPTIONS_FULLSCREEN, 0);
 			}
 		}
 	}
 	return 0;
 }
 
-void SaveRecentDirs (void) {
+void SaveRecentDirs(void) {
 	char String[200];
 	int count;
 
@@ -1051,7 +1030,7 @@ void SaveRecentDirs (void) {
 	}
 }
 
-void SaveRecentFiles (void) {
+void SaveRecentFiles(void) {
 	char String[200];
 	int count;
 
@@ -1064,7 +1043,7 @@ void SaveRecentFiles (void) {
 }
 
 // Note!!! Due to changes any setting not being explicitly written must be deleted!!!
-void SaveRomOptions (void) {
+void SaveRomOptions(void) {
 	char Identifier[100], String[100];
 
 	if (strlen(RomName) == 0)
@@ -1073,7 +1052,7 @@ void SaveRomOptions (void) {
 	RomID(Identifier, RomHeader);
 
 	// Internal Rom Name
-	Settings_Write(RDS_NAME, Identifier, "Internal Name", RomName);
+	Settings_Write(RDS_NAME, Identifier, "Name", RomFullName);
 
 	// Expansion Pak
 	if (RomRamSize == 0x800000)
@@ -1115,7 +1094,7 @@ void SaveRomOptions (void) {
 		sprintf(String, "Default"); break;
 	}
 	Settings_Write(RDS_NAME, Identifier, STR_CPUTYPE, String);
-	
+
 	// Recompiler self code modification
 	switch (RomSelfMod) {
 	case ModCode_None:
@@ -1131,7 +1110,7 @@ void SaveRomOptions (void) {
 	case ModCode_ChangeMemory:
 		sprintf(String, "Change Memory"); break;
 	default:
-		sprintf(String,"Default"); break;
+		sprintf(String, "Default"); break;
 	}
 	Settings_Write(RDS_NAME, Identifier, "Self-modifying code Method", String);
 
@@ -1152,10 +1131,10 @@ void SaveRomOptions (void) {
 	if (RomSPHack)		Settings_Write(RDS_NAME, Identifier, "SP Hack", "");
 	else				Settings_Delete(RDS_NAME, Identifier, "SP Hack");
 	if (RomUseLargeBuffer)
-						Settings_Write(RDS_NAME, Identifier, "Use Large Buffer", "");
+		Settings_Write(RDS_NAME, Identifier, "Use Large Buffer", "");
 	else				Settings_Delete(RDS_NAME, Identifier, "Use Large Buffer");
 
-	switch(RomUseLinking) {
+	switch (RomUseLinking) {
 	case 0:
 		Settings_Write(RDS_NAME, Identifier, "Linking", "On"); break;
 	case 1:
@@ -1172,21 +1151,21 @@ void SaveRomOptions (void) {
 	}
 }
 
-void SetRecentRomDir (DWORD Index) {
+void SetRecentRomDir(DWORD Index) {
 	Index -= ID_FILE_RECENT_DIR;
-	if (Index < 0 || Index > (DWORD)RomDirsToRemember) { return; }
+	if (Index < 0 || Index >(DWORD)RomDirsToRemember) { return; }
 	SetRomDirectory(LastDirs[Index]);
 	RefreshRomBrowser();
 }
 
-void SetRomDirectory ( char *Directory ) {
+void SetRomDirectory(char* Directory) {
 	Settings_Write(APPS_NAME, "Directories", "Rom", Directory);
-	AddRecentDir(hMainWindow, Directory);	
+	AddRecentDir(hMainWindow, Directory);
 }
 
-void RecalculateCRCs ( BYTE *data, DWORD data_size ) { 
+void RecalculateCRCs(BYTE* data, DWORD data_size) {
 	int bootcode, i;
-	unsigned int seed, crc[2];	
+	unsigned int seed, crc[2];
 	unsigned int t1, t2, t3, t4, t5, t6, r, d, j;
 
 	switch ((bootcode = 6100 + GetCicChipID(data))) {
@@ -1220,7 +1199,7 @@ void RecalculateCRCs ( BYTE *data, DWORD data_size ) {
 			t2 ^= r;
 		else
 			t2 ^= t6 ^ d;
-		
+
 		if (bootcode == 6105) {
 			j = 0x40 + 0x0710 + (i & 0xFF);
 			t1 += (data[j + 3] << 24 | data[j + 2] << 16 | data[j + 1] << 8 | data[j]) ^ d;
@@ -1241,8 +1220,8 @@ void RecalculateCRCs ( BYTE *data, DWORD data_size ) {
 		crc[0] = t6 ^ t4 ^ t3;
 		crc[1] = t5 ^ t2 ^ t1;
 	}
-	
-	if (*(DWORD *)&data[0x10] != crc[0] || *(DWORD *)&data[0x14] != crc[1]) {/*
+
+	if (*(DWORD*)&data[0x10] != crc[0] || *(DWORD*)&data[0x14] != crc[1]) {/*
 #ifndef EXTERNAL_RELEASE
 		DisplayError("Calculated CRC does not match CRC1 and CRC2.");
 #endif*/
@@ -1250,7 +1229,7 @@ void RecalculateCRCs ( BYTE *data, DWORD data_size ) {
 		data[0x12] = (BYTE)((crc[0] & 0x00FF0000) >> 16);
 		data[0x11] = (crc[0] & 0x0000FF00) >> 8;
 		data[0x10] = (crc[0] & 0x000000FF);
-		
+
 		data[0x17] = (crc[1] & 0xFF000000) >> 24;
 		data[0x16] = (BYTE)((crc[1] & 0x00FF0000) >> 16);
 		data[0x15] = (crc[1] & 0x0000FF00) >> 8;
@@ -1258,16 +1237,16 @@ void RecalculateCRCs ( BYTE *data, DWORD data_size ) {
 	}
 }
 
-void LoadRomRecalcCRCs ( char *FileName, BYTE *CRC1, BYTE *CRC2 ) {
-	BYTE *data = NULL;
+void LoadRomRecalcCRCs(char* FileName, BYTE* CRC1, BYTE* CRC2) {
+	BYTE* data = NULL;
 	DWORD data_size = 0, count;
 
 	// As much as this pains me, this is mostly a copy of code that already exists as a copy and paste nightmare
 	// Some of the code has been reduced because the checks have already been performed
 	// This code will, currently, only be called when the CRC1 and CRC2 of a loaded Rom Header are read as 0's
-	if (_strnicmp(&FileName[strlen(FileName) - 4], ".ZIP", 4) == 0 ) {
+	if (_strnicmp(&FileName[strlen(FileName) - 4], ".ZIP", 4) == 0) {
 		int len, port = 0, FoundRom;
-	    unz_file_info info;
+		unz_file_info info;
 		char zname[132];
 		unzFile file;
 		BYTE Test[4];
@@ -1281,16 +1260,16 @@ void LoadRomRecalcCRCs ( char *FileName, BYTE *CRC1, BYTE *CRC2 ) {
 
 		port = unzGoToFirstFile(file);
 		FoundRom = FALSE;
-		while(port == UNZ_OK && FoundRom == FALSE) {
-			unzGetCurrentFileInfo(file, &info, zname, 128, NULL,0, NULL,0);
+		while (port == UNZ_OK && FoundRom == FALSE) {
+			unzGetCurrentFileInfo(file, &info, zname, 128, NULL, 0, NULL, 0);
 
-		    if (unzLocateFile(file, zname, 1) != UNZ_OK ) {
+			if (unzLocateFile(file, zname, 1) != UNZ_OK) {
 				unzClose(file);
 				DisplayError(GS(MSG_FAIL_ZIP));
 				return;
 			}
 
-			if( unzOpenCurrentFile(file) != UNZ_OK ) {
+			if (unzOpenCurrentFile(file) != UNZ_OK) {
 				unzClose(file);
 				DisplayError(GS(MSG_FAIL_OPEN_ZIP));
 				return;
@@ -1301,7 +1280,7 @@ void LoadRomRecalcCRCs ( char *FileName, BYTE *CRC1, BYTE *CRC2 ) {
 				FoundRom = TRUE;
 				data_size = info.uncompressed_size;
 
-				data = (BYTE *)malloc(sizeof(BYTE) * data_size);
+				data = (BYTE*)malloc(sizeof(BYTE) * data_size);
 				if (!data) {
 					unzCloseCurrentFile(file);
 					unzClose(file);
@@ -1329,7 +1308,7 @@ void LoadRomRecalcCRCs ( char *FileName, BYTE *CRC1, BYTE *CRC2 ) {
 					}
 					return;
 				}
-				if(unzCloseCurrentFile(file) == UNZ_CRCERROR) {
+				if (unzCloseCurrentFile(file) == UNZ_CRCERROR) {
 					unzClose(file);
 					DisplayError(GS(MSG_FAIL_OPEN_ZIP));
 					return;
@@ -1342,17 +1321,18 @@ void LoadRomRecalcCRCs ( char *FileName, BYTE *CRC1, BYTE *CRC2 ) {
 			}
 		}
 		if (FoundRom == FALSE) {
-		    DisplayError(GS(MSG_FAIL_OPEN_ZIP));
-		    unzClose(file);
+			DisplayError(GS(MSG_FAIL_OPEN_ZIP));
+			unzClose(file);
 			return;
 		}
-	} else {
+	}
+	else {
 		DWORD dwRead, dwToRead, TotalRead;
 		HANDLE hFile;
 		BYTE Test[4];
 
-		hFile = CreateFile(FileName,GENERIC_READ,FILE_SHARE_READ,NULL,
-			OPEN_EXISTING,FILE_ATTRIBUTE_NORMAL | FILE_FLAG_RANDOM_ACCESS,
+		hFile = CreateFile(FileName, GENERIC_READ, FILE_SHARE_READ, NULL,
+			OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL | FILE_FLAG_RANDOM_ACCESS,
 			NULL);
 
 		if (hFile == INVALID_HANDLE_VALUE) {
@@ -1363,20 +1343,20 @@ void LoadRomRecalcCRCs ( char *FileName, BYTE *CRC1, BYTE *CRC2 ) {
 		SetFilePointer(hFile, 0, 0, FILE_BEGIN);
 		ReadFile(hFile, Test, 4, &dwRead, NULL);
 		if (!IsValidRomImage(Test)) {
-			CloseHandle( hFile );
+			CloseHandle(hFile);
 			DisplayError(GS(MSG_FAIL_IMAGE));
 			return;
 		}
 		data_size = GetFileSize(hFile, NULL);
 
-		data = (BYTE *)malloc(sizeof(BYTE) * data_size);
+		data = (BYTE*)malloc(sizeof(BYTE) * data_size);
 		if (!data) {
-			CloseHandle( hFile );
+			CloseHandle(hFile);
 			DisplayError(GS(MSG_MEM_ALLOC_ERROR));
 			return;
 		}
 
-		SetFilePointer(hFile,0,0,FILE_BEGIN);
+		SetFilePointer(hFile, 0, 0, FILE_BEGIN);
 
 		TotalRead = 0;
 		for (count = 0; count < RomFileSize; count += ReadFromRomSection) {
@@ -1406,10 +1386,10 @@ void LoadRomRecalcCRCs ( char *FileName, BYTE *CRC1, BYTE *CRC2 ) {
 	RecalculateCRCs(data, data_size);
 
 	// No checks needed, this function only gets called on an as needed basis
-	*(DWORD *)CRC1 = *(DWORD *)&data[0x10];
-	*(DWORD *)CRC2 = *(DWORD *)&data[0x14];
+	*(DWORD*)CRC1 = *(DWORD*)&data[0x10];
+	*(DWORD*)CRC2 = *(DWORD*)&data[0x14];
 
 	// Make sure to free allocated space
 	if (data != NULL)
-		free (data);
+		free(data);
 }

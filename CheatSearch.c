@@ -21,13 +21,13 @@
 #include "CheatSearch_Search.h"
 #include "CheatSearch_Dev.h"
 
-const char *N64GSCODETYPES8BIT[] = { "8-bit Constant Write (80)", "80",
+const char* N64GSCODETYPES8BIT[] = { "8-bit Constant Write (80)", "80",
 	"8-bit Uncached Write (A0)", "A0",
 	"8-bit GS Button (88)", "88",
 	"8-Bit Equal To Activator (D0)", "D0",
 	"8-Bit Different To Activator (D2)", "D2" };
 
-const char *N64GSCODETYPES16BIT[] = { "16-bit Constant Write (81)", "81",
+const char* N64GSCODETYPES16BIT[] = { "16-bit Constant Write (81)", "81",
 	"16-bit Uncached Write (A1)", "A1",
 	"16-bit GS Button (89)", "89",
 	"16-Bit Equal To Activator (D1)", "D1",
@@ -39,14 +39,14 @@ const char *N64GSCODETYPES16BIT[] = { "16-bit Constant Write (81)", "81",
 /////////////////////////////////////
 // Start of Function Prototypes
 /////////////////////////////////////
-void Search (HWND hDlg);
+void Search(HWND hDlg);
 void InitSearchFormatList(HWND hDlg);
 void InitSearchNumBitsList(HWND hDlg);
 void InitSearchResultList(HWND hDlg);
 void PopulateSearchResultList(HWND hDlg);
 void InitCheatCreateList(HWND hDlg);
 void UpdateCheatCreateList(HWND hDlg);
-void SetResultsGroupBoxTitle(HWND hDlg, char *title);
+void SetResultsGroupBoxTitle(HWND hDlg, char* title);
 void UpdateCheatCodePreview(HWND hDlg);
 void Defaults_CheatSearchDlg();
 void CE_UpdateControls(HWND hDlg, int item);
@@ -54,9 +54,9 @@ void CE_SaveCheat(int item);
 void CS_UpdateSearchProc(HWND hDlg);
 DWORD WINAPI LiveUpdate(LPVOID arg);
 
-CHTDEVENTRY *ReadProject64ChtDev();
+CHTDEVENTRY* ReadProject64ChtDev();
 void WriteProject64ChtDev(HWND hDlg);
-char *ResultsToString(void);
+char* ResultsToString(void);
 
 BOOL CALLBACK CheatSearchDlgProc(HWND hwnd, UINT Message, WPARAM wParam, LPARAM lParam);
 /////////////////////////////////////
@@ -85,22 +85,22 @@ BOOL doingLiveUpdate = FALSE;
 // Start of function implementation 
 /////////////////////////////////////
 
-void Show_CheatSearchDlg (HWND hParent) {
-	if(hCheatSearchDlg != NULL) {	// Stop multiple instances
+void Show_CheatSearchDlg(HWND hParent) {
+	if (hCheatSearchDlg != NULL) {	// Stop multiple instances
 		SetForegroundWindow(hCheatSearchDlg);
 		return;
 	}
 	// The third argument used to be hParent, this made the Dialog Window being created act as always on top of the parent window
 	// Setting this to NULL makes it behave as a "normal" window that can be behind the main application instead of always on top of
 	hCheatSearchDlg = CreateDialog(GetModuleHandle(NULL), MAKEINTRESOURCE(IDD_Cheats_Search), NULL, CheatSearchDlgProc);
-	if(hCheatSearchDlg != NULL)
+	if (hCheatSearchDlg != NULL)
 	{
-		Setup_CheatSearch_Window (hCheatSearchDlg);
+		Setup_CheatSearch_Window(hCheatSearchDlg);
 		ShowWindow(hCheatSearchDlg, SW_SHOW);
 	}
 }
 
-void Close_CheatSearchDlg () {
+void Close_CheatSearchDlg() {
 	CS_ClearResults(&results);
 	CS_ClearDev(&cheat_dev);
 
@@ -110,7 +110,7 @@ void Close_CheatSearchDlg () {
 	}
 }
 
-void Defaults_CheatSearchDlg() { 
+void Defaults_CheatSearchDlg() {
 	searched = FALSE;
 	secondSearch = FALSE;
 
@@ -122,20 +122,20 @@ void Defaults_CheatSearchDlg() {
 	Button_Enable(GetDlgItem(hCheatSearchDlg, IDB_CS_CHEAT_SAVE), FALSE);
 }
 
-char *trimwhitespace(char *str) {
-	char *end;
+char* trimwhitespace(char* str) {
+	char* end;
 
 	// Trim leading space
-	while(isspace(*str)) str++;
-	if(*str == 0)  // All spaces? 
+	while (isspace(*str)) str++;
+	if (*str == 0)  // All spaces? 
 		return str;
 
 	// Trim trailing space
 	end = str + strlen(str) - 1;
-	while(end > str && isspace(*end)) end--;
+	while (end > str && isspace(*end)) end--;
 
 	// Write new null terminator 
-	*(end+1) = 0; 
+	*(end + 1) = 0;
 
 	return str;
 }
@@ -151,74 +151,74 @@ BOOL CALLBACK CheatSearchDlgProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lPa
 		case NM_DBLCLK:
 			switch (((LPNMHDR)lParam)->idFrom) {
 			case IDL_SEARCH_RESULT_LIST:
-				{
-					int item = ((LPNMITEMACTIVATE) lParam)->iItem;
-					CODEENTRY tmp;
-					CS_HITS hit;
+			{
+				int item = ((LPNMITEMACTIVATE)lParam)->iItem;
+				CODEENTRY tmp;
+				CS_HITS hit;
 
-					if (item == -1) break;
+				if (item == -1) break;
 
-					hit = *CS_GetHit(&results, item);
-					tmp.Address = hit.address;
-					tmp.Value = hit.value;
-					tmp.numBits = search.searchNumBits;
-					tmp.Enabled = FALSE;
-					tmp.searchBy = search.searchBy;
-					strcpy(tmp.Name, "");
-					strcpy(tmp.Note, "");
-					strcpy(tmp.Text, "");
+				hit = *CS_GetHit(&results, item);
+				tmp.Address = hit.address;
+				tmp.Value = hit.value;
+				tmp.numBits = search.searchNumBits;
+				tmp.Enabled = FALSE;
+				tmp.searchBy = search.searchBy;
+				strcpy(tmp.Name, "");
+				strcpy(tmp.Note, "");
+				strcpy(tmp.Text, "");
 
-					cheat_dev.modify = &tmp;
+				cheat_dev.modify = &tmp;
 
-					// Only save the code if okay was pressed
-					if(DialogBox(hInst, MAKEINTRESOURCE(IDD_Cheats_Search_Edit), hDlg, (DLGPROC)CheatSearch_Add_Proc) == IDOK) {
+				// Only save the code if okay was pressed
+				if (DialogBox(hInst, MAKEINTRESOURCE(IDD_Cheats_Search_Edit), hDlg, (DLGPROC)CheatSearch_Add_Proc) == IDOK) {
+					CS_AddCode(&cheat_dev, tmp);
+					UpdateCheatCreateList(hDlg);
+				}
+			}
+			break;
+			case IDL_CS_CHEAT_CREATE:	// Double click to allow Edit cheat shortcut
+			{
+				int item = ((LPNMITEMACTIVATE)lParam)->iItem;
+				CODEENTRY tmp;
+
+				tmp.Address = 0;
+				tmp.Value = 0;
+				tmp.numBits = search.searchNumBits;
+				tmp.Enabled = FALSE;
+				tmp.searchBy = search.searchBy;
+				strcpy(tmp.Name, "");
+				strcpy(tmp.Note, "");
+				strcpy(tmp.Text, "");
+
+				cheat_dev.modify = &tmp;
+
+				// Double clicking on the empty space in the list for the cheat dev area will add a new entry
+				if (item == -1) {
+					if (DialogBox(hInst, MAKEINTRESOURCE(IDD_Cheats_Search_Edit), hDlg, (DLGPROC)CheatSearch_Add_Proc) == IDOK) {
+						tmp.numBits = search.searchNumBits;
 						CS_AddCode(&cheat_dev, tmp);
 						UpdateCheatCreateList(hDlg);
 					}
-				}
-				break;
-			case IDL_CS_CHEAT_CREATE:	// Double click to allow Edit cheat shortcut
-				{
-					int item = ((LPNMITEMACTIVATE) lParam)->iItem;
-					CODEENTRY tmp;
-
-					tmp.Address = 0;
-					tmp.Value = 0;
-					tmp.numBits = search.searchNumBits;
-					tmp.Enabled = FALSE;
-					tmp.searchBy = search.searchBy;
-					strcpy(tmp.Name, "");
-					strcpy(tmp.Note, "");
-					strcpy(tmp.Text, "");
-
-					cheat_dev.modify = &tmp;
-
-					// Double clicking on the empty space in the list for the cheat dev area will add a new entry
-					if (item == -1) {
-						if(DialogBox(hInst, MAKEINTRESOURCE(IDD_Cheats_Search_Edit), hDlg, (DLGPROC)CheatSearch_Add_Proc) == IDOK) {
-							tmp.numBits = search.searchNumBits;
-							CS_AddCode(&cheat_dev, tmp);
-							UpdateCheatCreateList(hDlg);
-						}
-						break;
-					}
-
-					// Quick sanity check, the cheat list and the list control should both line up
-					// If they do not then something horrible happened, either the list was deallocated or the cheat was removed
-					if (CS_GetCodeAt(&cheat_dev, item) == NULL)
-						break;
-
-					// Simulate the Edit button being clicked, it already has the appropriate code
-					SendMessage(GetDlgItem(hDlg, IDB_CS_CHEAT_EDIT), BM_CLICK, (WPARAM)NULL, (LPARAM)NULL);
 					break;
 				}
+
+				// Quick sanity check, the cheat list and the list control should both line up
+				// If they do not then something horrible happened, either the list was deallocated or the cheat was removed
+				if (CS_GetCodeAt(&cheat_dev, item) == NULL)
+					break;
+
+				// Simulate the Edit button being clicked, it already has the appropriate code
+				SendMessage(GetDlgItem(hDlg, IDB_CS_CHEAT_EDIT), BM_CLICK, (WPARAM)NULL, (LPARAM)NULL);
+				break;
+			}
 			}
 			break;
 
 		case NM_CLICK:
 			switch (((LPNMHDR)lParam)->idFrom) {
 			case IDL_CS_CHEAT_CREATE:	// To toggle the buttons as the item is clicked in the cheat creation section
-				CE_UpdateControls(hDlg, ((LPNMITEMACTIVATE) lParam)->iItem);
+				CE_UpdateControls(hDlg, ((LPNMITEMACTIVATE)lParam)->iItem);
 				break;
 			}
 			break;
@@ -255,38 +255,38 @@ BOOL CALLBACK CheatSearchDlgProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lPa
 			ComboBox_Enable(GetDlgItem(hDlg, IDC_SEARCH_NUMBITS), TRUE);
 			ComboBox_Enable(GetDlgItem(hDlg, IDC_ADDRESS_RANGE), TRUE);
 			Edit_Enable(GetDlgItem(hDlg, IDT_SEARCH_VALUE), TRUE);
-			Edit_SetText(GetDlgItem(hDlg, IDT_SEARCH_VALUE),"");
-			Edit_SetText(GetDlgItem(hDlg, IDT_SEARCH_TEXT),"");
+			Edit_SetText(GetDlgItem(hDlg, IDT_SEARCH_VALUE), "");
+			Edit_SetText(GetDlgItem(hDlg, IDT_SEARCH_TEXT), "");
 			Button_SetCheck(GetDlgItem(hDlg, IDR_SEARCH_VALUE), BST_CHECKED);
 			Button_SetCheck(GetDlgItem(hDlg, IDR_SEARCH_TEXT), BST_UNCHECKED);
 			SetResultsGroupBoxTitle(hDlg, "Results");
 			break;
 		case IDB_CS_DUMPMEM:
-			Show_MemDumpDlg (hDlg);
+			Show_MemDumpDlg(hDlg);
 			//SaveMemDump(hDlg);
 			//DumpPCAndDisassembled(hDlg, 0x80000400, 0x80001000);
 			break;
 		case IDC_SEARCH_HEXDEC:
 			switch (HIWORD(wParam)) {
-				case CBN_SELCHANGE:
-					search.searchType = (SEARCHTYPE)ComboBox_GetCurSel((HWND)lParam);
-					switch (search.searchType) {
-					case dec:
-					case hex:
-						CS_UpdateSearchProc(hDlg);
-						Edit_Enable(GetDlgItem(hDlg, IDT_SEARCH_VALUE), TRUE);
-						Edit_SetText(GetDlgItem(hDlg, IDT_SEARCH_VALUE), "");
-						break;
-					case unknown:
-					case changed:
-					case unchanged:
-					case lower:
-					case higher:
-						Edit_Enable(GetDlgItem(hDlg, IDT_SEARCH_VALUE), FALSE);
-						Edit_SetText(GetDlgItem(hDlg, IDT_SEARCH_VALUE), "");
-						break;
-					}
+			case CBN_SELCHANGE:
+				search.searchType = (SEARCHTYPE)ComboBox_GetCurSel((HWND)lParam);
+				switch (search.searchType) {
+				case dec:
+				case hex:
+					CS_UpdateSearchProc(hDlg);
+					Edit_Enable(GetDlgItem(hDlg, IDT_SEARCH_VALUE), TRUE);
+					Edit_SetText(GetDlgItem(hDlg, IDT_SEARCH_VALUE), "");
 					break;
+				case unknown:
+				case changed:
+				case unchanged:
+				case lower:
+				case higher:
+					Edit_Enable(GetDlgItem(hDlg, IDT_SEARCH_VALUE), FALSE);
+					Edit_SetText(GetDlgItem(hDlg, IDT_SEARCH_VALUE), "");
+					break;
+				}
+				break;
 			}
 			break;
 		case IDC_SEARCH_NUMBITS:
@@ -301,93 +301,93 @@ BOOL CALLBACK CheatSearchDlgProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lPa
 		case IDL_SEARCH_RESULT_LIST:
 			break;
 		case IDCANCEL:
-			EndDialog( hDlg, IDCANCEL );
+			EndDialog(hDlg, IDCANCEL);
 			break;
 		case IDB_CS_CHEAT_EDIT:
-			{
-				int sItem = ListView_GetNextItem(GetDlgItem(hDlg, IDL_CS_CHEAT_CREATE), -1, LVNI_FOCUSED);
-				CODEENTRY *cItem = CS_GetCodeAt(&cheat_dev, sItem);
+		{
+			int sItem = ListView_GetNextItem(GetDlgItem(hDlg, IDL_CS_CHEAT_CREATE), -1, LVNI_FOCUSED);
+			CODEENTRY* cItem = CS_GetCodeAt(&cheat_dev, sItem);
 
-				// Should not happen (Out of bounds)
-				if (sItem == -1 || cItem == NULL) break;
+			// Should not happen (Out of bounds)
+			if (sItem == -1 || cItem == NULL) break;
 
-				cheat_dev.modify = cItem;	// Address of item to be modified
+			cheat_dev.modify = cItem;	// Address of item to be modified
 
-				if(DialogBox(hInst, MAKEINTRESOURCE(IDD_Cheats_Search_Edit), hDlg, (DLGPROC)CheatSearch_Add_Proc) == IDOK) {
-					UpdateCheatCreateList(hDlg);
-					CE_UpdateControls(hDlg, sItem);
-				}
-				break;
+			if (DialogBox(hInst, MAKEINTRESOURCE(IDD_Cheats_Search_Edit), hDlg, (DLGPROC)CheatSearch_Add_Proc) == IDOK) {
+				UpdateCheatCreateList(hDlg);
+				CE_UpdateControls(hDlg, sItem);
 			}
+			break;
+		}
 		case IDB_CS_CHEAT_REMOVE:
 			CS_RemoveCodeAt(&cheat_dev, ListView_GetNextItem(GetDlgItem(hDlg, IDL_CS_CHEAT_CREATE), -1, LVNI_SELECTED));
 			UpdateCheatCreateList(hDlg);
 			CE_UpdateControls(hDlg, -1);
 			break;
 		case IDB_CS_CHEAT_MOVEUP:
-			{
-				int item  = ListView_GetNextItem(GetDlgItem(hDlg, IDL_CS_CHEAT_CREATE), -1, LVNI_SELECTED);
+		{
+			int item = ListView_GetNextItem(GetDlgItem(hDlg, IDL_CS_CHEAT_CREATE), -1, LVNI_SELECTED);
 
-				// Nothing selected or already top-most item
-				if (item == -1 || item == 0)
-					break;
-				
-				CS_SwapDev(&cheat_dev, item, item - 1);
-
-				// Repopulate the list and update controls
-				UpdateCheatCreateList(hDlg);
-				CE_UpdateControls(hDlg, item - 1);
-			}
-			break;
-		case IDB_CS_CHEAT_MOVEDOWN:
-			{
-				int item = ListView_GetNextItem(GetDlgItem(hDlg, IDL_CS_CHEAT_CREATE), -1, LVNI_SELECTED);
-
-				// Nothing selected
-				if (item == -1)
-					break;
-
-				CS_SwapDev(&cheat_dev, item, item + 1);
-
-				// Repopulate the list and update controls
-				UpdateCheatCreateList(hDlg);
-				CE_UpdateControls(hDlg, item + 1);
-			}
-			break;
-		case IDB_CS_CHEAT_ENABLE:
-			{
-				int item = ListView_GetNextItem(GetDlgItem(hDlg, IDL_CS_CHEAT_CREATE), -1, LVNI_SELECTED);
-				CODEENTRY *cheat;
-
-				if (item == -1)
-					break;
-
-				cheat = CS_GetCodeAt(&cheat_dev, item);
-
-				if (cheat != NULL)
-					cheat->Enabled = !cheat->Enabled;
-
-				// Repopulate the list and update controls
-				UpdateCheatCreateList(hDlg);
-				CE_UpdateControls(hDlg, item);
-
+			// Nothing selected or already top-most item
+			if (item == -1 || item == 0)
 				break;
-			}
-		case IDB_CS_CHEAT_SAVE:
-			{
-				int item = ListView_GetNextItem(GetDlgItem(hDlg, IDL_CS_CHEAT_CREATE), -1, LVNI_SELECTED);
 
-				if (item == -1)
-					break;
-				
-				CE_SaveCheat(item);
-				MessageBox(hDlg, "Cheat has been added to the database.\nAccess through normal cheat window.", "Cheat Saved", MB_OK);
-				UpdateCheatCreateList(hDlg);
-				CE_UpdateControls(hDlg, -1);	// Save eats the item so default to nothing
-			}
+			CS_SwapDev(&cheat_dev, item, item - 1);
+
+			// Repopulate the list and update controls
+			UpdateCheatCreateList(hDlg);
+			CE_UpdateControls(hDlg, item - 1);
+		}
+		break;
+		case IDB_CS_CHEAT_MOVEDOWN:
+		{
+			int item = ListView_GetNextItem(GetDlgItem(hDlg, IDL_CS_CHEAT_CREATE), -1, LVNI_SELECTED);
+
+			// Nothing selected
+			if (item == -1)
+				break;
+
+			CS_SwapDev(&cheat_dev, item, item + 1);
+
+			// Repopulate the list and update controls
+			UpdateCheatCreateList(hDlg);
+			CE_UpdateControls(hDlg, item + 1);
+		}
+		break;
+		case IDB_CS_CHEAT_ENABLE:
+		{
+			int item = ListView_GetNextItem(GetDlgItem(hDlg, IDL_CS_CHEAT_CREATE), -1, LVNI_SELECTED);
+			CODEENTRY* cheat;
+
+			if (item == -1)
+				break;
+
+			cheat = CS_GetCodeAt(&cheat_dev, item);
+
+			if (cheat != NULL)
+				cheat->Enabled = !cheat->Enabled;
+
+			// Repopulate the list and update controls
+			UpdateCheatCreateList(hDlg);
+			CE_UpdateControls(hDlg, item);
+
 			break;
+		}
+		case IDB_CS_CHEAT_SAVE:
+		{
+			int item = ListView_GetNextItem(GetDlgItem(hDlg, IDL_CS_CHEAT_CREATE), -1, LVNI_SELECTED);
+
+			if (item == -1)
+				break;
+
+			CE_SaveCheat(item);
+			MessageBox(hDlg, "Cheat has been added to the database.\nAccess through normal cheat window.", "Cheat Saved", MB_OK);
+			UpdateCheatCreateList(hDlg);
+			CE_UpdateControls(hDlg, -1);	// Save eats the item so default to nothing
+		}
+		break;
 		case IDT_SEARCH_VALUE:
-			if (HIWORD(wParam) == EN_CHANGE) { 
+			if (HIWORD(wParam) == EN_CHANGE) {
 				char strVal[8];
 
 				Edit_GetText((HWND)lParam, strVal, 8);
@@ -395,7 +395,7 @@ BOOL CALLBACK CheatSearchDlgProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lPa
 				if (search.searchType == hex) {
 					VALUE_SEARCH.value = AsciiToHex(strVal);
 					if (VALUE_SEARCH.value > VALUE_SEARCH.max_value)
-						VALUE_SEARCH.value = VALUE_SEARCH.max_value;					
+						VALUE_SEARCH.value = VALUE_SEARCH.max_value;
 					sprintf_s(strVal, 7, "%X", VALUE_SEARCH.value);
 				}
 				else {
@@ -415,7 +415,7 @@ BOOL CALLBACK CheatSearchDlgProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lPa
 	return TRUE;
 }
 
-void Setup_CheatSearch_Window (HWND hParent) {
+void Setup_CheatSearch_Window(HWND hParent) {
 	DWORD X, Y, dwStyle;
 	DWORD WindowWidth = 683;
 	DWORD WindowHeight = 341;
@@ -439,7 +439,7 @@ void Setup_CheatSearch_Window (HWND hParent) {
 	InitSearchFormatList(hParent);
 	InitSearchNumBitsList(hParent);
 	CS_UpdateSearchProc(hParent);
-	
+
 	dwStyle = ListView_GetExtendedListViewStyle(GetDlgItem(hParent, IDL_SEARCH_RESULT_LIST));
 	dwStyle |= LVS_EX_FULLROWSELECT | LVS_EX_DOUBLEBUFFER;
 	ListView_SetExtendedListViewStyle(GetDlgItem(hParent, IDL_SEARCH_RESULT_LIST), dwStyle);
@@ -450,8 +450,8 @@ void Setup_CheatSearch_Window (HWND hParent) {
 	ListView_SetExtendedListViewStyle(GetDlgItem(hParent, IDL_CS_CHEAT_CREATE), dwStyle);
 	InitCheatCreateList(hParent);
 
-	X=0;
-	Y=0;
+	X = 0;
+	Y = 0;
 
 	if (!GetStoredWinPos("CheatSearch", &X, &Y)) {
 		X = (GetSystemMetrics(SM_CXSCREEN) - WindowWidth) / 2;
@@ -460,17 +460,17 @@ void Setup_CheatSearch_Window (HWND hParent) {
 	SetWindowPos(hParent, NULL, X, Y, WindowWidth, WindowHeight, SWP_NOZORDER | SWP_SHOWWINDOW | SWP_NOSIZE);
 }
 
-void SetResultsGroupBoxTitle(HWND hDlg, char *title){
+void SetResultsGroupBoxTitle(HWND hDlg, char* title) {
 	SetWindowText(GetDlgItem(hDlg, IDGB_CS_RESULTS), title);
 }
 
 void InitSearchFormatList(HWND hDlg) {
 	HWND hComboBox;
 	int prevSelection;
-	
+
 	hComboBox = GetDlgItem(hDlg, IDC_SEARCH_HEXDEC);
 	prevSelection = ComboBox_GetCurSel(hComboBox);
-	
+
 	ComboBox_ResetContent(hComboBox);
 	ComboBox_AddString(hComboBox, "Unknown");
 	ComboBox_AddString(hComboBox, "Decimal");
@@ -488,7 +488,7 @@ void InitSearchFormatList(HWND hDlg) {
 		if (prevSelection == CB_ERR)
 			search.searchType = unknown;
 	}
-	
+
 	ComboBox_SetCurSel(hComboBox, search.searchType);
 }
 
@@ -512,7 +512,7 @@ void InitSearchResultList(HWND hDlg) {
 	hListView = GetDlgItem(hDlg, IDL_SEARCH_RESULT_LIST);
 
 	col.mask = LVCF_FMT | LVCF_WIDTH | LVCF_TEXT | LVCF_SUBITEM;
-	col.fmt  = LVCFMT_LEFT;
+	col.fmt = LVCFMT_LEFT;
 
 	// Clear and remove any previous incarnations of the ListView control
 	ListView_DeleteAllItems(hListView);
@@ -521,42 +521,42 @@ void InitSearchResultList(HWND hDlg) {
 	state = Button_GetCheck(GetDlgItem(hDlg, IDR_SEARCH_TEXT));
 	if (state == BST_CHECKED) {
 		// Build the results list for Text Search
-		col.pszText  = "Address";
-		col.cx       = 110;
+		col.pszText = "Address";
+		col.cx = 110;
 		col.iSubItem = 0;
-		ListView_InsertColumn (hListView, 0, &col);
+		ListView_InsertColumn(hListView, 0, &col);
 
-		col.pszText  = "Text";
-		col.cx       = 150;
+		col.pszText = "Text";
+		col.cx = 150;
 		col.iSubItem = 1;
-		ListView_InsertColumn (hListView, 1, &col);
+		ListView_InsertColumn(hListView, 1, &col);
 
-		col.pszText  = "Old Text";
-		col.cx       = 150;
+		col.pszText = "Old Text";
+		col.cx = 150;
 		col.iSubItem = 2;
-		ListView_InsertColumn (hListView, 2, &col);
+		ListView_InsertColumn(hListView, 2, &col);
 	}
 	else {
 		// Build the results list for Value
-		col.pszText  = "Address";
-		col.cx       = 110;
+		col.pszText = "Address";
+		col.cx = 110;
 		col.iSubItem = 0;
-		ListView_InsertColumn (hListView, 0, &col);
+		ListView_InsertColumn(hListView, 0, &col);
 
-		col.pszText  = "Value (Hex)";
-		col.cx       = 70;
+		col.pszText = "Value (Hex)";
+		col.cx = 70;
 		col.iSubItem = 1;
-		ListView_InsertColumn (hListView, 1, &col);
+		ListView_InsertColumn(hListView, 1, &col);
 
-		col.pszText  = "Value (Dec)";
-		col.cx       = 70;
+		col.pszText = "Value (Dec)";
+		col.cx = 70;
 		col.iSubItem = 2;
-		ListView_InsertColumn (hListView, 2, &col);
+		ListView_InsertColumn(hListView, 2, &col);
 
-		col.pszText  = "Old (Hex)";
-		col.cx       = 70;
+		col.pszText = "Old (Hex)";
+		col.cx = 70;
 		col.iSubItem = 3;
-		ListView_InsertColumn (hListView, 3, &col);
+		ListView_InsertColumn(hListView, 3, &col);
 	}
 }
 
@@ -566,7 +566,7 @@ void PopulateSearchResultList(HWND hDlg) {
 	int count;
 	char s[9], title[STRING_MAX];
 	long state;
-	CS_HITS *hit;
+	CS_HITS* hit;
 
 	hListView = GetDlgItem(hDlg, IDL_SEARCH_RESULT_LIST);
 	ListView_DeleteAllItems(hListView);
@@ -575,32 +575,32 @@ void PopulateSearchResultList(HWND hDlg) {
 	state = Button_GetCheck(GetDlgItem(hDlg, IDR_SEARCH_TEXT));
 
 	SetWindowRedraw(hListView, FALSE);
-	for (count=0; count < LISTVIEW_MAXSHOWN; count++) {
+	for (count = 0; count < LISTVIEW_MAXSHOWN; count++) {
 
 		// Stop condition, assuming count has not reached LISTVIEW_MAXSHOWN
 		hit = CS_GetHit(&results, count);
 		if (hit == NULL)
 			break;
 
-		item.mask      = LVIF_TEXT;
-		item.iItem     = count;
-		item.iSubItem  = 0;
+		item.mask = LVIF_TEXT;
+		item.iItem = count;
+		item.iSubItem = 0;
 
 		// First entry is for Address
 		sprintf_s(s, 9, "%08X", hit->address);
-		item.pszText = (LPSTR) &s;
-		ListView_InsertItem(hListView,&item);
+		item.pszText = (LPSTR)&s;
+		ListView_InsertItem(hListView, &item);
 
 		// Text Search
 		if (state == BST_CHECKED) {
-			item.pszText = (LPSTR) search.search_string;
+			item.pszText = (LPSTR)search.search_string;
 			item.iSubItem = 1;
-			ListView_SetItem(hListView,&item);
+			ListView_SetItem(hListView, &item);
 
 			if (secondSearch) {
 				item.pszText = "Is this needed?";
 				item.iSubItem = 2;
-				ListView_SetItem(hListView,&item);
+				ListView_SetItem(hListView, &item);
 			}
 		}
 		// Dec/Hex or Value Search
@@ -608,28 +608,28 @@ void PopulateSearchResultList(HWND hDlg) {
 			// Second entry is for Value (Hex)
 			if (search.searchNumBits == bits8)
 				sprintf_s(s, 9, "%02X", hit->value);
-			else 
+			else
 				sprintf_s(s, 9, "%04X", hit->value);
 
-			item.pszText = (LPSTR) &s;
-			item.iSubItem  = 1;
-			ListView_SetItem(hListView,&item);
+			item.pszText = (LPSTR)&s;
+			item.iSubItem = 1;
+			ListView_SetItem(hListView, &item);
 
 			// Third entry is for Value (Dec)
-			sprintf_s(s, 9,"%u", hit->value);	
-			item.pszText = (LPSTR) &s;
-			item.iSubItem  = 2;
-			ListView_SetItem(hListView,&item);
+			sprintf_s(s, 9, "%u", hit->value);
+			item.pszText = (LPSTR)&s;
+			item.iSubItem = 2;
+			ListView_SetItem(hListView, &item);
 
 			// Fourth Entry is for Old Value (Hex)
 			if (secondSearch) {
 				if (search.searchNumBits == bits8)
-				sprintf_s(s, 9, "%02X", hit->prev_value);
-			else 
-				sprintf_s(s, 9, "%04X", hit->prev_value);
-				item.pszText = (LPSTR) &s;
-				item.iSubItem  = 3;
-				ListView_SetItem(hListView,&item);
+					sprintf_s(s, 9, "%02X", hit->prev_value);
+				else
+					sprintf_s(s, 9, "%04X", hit->prev_value);
+				item.pszText = (LPSTR)&s;
+				item.iSubItem = 3;
+				ListView_SetItem(hListView, &item);
 			}
 		}
 	}
@@ -654,7 +654,7 @@ void InitCheatCreateList(HWND hDlg) {
 
 	hListView = GetDlgItem(hDlg, IDL_CS_CHEAT_CREATE);
 
-	col.mask = LVCF_FMT | LVCF_TEXT | LVCF_WIDTH  | LVCF_ORDER;
+	col.mask = LVCF_FMT | LVCF_TEXT | LVCF_WIDTH | LVCF_ORDER;
 	col.iOrder = 0;
 	col.pszText = "Act.";
 	col.fmt = LVCFMT_IMAGE;
@@ -662,7 +662,7 @@ void InitCheatCreateList(HWND hDlg) {
 	col.iSubItem = 0;
 	ListView_InsertColumn(hListView, 0, &col);
 
-	col.mask = LVCF_FMT | LVCF_TEXT | LVCF_WIDTH  | LVCF_ORDER;
+	col.mask = LVCF_FMT | LVCF_TEXT | LVCF_WIDTH | LVCF_ORDER;
 	col.iOrder = 1;
 	col.pszText = "Code";
 	col.fmt = LVCFMT_LEFT;
@@ -670,7 +670,7 @@ void InitCheatCreateList(HWND hDlg) {
 	col.iSubItem = 1;
 	ListView_InsertColumn(hListView, 1, &col);
 
-	col.mask = LVCF_FMT | LVCF_TEXT | LVCF_WIDTH  | LVCF_ORDER;
+	col.mask = LVCF_FMT | LVCF_TEXT | LVCF_WIDTH | LVCF_ORDER;
 	col.iOrder = 2;
 	col.pszText = ROM_NAME;
 	col.fmt = LVCFMT_LEFT;
@@ -684,7 +684,7 @@ void UpdateCheatCreateList(HWND hDlg) {
 	LV_ITEM item;
 	int ctr;
 	char s[14];
-	CODEENTRY *curr;
+	CODEENTRY* curr;
 
 	// Add to the list view
 	hListView = GetDlgItem(hDlg, IDL_CS_CHEAT_CREATE);
@@ -695,7 +695,7 @@ void UpdateCheatCreateList(HWND hDlg) {
 
 	while (curr != NULL) {
 		item.mask = LVIF_TEXT;
-		if(curr->Enabled)
+		if (curr->Enabled)
 			item.pszText = "On";
 		else
 			item.pszText = "Off";
@@ -703,11 +703,11 @@ void UpdateCheatCreateList(HWND hDlg) {
 		item.iSubItem = 0;
 		ListView_InsertItem(hListView, &item);
 
-		if(curr->numBits == bits8)
+		if (curr->numBits == bits8)
 			sprintf(s, "%02X%06X %02X", curr->Activator, curr->Address, curr->Value);
 		else
 			sprintf(s, "%02X%06X %04X", curr->Activator, curr->Address, curr->Value);
-	
+
 		item.pszText = s;
 		item.iSubItem = 1;
 		ListView_SetItem(hListView, &item);
@@ -727,7 +727,7 @@ void UpdateCheatCreateList(HWND hDlg) {
 }
 
 void Search(HWND hDlg) {
-	BYTE *buffer;
+	BYTE* buffer;
 	long bufferSize, count;
 	char startAddress[11], endAddress[11];
 	DWORD dwstartAddress;
@@ -756,13 +756,13 @@ void Search(HWND hDlg) {
 		MIPS_WORD word;
 
 		// Copy RDRAM into a buffer and byteswap, note this is still in Big Endian
-		buffer = (BYTE *)malloc(bufferSize);
-		for (count=0; count<bufferSize-4; count+=4) {
-			r4300i_LW_PAddr(dwstartAddress + count, (DWORD *)&word);
-			buffer[count]=word.UB[2];
-			buffer[count+1]=word.UB[3];
-			buffer[count+2]=word.UB[0];
-			buffer[count+3]=word.UB[1];
+		buffer = (BYTE*)malloc(bufferSize);
+		for (count = 0; count < bufferSize - 4; count += 4) {
+			r4300i_LW_PAddr(dwstartAddress + count, (DWORD*)&word);
+			buffer[count] = word.UB[2];
+			buffer[count + 1] = word.UB[3];
+			buffer[count + 2] = word.UB[0];
+			buffer[count + 3] = word.UB[1];
 		}
 		//***********************************************
 
@@ -775,21 +775,21 @@ void Search(HWND hDlg) {
 
 		// The initial search will either add all addresses (unknown search)
 		//	or addresses that match the search value (8bit or 16bit)
-		if (!searched) {			
+		if (!searched) {
 			switch (search.searchNumBits) {
 			case bits8:
 				for (count = 0; count < bufferSize - 1; count++) {
-					if (search.searchType == unknown || 
+					if (search.searchType == unknown ||
 						((BYTE)searchValue == (BYTE)buffer[count])) {
-							CS_AddResult(&results, (DWORD)count + dwstartAddress + 1, (BYTE)buffer[count]);
+						CS_AddResult(&results, (DWORD)count + dwstartAddress + 1, (BYTE)buffer[count]);
 					}
 				}
 				break;
 			case bits16:
 				for (count = 0; count < bufferSize - 2; count += 2) {
-					if (search.searchType == unknown || 
-						(searchValue == (WORD)(buffer[count+1] << 8) + buffer[count])) {
-							CS_AddResult(&results, (DWORD)count + dwstartAddress, (WORD)(buffer[count + 1] << 8) + buffer[count]);
+					if (search.searchType == unknown ||
+						(searchValue == (WORD)(buffer[count + 1] << 8) + buffer[count])) {
+						CS_AddResult(&results, (DWORD)count + dwstartAddress, (WORD)(buffer[count + 1] << 8) + buffer[count]);
 					}
 				}
 				break;
@@ -805,7 +805,7 @@ void Search(HWND hDlg) {
 			struct CS_RESULTS tmp;
 			WORD buffer_value;
 			DWORD bufferAddress, count2;
-			CS_HITS *hit;
+			CS_HITS* hit;
 			BOOL matched;
 
 			CS_InitResults(&tmp);
@@ -848,7 +848,7 @@ void Search(HWND hDlg) {
 					matched = FALSE;
 					break;
 				}
-				
+
 				if (!matched)
 					continue;
 
@@ -874,13 +874,13 @@ void Search(HWND hDlg) {
 		CS_ClearResults(&results);
 
 		// Copy RDRAM and convert to Little Endian format
-		buffer = (BYTE *)malloc(bufferSize);
-		for (count=0; count<bufferSize-4; count+=4) {
-			r4300i_LW_PAddr(strtoul(startAddress, NULL, 16)+count, (DWORD *)&word);
-			buffer[count]=word.UB[3];
-			buffer[count+1]=word.UB[2];
-			buffer[count+2]=word.UB[1];
-			buffer[count+3]=word.UB[0];
+		buffer = (BYTE*)malloc(bufferSize);
+		for (count = 0; count < bufferSize - 4; count += 4) {
+			r4300i_LW_PAddr(strtoul(startAddress, NULL, 16) + count, (DWORD*)&word);
+			buffer[count] = word.UB[3];
+			buffer[count + 1] = word.UB[2];
+			buffer[count + 2] = word.UB[1];
+			buffer[count + 3] = word.UB[0];
 		}
 		//***********************************************
 
@@ -889,29 +889,29 @@ void Search(HWND hDlg) {
 		// Fetch the string being searched for
 		Edit_GetText(GetDlgItem(hDlg, IDT_SEARCH_TEXT), search.search_string, STRING_MAX - 1);
 		textsearch_len = strlen(search.search_string);
-		
-		for (count = 0, count2 = 0; count < bufferSize-1; count++) {
+
+		for (count = 0, count2 = 0; count < bufferSize - 1; count++) {
 			currentAddress = (DWORD)count + dwstartAddress + 1;
-			
+
 			// Pattern match
 			if ((BYTE)search.search_string[count2] == (BYTE)buffer[currentAddress]) {
 				if (count2 == 0) {
 					possibleAddress = currentAddress;
 				}
 				count2++;
-				
+
 				if (count2 == textsearch_len) {
 					CS_AddTextResult(&results, possibleAddress, search.search_string);
 					count2 = 0;
 				}
 			}
 			else
-					count2 = 0;
+				count2 = 0;
 		}
 
 		free(buffer);
 	}
-	
+
 	// Unused -- Implementation seeems unnecessary but will check with Gent
 	else if (search.searchBy == searchbyjal) {
 		return;
@@ -926,7 +926,7 @@ void Search(HWND hDlg) {
 	InitSearchFormatList(hDlg);
 }
 
-LRESULT CALLBACK CheatSearch_Add_Proc (HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam) {
+LRESULT CALLBACK CheatSearch_Add_Proc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam) {
 	HWND hComboBox;
 	int Count;
 	char strAddress[9], strValue[7];
@@ -936,7 +936,7 @@ LRESULT CALLBACK CheatSearch_Add_Proc (HWND hDlg, UINT uMsg, WPARAM wParam, LPAR
 		// Populate ComboBox with GS Cheat Types
 		hComboBox = GetDlgItem(hDlg, IDC_CSE_GSCODETYPE);
 		ComboBox_ResetContent(hComboBox);
-		
+
 		// Subclass HexEditControls for Address
 		ADDR_HEX.hWnd = GetDlgItem(hDlg, IDT_CSE_ADDRESS);
 		ADDR_HEX.callBack = (WNDPROC)SetWindowLongPtr(ADDR_HEX.hWnd, GWLP_WNDPROC, (LONG_PTR)HexEditControlProc);
@@ -955,9 +955,9 @@ LRESULT CALLBACK CheatSearch_Add_Proc (HWND hDlg, UINT uMsg, WPARAM wParam, LPAR
 
 			case bits8:
 				for (Count = 0, loc = 0; Count < 5; Count++) {
-					ComboBox_AddString(hComboBox, N64GSCODETYPES8BIT[Count*2]);
+					ComboBox_AddString(hComboBox, N64GSCODETYPES8BIT[Count * 2]);
 					sprintf(check, "%2X", cheat_dev.modify->Activator);
-					if (strcmp(check, N64GSCODETYPES8BIT[Count*2+1]) == 0)
+					if (strcmp(check, N64GSCODETYPES8BIT[Count * 2 + 1]) == 0)
 						loc = Count;
 				}
 				ComboBox_SetCurSel(hComboBox, loc);
@@ -965,9 +965,9 @@ LRESULT CALLBACK CheatSearch_Add_Proc (HWND hDlg, UINT uMsg, WPARAM wParam, LPAR
 
 			case bits16:
 				for (Count = 0, loc = 0; Count < 5; Count++) {
-					ComboBox_AddString(hComboBox, N64GSCODETYPES16BIT[Count*2]);
+					ComboBox_AddString(hComboBox, N64GSCODETYPES16BIT[Count * 2]);
 					sprintf(check, "%2X", cheat_dev.modify->Activator);
-					if (strcmp(check, N64GSCODETYPES16BIT[Count*2+1]) == 0)
+					if (strcmp(check, N64GSCODETYPES16BIT[Count * 2 + 1]) == 0)
 						loc = Count;
 				}
 				ComboBox_SetCurSel(hComboBox, loc);
@@ -978,7 +978,7 @@ LRESULT CALLBACK CheatSearch_Add_Proc (HWND hDlg, UINT uMsg, WPARAM wParam, LPAR
 			VALUE_HEX.hWnd = GetDlgItem(hDlg, IDT_CSE_VALUE_HEX);
 			VALUE_HEX.callBack = (WNDPROC)SetWindowLongPtr(VALUE_HEX.hWnd, GWLP_WNDPROC, (LONG_PTR)HexEditControlProc);
 			VALUE_HEX.value = cheat_dev.modify->Value;
-			if(cheat_dev.modify->numBits == bits8)
+			if (cheat_dev.modify->numBits == bits8)
 				VALUE_HEX.max_value = 0xFF;
 			else
 				VALUE_HEX.max_value = 0xFFFF;
@@ -987,14 +987,14 @@ LRESULT CALLBACK CheatSearch_Add_Proc (HWND hDlg, UINT uMsg, WPARAM wParam, LPAR
 			VALUE_DEC.hWnd = GetDlgItem(hDlg, IDT_CSE_VALUE_DEC);
 			VALUE_DEC.callBack = (WNDPROC)SetWindowLongPtr(VALUE_DEC.hWnd, GWLP_WNDPROC, (LONG_PTR)DecEditControlProc);
 			VALUE_DEC.value = cheat_dev.modify->Value;
-			if(cheat_dev.modify->numBits == bits8)
+			if (cheat_dev.modify->numBits == bits8)
 				VALUE_DEC.max_value = 0xFF;
 			else
 				VALUE_DEC.max_value = 0xFFFF;
-			
-			sprintf((char *)&strValue, "%X", cheat_dev.modify->Value);
+
+			sprintf((char*)&strValue, "%X", cheat_dev.modify->Value);
 			Edit_SetText(GetDlgItem(hDlg, IDT_CSE_VALUE_HEX), strValue);
-			sprintf((char *)&strValue, "%u", cheat_dev.modify->Value);
+			sprintf((char*)&strValue, "%u", cheat_dev.modify->Value);
 			Edit_SetText(GetDlgItem(hDlg, IDT_CSE_VALUE_DEC), strValue);
 
 			UpdateCheatCodePreview(hDlg);
@@ -1019,7 +1019,7 @@ LRESULT CALLBACK CheatSearch_Add_Proc (HWND hDlg, UINT uMsg, WPARAM wParam, LPAR
 		}
 
 		// Had to move these after subclassing the controls to avoid a race condition between setting and checking the values
-		sprintf((char *)&strAddress, "%06X", cheat_dev.modify->Address);
+		sprintf((char*)&strAddress, "%06X", cheat_dev.modify->Address);
 		Edit_SetText(GetDlgItem(hDlg, IDT_CSE_ADDRESS), strAddress);
 		Edit_SetText(GetDlgItem(hDlg, IDT_CSE_Name), cheat_dev.modify->Name);
 		Edit_SetText(GetDlgItem(hDlg, IDT_CSE_NOTE), cheat_dev.modify->Note);
@@ -1029,59 +1029,59 @@ LRESULT CALLBACK CheatSearch_Add_Proc (HWND hDlg, UINT uMsg, WPARAM wParam, LPAR
 	case WM_COMMAND:
 		switch (LOWORD(wParam)) {
 		case IDOK:
-			{
-				char s[STRING_MAX], *trimmed;
-				int selActivator;
+		{
+			char s[STRING_MAX], * trimmed;
+			int selActivator;
 
-				// Name
-				Edit_GetText(GetDlgItem(hDlg, IDT_CSE_Name), s, STRING_MAX);
-				trimmed = trimwhitespace(s);
+			// Name
+			Edit_GetText(GetDlgItem(hDlg, IDT_CSE_Name), s, STRING_MAX);
+			trimmed = trimwhitespace(s);
 
-				// Require a name before anything is saved
-				if (strlen(trimmed) == 0) {
-					MessageBox(hDlg, "Please enter a name for the cheat first!", "Error", MB_OK);
-					return TRUE;
-				}
-				strncpy(cheat_dev.modify->Name, trimmed, STRING_MAX);
+			// Require a name before anything is saved
+			if (strlen(trimmed) == 0) {
+				MessageBox(hDlg, "Please enter a name for the cheat first!", "Error", MB_OK);
+				return TRUE;
+			}
+			strncpy(cheat_dev.modify->Name, trimmed, STRING_MAX);
 
-				// Note
-				Edit_GetText(GetDlgItem(hDlg, IDT_CSE_NOTE), s, STRING_MAX);
-				trimmed = trimwhitespace(s);
-				strncpy(cheat_dev.modify->Note, trimmed, STRING_MAX);
+			// Note
+			Edit_GetText(GetDlgItem(hDlg, IDT_CSE_NOTE), s, STRING_MAX);
+			trimmed = trimwhitespace(s);
+			strncpy(cheat_dev.modify->Note, trimmed, STRING_MAX);
 
-				// Address
-				Edit_GetText(GetDlgItem(hDlg, IDT_CSE_ADDRESS), s, 7);
-				cheat_dev.modify->Address = (DWORD)strtoul(s, NULL, 16);
+			// Address
+			Edit_GetText(GetDlgItem(hDlg, IDT_CSE_ADDRESS), s, 7);
+			cheat_dev.modify->Address = (DWORD)strtoul(s, NULL, 16);
 
-				// Search by VALUE
-				if (cheat_dev.modify->searchBy == searchbyvalue) {
-					// Value
-					Edit_GetText(GetDlgItem(hDlg, IDT_CSE_VALUE_DEC), s, STRING_MAX);
-					cheat_dev.modify->Value = (WORD)strtoul(s, NULL, 10);
-					
-					// Activator
-					selActivator = ComboBox_GetCurSel(GetDlgItem(hDlg, IDC_CSE_GSCODETYPE));
-					if (cheat_dev.modify->numBits == bits8)
-						cheat_dev.modify->Activator = (BYTE)strtoul(N64GSCODETYPES8BIT[selActivator*2+1], NULL, 16);
-					else
-						cheat_dev.modify->Activator = (BYTE)strtoul(N64GSCODETYPES16BIT[selActivator*2+1], NULL, 16);
-				}
+			// Search by VALUE
+			if (cheat_dev.modify->searchBy == searchbyvalue) {
+				// Value
+				Edit_GetText(GetDlgItem(hDlg, IDT_CSE_VALUE_DEC), s, STRING_MAX);
+				cheat_dev.modify->Value = (WORD)strtoul(s, NULL, 10);
 
-				// Search by TEXT
-				else if (cheat_dev.modify->searchBy == searchbytext) {
-					Edit_GetText(GetDlgItem(hDlg, IDT_CSE_TEXT), cheat_dev.modify->Text, STRING_MAX);
-				}
-
-				// Search by JAL (Do nothing for now)
-				else {
-				}
-
-				cheat_dev.modify = NULL;
+				// Activator
+				selActivator = ComboBox_GetCurSel(GetDlgItem(hDlg, IDC_CSE_GSCODETYPE));
+				if (cheat_dev.modify->numBits == bits8)
+					cheat_dev.modify->Activator = (BYTE)strtoul(N64GSCODETYPES8BIT[selActivator * 2 + 1], NULL, 16);
+				else
+					cheat_dev.modify->Activator = (BYTE)strtoul(N64GSCODETYPES16BIT[selActivator * 2 + 1], NULL, 16);
 			}
 
-			// Pass through
-		case IDCANCEL: 
-			EndDialog(hDlg, wParam); 
+			// Search by TEXT
+			else if (cheat_dev.modify->searchBy == searchbytext) {
+				Edit_GetText(GetDlgItem(hDlg, IDT_CSE_TEXT), cheat_dev.modify->Text, STRING_MAX);
+			}
+
+			// Search by JAL (Do nothing for now)
+			else {
+			}
+
+			cheat_dev.modify = NULL;
+		}
+
+		// Pass through
+		case IDCANCEL:
+			EndDialog(hDlg, wParam);
 			return TRUE;
 
 		case IDC_CSE_GSCODETYPE:
@@ -1096,9 +1096,9 @@ LRESULT CALLBACK CheatSearch_Add_Proc (HWND hDlg, UINT uMsg, WPARAM wParam, LPAR
 				VALUE_HEX.value = AsciiToHex(strValue);
 				if (VALUE_HEX.value != VALUE_DEC.value) {
 
-					if (cheat_dev.modify->numBits == bits8) 
+					if (cheat_dev.modify->numBits == bits8)
 						VALUE_HEX.max_value = 0xFF;
-					else 
+					else
 						VALUE_HEX.max_value = 0xFFFF;
 
 					if (VALUE_HEX.value > VALUE_HEX.max_value) {
@@ -1125,7 +1125,8 @@ LRESULT CALLBACK CheatSearch_Add_Proc (HWND hDlg, UINT uMsg, WPARAM wParam, LPAR
 				if (VALUE_DEC.value != VALUE_HEX.value) {
 
 					if (cheat_dev.modify->numBits == bits8) {
-						VALUE_DEC.max_value = 0xFF;}
+						VALUE_DEC.max_value = 0xFF;
+					}
 					else
 						VALUE_DEC.max_value = 0xFFFF;
 
@@ -1145,7 +1146,7 @@ LRESULT CALLBACK CheatSearch_Add_Proc (HWND hDlg, UINT uMsg, WPARAM wParam, LPAR
 			break;
 
 		case IDT_CSE_ADDRESS:
-			if (HIWORD(wParam) == EN_CHANGE) { 
+			if (HIWORD(wParam) == EN_CHANGE) {
 				Edit_GetText((HWND)lParam, strAddress, 8);
 				ADDR_HEX.value = AsciiToHex(strAddress);
 				if (ADDR_HEX.value > ADDR_HEX.max_value) {
@@ -1173,7 +1174,7 @@ void UpdateCheatCodePreview(HWND hDlg) {
 	// Nothing to update if not searching by value
 	if (search.searchBy != searchbyvalue)
 		return;
-	
+
 	ndxCodeType = ComboBox_GetCurSel(GetDlgItem(hDlg, IDC_CSE_GSCODETYPE));
 	Edit_GetText(GetDlgItem(hDlg, IDT_CSE_ADDRESS), address, 7);
 	Edit_GetText(GetDlgItem(hDlg, IDT_CSE_VALUE_HEX), value, 5);
@@ -1195,48 +1196,48 @@ void UpdateCheatCodePreview(HWND hDlg) {
 /********************************************************************************************
 GetCheatDevIniFileName
 
-Purpose: 
+Purpose:
 Parameters:
 Returns:
 
 ********************************************************************************************/
-char * GetCheatDevIniFileName(void) {
-	char path_buffer[_MAX_PATH], drive[_MAX_DRIVE] ,dir[_MAX_DIR];
-	char fname[_MAX_FNAME],ext[_MAX_EXT];
+char* GetCheatDevIniFileName(void) {
+	char path_buffer[_MAX_PATH], drive[_MAX_DRIVE], dir[_MAX_DIR];
+	char fname[_MAX_FNAME], ext[_MAX_EXT];
 	static char IniFileName[_MAX_PATH];
 
-	GetModuleFileName(NULL,path_buffer,sizeof(path_buffer));
-	_splitpath( path_buffer, drive, dir, fname, ext );
-	sprintf(IniFileName,"%s%s%s",drive,dir,CHTDEV_NAME);
+	GetModuleFileName(NULL, path_buffer, sizeof(path_buffer));
+	_splitpath(path_buffer, drive, dir, fname, ext);
+	sprintf(IniFileName, "%s%s%s", drive, dir, CHTDEV_NAME);
 	return IniFileName;
 }
 
-CHTDEVENTRY *ReadProject64ChtDev() {
-	FILE * pFile;
+CHTDEVENTRY* ReadProject64ChtDev() {
+	FILE* pFile;
 	size_t lSize, result;
-	char * buffer;
+	char* buffer;
 	//CHTDEVENTRY * ChtDev;
 
-	pFile = fopen (GetCheatDevIniFileName(), "rb");
+	pFile = fopen(GetCheatDevIniFileName(), "rb");
 	if (pFile == NULL) {
 		// file error
 		return NULL;
 	}
 
 	// obtain file size:
-	fseek (pFile, 0, SEEK_END);
-	lSize = ftell (pFile);
-	rewind (pFile);
+	fseek(pFile, 0, SEEK_END);
+	lSize = ftell(pFile);
+	rewind(pFile);
 
 	// allocate memory to contain the whole file:
-	buffer = (char*) malloc (sizeof(char)*lSize);
+	buffer = (char*)malloc(sizeof(char) * lSize);
 	if (buffer == NULL) {
 		// Memory error
 		return NULL;
 	}
 
 	// copy the file into the buffer:
-	result = fread (buffer,1,lSize,pFile);
+	result = fread(buffer, 1, lSize, pFile);
 	if (result != lSize) {
 		// Reading error
 		return NULL;
@@ -1245,8 +1246,8 @@ CHTDEVENTRY *ReadProject64ChtDev() {
 	/* the whole file is now loaded in the memory buffer. */
 
 	// terminate
-	fclose (pFile);
-	free (buffer);
+	fclose(pFile);
+	free(buffer);
 
 	return NULL; //ChtDev;
 }
@@ -1264,6 +1265,7 @@ void WriteProject64ChtDev(HWND hDlg) {/*
 	RomID(Identifier, RomHeader);
 	ChtDev->Identifier = Identifier;
 
+	// This was dropped, and should now reflect RomFullName the new entry that contains the RDS' Name for the game
 	ChtDev->Name = RomName;
 
 	ChtDev->LastSearch = (LASTSEARCHA *)malloc(sizeof(LASTSEARCHA));
@@ -1313,20 +1315,21 @@ void WriteProject64ChtDev(HWND hDlg) {/*
 // Rewrite this and make it crash recovery compatible
 // Currently it only backs up the listview shown, it would break future searches if loaded
 // -- Assuming there were over 4096 hits (Or whatever LISTVIEW_MAXSHOW is)
-char *ResultsToString(void) {
+char* ResultsToString(void) {
 	DWORD count;
-	char s[16], *result;
+	char s[16], * result;
 	long maxlength = 0;
-	CS_HITS *hit;
+	CS_HITS* hit;
 
 	if (search.searchNumBits == bits8) {
-		maxlength= (9+3+3)*min(results.num_stored, LISTVIEW_MAXSHOWN)+1;
-	} else {
-		maxlength= (9+5+5)*min(results.num_stored, LISTVIEW_MAXSHOWN)+1;
+		maxlength = (9 + 3 + 3) * min(results.num_stored, LISTVIEW_MAXSHOWN) + 1;
 	}
-	result = (char *)calloc(maxlength, sizeof(char));
+	else {
+		maxlength = (9 + 5 + 5) * min(results.num_stored, LISTVIEW_MAXSHOWN) + 1;
+	}
+	result = (char*)calloc(maxlength, sizeof(char));
 
-	for (count=0; count<min(results.num_stored, LISTVIEW_MAXSHOWN); count++) {
+	for (count = 0; count < min(results.num_stored, LISTVIEW_MAXSHOWN); count++) {
 		hit = CS_GetHit(&results, count);
 
 		sprintf_s(s, 16, "%08X,", hit->address);
@@ -1346,8 +1349,9 @@ char *ResultsToString(void) {
 				sprintf_s(s, 16, "%04X,", hit->prev_value);
 
 			strcat_s(result, maxlength, s);
-		} else {
-			if (count<min(results.num_stored, LISTVIEW_MAXSHOWN)-1) {
+		}
+		else {
+			if (count < min(results.num_stored, LISTVIEW_MAXSHOWN) - 1) {
 				sprintf_s(s, 16, "  ,");
 				strcat_s(result, maxlength, s);
 			}
@@ -1358,10 +1362,10 @@ char *ResultsToString(void) {
 }
 
 // Called on CPU.c's RefreshScreen () on each VI
-void Apply_CheatSearchDev () {
+void Apply_CheatSearchDev() {
 	DWORD counter;
 	GAMESHARK_CODE code;
-	CODEENTRY *curr;
+	CODEENTRY* curr;
 
 	counter = 0;
 	curr = CS_GetCodeAt(&cheat_dev, 0);
@@ -1391,7 +1395,7 @@ void Apply_CheatSearchDev () {
 }
 
 void CE_UpdateControls(HWND hDlg, int item) {
-	CODEENTRY *curr, *next;
+	CODEENTRY* curr, * next;
 
 	if (item == -1) {	// Nothing selected, this is the default
 		Button_Enable(GetDlgItem(hDlg, IDB_CS_CHEAT_EDIT), FALSE);
@@ -1408,13 +1412,13 @@ void CE_UpdateControls(HWND hDlg, int item) {
 
 	curr = CS_GetCodeAt(&cheat_dev, item);
 	next = CS_GetCodeAt(&cheat_dev, item + 1);
-					
+
 	// No additional check needed for these
 	Button_Enable(GetDlgItem(hDlg, IDB_CS_CHEAT_EDIT), TRUE);
 	Button_Enable(GetDlgItem(hDlg, IDB_CS_CHEAT_REMOVE), TRUE);
 	Button_Enable(GetDlgItem(hDlg, IDB_CS_CHEAT_ENABLE), TRUE);
 	Button_Enable(GetDlgItem(hDlg, IDB_CS_CHEAT_SAVE), TRUE);
-					
+
 	Button_Enable(GetDlgItem(hDlg, IDB_CS_CHEAT_MOVEUP), item != 0);
 	Button_Enable(GetDlgItem(hDlg, IDB_CS_CHEAT_MOVEDOWN), next != NULL);
 
@@ -1439,9 +1443,9 @@ void CE_UpdateControls(HWND hDlg, int item) {
 //	and so forth, the comma being the separator between codes
 // NOTE: This will remove all entries with the same name as item's
 void CE_SaveCheat(int item) {
-	char Identifier[100], CheatName[STRING_MAX], NewCheatName[STRING_MAX], *cheat, *tmp;
+	char Identifier[100], CheatName[STRING_MAX], NewCheatName[STRING_MAX], * cheat, * tmp;
 	int CheatLen, count, CheatNo, MaxCheats;
-	CODEENTRY *code;
+	CODEENTRY* code;
 
 	// From a #define in Cheat.c
 	// Update at a later date to have a universally allowed amount
@@ -1455,13 +1459,13 @@ void CE_SaveCheat(int item) {
 
 	strncpy(NewCheatName, code->Name, STRING_MAX);
 
-	for (count = 0; count < MaxCheats; count ++) {
-		GetCheatName(count,CheatName,sizeof(CheatName));
+	for (count = 0; count < MaxCheats; count++) {
+		GetCheatName(count, CheatName, sizeof(CheatName));
 		if (strlen(CheatName) == 0) {
 			CheatNo = count;
 			break;
 		}
-		if (strcmp(CheatName,NewCheatName) == 0) {
+		if (strcmp(CheatName, NewCheatName) == 0) {
 			DisplayError(GS(MSG_CHEAT_NAME_IN_USE));
 			return;
 		}
@@ -1502,7 +1506,7 @@ void CE_SaveCheat(int item) {
 	//Add to ini
 	RomID(Identifier, RomHeader);
 
-	Settings_Write(CDB_NAME, Identifier, ROM_NAME, RomName);
+	Settings_Write(CDB_NAME, Identifier, ROM_NAME, RomFullName);
 	sprintf(NewCheatName, CHT_ENT, CheatNo);
 	Settings_Write(CDB_NAME, Identifier, NewCheatName, cheat);
 	if (cheat) { free(cheat); cheat = NULL; }
@@ -1522,7 +1526,7 @@ void CE_SaveCheat(int item) {
 
 	count = 0;
 	code = CS_GetCodeAt(&cheat_dev, 0);
-	while (code != NULL) { 
+	while (code != NULL) {
 		if (strcmp(NewCheatName, code->Name) == 0)
 			CS_RemoveCodeAt(&cheat_dev, count);
 		else
@@ -1533,7 +1537,7 @@ void CE_SaveCheat(int item) {
 
 void CS_UpdateSearchProc(HWND hDlg) {
 	// Always reset to the original proc, in case there was a change to one of the other search types
-	if(VALUE_SEARCH.callBack != NULL)
+	if (VALUE_SEARCH.callBack != NULL)
 		SetWindowLongPtr(GetDlgItem(hDlg, IDT_SEARCH_VALUE), GWLP_WNDPROC, (LONG_PTR)VALUE_SEARCH.callBack);
 
 	VALUE_SEARCH.hWnd = GetDlgItem(hDlg, IDT_SEARCH_VALUE);
@@ -1562,16 +1566,16 @@ DWORD WINAPI LiveUpdate(LPVOID arg) {
 
 	/*
 	int count = 0;
-	
+
 	while (doingLiveUpdate) {
 		wait_result = WaitForSingleObject(gLVMutex, INFINITE);
-		
+
 		// Got control of the mutex, that means nothing else is using the listview control
 		if (wait_result == WAIT_OBJECT_0) {
 			RomList_SortList();
 			count = ItemList.ListCount;
 		}
-		
+
 		// Abandoned mutex, why???
 		if (wait_result == WAIT_ABANDONED) {
 			DisplayError(GS(MSG_MEM_ALLOC_ERROR));
