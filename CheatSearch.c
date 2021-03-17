@@ -90,7 +90,9 @@ void Show_CheatSearchDlg (HWND hParent) {
 		SetForegroundWindow(hCheatSearchDlg);
 		return;
 	}
-	hCheatSearchDlg = CreateDialog(GetModuleHandle(NULL), MAKEINTRESOURCE(IDD_Cheats_Search), hParent, CheatSearchDlgProc);
+	// The third argument used to be hParent, this made the Dialog Window being created act as always on top of the parent window
+	// Setting this to NULL makes it behave as a "normal" window that can be behind the main application instead of always on top of
+	hCheatSearchDlg = CreateDialog(GetModuleHandle(NULL), MAKEINTRESOURCE(IDD_Cheats_Search), NULL, CheatSearchDlgProc);
 	if(hCheatSearchDlg != NULL)
 	{
 		Setup_CheatSearch_Window (hCheatSearchDlg);
