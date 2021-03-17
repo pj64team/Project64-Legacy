@@ -971,7 +971,9 @@ DWORD WINAPI OpenChosenFile(LPVOID lpArgs) {
 	GetRomName(RomName, ROM);
 	if (strlen(RomName) == 0)
 		strcpy(RomName, FileName);
-	sprintf(WinTitle, "%s - %s", RomName, AppName);
+
+	GetRomFullName(RomFullName, ROM, FileName);
+	sprintf(WinTitle, "%s - %s", RomFullName, AppName);
 
 	for (count = 0; count < (int)strlen(RomName); count++) {
 		switch (RomName[count]) {
@@ -985,8 +987,6 @@ DWORD WINAPI OpenChosenFile(LPVOID lpArgs) {
 		}
 	}
 	SetWindowText(hMainWindow, WinTitle);
-
-	GetRomFullName(RomFullName, ROM, FileName);
 
 	if (!RememberCheats) { DisableAllCheats(); }
 	EnableOpenMenuItems();
