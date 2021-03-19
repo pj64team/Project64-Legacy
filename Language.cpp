@@ -199,6 +199,7 @@ LANG_STR DefaultString[] = {
 	{ ADVANCE_AUTO_START,  "Start Emulation when rom is opened?"},
 	{ ADVANCE_OVERWRITE,   "Always overwrite default settings with ones from ini?"},
 	{ ADVANCE_COMPRESS,    "Automatically compress instant saves"},
+	{ ADVANCE_CLEAR_MEMORY, "Clear Memory at Start of Emulation"},
 
 //Rom Options
 	{ ROM_CPU_STYLE,       "CPU core style:"},

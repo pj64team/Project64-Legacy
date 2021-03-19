@@ -209,6 +209,7 @@ void AddDropDownItem(HWND hDlg, WORD CtrlID, int StringID, int ItemData, int* Va
 
 BOOL CALLBACK DefaultOptionsProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam) {
 	int indx;
+	BOOL clear_mem;
 
 	switch (uMsg) {
 	case WM_INITDIALOG:
@@ -221,6 +222,9 @@ BOOL CALLBACK DefaultOptionsProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lPa
 		SetFlagControl(hDlg, &AutoStart, IDC_START_ON_ROM_OPEN, ADVANCE_AUTO_START);
 		SetFlagControl(hDlg, &UseIni, IDC_USEINI, ADVANCE_OVERWRITE);
 		SetFlagControl(hDlg, &AutoZip, IDC_ZIP, ADVANCE_COMPRESS);
+
+		clear_mem = Settings_ReadBool(APPS_NAME, STR_SETTINGS, STR_CLEAR_MEMORY, TRUE);
+		SetFlagControl(hDlg, &clear_mem, IDC_CLEAR_MEMORY, ADVANCE_CLEAR_MEMORY);
 
 		AddDropDownItem(hDlg, IDC_CPU_TYPE, CORE_INTERPTER, CPU_Interpreter, &SystemCPU_Type);
 		AddDropDownItem(hDlg, IDC_CPU_TYPE, CORE_RECOMPILER, CPU_Recompiler, &SystemCPU_Type);
@@ -252,6 +256,9 @@ BOOL CALLBACK DefaultOptionsProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lPa
 
 			AutoZip = SendMessage(GetDlgItem(hDlg, IDC_ZIP), BM_GETSTATE, 0, 0) == BST_CHECKED ? TRUE : FALSE;
 			Settings_Write(APPS_NAME, STR_SETTINGS, STR_COMPRESS_STATES, AutoZip ? STR_TRUE : STR_FALSE);
+
+			clear_mem = SendMessage(GetDlgItem(hDlg, IDC_CLEAR_MEMORY), BM_GETSTATE, 0, 0) == BST_CHECKED ? TRUE : FALSE;
+			Settings_Write(APPS_NAME, STR_SETTINGS, STR_CLEAR_MEMORY, clear_mem ? STR_TRUE : STR_FALSE);
 
 			// Core Defaults
 			indx = SendMessage(GetDlgItem(hDlg, IDC_CPU_TYPE), CB_GETCURSEL, 0, 0);

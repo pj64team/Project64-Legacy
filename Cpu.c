@@ -161,14 +161,19 @@ void CloseCpu (void) {
 		CPU_Action.Stepping = FALSE;
 		CPU_Action.DoSomething = TRUE;
 		PulseEvent( CPU_Action.hStepping );
-		Sleep(100);
-		GetExitCodeThread(hCPU,&ExitCode);
+		Sleep(10);
+		GetExitCodeThread(hCPU, &ExitCode);
 		if (ExitCode != STILL_ACTIVE) {
 			hCPU = NULL;
 			count = 100;
 		}
 	}
-	if (hCPU != NULL) {  TerminateThread(hCPU,0); hCPU = NULL; }
+	if (hCPU != NULL) { 
+		DisplayError("Force closing emulation thread");
+		TerminateThread(hCPU, 0);
+		hCPU = NULL;
+		SetupPlugins(hMainWindow);
+	}
 
 	CPURunning = FALSE;
 	VirtualProtect(N64MEM,RdramSize,PAGE_READWRITE,&OldProtect);
@@ -178,10 +183,11 @@ void CloseCpu (void) {
 	CloseEeprom();
 	CloseMempak();
 	CloseSram();
-	FreeSyncMemory();
-	if (GfxRomClosed != NULL)  { GfxRomClosed(); }
-	if (AiRomClosed != NULL)   { AiRomClosed(); }
-	if (ContRomClosed != NULL) { ContRomClosed(); }
+	FreeSyncMemory();	
+	/*
+	if (GfxRomClosed != NULL) { GfxRomClosed(); }
+	if (ContRomClosed != NULL) { ContRomClosed(); }*/
+	if (AiRomClosed != NULL)   { AiRomClosed(); }	
 	if (RSPRomClosed) { RSPRomClosed(); }
 	if (Profiling) { GenerateTimerResults(); }
 	CloseHandle(CPU_Action.hStepping);
@@ -447,6 +453,10 @@ void ProcessMessages (void) {
 
 void DoSomething ( void ) {
 	if (CPU_Action.CloseCPU) { 
+		if (GfxRomClosed != NULL)
+			GfxRomClosed();
+		if (ContRomClosed != NULL)
+			ContRomClosed();
 		CoUninitialize();
 		ExitThread(0); 
 	}
@@ -1179,12 +1189,17 @@ void StartEmulation ( void ) {
 	//memcpy(RomHeader,ROM,sizeof(RomHeader));
 	CPU_Action.hStepping = CreateEvent( NULL, FALSE, FALSE, NULL);
 	WrittenToRom = FALSE;
+	
+	// Previous versions of PJ64 did not clear memory upon start of emulation
+	// This resulted in junk being left in memory and potentially affecting future games being loaded or checked
+	if (Settings_ReadBool(APPS_NAME, STR_SETTINGS, STR_CLEAR_MEMORY, TRUE))
+		memset(N64MEM, 0, RdramSize);
 
 	InitilizeTLB();
 	InitalizeR4300iRegisters(LoadPifRom(*(ROM + 0x3D)),*(ROM + 0x3D),GetCicChipID(ROM));
 
 	BuildInterpreter();
-
+	
 	RecompPos = RecompCode;
 
 #if (!defined(EXTERNAL_RELEASE))

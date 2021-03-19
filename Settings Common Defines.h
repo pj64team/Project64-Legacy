@@ -76,6 +76,7 @@
 #define STR_ALWAYSONTOP "Always On Top"
 #define STR_ROMSREMEMBER "Roms To Remember"
 #define STR_ROMDIRSREMEMBER "Rom Dirs To Remember"
+#define STR_CLEAR_MEMORY "Clear Memory"
 
 #define STR_COREDEFAULTS "Core Defaults"
 #define STR_ABL "Advanced Block Linking"

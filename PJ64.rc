@@ -263,10 +263,10 @@ STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP
 FONT 8, "MS Shell Dlg", 0, 0, 0x1
 BEGIN
     CTEXT           "Most of these changes will not take effect till a new rom is opened or current rom is reset.",IDC_INFO,4,10,223,22
-    GROUPBOX        "",IDC_STATIC,2,119,227,63
+    GROUPBOX        "",IDC_STATIC,2,119,227,73
     CONTROL         "Always overwrite default settings with ones from ini?",IDC_USEINI,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,6,145,218,11
-    CONTROL         "Automatically compress instant saves",IDC_ZIP,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,6,161,218,11
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,6,144,218,11
+    CONTROL         "Automatically compress instant saves",IDC_ZIP,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,6,159,218,11
     GROUPBOX        "Core Defaults",IDC_CORE_DEFAULTS,4,37,223,78
     LTEXT           "CPU core style:",IDC_TEXT2,9,49,108,12
     COMBOBOX        IDC_CPU_TYPE,118,48,105,49,CBS_DROPDOWNLIST | CBS_SORT | WS_VSCROLL | WS_TABSTOP
@@ -278,6 +278,8 @@ BEGIN
     COMBOBOX        IDC_ABL,118,96,105,49,CBS_DROPDOWNLIST | CBS_SORT | WS_VSCROLL | WS_TABSTOP
     CONTROL         "Start Emulation when rom is opened?",IDC_START_ON_ROM_OPEN,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,6,129,218,11
+    CONTROL         "Clear Memory at Start of Emulation",IDC_CLEAR_MEMORY,
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,6,174,218,11
 END
 
 IDD_MANAGECHEATS DIALOGEX 0, 0, 412, 226
@@ -994,6 +996,11 @@ END
 //
 
 IDD_Settings_Rom AFX_DIALOG_LAYOUT
+BEGIN
+    0
+END
+
+IDD_Settings_Options AFX_DIALOG_LAYOUT
 BEGIN
     0
 END
