@@ -711,7 +711,8 @@ LRESULT CALLBACK RefreshR4300iRegProc ( HWND hWnd, UINT uMsg, WPARAM wParam, LPA
 		}
 		break;
 	default:
-		return( (*r4300iRegRefreshProc)(hWnd, uMsg, wParam, lParam) );
+		return TRUE;	// Fixes Win10 Crashing, though Win7 seems unaffected?
+		//return( (*r4300iRegRefreshProc)(hWnd, uMsg, wParam, lParam) );
 	}
 	return( FALSE );
 }
