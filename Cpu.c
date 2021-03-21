@@ -161,13 +161,14 @@ void CloseCpu (void) {
 		CPU_Action.Stepping = FALSE;
 		CPU_Action.DoSomething = TRUE;
 		PulseEvent( CPU_Action.hStepping );
-		Sleep(10);
+		Sleep(100 + (count * 10));
 		GetExitCodeThread(hCPU, &ExitCode);
 		if (ExitCode != STILL_ACTIVE) {
 			hCPU = NULL;
 			count = 100;
 		}
 	}
+
 	if (hCPU != NULL) { 
 		DisplayError("Force closing emulation thread");
 		TerminateThread(hCPU, 0);
