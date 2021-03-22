@@ -103,22 +103,26 @@ void FileStuff::SortEntry(string search) {
 	// This sort does not currently handle spaces or comments, if they are in new lines they will be moved to the top
 	std::sort(this->entry_start + 1, this->entry_end, 
 		[](const string& a, const string& b) {
-		for (unsigned int count = 0; count < a.length() && count < b.length(); count++) {
 
-			// The same character, keep on checking
-			if (a[count] == b[count])
-				continue;
+		// CheatX(_Y)= is a special case, otherwise use the normal method
+		// Where X is a number and _Y is an optional parameter, where Y is either N, O, or similar but = is always there, as is _ after the number
+		if (a.find("Cheat", 0) == 0 && b.find("Cheat", 0) == 0) {
+			int loc_a, loc_b;
+			string num_a, num_b;
 
-			// Check the next character (if available)
-			// This is to prevent Cheat10= coming before Cheat2=
-			if (count + 1 < a.length() && count + 1 < b.length())
-				if ((a[count + 1] == '=' || a[count + 1] == '_') && b[count + 1] >= '0' && b[count + 1] <= '9')
-					return true;
+			loc_a = a.find_first_of("=_");
+			loc_b = b.find_first_of("=_");
 
-			return a[count] < b[count];
+			if (loc_a != string::npos && loc_b != string::npos) {
+				num_a = a.substr(5, loc_a - 5);
+				num_b = b.substr(5, loc_b - 5);
+
+				return (atoi(num_a.c_str()) < atoi(num_b.c_str()));
+			}
 		}
-		// These two are the same so it doesn't matter, just say a is less than
-		return true;
+
+		// The usual case
+		return (a.compare(b) > 0) ? false : true;
 	});
 }
 
