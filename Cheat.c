@@ -2256,7 +2256,7 @@ void RefreshCheatManager(void) {
 
 	TreeView_DeleteAllItems(hCheatTree);
 	for (count = 0; count < MaxCheats; count++) {
-		if (!GetCheatName(count, CheatName, sizeof(CheatName))) { break; }
+		if (!GetCheatName(count, CheatName, sizeof(CheatName))) { continue; }	// To do! Remove this. Work-around for the time being, scan all 500 entries. Current version does not renumber cheats from 0 to 500)
 		IsCheatActive = CheatActive(CheatName);
 		AddCheatExtension(count, CheatName, sizeof(CheatName));
 		AddCodeLayers(count, CheatName, TVI_ROOT, IsCheatActive);
