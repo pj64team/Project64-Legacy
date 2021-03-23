@@ -1947,6 +1947,7 @@ void ManageCheats(HWND hParent) {
 
 	if (hManageWindow != NULL) {
 		SetForegroundWindow(hManageWindow);
+		RefreshCheatManager();
 		return;
 	}
 	/*if (hParent) {
