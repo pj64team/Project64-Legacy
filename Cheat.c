@@ -1736,18 +1736,34 @@ LRESULT CALLBACK CheatListProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
 }
 
 void DeleteCheat(int CheatNo) {
-	char Identifier[100], Key[100], * Ext[] = { STR_EMPTY, "_N", "_O", "_R" };
-	int type;
+	char Identifier[100], Key[100], PrevKey[100];
+	const char* Ext[] = { "=", "_N=", "_O=", "_R=" };
+	char* scan;
+	int type, count;
 
 	RomID(Identifier, RomHeader);
 
+	// Delete all instances of Cheat(CheatNo) by adding Ext to the string
 	for (type = 0; type < (sizeof(Ext) / sizeof(*Ext)); type++) {
 		sprintf(Key, CHT_ENT_S, CheatNo, Ext[type]);
 		Settings_Delete(CDB_NAME, Identifier, Key);
 	}
 
-	// TO DO!!!
-	MessageBox(NULL, "To Do: Implement sorting of cheats after a delete.\n So Cheat0, ... CheatN are in order.", "Want feature!", MB_OK);
+	// Scan for the remaining MaxCheats and move things one down if they exist
+	for (count = CheatNo + 1; count < MaxCheats; count++) {
+		for (type = 0; type < (sizeof(Ext) / sizeof(*Ext)); type++) {
+			sprintf(Key, CHT_ENT_S, count, Ext[type]);			
+			Settings_Read(CDB_NAME, Identifier, Key, STR_EMPTY, &scan);
+			if (scan != STR_EMPTY) {
+				sprintf(PrevKey, CHT_ENT_S, count - 1, Ext[type]);
+				Settings_ChangeKey(CDB_NAME, Identifier, Key, PrevKey);
+			}
+			free(scan);
+		}
+	}
+
+	// To do! Remove this hack once the file handler has been updated to do delayed/timed writes
+	Settings_Delete(CDB_NAME, Identifier, "Cheat9000");
 }
 
 void DisableAllCheats(void) {
@@ -1768,6 +1784,7 @@ void DisableAllCheats(void) {
 BOOL GetCheatName(int CheatNo, char* CheatName, int CheatNameLen) {
 	char* String = NULL, Identifier[100];
 	DWORD len;
+	char* quo1, * quo2;
 
 	RomID(Identifier, RomHeader);
 	sprintf(CheatName, CHT_ENT, CheatNo);
@@ -1778,9 +1795,20 @@ BOOL GetCheatName(int CheatNo, char* CheatName, int CheatNameLen) {
 		if (String) free(String);
 		return FALSE;
 	}
-	len = strrchr(String, '"') - strchr(String, '"') - 1;
+
+	// Extra sanity check, the algorithm previously assumed a name was encased in quotation marks "Example"
+	// If one was missing it caused very bad things to happen
+	quo1 = strchr(String, '"');
+	quo2 = strrchr(String, '"');
+	if (quo1 == NULL || quo2 == NULL || quo1 == quo2) {
+		memset(CheatName, 0, CheatNameLen);
+		if (String) free(String);
+		return FALSE;
+	}
+
+	len = quo2 - quo1 - 1;
 	memset(CheatName, 0, CheatNameLen);
-	strncpy(CheatName, strchr(String, '"') + 1, len);
+	strncpy(CheatName, quo1 + 1, len);
 
 	if (String) free(String);
 	return TRUE;
@@ -1923,7 +1951,7 @@ void LoadCheats(void) {
 
 		sprintf(CheatName, CHT_ENT, count);
 		Settings_Read(CDB_NAME, Identifier, CheatName, STR_EMPTY, &String);
-		if (strlen(String) == 0) { break; }
+		if (strlen(String) == 0) { continue; }	// Quick little hack, there's a change to scan for all MaxCheats entries
 		if (strchr(String, '"') == NULL) { continue; }
 		len = strrchr(String, '"') - strchr(String, '"') - 1;
 		if ((int)len < 1) { continue; }
