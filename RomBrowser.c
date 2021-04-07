@@ -291,11 +291,8 @@ void LoadRomList (void) {
 
 	for (count = 0; count < ItemList.ListCount; count++) {
 		SetColors(ItemList.List[count].Status);
-		// For performance reasons (Debug iterators in C++) do not update if using the debug build
-#ifndef _DEBUG
 		// Update any items that may be out of date
 		FillRomExtensionInfo(&ItemList.List[count]);
-#endif
 	}
 
 	RomList_SortList();
