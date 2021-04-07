@@ -153,7 +153,7 @@
       <AdditionalLibraryDirectories>C:\Development\PJ64 Source C++ 6.0;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>Compression/zlibstat.lib;htmlhelp.lib;winmm.lib;comctl32.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <DataExecutionPrevention>false</DataExecutionPrevention>
-      <Profile>false</Profile>
+      <Profile>true</Profile>
     </Link>
     <Manifest>
       <AdditionalManifestFiles>
