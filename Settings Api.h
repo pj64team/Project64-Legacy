@@ -31,3 +31,15 @@ void Settings_FetchKeyNames(char *filename, char *id, char **keys);
 void Settings_Write(char *filename, char *id, char *setting, char *value);
 void Settings_Delete(char *filename, char *id, char *setting);
 void Settings_DeleteEntry(char *filename, char *id);
+
+////////////////////////////////////////////////////////////////////////////////////////
+// Support for renaming a key (Used mainly in Cheats, Cheat1 changed to Cheat0 etc
+////////////////////////////////////////////////////////////////////////////////////////
+void Settings_ChangeKey(char* filename, char* id, char* oldkey, char* newkey);
+
+///////////////////////////////////////////////////////////
+// Added to support PJ64 2.x's new Cheat file system
+///////////////////////////////////////////////////////////
+void Settings_ReadLine(char* filename, char* id, int line_number, char **line);
+void Settings_DeleteLine(char* filename, char* id, char* line);
+void Settings_WriteLine(char* filename, char* id, char* line);

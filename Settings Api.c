@@ -92,3 +92,19 @@ void Settings_DeleteEntry(char *filename, char *id) {
 void Settings_FetchKeyNames(char *filename, char *id, char **keys) {
 	*keys = ReadStr(filename, id, NULL, NULL);
 }
+
+void Settings_ChangeKey(char* filename, char* id, char* oldkey, char* newkey) {
+	ChangeKey(filename, id, oldkey, newkey);
+}
+
+void Settings_ReadLine(char* filename, char* id, int line_number, char** line) {
+	*line = ReadLine(filename, id, line_number);
+}
+
+void Settings_DeleteLine(char* filename, char* id, char* line) {
+	DeleteLine(filename, id, line);
+}
+
+void Settings_WriteLine(char* filename, char* id, char* line) {
+	WriteLine(filename, id, line);
+}
