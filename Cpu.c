@@ -1220,9 +1220,10 @@ void StartEmulation ( void ) {
 	if (InR4300iCommandsWindow) {
 		SetCoreToStepping();
 	}
+#endif
     DlistCount = 0;
 	AlistCount = 0;
-#endif
+
 	Timers.CurrentTimerType = -1;
 	Timers.Timer = 0;
 	CurrentFrame = 0;
