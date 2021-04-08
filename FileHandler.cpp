@@ -620,8 +620,8 @@ void Entry::SortData() {
 		for (size_t i = 0; i < sizeof(s) / sizeof(s[0]); i++) {
 			found = find_if(data.begin(), data.end(), [i](string p) { return p.compare(0, s[i].length(), s[i]) == 0; });
 			if (found != data.end()) {
+				std::swap(*it, *found);
 				++it;
-				std::swap(it, found);
 			}
 		}
 	}
@@ -691,7 +691,7 @@ bool Entry::IsGameHeader(string str) {
 	// The format to check against, X is a hex value so much be checked for 0 through 9 and A through F, including a through f
 	char format[] = "[XXXXXXXX-XXXXXXXX-C:XX]";
 
-	if (str.length() >= strlen(format))
+	if (str.size() < strlen(format))
 		return false;
 
 	for (size_t i = 0; i < strlen(format); i++) {
