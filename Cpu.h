@@ -128,6 +128,7 @@ extern HANDLE hPauseMutex;
 extern OPCODE Opcode;
 extern HANDLE hCPU;
 extern BOOL inFullScreen, CPURunning, SPHack;
+extern int DlistWaitFor, VIWaitMult;
 
 #ifdef Interpreter_StackTest
 extern DWORD StackValue;
