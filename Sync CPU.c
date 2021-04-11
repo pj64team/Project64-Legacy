@@ -137,7 +137,7 @@ void FreeSyncMemory (void) {
 void ProtectMemory (void) {
 	DWORD OldProtect;
 
-	VirtualProtect(N64MEM,RdramSize,PAGE_READONLY,&OldProtect);
+	//VirtualProtect(N64MEM,RdramSize,PAGE_READONLY,&OldProtect);
 	VirtualProtect(N64MEM + 0x04000000,0x2000,PAGE_READONLY,&OldProtect);
 }
 
@@ -391,8 +391,8 @@ void SyncSystem (void) {
 		if (Registers.GPR[count].DW != SyncRegisters.GPR[count].DW) {
 			error = TRUE;
 			Error_Message("*** %s (GPR %d) is not equal!!!",GPR_Name[count],count);
-			Error_Message("interp value: 0x%08X%08X",SyncRegisters.GPR[count].UW[1],SyncRegisters.GPR[count].UW[0]);
-			Error_Message("Recomp value: 0x%08X%08X",Registers.GPR[count].UW[1],Registers.GPR[count].UW[0]);
+			Error_Message("interp value: 0x%08X %08X",SyncRegisters.GPR[count].UW[1],SyncRegisters.GPR[count].UW[0]);
+			Error_Message("Recomp value: 0x%08X %08X",Registers.GPR[count].UW[1],Registers.GPR[count].UW[0]);
 			Error_Message("");
 		}
 	}
