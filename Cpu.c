@@ -49,7 +49,6 @@ OPCODE Opcode;
 HANDLE hCPU;
 BOOL inFullScreen, CPURunning, SPHack;
 DWORD MemoryStack;
-int DlistWaitFor, VIWaitMult;
 
 #ifdef CFB_READ
 DWORD CFBStart = 0, CFBEnd = 0;
@@ -1043,25 +1042,37 @@ void PauseCpu (void) {
 }
 
 void RefreshScreen (void ){ 
-	static DWORD OLD_VI_V_SYNC_REG = 0, VI_INTR_TIME = 500000;
+	static DWORD VI_INTR_TIME = 500000;
+	static DWORD DlistWaitFor = -2, VIWaitMult = 0;
 	LARGE_INTEGER Time;
 	char Label[100];
+	
+	// A hack to allow the iQue games to boot faster, seems the VI call may be incomplete?
+	// This allows them to wait for longer and for now this will use the DlistCount
+	if (DlistWaitFor == -2) {
+		char Identifier[100];
+		RomID(Identifier, RomHeader);
+		DlistWaitFor = Settings_ReadInt(RDS_NAME, Identifier, "DlistWait", -1);
+		VIWaitMult = Settings_ReadInt(RDS_NAME, Identifier, "WaitMult", -1);
+		if (DlistWaitFor <= 0)
+			DlistWaitFor = -1;
+	}
 
 	if (Profiling || ShowCPUPer) { memcpy(Label,ProfilingLabel,sizeof(Label)); }
 	if (Profiling) { StartTimer("RefreshScreen"); }
-
-	if (OLD_VI_V_SYNC_REG != VI_V_SYNC_REG) {
-		if (VI_V_SYNC_REG == 0) {
-			VI_INTR_TIME = 500000;
-		} else {
-			VI_INTR_TIME = (VI_V_SYNC_REG + 1) * ModVI;
-			if (DlistWaitFor != -1 && DlistCount <= DlistWaitFor)	// The hack that allows a much longer wait time than normal
-				VI_INTR_TIME *= VIWaitMult;
-			if ((VI_V_SYNC_REG % 1) != 0) {
-				VI_INTR_TIME -= 38;
-			}
+	
+	if (VI_V_SYNC_REG == 0) {
+		VI_INTR_TIME = 500000;
+	} 
+	else {
+		VI_INTR_TIME = (VI_V_SYNC_REG + 1) * ModVI;
+		if (DlistWaitFor != -1 && DlistCount <= DlistWaitFor)	// The hack that allows a much longer wait time than normal
+			VI_INTR_TIME *= VIWaitMult;
+		if ((VI_V_SYNC_REG % 1) != 0) {
+			VI_INTR_TIME -= 38;
 		}
 	}
+
 	ChangeTimer(ViTimer,Timers.Timer + Timers.NextTimer[ViTimer] + VI_INTR_TIME);
 	EmuAI_SetVICountPerFrame(VI_INTR_TIME);
 	
@@ -1187,7 +1198,6 @@ void SetCoreToStepping ( void ) {
 
 void StartEmulation ( void ) {
 	DWORD ThreadID, count;
-	char Identifier[100];
 	CloseCpu();
 
 	memset(&CPU_Action,0,sizeof(CPU_Action));
@@ -1199,14 +1209,6 @@ void StartEmulation ( void ) {
 	// This resulted in junk being left in memory and potentially affecting future games being loaded or checked
 	if (Settings_ReadBool(APPS_NAME, STR_SETTINGS, STR_CLEAR_MEMORY, TRUE))
 		memset(N64MEM, 0, RdramSize);
-
-	// A hack to allow the iQue games to boot faster, seems the VI call may be incomplete?
-	// This allows them to wait for longer and for now this will use the DlistCount
-	RomID(Identifier, RomHeader);
-	DlistWaitFor = Settings_ReadInt(RDS_NAME, Identifier, "DlistWait", -1);
-	VIWaitMult = Settings_ReadInt(RDS_NAME, Identifier, "WaitMult", -1);
-	if (DlistWaitFor <= 0)
-		DlistWaitFor = -1;
 
 	InitilizeTLB();
 	InitalizeR4300iRegisters(LoadPifRom(*(ROM + 0x3D)),*(ROM + 0x3D),GetCicChipID(ROM));
