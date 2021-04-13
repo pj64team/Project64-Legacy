@@ -1393,14 +1393,14 @@ LRESULT CALLBACK RomInfoProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
 		SetDlgItemText(hDlg, IDC_INFO_COUNTRY, String);
 
 		// Show CRC1
-		if (PrevCRC1 != *(DWORD*)&RomHeader[0x10] && PrevCRC1 != 0)
+		if (PrevCRC1 != *(DWORD*)&RomHeader[0x10])
 			sprintf(&String[1], "0x%08X (0x%08X)", PrevCRC1, *(DWORD*)(&RomHeader[0x10]));
 		else
 			sprintf(&String[1], "0x%08X", *(DWORD*)(&RomHeader[0x10]));
 		SetDlgItemText(hDlg, IDC_INFO_CRC1, String);
 
 		// Show CRC2
-		if (PrevCRC2 != *(DWORD*)&RomHeader[0x14] && PrevCRC2 != 0)
+		if (PrevCRC2 != *(DWORD*)&RomHeader[0x14])
 			sprintf(&String[1], "0x%08X (0x%08X)", PrevCRC2, *(DWORD*)(&RomHeader[0x14]));
 		else
 			sprintf(&String[1], "0x%08X", *(DWORD*)(&RomHeader[0x14]));
