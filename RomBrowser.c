@@ -581,8 +581,13 @@ int __cdecl RomList_Compare (const void *a, const void *b) {
 			compare = (int)pRomInfo1->CRC2 - (int)pRomInfo2->CRC2;
 			break;
 		case RB_CICChip:
-			compare = pRomInfo1->CicChip - pRomInfo2->CicChip;
+		{
+			char junk1[50], junk2[50];
+			BuildRomCicChipString(pRomInfo1->CicChip, junk1, sizeof(junk1), GetRomRegionByCode(pRomInfo1->Country));
+			BuildRomCicChipString(pRomInfo2->CicChip, junk2, sizeof(junk2), GetRomRegionByCode(pRomInfo2->Country));
+			compare = lstrcmpi(junk1, junk2);
 			break;
+		}
 		case RB_ReleaseDate:
 			compare = (int)lstrcmpi(pRomInfo1->ReleaseDate, pRomInfo2->ReleaseDate);
 			break;
