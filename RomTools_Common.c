@@ -54,10 +54,12 @@ void CountryCodeToShortString(char string[], BYTE Country, int length) {
 
 int GetRomRegion(BYTE* RomData) {
 	BYTE Country;
-
 	GetRomCountry(&Country, RomData);
+	return GetRomRegionByCode(Country);
+}
 
-	switch (Country) {
+int GetRomRegionByCode(BYTE CountryCode) {
+	switch (CountryCode) {
 	case 0x44: // Germany
 	case 0x46: // French
 	case 0x49: // Italian
@@ -165,6 +167,29 @@ void GetRomCRC2(DWORD* Crc2, BYTE* RomData) {
 
 int GetRomCicChipID(BYTE* RomData) {
 	return GetCicChipID(RomData);
+}
+
+void GetRomCicChipString(BYTE* RomData, char String[], int length) {
+	BuildRomCicChipString(GetRomCicChipID(RomData), String, length, GetRomRegion(RomData));
+}
+
+void BuildRomCicChipString(int ID, char String[], int length, int region) {
+	if (ID < 0) {
+		snprintf(&String[0], length, "Unknown");
+	}
+	else {
+		// PAL region is 71XX chip, NTSC is 61XX chip
+		// PAL region's 01 is NTSC's region 02, same for PAL's 02 being NTSC's 01
+		if (region == PAL_Region) {
+			if (ID == 2)
+				ID = 1;
+			else if (ID == 1)
+				ID = 2;
+			snprintf(&String[0], length, "CIC-NUS-71%02X", ID);
+		}
+		else
+			snprintf(&String[0], length, "CIC-NUS-61%02X", ID);
+	}
 }
 
 void RomID(char* ID, BYTE* RomData) {

@@ -638,11 +638,7 @@ void RomList_GetDispInfo(LPNMHDR pnmh) {
 	case RB_Crc1: sprintf(lpdi->item.pszText,"0x%08X",pRomInfo->CRC1); break;
 	case RB_Crc2: sprintf(lpdi->item.pszText,"0x%08X",pRomInfo->CRC2); break;
 	case RB_CICChip: 
-		if (pRomInfo->CicChip < 0) { 
-			sprintf(lpdi->item.pszText,"Unknown CIC Chip"); 
-		} else {
-			sprintf(lpdi->item.pszText,"CIC-NUS-61%2d",pRomInfo->CicChip); 
-		}
+		BuildRomCicChipString(pRomInfo->CicChip, lpdi->item.pszText, lpdi->item.cchTextMax, GetRomRegionByCode(pRomInfo->Country));
 		break;
 	case RB_UserNotes: strncpy(lpdi->item.pszText, pRomInfo->UserNotes, lpdi->item.cchTextMax); break;
 	case RB_Developer: strncpy(lpdi->item.pszText, pRomInfo->Developer, lpdi->item.cchTextMax); break;
