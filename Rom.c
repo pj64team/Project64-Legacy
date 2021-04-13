@@ -270,9 +270,9 @@ BOOL LoadDataFromRomFile(char* FileName, BYTE* Data, int DataLen, int* RomSize) 
 
 	// Made a bad assumption here, this function is also called by the rom browser on scan so doing a full check of the crc causes a massive slowdown
 	// Only do a check when the CRCs both read 0
+	PrevCRC1 = *(DWORD*)&Data[0x10];
+	PrevCRC2 = *(DWORD*)&Data[0x14];
 	if (*(DWORD*)&Data[0x10] == 0 && *(DWORD*)&Data[0x14] == 0) {
-		PrevCRC1 = *(DWORD*)&Data[0x10];
-		PrevCRC2 = *(DWORD*)&Data[0x14];
 		LoadRomRecalcCRCs(FileName, &Data[0x10], &Data[0x14]);
 	}
 
@@ -502,6 +502,8 @@ BOOL LoadRomHeader(void) {
 	GetRomFullName(RomFullName, RomHeader, CurrentFileName);
 
 	// Bad CRCs, we are forced to recalculate (This means loading the entire rom into memory)
+	PrevCRC1 = *(DWORD*)&RomHeader[0x10];
+	PrevCRC2 = *(DWORD*)&RomHeader[0x14];
 	if (*(DWORD*)&RomHeader[0x10] == 0 || *(DWORD*)&RomHeader[0x14] == 0)
 		LoadRomRecalcCRCs(CurrentFileName, &RomHeader[0x10], &RomHeader[0x14]);
 

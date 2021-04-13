@@ -1410,7 +1410,18 @@ LRESULT CALLBACK RomInfoProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
 			sprintf(&String[1], "Unknown");
 		}
 		else {
-			sprintf(&String[1], "CIC-NUS-61%02d", GetCicChipID(RomHeader));
+			// PAL region is 71XX chip, NTSC is 61XX chip
+			// PAL region's 01 is NTSC's region 02, same for PAL's 02 being NTSC's 01
+			if (GetRomRegion(RomHeader) == PAL_Region) {
+				int tmp = GetCicChipID(RomHeader);
+				if (tmp == 2)
+					tmp = 1;
+				else if (tmp == 1)
+					tmp = 2;
+				sprintf(&String[1], "CIC-NUS-71%02X", tmp);
+			}
+			else
+				sprintf(&String[1], "CIC-NUS-61%02X", GetCicChipID(RomHeader));
 		}
 		SetDlgItemText(hDlg, IDC_INFO_CIC, String);
 		break;
