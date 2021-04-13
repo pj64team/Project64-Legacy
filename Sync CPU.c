@@ -137,7 +137,7 @@ void FreeSyncMemory (void) {
 void ProtectMemory (void) {
 	DWORD OldProtect;
 
-	VirtualProtect(N64MEM,RdramSize,PAGE_READONLY,&OldProtect);
+	//VirtualProtect(N64MEM,RdramSize,PAGE_READONLY,&OldProtect);
 	VirtualProtect(N64MEM + 0x04000000,0x2000,PAGE_READONLY,&OldProtect);
 }
 

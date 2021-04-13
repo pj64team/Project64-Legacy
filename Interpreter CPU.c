@@ -754,9 +754,9 @@ void StartInterpreterCPU (void ) {
 						Enter_R4300i_Commands_Window();
 						SetR4300iCommandViewto( PROGRAM_COUNTER );
 						if (CPU_Action.Stepping) {
-							DisplayError ( "Encounted a R4300i Breakpoint" );
+						//	DisplayError ( "Encounted a R4300i Breakpoint" );
 						} else {
-							DisplayError ( "Encounted a R4300i Breakpoint\n\nNow Stepping" );
+						//	DisplayError ( "Encounted a R4300i Breakpoint\n\nNow Stepping" );
 							SetR4300iCommandToStepping();
 						}
 					} else {
