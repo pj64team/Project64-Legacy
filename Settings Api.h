@@ -25,6 +25,9 @@ BOOL Settings_HasSetting(char *filename, char *id, char *setting);
 // Used to fetch the keys for a given entry
 void Settings_FetchKeyNames(char *filename, char *id, char **keys);
 
+// A check to make sure the entry exists at all
+BOOL Settings_EntryExists(char* filename, char* id);
+
 ////////////////////////////////////
 // The following are file writes
 ////////////////////////////////////

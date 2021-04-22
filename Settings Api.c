@@ -108,3 +108,7 @@ void Settings_DeleteLine(char* filename, char* id, char* line) {
 void Settings_WriteLine(char* filename, char* id, char* line) {
 	WriteLine(filename, id, line);
 }
+
+BOOL Settings_EntryExists(char* filename, char* id) {
+	return EntryExists(filename, id);
+}

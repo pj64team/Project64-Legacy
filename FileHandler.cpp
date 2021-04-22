@@ -133,6 +133,10 @@ string FileStuff::GetLine(char* id, size_t line_number) {
 	return STR_EMPTY;
 }
 
+bool FileStuff::DoesEntryExist(char* id) {
+	return (FindEntry("[" + (string)id + "]") == NULL ? FALSE : TRUE);
+}
+
 string FileStuff::GetKeys(char* id) {
 	string result;
 	size_t loc = string::npos;
@@ -479,6 +483,29 @@ string LineReadHandler(char* filename, char* id, size_t line) {
 	return ret;
 }
 
+BOOL CheckEntryExists(char* filename, char* id) {
+	DWORD wait_result;
+	FileStuff* file;
+	bool result;
+
+	// Simple mutex to prevent accessing memory across multiple threads
+	wait_result = WaitForSingleObject(gLVMutex, INFINITE);
+
+	// Some kind of error!?
+	if (wait_result != WAIT_OBJECT_0)
+		return FALSE;
+
+	// Fetch the handle to the file
+	file = GetTheFile(filename);
+
+	result = file->DoesEntryExist(id);
+
+	if (!ReleaseMutex(gLVMutex))
+		MessageBox(NULL, "Failed to release a mutex???", "Error", MB_OK);
+
+	return result ? TRUE : FALSE;
+}
+
 void WriteHandler(char* filename, char* id, char* setting, char* value, supported_writes write_type) {
 	DWORD wait_result;
 	FileStuff* file;
@@ -593,6 +620,10 @@ void DeleteLine(char* filename, char* id, char* line) {
 
 void ChangeKey(char* filename, char* id, char* oldkey, char* newkey) {
 	WriteHandler(filename, id, oldkey, newkey, supported_writes::CHANGE_KEY);
+}
+
+int EntryExists(char* filename, char *id) {
+	return CheckEntryExists(filename, id);
 }
 
 ////////////////////////////////////////////

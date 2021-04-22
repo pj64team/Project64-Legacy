@@ -4,6 +4,7 @@ extern "C" {
 	char* ReadStr(char* filename, char* id, char* setting, char* defaultvalue);
 	int IsSet(char* filename, char* id, char* setting);
 	int FetchIntValue(char* filename, char* id, char* setting, int def);
+	int EntryExists(char* filename, char* id);
 
 	void Write(char* filename, char* id, char* setting, char* value);
 	void Delete(char* filename, char* id, char* setting);
@@ -83,6 +84,8 @@ public:
 	string GetValue(char* id, char* setting, char* def, bool fetch);
 	string GetKeys(char* id);
 	string GetLine(char* id, size_t line_number);
+
+	bool DoesEntryExist(char* id);
 
 	// Changes to the buffer
 	void AddSettingValue(char* id, char* setting, char* value);
