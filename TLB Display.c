@@ -24,7 +24,6 @@
  *
  */
 
-#if (!defined(EXTERNAL_RELEASE))
 #include <windows.h>
 #include <commctrl.h>
 #include <stdio.h>
@@ -285,4 +284,3 @@ LRESULT CALLBACK TLB_Proc (HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam) {
 	}
 	return TRUE;
 }
-#endif

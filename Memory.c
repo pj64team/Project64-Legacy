@@ -82,9 +82,8 @@ int Allocate_Memory ( void ) {
 		return FALSE;
 	}
 
-#ifndef EXTERNAL_RELEASE
-	SyncMemory = (unsigned char *) VirtualAlloc( NULL, 0x20000000, MEM_RESERVE | MEM_TOP_DOWN, PAGE_READWRITE );
-#endif
+	if (HaveDebugger)
+		SyncMemory = (unsigned char *) VirtualAlloc( NULL, 0x20000000, MEM_RESERVE | MEM_TOP_DOWN, PAGE_READWRITE );
 
 	/* Recomp code */
 	RecompCode=(BYTE *) VirtualAlloc( NULL, LargeCompileBufferSize + 4, MEM_RESERVE|MEM_TOP_DOWN, PAGE_EXECUTE_READWRITE);
@@ -1153,9 +1152,8 @@ int r4300i_CPU_MemoryFilter( DWORD dwExptCode, LPEXCEPTION_POINTERS lpEP) {
 		Start = (lpEP->ContextRecord->Edi - (DWORD)N64MEM);
 		End = (Start + (lpEP->ContextRecord->Ecx << 2) - 1);
 		if ((int)Start < 0) { 
-#ifndef EXTERNAL_RELEASE
-			DisplayError("hmmm.... where does this dma start ?");
-#endif
+			if (ShowDebugMessages)
+				DisplayError("hmmm.... where does this dma start ?");
 			return EXCEPTION_CONTINUE_SEARCH;
 		}
 #ifdef CFB_READ
@@ -1174,9 +1172,8 @@ int r4300i_CPU_MemoryFilter( DWORD dwExptCode, LPEXCEPTION_POINTERS lpEP) {
 					memset(JumpTable + ((count & 0x00FFFFF0) >> 2),0,0x1000);
 					*(DelaySlotTable + count) = NULL;
 					if (VirtualProtect(N64MEM + count, 4, PAGE_READWRITE, &OldProtect) == 0) {
-#ifndef EXTERNAL_RELEASE
-						DisplayError("Failed to unprotect %X\n1", count);
-#endif
+						if (ShowDebugMessages)
+							DisplayError("Failed to unprotect %X\n1", count);
 					}
 				}
 			}			
@@ -1187,9 +1184,8 @@ int r4300i_CPU_MemoryFilter( DWORD dwExptCode, LPEXCEPTION_POINTERS lpEP) {
 			memset(JumpTable + (0x04000000 >> 2),0,0x1000);
 			*(DelaySlotTable + (0x04000000 >> 12)) = NULL;
 			if (VirtualProtect(N64MEM + 0x04000000, 4, PAGE_READWRITE, &OldProtect) == 0) {
-#ifndef EXTERNAL_RELEASE
-				DisplayError("Failed to unprotect %X\n7", 0x04000000);
-#endif
+				if (ShowDebugMessages)
+					DisplayError("Failed to unprotect %X\n7", 0x04000000);
 			}
 			return EXCEPTION_CONTINUE_EXECUTION;
 		}
@@ -1198,16 +1194,13 @@ int r4300i_CPU_MemoryFilter( DWORD dwExptCode, LPEXCEPTION_POINTERS lpEP) {
 			memset(JumpTable + (0x04001000 >> 2),0,0x1000);
 			*(DelaySlotTable + (0x04001000 >> 12)) = NULL;
 			if (VirtualProtect(N64MEM + 0x04001000, 4, PAGE_READWRITE, &OldProtect) == 0) {
-#ifndef EXTERNAL_RELEASE
-				DisplayError("Failed to unprotect %X\n6", 0x04001000);
-#endif
+				if (ShowDebugMessages)
+					DisplayError("Failed to unprotect %X\n6", 0x04001000);
 			}
 			return EXCEPTION_CONTINUE_EXECUTION;
 		}
-#ifndef EXTERNAL_RELEASE
-		DisplayError("hmmm.... where does this dma End ?\nstart: %X\nend:%X\nlocation %X", 
-			Start,End,lpEP->ContextRecord->Eip);
-#endif
+		if (ShowDebugMessages)
+			DisplayError("hmmm.... where does this dma End ?\nstart: %X\nend:%X\nlocation %X", Start,End,lpEP->ContextRecord->Eip);
 		return EXCEPTION_CONTINUE_SEARCH;
 	}
 
@@ -1270,8 +1263,9 @@ int r4300i_CPU_MemoryFilter( DWORD dwExptCode, LPEXCEPTION_POINTERS lpEP) {
 	case 0x86: ReadPos += 5; break;
 	case 0x87: ReadPos += 5; break;
 	default:
-		DisplayError("Unknown x86 opcode %X\nlocation %X\nloc: %X\nfgh2", 
-			*(unsigned char *)lpEP->ContextRecord->Eip, lpEP->ContextRecord->Eip, (char *)exRec.ExceptionInformation[1] - (char *)N64MEM);
+		if (ShowDebugMessages)
+			DisplayError("Unknown x86 opcode %X\nlocation %X\nloc: %X\nfgh2", 
+				*(unsigned char *)lpEP->ContextRecord->Eip, lpEP->ContextRecord->Eip, (char *)exRec.ExceptionInformation[1] - (char *)N64MEM);
 		return EXCEPTION_CONTINUE_SEARCH;
 	}
 
@@ -1960,9 +1954,9 @@ int r4300i_SW_NonMemory ( DWORD PAddr, DWORD Value ) {
 				MI_INTR_REG &= ~MI_INTR_SP; 
 				CheckInterrupts();
 			}
-#ifndef EXTERNAL_RELEASE
-			if ( ( Value & SP_SET_INTR ) != 0) { DisplayError("SP_SET_INTR"); }
-#endif
+			if (ShowDebugMessages)
+				if ( ( Value & SP_SET_INTR ) != 0) { DisplayError("SP_SET_INTR"); }
+
 			if ( ( Value & SP_CLR_SSTEP ) != 0) { SP_STATUS_REG &= ~SP_STATUS_SSTEP; }
 			if ( ( Value & SP_SET_SSTEP ) != 0) { SP_STATUS_REG |= SP_STATUS_SSTEP;  }
 			if ( ( Value & SP_CLR_INTR_BREAK ) != 0) { SP_STATUS_REG &= ~SP_STATUS_INTR_BREAK; }

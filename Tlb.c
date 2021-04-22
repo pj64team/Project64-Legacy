@@ -104,9 +104,8 @@ void SetupTLB_Entry (int Entry) {
 			continue; 
 		}
 		if (FastTlb[FastIndx].VEND <= FastTlb[FastIndx].VSTART) {
-#ifndef EXTERNAL_RELEASE
-			DisplayError("Vstart = Vend for tlb mapping");
-#endif
+			if (ShowDebugMessages)
+				DisplayError("Vstart = Vend for tlb mapping");
 			continue;
 		}
 		if (FastTlb[FastIndx].VSTART >= 0x80000000 && FastTlb[FastIndx].VEND <= 0xBFFFFFFF) {
@@ -134,13 +133,12 @@ void SetupTLB_Entry (int Entry) {
 void TLB_Probe (void) {
 	int Counter;
 	
-#ifndef EXTERNAL_RELEASE
-	if (LogOptions.GenerateLog) { 
+	if (HaveDebugger && LogOptions.GenerateLog) { 
 		if (LogOptions.LogTLB) { 
 			LogMessage("%08X: TLB Probe:  EntryHI :%X",PROGRAM_COUNTER,ENTRYHI_REGISTER);
 		}
 	}
-#endif
+
 	INDEX_REGISTER |= 0x80000000;
 	for (Counter = 0; Counter < 32; Counter ++) {		
 		DWORD TlbValue = tlb[Counter].EntryHi.Value & (~tlb[Counter].PageMask.BreakDownPageMask.Mask << 13);
@@ -161,14 +159,13 @@ void TLB_Probe (void) {
 void TLB_Read (void) {
 	DWORD index = INDEX_REGISTER & 0x1F;
 
-#ifndef EXTERNAL_RELEASE
-	if (LogOptions.GenerateLog) { 
+	if (HaveDebugger && LogOptions.GenerateLog) { 
 		if (LogOptions.LogTLB) { 
 			LogMessage("%08X: TLB Read:  index :%X     %X - %X",PROGRAM_COUNTER,INDEX_REGISTER,
 				tlb[index].EntryHi.Value,(tlb[index].EntryHi.Value & ~tlb[index].PageMask.Value));
 		}
 	}
-#endif
+
 	PAGE_MASK_REGISTER = tlb[index].PageMask.Value ;
 	ENTRYHI_REGISTER = (tlb[index].EntryHi.Value & ~tlb[index].PageMask.Value) ;
 	ENTRYLO0_REGISTER = tlb[index].EntryLo0.Value;
@@ -194,14 +191,13 @@ void _fastcall WriteTLBEntry (int index) {
 		PROGRAM_COUNTER < FastTlb[FastIndx + 1].VEND &&
 		FastTlb[FastIndx + 1].ValidEntry && FastTlb[FastIndx + 1].VALID))
 	{
-#ifndef EXTERNAL_RELEASE
-		if (LogOptions.GenerateLog && LogOptions.LogTLB) { 
+		if (HaveDebugger && LogOptions.GenerateLog && LogOptions.LogTLB) { 
 			LogMessage("%08X: TLB write:  Index: %d   PageMask: %X  EntryLo0: %X  EntryLo1: %X  EntryHi: %X",PROGRAM_COUNTER,
 				index,PAGE_MASK_REGISTER,ENTRYLO0_REGISTER,ENTRYLO1_REGISTER,ENTRYHI_REGISTER);
 			LogMessage("       Being Ignored");
 			LogMessage("");
 		}
-#endif
+
 		return;
 	}
 #endif
@@ -224,8 +220,7 @@ void _fastcall WriteTLBEntry (int index) {
 	tlb[index].EntryLo1.Value = ENTRYLO1_REGISTER;
 	tlb[index].EntryDefined = TRUE;
 	
-#ifndef EXTERNAL_RELEASE
-	if (LogOptions.GenerateLog && LogOptions.LogTLB) { 
+	if (HaveDebugger && LogOptions.GenerateLog && LogOptions.LogTLB) { 
 		LogMessage("%08X: TLB write:  Index: %d   PageMask: %X  EntryLo0: %X  EntryLo1: %X  EntryHi: %X",PROGRAM_COUNTER,
 			index,PAGE_MASK_REGISTER,ENTRYLO0_REGISTER,ENTRYLO1_REGISTER,ENTRYHI_REGISTER);
 		LogMessage("      Entry 1:  VStart: %X   VEnd: %X  Physical Start: %X",
@@ -238,10 +233,8 @@ void _fastcall WriteTLBEntry (int index) {
 			tlb[index].EntryLo1.BreakDownEntryLo1.PFN << 12);
 		LogMessage("");
 	}
-#endif
 
 	SetupTLB_Entry(index);
-#if (!defined(EXTERNAL_RELEASE))
-	RefreshTLBWindow();
-#endif
+	if (HaveDebugger)
+		RefreshTLBWindow();
 }

@@ -24,7 +24,6 @@
  *
  */
 
-#if (!defined(EXTERNAL_RELEASE))
 #include <windows.h>
 
 #include <commctrl.h>
@@ -527,4 +526,3 @@ void UpdateBP_FunctionList (void) {
 	SendMessage(hFunctionlist,CB_SETCURSEL,(WPARAM)1,(LPARAM)0);
 	UpdateBPointGUI();
 }
-#endif

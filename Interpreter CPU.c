@@ -692,9 +692,8 @@ void ExecuteInterpreterOpCode (void) {
 
 	((void (_fastcall *)()) R4300i_Opcode[ Opcode.BRANCH.op ])();
 	if (GPR[0].DW != 0) {
-#if (!defined(EXTERNAL_RELEASE))
-		DisplayError("GPR[0].DW has been written to");
-#endif
+		if (ShowDebugMessages)
+			DisplayError("GPR[0].DW has been written to");
 		GPR[0].DW = 0;
 	}
 #ifdef Interpreter_StackTest
@@ -745,42 +744,44 @@ void StartInterpreterCPU (void ) {
 	//Add_R4300iBPoint(0x802000C8,FALSE);
 	__try {
 		for (;;) {
-#if (!defined(EXTERNAL_RELEASE))
-			if (NoOfBpoints != 0) {
-				if (CheckForR4300iBPoint(PROGRAM_COUNTER)) {
-					UpdateCurrentR4300iRegisterPanel();
-					Refresh_Memory();
-					if (InR4300iCommandsWindow) {
-						Enter_R4300i_Commands_Window();
-						SetR4300iCommandViewto( PROGRAM_COUNTER );
-						if (CPU_Action.Stepping) {
-						//	DisplayError ( "Encounted a R4300i Breakpoint" );
-						} else {
-						//	DisplayError ( "Encounted a R4300i Breakpoint\n\nNow Stepping" );
-							SetR4300iCommandToStepping();
+			if (HaveDebugger) {
+				if (NoOfBpoints != 0) {
+					if (CheckForR4300iBPoint(PROGRAM_COUNTER)) {
+						UpdateCurrentR4300iRegisterPanel();
+						Refresh_Memory();
+						if (InR4300iCommandsWindow) {
+							Enter_R4300i_Commands_Window();
+							SetR4300iCommandViewto(PROGRAM_COUNTER);
+							if (CPU_Action.Stepping) {
+								//	DisplayError ( "Encounted a R4300i Breakpoint" );
+							}
+							else {
+								//	DisplayError ( "Encounted a R4300i Breakpoint\n\nNow Stepping" );
+								SetR4300iCommandToStepping();
+							}
 						}
-					} else {
-						DisplayError ( "Encounted a R4300i Breakpoint\n\nEntering Command Window" );
-						Enter_R4300i_Commands_Window();
-					}					
+						else {
+							DisplayError("Encounted a R4300i Breakpoint\n\nEntering Command Window");
+							Enter_R4300i_Commands_Window();
+						}
+					}
+				}
+
+				//r4300i_LW_VAddr(Addr,&Value);
+				//if (Value2 != Value) {
+				//	DisplayError("%X changed",Addr);
+				//}
+				//Value2 = Value;
+				if (CPU_Action.Stepping) {
+					do {
+						SetR4300iCommandViewto(PROGRAM_COUNTER);
+						UpdateCurrentR4300iRegisterPanel();
+						Refresh_Memory();
+						WaitForSingleObject(CPU_Action.hStepping, INFINITE);
+						if (CPU_Action.Stepping) { ExecuteInterpreterOpCode(); }
+					} while (CPU_Action.Stepping);
 				}
 			}
-
-			//r4300i_LW_VAddr(Addr,&Value);
-			//if (Value2 != Value) {
-			//	DisplayError("%X changed",Addr);
-			//}
-			//Value2 = Value;
-			if (CPU_Action.Stepping) {
-				do {
-					SetR4300iCommandViewto (PROGRAM_COUNTER);
-					UpdateCurrentR4300iRegisterPanel();
-					Refresh_Memory();
-					WaitForSingleObject( CPU_Action.hStepping, INFINITE );
-					if (CPU_Action.Stepping) { ExecuteInterpreterOpCode(); }
-				} while (CPU_Action.Stepping);
-			}
-#endif
 			if ((Profiling || ShowCPUPer) && ProfilingLabel[0] == 0) { StartTimer("r4300i Running"); };
 			ExecuteInterpreterOpCode();
 		}

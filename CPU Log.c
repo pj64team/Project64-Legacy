@@ -24,7 +24,6 @@
  *
  */
 
-#if (!defined(EXTERNAL_RELEASE))
 #include <windows.h>
 #include <stdio.h>
 #include "main.h"
@@ -69,4 +68,3 @@ void Stop_x86_Log (void) {
 	}
 }
 #endif 
-#endif

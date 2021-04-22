@@ -65,41 +65,42 @@ int GetCicChipID (BYTE *RomData) {
 }
 
 void LogControllerPakData (char * Description) {
-#if (!defined(EXTERNAL_RELEASE))
-	int count, count2;
-	char HexData[100], AsciiData[100], Addon[20];
-	LogMessage("\t%s:",Description);			
-	LogMessage("\t------------------------------");
-	for (count = 0; count < 16; count ++ ) {
-		if ((count % 4) == 0) { 
-			sprintf(HexData,"\0"); 
-			sprintf(AsciiData,"\0"); 
-		}
- 		sprintf(Addon,"%02X %02X %02X %02X", 
-			PIF_Ram[(count << 2) + 0], PIF_Ram[(count << 2) + 1], 
-			PIF_Ram[(count << 2) + 2], PIF_Ram[(count << 2) + 3] );
-		strcat(HexData,Addon);
-		if (((count + 1) % 4) != 0) {
-			sprintf(Addon,"-");
-			strcat(HexData,Addon);
-		} 
-		
-		Addon[0] = 0;
-		for (count2 = 0; count2 < 4; count2++) {
-			if (PIF_Ram[(count << 2) + count2] < 30) {
-				strcat(Addon,".");
-			} else {
-				sprintf(Addon,"%s%c",Addon,PIF_Ram[(count << 2) + count2]);
+	if (HaveDebugger) {
+		int count, count2;
+		char HexData[100], AsciiData[100], Addon[20];
+		LogMessage("\t%s:", Description);
+		LogMessage("\t------------------------------");
+		for (count = 0; count < 16; count++) {
+			if ((count % 4) == 0) {
+				sprintf(HexData, "\0");
+				sprintf(AsciiData, "\0");
+			}
+			sprintf(Addon, "%02X %02X %02X %02X",
+				PIF_Ram[(count << 2) + 0], PIF_Ram[(count << 2) + 1],
+				PIF_Ram[(count << 2) + 2], PIF_Ram[(count << 2) + 3]);
+			strcat(HexData, Addon);
+			if (((count + 1) % 4) != 0) {
+				sprintf(Addon, "-");
+				strcat(HexData, Addon);
+			}
+
+			Addon[0] = 0;
+			for (count2 = 0; count2 < 4; count2++) {
+				if (PIF_Ram[(count << 2) + count2] < 30) {
+					strcat(Addon, ".");
+				}
+				else {
+					sprintf(Addon, "%s%c", Addon, PIF_Ram[(count << 2) + count2]);
+				}
+			}
+			strcat(AsciiData, Addon);
+
+			if (((count + 1) % 4) == 0) {
+				LogMessage("\t%s %s", HexData, AsciiData);
 			}
 		}
-		strcat(AsciiData,Addon);
-		
-		if (((count + 1) % 4) == 0) {
-			LogMessage("\t%s %s",HexData, AsciiData);
-		} 
+		LogMessage("");
 	}
-	LogMessage("");
-#endif
 }
 
 void PifRamRead (void) {
@@ -204,9 +205,8 @@ void PifRamWrite (void) {
 					if (RTC_Command(&PIF_Ram[CurPos]) == FALSE)
 						EepromCommand(&PIF_Ram[CurPos]);
 				} else {
-#ifndef EXTERNAL_RELEASE
-					DisplayError("Command on channel 5?");
-#endif
+					if (ShowDebugMessages)
+						DisplayError("Command on channel 5?");
 				}
 				CurPos += PIF_Ram[CurPos] + (PIF_Ram[CurPos + 1] & 0x3F) + 1;
 				Channel += 1;
@@ -226,10 +226,10 @@ void ProcessControllerCommand ( int Control, BYTE * Command) {
 	case 0x00: // check
 	case 0xFF: // reset & check ?
 		if ((Command[1] & 0x80) != 0) { break; }
-#ifndef EXTERNAL_RELEASE
-		if (Command[0] != 1) { DisplayError("What am I meant to do with this Controller Command"); }
-		if (Command[1] != 3) { DisplayError("What am I meant to do with this Controller Command"); }
-#endif
+
+		if (ShowDebugMessages && Command[0] != 1) { DisplayError("What am I meant to do with this Controller Command"); }
+		if (ShowDebugMessages && Command[1] != 3) { DisplayError("What am I meant to do with this Controller Command"); }
+
 		if (Controllers[Control].Present == TRUE) {
 			Command[3] = 0x05;
 			Command[4] = 0x00;
@@ -244,20 +244,18 @@ void ProcessControllerCommand ( int Control, BYTE * Command) {
 		}
 		break;
 	case 0x01: // read controller
-#ifndef EXTERNAL_RELEASE
-		if (Command[0] != 1) { DisplayError("What am I meant to do with this Controller Command"); }
-		if (Command[1] != 4) { DisplayError("What am I meant to do with this Controller Command"); }
-#endif
+		if (ShowDebugMessages && Command[0] != 1) { DisplayError("What am I meant to do with this Controller Command"); }
+		if (ShowDebugMessages && Command[1] != 4) { DisplayError("What am I meant to do with this Controller Command"); }
+
 		if (Controllers[Control].Present == FALSE) {
 			Command[1] |= 0x80;
 		}
 		break;
 	case 0x02: //read from controller pack
-#ifndef EXTERNAL_RELEASE
-		if (LogOptions.LogControllerPak) { LogControllerPakData("Read: Before Getting Results"); }
-		if (Command[0] != 3) { DisplayError("What am I meant to do with this Controller Command"); }
-		if (Command[1] != 33) { DisplayError("What am I meant to do with this Controller Command"); }
-#endif
+		if (HaveDebugger && LogOptions.LogControllerPak) { LogControllerPakData("Read: Before Getting Results"); }
+		if (ShowDebugMessages && Command[0] != 3) { DisplayError("What am I meant to do with this Controller Command"); }
+		if (ShowDebugMessages && Command[1] != 33) { DisplayError("What am I meant to do with this Controller Command"); }
+
 		if (Controllers[Control].Present == TRUE) {
 			DWORD address = ((Command[3] << 8) | Command[4]);
 			switch (Controllers[Control].Plugin) {
@@ -274,16 +272,13 @@ void ProcessControllerCommand ( int Control, BYTE * Command) {
 		} else {
 			Command[1] |= 0x80;
 		}
-#ifndef EXTERNAL_RELEASE
-		if (LogOptions.LogControllerPak) { LogControllerPakData("Read: After Getting Results"); }
-#endif
+		if (HaveDebugger && LogOptions.LogControllerPak) { LogControllerPakData("Read: After Getting Results"); }
 		break;
 	case 0x03: //write controller pak
-#ifndef EXTERNAL_RELEASE
-		if (LogOptions.LogControllerPak) { LogControllerPakData("Write: Before Processing"); }
-		if (Command[0] != 35) { DisplayError("What am I meant to do with this Controller Command"); }
-		if (Command[1] != 1) { DisplayError("What am I meant to do with this Controller Command"); }
-#endif
+
+		if (HaveDebugger && LogOptions.LogControllerPak) { LogControllerPakData("Write: Before Processing"); }
+		if (ShowDebugMessages && Command[0] != 35) { DisplayError("What am I meant to do with this Controller Command"); }
+		if (ShowDebugMessages && Command[1] != 1) { DisplayError("What am I meant to do with this Controller Command"); }
 		
 		if (Controllers[Control].Present == TRUE) {
 			DWORD address = ((Command[3] << 8) | Command[4]);
@@ -302,9 +297,7 @@ void ProcessControllerCommand ( int Control, BYTE * Command) {
 		} else {
 			Command[1] |= 0x80;
 		}
-#ifndef EXTERNAL_RELEASE
-		if (LogOptions.LogControllerPak) { LogControllerPakData("Write: After Processing"); }
-#endif
+		if (HaveDebugger && LogOptions.LogControllerPak) { LogControllerPakData("Write: After Processing"); }
 		break;
 	default:
 		if (ShowPifRamErrors) { DisplayError("Unknown ControllerCommand %d",Command[2]); }
@@ -315,10 +308,9 @@ void ReadControllerCommand (int Control, BYTE * Command) {
 	switch (Command[2]) {
 	case 0x01: // read controller
 		if (Controllers[Control].Present == TRUE) {
-#ifndef EXTERNAL_RELEASE
-			if (Command[0] != 1) { DisplayError("What am I meant to do with this Controller Command"); }
-			if (Command[1] != 4) { DisplayError("What am I meant to do with this Controller Command"); }
-#endif
+			if (ShowDebugMessages && Command[0] != 1) { DisplayError("What am I meant to do with this Controller Command"); }
+			if (ShowDebugMessages && Command[1] != 4) { DisplayError("What am I meant to do with this Controller Command"); }
+
 			if (GetKeys) {
 				BUTTONS Keys;
 				
@@ -360,10 +352,9 @@ int LoadPifRom(int country) {
 		sprintf(PifRomName,"%s%sPifrom\\pifpal.raw",drive,dir); break;
 	case NTSC_Region:
 		sprintf(PifRomName,"%s%sPifrom\\pifntsc.raw",drive,dir); break;
-#if (!defined(EXTERNAL_RELEASE))
 	default:
-		DisplayError(GS(MSG_UNKNOWN_COUNTRY)); break;
-#endif
+		if (ShowDebugMessages)
+			DisplayError(GS(MSG_UNKNOWN_COUNTRY)); break;
 	}	
 
 	hPifFile = CreateFile(PifRomName,GENERIC_READ,FILE_SHARE_READ,NULL,OPEN_EXISTING,

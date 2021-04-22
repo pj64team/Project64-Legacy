@@ -59,15 +59,15 @@ void __cdecl CheckInterrupts ( void ) {
 }
 
 void DoAddressError ( BOOL DelaySlot, DWORD BadVaddr, BOOL FromRead) {
-#ifndef EXTERNAL_RELEASE
-	DisplayError("AddressError");
-	if (( STATUS_REGISTER & STATUS_EXL  ) != 0 ) { 
-		DisplayError("EXL set in AddressError Exception");
+	if (ShowDebugMessages) {
+		DisplayError("AddressError");
+		if ((STATUS_REGISTER & STATUS_EXL) != 0) {
+			DisplayError("EXL set in AddressError Exception");
+		}
+		if ((STATUS_REGISTER & STATUS_ERL) != 0) {
+			DisplayError("ERL set in AddressError Exception");
+		}
 	}
-	if (( STATUS_REGISTER & STATUS_ERL  ) != 0 ) { 
-		DisplayError("ERL set in AddressError Exception");
-	}
-#endif
 	if (FromRead) {
 		CAUSE_REGISTER = EXC_RADE;
 	} else {
@@ -85,14 +85,14 @@ void DoAddressError ( BOOL DelaySlot, DWORD BadVaddr, BOOL FromRead) {
 }
 
 void DoBreakException ( BOOL DelaySlot) {
-#ifndef EXTERNAL_RELEASE
-	if (( STATUS_REGISTER & STATUS_EXL  ) != 0 ) { 
-		DisplayError("EXL set in Break Exception");
+	if (ShowDebugMessages) {
+		if ((STATUS_REGISTER & STATUS_EXL) != 0) {
+			DisplayError("EXL set in Break Exception");
+		}
+		if ((STATUS_REGISTER & STATUS_ERL) != 0) {
+			DisplayError("ERL set in Break Exception");
+		}
 	}
-	if (( STATUS_REGISTER & STATUS_ERL  ) != 0 ) { 
-		DisplayError("ERL set in Break Exception");
-	}
-#endif
 
 	CAUSE_REGISTER = EXC_BREAK;
 	if (DelaySlot) {
@@ -106,14 +106,14 @@ void DoBreakException ( BOOL DelaySlot) {
 }
 
 void _fastcall DoCopUnusableException ( BOOL DelaySlot, int Coprocessor ) {
-#ifndef EXTERNAL_RELEASE
-	if (( STATUS_REGISTER & STATUS_EXL  ) != 0 ) { 
-		DisplayError("EXL set in Break Exception");
+	if (ShowDebugMessages) {
+		if ((STATUS_REGISTER & STATUS_EXL) != 0) {
+			DisplayError("EXL set in Break Exception");
+		}
+		if ((STATUS_REGISTER & STATUS_ERL) != 0) {
+			DisplayError("ERL set in Break Exception");
+		}
 	}
-	if (( STATUS_REGISTER & STATUS_ERL  ) != 0 ) { 
-		DisplayError("ERL set in Break Exception");
-	}
-#endif
 
 	CAUSE_REGISTER = EXC_CPU;
 	if (Coprocessor == 1) { CAUSE_REGISTER |= 0x10000000; }
@@ -163,22 +163,21 @@ void _fastcall DoTLBMiss ( BOOL DelaySlot, DWORD BadVaddr ) {
 		}
 		STATUS_REGISTER |= STATUS_EXL;
 	} else {
-#ifndef EXTERNAL_RELEASE
-		DisplayError("EXL Set\nAddress Defined: %s",AddressDefined(BadVaddr)?"TRUE":"FALSE");
-#endif
+		if (ShowDebugMessages)
+			DisplayError("EXL Set\nAddress Defined: %s",AddressDefined(BadVaddr)?"TRUE":"FALSE");
 		PROGRAM_COUNTER = 0x80000180;
 	}
 }
 
 void _fastcall DoSysCallException ( BOOL DelaySlot) {
-#ifndef EXTERNAL_RELEASE
-	if (( STATUS_REGISTER & STATUS_EXL  ) != 0 ) { 
-		DisplayError("EXL set in SysCall Exception");
+	if (ShowDebugMessages) {
+		if ((STATUS_REGISTER & STATUS_EXL) != 0) {
+			DisplayError("EXL set in SysCall Exception");
+		}
+		if ((STATUS_REGISTER & STATUS_ERL) != 0) {
+			DisplayError("ERL set in SysCall Exception");
+		}
 	}
-	if (( STATUS_REGISTER & STATUS_ERL  ) != 0 ) { 
-		DisplayError("ERL set in SysCall Exception");
-	}
-#endif
 
 	CAUSE_REGISTER = EXC_SYSCALL;
 	if (DelaySlot) {

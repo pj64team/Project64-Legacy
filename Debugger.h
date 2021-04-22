@@ -23,7 +23,6 @@
  * should be forwarded to them so if they want them.
  *
  */
-#if (!defined(EXTERNAL_RELEASE))
 #include "Main.h"
 
 #include "BreakPoints.h"
@@ -32,8 +31,6 @@
 #include "TLB Display.h"
 #include "Logging.h"
 //#include "Reverse Code.h"
-
-#endif
 
 #include "R4300i Commands.h"
 #include "mapping.h"

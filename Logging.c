@@ -24,7 +24,6 @@
  *
  */
 
-#if (!defined(EXTERNAL_RELEASE))
 #include <windows.h>
 #include <commctrl.h>
 #include <stdio.h>
@@ -728,4 +727,3 @@ void StopLog (void) {
 	}
 	hLogFile = NULL;
 }
-#endif

@@ -489,7 +489,6 @@ void SetupPlugins (HWND hWnd) {
 		if (RSPVersion == 0x0101) { InitiateRSP_1_1(RspInfo11, &RspTaskValue); }
 	}
 	
-#if (!defined(EXTERNAL_RELEASE))
 	if (HaveDebugger) {
 		DEBUG_INFO DebugInfo;
 
@@ -507,7 +506,6 @@ void SetupPlugins (HWND hWnd) {
 		if (InitiateRSPDebugger != NULL) { InitiateRSPDebugger(DebugInfo); }
 		if (InitiateGFXDebugger != NULL) { InitiateGFXDebugger(DebugInfo); }
 	}
-#endif
 
 	if (!LoadControllerDll(ControllerDLL)) { 
 		DisplayError(GS(MSG_FAIL_INIT_CONTROL));
@@ -556,11 +554,6 @@ void SetupPluginScreen (HWND hDlg) {
 	HMODULE hLib;
 	int index;
 
-/*#ifdef EXTERNAL_RELEASE
-	ShowWindow(GetDlgItem(hDlg,IDC_RSP_NAME),SW_HIDE);
-	ShowWindow(GetDlgItem(hDlg,RSP_LIST),SW_HIDE);
-	ShowWindow(GetDlgItem(hDlg,RSP_ABOUT),SW_HIDE);
-#endif*/
 	SetDlgItemText(hDlg,RSP_ABOUT,GS(PLUG_ABOUT));
 	SetDlgItemText(hDlg,GFX_ABOUT,GS(PLUG_ABOUT));
 	SetDlgItemText(hDlg,AUDIO_ABOUT,GS(PLUG_ABOUT));
@@ -611,7 +604,6 @@ void SetupPluginScreen (HWND hDlg) {
 
 
 		switch(PluginInfo.Type) {
-//#ifndef EXTERNAL_RELEASE
 		case PLUGIN_TYPE_RSP:
 			index = SendMessage(GetDlgItem(hDlg,RSP_LIST),CB_ADDSTRING,(WPARAM)0, (LPARAM)&PluginInfo.Name);		
 			SendMessage(GetDlgItem(hDlg,RSP_LIST),CB_SETITEMDATA ,(WPARAM)index, (LPARAM)PluginCount);		
@@ -623,7 +615,6 @@ void SetupPluginScreen (HWND hDlg) {
 				FreeLibrary(hLib);
 			}
 			break;
-//#endif
 		case PLUGIN_TYPE_GFX:
 			index = SendMessage(GetDlgItem(hDlg,GFX_LIST),CB_ADDSTRING,(WPARAM)0, (LPARAM)&PluginInfo.Name);		
 			SendMessage(GetDlgItem(hDlg,GFX_LIST),CB_SETITEMDATA ,(WPARAM)index, (LPARAM)PluginCount);		
@@ -701,6 +692,7 @@ BOOL ValidPluginVersion ( PLUGIN_INFO * PluginInfo ) {
 		break;
 	case PLUGIN_TYPE_CONTROLLER:
 		if (PluginInfo->Version == 0x0100) { return TRUE; }
+		if (PluginInfo->Version == 0x0101) { return TRUE; }		// This was missing for some reason but we do have initialization code
 		break;
 	}
 	return FALSE;

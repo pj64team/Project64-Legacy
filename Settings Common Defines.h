@@ -93,6 +93,8 @@
 #define STR_ADLISTCOUNT "Show DList/AList Count"
 #define STR_SHOWCOMPMEM "Show Compile Memory"
 #define STR_PIFERRORS "Show Pif Ram Errors"
+#define STR_HAVEDEBUGGER "Have Debugger"
+#define STR_SHOWMOREMESSAGES "Show More Errors"
 
 // The Strings used for the about info on the files
 #define STR_META "Meta"

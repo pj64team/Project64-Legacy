@@ -95,9 +95,8 @@ void _fastcall AddParent(BLOCK_SECTION * Section, BLOCK_SECTION * Parent){
 		} else if (Parent->JumpSection == Section) {
 			memcpy(&Section->RegStart,&Parent->Jump.RegSet,sizeof(REG_INFO));
 		} else {
-#ifndef EXTERNAL_RELEASE
-			DisplayError("How are these sections joined?????");
-#endif
+			if (ShowDebugMessages)
+				DisplayError("How are these sections joined?????");
 		}
 		memcpy(&Section->RegWorking,&Section->RegStart,sizeof(REG_INFO));
 	} else {
@@ -176,9 +175,8 @@ BYTE * Compiler4300iBlock(void) {
 		CPU_Message("====== PIF ROM: block ======");
 	} else {
 #ifndef ROM_IN_MAPSPACE
-#ifndef EXTERNAL_RELEASE
-		DisplayError("Ummm... Where does this block go");
-#endif
+		if (ShowDebugMessages)
+			DisplayError("Ummm... Where does this block go");
 		ExitThread(0);			
 #endif
 	}
@@ -244,15 +242,13 @@ BYTE * CompileDelaySlot(void) {
 	Section = &DelaySection;
 
 	if ((StartAddress & 0xFFC) != 0) {
-#ifndef EXTERNAL_RELEASE
-		DisplayError("Why are you compiling the Delay Slot at %X",StartAddress);
-#endif
+		if (ShowDebugMessages)
+			DisplayError("Why are you compiling the Delay Slot at %X",StartAddress);
 		ExitThread(0);
 	}
 	if (!r4300i_LW_VAddr(StartAddress, &Opcode.Hex)) {
-#ifndef EXTERNAL_RELEASE
-		DisplayError("TLB Miss in delay slot\nEmulation will know stop");
-#endif
+		if (ShowDebugMessages)
+			DisplayError("TLB Miss in delay slot\nEmulation will now stop");
 		ExitThread(0);
 	} 
 
@@ -267,9 +263,8 @@ BYTE * CompileDelaySlot(void) {
 		CPU_Message("====== PIF ROM: Delay Slot ======");
 	} else {
 #ifndef ROM_IN_MAPSPACE
-#ifndef EXTERNAL_RELEASE
-		DisplayError("Ummm... Where does this block go");
-#endif
+		if (ShowDebugMessages)
+			DisplayError("Ummm... Where does this block go");
 		ExitThread(0);
 #endif
 	}
@@ -457,9 +452,8 @@ void CompileExit (DWORD TargetPC, REG_INFO ExitRegSet, int reason, int CompileNo
 		}
 		sprintf(String,"Exit_%d",BlockInfo.ExitCount);
 		if (x86Jmp == NULL) { 
-#ifndef EXTERNAL_RELEASE
-			DisplayError("CompileExit error");
-#endif
+			if (ShowDebugMessages)
+				DisplayError("CompileExit error");
 			ExitThread(0);
 		}
 		x86Jmp(String,0);
@@ -596,10 +590,9 @@ void CompileExit (DWORD TargetPC, REG_INFO ExitRegSet, int reason, int CompileNo
 		if (CPU_Type == CPU_SyncCores) { Call_Direct(SyncToPC, "SyncToPC"); }
 		Ret();
 		break;
-#ifndef EXTERNAL_RELEASE
 	default:
-		DisplayError("how did you want to exit on reason (%d) ???",reason);
-#endif
+		if (ShowDebugMessages)
+			DisplayError("how did you want to exit on reason (%d) ???",reason);
 	}
 }
 
@@ -1196,11 +1189,11 @@ void _fastcall FillSectionInfo(BLOCK_SECTION * Section) {
 				}
 				break;
 			default:
-#ifndef EXTERNAL_RELEASE
-				if (Command.Hex == 0x00000001) { break; }
-				DisplayError("Unhandled R4300i OpCode in FillSectionInfo 5\n%s",
-					R4300iOpcodeName(Command.Hex,Section->CompilePC));
-#endif
+				if (ShowDebugMessages) {
+					if (Command.Hex == 0x00000001) { break; }
+					DisplayError("Unhandled R4300i OpCode in FillSectionInfo 5\n%s",
+						R4300iOpcodeName(Command.Hex, Section->CompilePC));
+				}
 				NextInstruction = END_BLOCK;
 				Section->CompilePC -= 4;
 			}
@@ -1243,11 +1236,11 @@ void _fastcall FillSectionInfo(BLOCK_SECTION * Section) {
 				} 
 				break;
 			default:
-#ifndef EXTERNAL_RELEASE
-				if (Command.Hex == 0x0407000D) { break; }
-				DisplayError("Unhandled R4300i OpCode in FillSectionInfo 4\n%s",
-					R4300iOpcodeName(Command.Hex,Section->CompilePC));
-#endif
+				if (ShowDebugMessages) {
+					if (Command.Hex == 0x0407000D) { break; }
+					DisplayError("Unhandled R4300i OpCode in FillSectionInfo 4\n%s",
+						R4300iOpcodeName(Command.Hex, Section->CompilePC));
+				}
 				NextInstruction = END_BLOCK;
 				Section->CompilePC -= 4;
 			}
@@ -1377,18 +1370,18 @@ void _fastcall FillSectionInfo(BLOCK_SECTION * Section) {
 					case R4300i_COP0_CO_TLBP: break;
 					case R4300i_COP0_CO_ERET: NextInstruction = END_BLOCK; break;
 					default:
-#ifndef EXTERNAL_RELEASE
-						DisplayError("Unhandled R4300i OpCode in FillSectionInfo\n%s",
-							R4300iOpcodeName(Command.Hex,Section->CompilePC));
-#endif
+						if (ShowDebugMessages)
+							DisplayError("Unhandled R4300i OpCode in FillSectionInfo\n%s",
+								R4300iOpcodeName(Command.Hex,Section->CompilePC));
+
 						NextInstruction = END_BLOCK;
 						Section->CompilePC -= 4;
 					}
 				} else {
-#ifndef EXTERNAL_RELEASE
-					DisplayError("Unhandled R4300i OpCode in FillSectionInfo 3\n%s",
-						R4300iOpcodeName(Command.Hex,Section->CompilePC));
-#endif
+					if (ShowDebugMessages)
+						DisplayError("Unhandled R4300i OpCode in FillSectionInfo 3\n%s",
+							R4300iOpcodeName(Command.Hex,Section->CompilePC));
+
 					NextInstruction = END_BLOCK;
 					Section->CompilePC -= 4;
 				}
@@ -1444,10 +1437,10 @@ void _fastcall FillSectionInfo(BLOCK_SECTION * Section) {
 			case R4300i_COP1_W: break;
 			case R4300i_COP1_L: break;
 			default:
-#ifndef EXTERNAL_RELEASE
-				DisplayError("Unhandled R4300i OpCode in FillSectionInfo 2\n%s",
-					R4300iOpcodeName(Command.Hex,Section->CompilePC));
-#endif
+				if (ShowDebugMessages)
+					DisplayError("Unhandled R4300i OpCode in FillSectionInfo 2\n%s",
+						R4300iOpcodeName(Command.Hex,Section->CompilePC));
+
 				NextInstruction = END_BLOCK;
 				Section->CompilePC -= 4;
 			}
@@ -1524,10 +1517,9 @@ void _fastcall FillSectionInfo(BLOCK_SECTION * Section) {
 			if (Command.Hex == 0xF1F3F5F7) { break; }
 			if (Command.Hex == 0xC1200000) { break; }
 			if (Command.Hex == 0x4C5A5353) { break; }
-#ifndef EXTERNAL_RELEASE
-			DisplayError("Unhandled R4300i OpCode in FillSectionInfo 1\n%s\n%X",
-				R4300iOpcodeName(Command.Hex,Section->CompilePC),Command.Hex);
-#endif
+			if (ShowDebugMessages)
+				DisplayError("Unhandled R4300i OpCode in FillSectionInfo 1\n%s\n%X",
+					R4300iOpcodeName(Command.Hex,Section->CompilePC),Command.Hex);
 		}
 
 //		if (Section->CompilePC == 0x8005E4B8) {
@@ -2390,9 +2382,8 @@ BOOL GenerateX86Code (BLOCK_SECTION * Section, DWORD Test) {
 
 		if ((Section->CompilePC &0xFFC) == 0xFFC) {
 			if (NextInstruction == DO_DELAY_SLOT) {
-#ifndef EXTERNAL_RELEASE
-				DisplayError("Wanting to do delay slot over end of block");
-#endif
+				if (ShowDebugMessages)
+					DisplayError("Wanting to do delay slot over end of block");
 			}
 			if (NextInstruction == NORMAL) {
 				CompileExit (Section->CompilePC + 4,Section->RegWorking,Normal,TRUE,NULL);
@@ -2514,18 +2505,17 @@ BOOL InheritParentInfo (BLOCK_SECTION * Section) {
 	}
 	
 	if (NoOfParents == 0) { 
-#ifndef EXTERNAL_RELEASE
-		DisplayError("No Parents ???"); 
-#endif
+		if (ShowDebugMessages)
+			DisplayError("No Parents ???"); 
+
 		return FALSE;
 	} else if (NoOfParents == 1) { 
 		Parent = Section->ParentSection[0];
 		if (Section == Parent->ContinueSection) { JumpInfo = &Parent->Cont; }
 		else if (Section == Parent->JumpSection) { JumpInfo = &Parent->Jump; }
 		else { 
-#ifndef EXTERNAL_RELEASE
-			DisplayError("How are these sections joined?????"); return FALSE; 
-#endif
+			if (ShowDebugMessages)
+				DisplayError("How are these sections joined?????"); return FALSE; 
 		}
 
 		memcpy(&Section->RegStart,&JumpInfo->RegSet,sizeof(REG_INFO));
@@ -2662,10 +2652,9 @@ BOOL InheritParentInfo (BLOCK_SECTION * Section) {
 					Map_GPR_64bit(Section,count2,count2); //??
 					//UnMap_GPR(Section,count2,TRUE); ??
 					break;
-#ifndef EXTERNAL_RELEASE
 				default:
-					DisplayError("Unknown CPU State(%d) in InheritParentInfo",RegSet->MIPS_RegState[count2]);
-#endif
+					if (ShowDebugMessages)
+						DisplayError("Unknown CPU State(%d) in InheritParentInfo",RegSet->MIPS_RegState[count2]);
 				}
 			}
 			if (IsConst(count2)) {
@@ -2738,16 +2727,15 @@ BOOL InheritParentInfo (BLOCK_SECTION * Section) {
 				break;
 			case STATE_CONST_32:
 				if (MipsRegLo(count2) != RegSet->MIPS_RegVal[count2].UW[0]) {
-#if (!defined(EXTERNAL_RELEASE))
-					DisplayError("Umm.. how ???");
-#endif
+					if (ShowDebugMessages)
+						DisplayError("Umm.. how ???");
+
 					NeedSync = TRUE;
 				}
 				break;
-#ifndef EXTERNAL_RELEASE
 			default:
-				DisplayError("Unhandled Reg state %d\nin InheritParentInfo",MipsRegState(count2));
-#endif
+				if (ShowDebugMessages)
+					DisplayError("Unhandled Reg state %d\nin InheritParentInfo",MipsRegState(count2));
 			}
 		}
 		if (NeedSync == FALSE) { continue; }
@@ -2859,9 +2847,9 @@ void MarkCodeBlock (DWORD PAddr) {
 		N64_Blocks.NoOfPifRomBlocks += 1;
 	} else {
 #ifndef ROM_IN_MAPSPACE
-#ifndef EXTERNAL_RELEASE
-		DisplayError("Ummm... Which code block should be marked on\nPC = 0x%08X\nRdramSize: %X",PAddr,RdramSize);
-#endif
+		if (ShowDebugMessages)
+			DisplayError("Ummm... Which code block should be marked on\nPC = 0x%08X\nRdramSize: %X",PAddr,RdramSize);
+
 		ExitThread(0);
 #endif
 	}
@@ -2919,9 +2907,7 @@ void StartRecompilerCPU (void ) {
 						NextInstruction = NORMAL;
 						Addr = PROGRAM_COUNTER;
 						if (!TranslateVaddr(&Addr)) {
-#ifndef EXTERNAL_RELEASE
 							DisplayError("Failed to tranlate PC to a PAddr: %X\n\nEmulation stopped",PROGRAM_COUNTER);
-#endif
 							ExitThread(0);
 						}
 					}
@@ -2933,9 +2919,7 @@ void StartRecompilerCPU (void ) {
 					__try {
 						Value = (DWORD)(*(DelaySlotTable + (Addr >> 12)));
 					} __except(EXCEPTION_EXECUTE_HANDLER) {
-#ifndef EXTERNAL_RELEASE
-						DisplayError("Executing Delay Slot from non maped space\nPROGRAM_COUNTER = 0x%X",PROGRAM_COUNTER);
-#endif
+						DisplayError("Executing Delay Slot from non maped space\nPROGRAM_COUNTER = 0x%X\nEmulation stopped",PROGRAM_COUNTER);
 						ExitThread(0);
 					}
 					if ( (Value >> 16) == 0x7C7C) {
@@ -3049,9 +3033,7 @@ void StartRecompilerCPU (void ) {
 					NextInstruction = NORMAL;
 					Addr = PROGRAM_COUNTER;
 					if (!TranslateVaddr(&Addr)) {
-#ifndef EXTERNAL_RELEASE
 						DisplayError("Failed to tranlate PC to a PAddr: %X\n\nEmulation stopped",PROGRAM_COUNTER);
-#endif
 						ExitThread(0);
 					}
 				}
@@ -3252,68 +3234,65 @@ void SyncRegState (BLOCK_SECTION * Section, REG_INFO * SyncTo) {
 				break;
 			case STATE_CONST_64:
 				if (MipsReg(count) != SyncTo->MIPS_RegVal[count].UDW) {
-#if (!defined(EXTERNAL_RELEASE))
-					DisplayError("Umm.. how ???");
-#endif
+					if (ShowDebugMessages)
+						DisplayError("Umm.. how ???");
 				}
 				continue;
 			case STATE_CONST_32:
 				if (MipsRegLo(count) != SyncTo->MIPS_RegVal[count].UW[0]) {
-#if (!defined(EXTERNAL_RELEASE))
-					DisplayError("Umm.. how ???");
-#endif
+					if (ShowDebugMessages)
+						DisplayError("Umm.. how ???");
 				}
 				continue;
-#ifndef EXTERNAL_RELEASE
 			default:
-				DisplayError("Unhandled Reg state %d\nin SyncRegState",MipsRegState(count));
-#endif
+				if (ShowDebugMessages)
+					DisplayError("Unhandled Reg state %d\nin SyncRegState",MipsRegState(count));
 			}			
 		}
 		changed = TRUE;
 
 		switch (SyncTo->MIPS_RegState[count]) {
-		case STATE_UNKNOWN: UnMap_GPR(Section,count,TRUE);  break;
+		case STATE_UNKNOWN: UnMap_GPR(Section, count, TRUE);  break;
 		case STATE_MAPPED_64:
 			x86Reg = SyncTo->MIPS_RegVal[count].UW[0];
 			x86RegHi = SyncTo->MIPS_RegVal[count].UW[1];
-			UnMap_X86reg(Section,x86Reg);
-			UnMap_X86reg(Section,x86RegHi);
+			UnMap_X86reg(Section, x86Reg);
+			UnMap_X86reg(Section, x86RegHi);
 			switch (MipsRegState(count)) {
 			case STATE_UNKNOWN:
-				MoveVariableToX86reg(&GPR[count].UW[0],GPR_NameLo[count],x86Reg);
-				MoveVariableToX86reg(&GPR[count].UW[1],GPR_NameHi[count],x86RegHi);
+				MoveVariableToX86reg(&GPR[count].UW[0], GPR_NameLo[count], x86Reg);
+				MoveVariableToX86reg(&GPR[count].UW[1], GPR_NameHi[count], x86RegHi);
 				break;
 			case STATE_MAPPED_64:
-				MoveX86RegToX86Reg(MipsRegLo(count),x86Reg); 
+				MoveX86RegToX86Reg(MipsRegLo(count), x86Reg);
 				x86Mapped(MipsRegLo(count)) = NotMapped;
-				MoveX86RegToX86Reg(MipsRegHi(count),x86RegHi); 
+				MoveX86RegToX86Reg(MipsRegHi(count), x86RegHi);
 				x86Mapped(MipsRegHi(count)) = NotMapped;
 				break;
 			case STATE_MAPPED_32_SIGN:
-				MoveX86RegToX86Reg(MipsRegLo(count),x86RegHi); 
-				ShiftRightSignImmed(x86RegHi,31);
-				MoveX86RegToX86Reg(MipsRegLo(count),x86Reg); 
+				MoveX86RegToX86Reg(MipsRegLo(count), x86RegHi);
+				ShiftRightSignImmed(x86RegHi, 31);
+				MoveX86RegToX86Reg(MipsRegLo(count), x86Reg);
 				x86Mapped(MipsRegLo(count)) = NotMapped;
 				break;
 			case STATE_MAPPED_32_ZERO:
-				XorX86RegToX86Reg(x86RegHi,x86RegHi);
-				MoveX86RegToX86Reg(MipsRegLo(count),x86Reg); 
+				XorX86RegToX86Reg(x86RegHi, x86RegHi);
+				MoveX86RegToX86Reg(MipsRegLo(count), x86Reg);
 				x86Mapped(MipsRegLo(count)) = NotMapped;
 				break;
 			case STATE_CONST_64:
-				MoveConstToX86reg(MipsRegHi(count),x86RegHi); 
-				MoveConstToX86reg(MipsRegLo(count),x86Reg); 
+				MoveConstToX86reg(MipsRegHi(count), x86RegHi);
+				MoveConstToX86reg(MipsRegLo(count), x86Reg);
 				break;
 			case STATE_CONST_32:
-				MoveConstToX86reg(MipsRegLo_S(count) >> 31,x86RegHi); 
-				MoveConstToX86reg(MipsRegLo(count),x86Reg); 
+				MoveConstToX86reg(MipsRegLo_S(count) >> 31, x86RegHi);
+				MoveConstToX86reg(MipsRegLo(count), x86Reg);
 				break;
 			default:
-#ifndef EXTERNAL_RELEASE
-				CPU_Message("Do something with states in SyncRegState\nSTATE_MAPPED_64\n%d",MipsRegState(count));
-				DisplayError("Do something with states in SyncRegState\nSTATE_MAPPED_64\n%d",MipsRegState(count));
-#endif
+				if (ShowDebugMessages) {
+					CPU_Message("Do something with states in SyncRegState\nSTATE_MAPPED_64\n%d", MipsRegState(count));
+					DisplayError("Do something with states in SyncRegState\nSTATE_MAPPED_64\n%d", MipsRegState(count));
+				}
 				continue;
 			}
 			MipsRegLo(count) = x86Reg;
@@ -3326,32 +3305,33 @@ void SyncRegState (BLOCK_SECTION * Section, REG_INFO * SyncTo) {
 			break;
 		case STATE_MAPPED_32_SIGN:
 			x86Reg = SyncTo->MIPS_RegVal[count].UW[0];
-			UnMap_X86reg(Section,x86Reg);
+			UnMap_X86reg(Section, x86Reg);
 			switch (MipsRegState(count)) {
-			case STATE_UNKNOWN: MoveVariableToX86reg(&GPR[count].UW[0],GPR_NameLo[count],x86Reg); break;
-			case STATE_CONST_32: MoveConstToX86reg(MipsRegLo(count),x86Reg); break;
-			case STATE_MAPPED_32_SIGN: 
-				MoveX86RegToX86Reg(MipsRegLo(count),x86Reg); 
+			case STATE_UNKNOWN: MoveVariableToX86reg(&GPR[count].UW[0], GPR_NameLo[count], x86Reg); break;
+			case STATE_CONST_32: MoveConstToX86reg(MipsRegLo(count), x86Reg); break;
+			case STATE_MAPPED_32_SIGN:
+				MoveX86RegToX86Reg(MipsRegLo(count), x86Reg);
 				x86Mapped(MipsRegLo(count)) = NotMapped;
 				break;
 			case STATE_MAPPED_32_ZERO:
 				if (MipsRegLo(count) != (DWORD)x86Reg) {
-					MoveX86RegToX86Reg(MipsRegLo(count),x86Reg); 
+					MoveX86RegToX86Reg(MipsRegLo(count), x86Reg);
 					x86Mapped(MipsRegLo(count)) = NotMapped;
 				}
 				break;
 			case STATE_MAPPED_64:
-				MoveX86RegToX86Reg(MipsRegLo(count),x86Reg); 
+				MoveX86RegToX86Reg(MipsRegLo(count), x86Reg);
 				x86Mapped(MipsRegLo(count)) = NotMapped;
 				x86Mapped(MipsRegHi(count)) = NotMapped;
 				break;
-#ifndef EXTERNAL_RELEASE
 			case STATE_CONST_64:
-				DisplayError("hi %X\nLo %X",MipsRegHi(count),MipsRegLo(count));
-			default:				
-				CPU_Message("Do something with states in SyncRegState\nSTATE_MAPPED_32_SIGN\n%d",MipsRegState(count));
-				DisplayError("Do something with states in SyncRegState\nSTATE_MAPPED_32_SIGN\n%d",MipsRegState(count));
-#endif
+				if (ShowDebugMessages)
+					DisplayError("hi %X\nLo %X", MipsRegHi(count), MipsRegLo(count));
+			default:
+				if (ShowDebugMessages) {
+					CPU_Message("Do something with states in SyncRegState\nSTATE_MAPPED_32_SIGN\n%d", MipsRegState(count));
+					DisplayError("Do something with states in SyncRegState\nSTATE_MAPPED_32_SIGN\n%d", MipsRegState(count));
+				}
 			}
 			MipsRegLo(count) = x86Reg;
 			MipsRegState(count) = STATE_MAPPED_32_SIGN;
@@ -3360,31 +3340,30 @@ void SyncRegState (BLOCK_SECTION * Section, REG_INFO * SyncTo) {
 			break;
 		case STATE_MAPPED_32_ZERO:
 			x86Reg = SyncTo->MIPS_RegVal[count].UW[0];
-			UnMap_X86reg(Section,x86Reg);
+			UnMap_X86reg(Section, x86Reg);
 			switch (MipsRegState(count)) {
 			case STATE_MAPPED_64:
-			case STATE_UNKNOWN:  
-				MoveVariableToX86reg(&GPR[count].UW[0],GPR_NameLo[count],x86Reg); 
+			case STATE_UNKNOWN:
+				MoveVariableToX86reg(&GPR[count].UW[0], GPR_NameLo[count], x86Reg);
 				break;
-			case STATE_MAPPED_32_ZERO: 
-				MoveX86RegToX86Reg(MipsRegLo(count),x86Reg); 
+			case STATE_MAPPED_32_ZERO:
+				MoveX86RegToX86Reg(MipsRegLo(count), x86Reg);
 				x86Mapped(MipsRegLo(count)) = NotMapped;
 				break;
 			case STATE_CONST_32:
-				if (MipsRegLo_S(count) < 0) { 
+				if (MipsRegLo_S(count) < 0) {
 					CPU_Message("Sign Problems in SyncRegState\nSTATE_MAPPED_32_ZERO");
-					CPU_Message("%s: %X",GPR_Name[count],MipsRegLo_S(count));
-#ifndef EXTERNAL_RELEASE
-					DisplayError("Sign Problems in SyncRegState\nSTATE_MAPPED_32_ZERO");
-#endif
+					CPU_Message("%s: %X", GPR_Name[count], MipsRegLo_S(count));
+					if (ShowDebugMessages)
+						DisplayError("Sign Problems in SyncRegState\nSTATE_MAPPED_32_ZERO");
 				}
-				MoveConstToX86reg(MipsRegLo(count),x86Reg);  
+				MoveConstToX86reg(MipsRegLo(count), x86Reg);
 				break;
-#ifndef EXTERNAL_RELEASE
-			default:				
-				CPU_Message("Do something with states in SyncRegState\nSTATE_MAPPED_32_ZERO\n%d",MipsRegState(count));
-				DisplayError("Do something with states in SyncRegState\nSTATE_MAPPED_32_ZERO\n%d",MipsRegState(count));
-#endif
+			default:
+				if (ShowDebugMessages) {
+					CPU_Message("Do something with states in SyncRegState\nSTATE_MAPPED_32_ZERO\n%d", MipsRegState(count));
+					DisplayError("Do something with states in SyncRegState\nSTATE_MAPPED_32_ZERO\n%d", MipsRegState(count));
+				}
 			}
 			MipsRegLo(count) = x86Reg;
 			MipsRegState(count) = SyncTo->MIPS_RegState[count];
@@ -3392,11 +3371,11 @@ void SyncRegState (BLOCK_SECTION * Section, REG_INFO * SyncTo) {
 			x86MapOrder(x86Reg) = 1;
 			break;
 		default:
-#if (!defined(EXTERNAL_RELEASE))
-			CPU_Message("%d\n%d\nreg: %s (%d)",SyncTo->MIPS_RegState[count],MipsRegState(count),GPR_Name[count],count);
-			DisplayError("%d\n%d\nreg: %s (%d)",SyncTo->MIPS_RegState[count],MipsRegState(count),GPR_Name[count],count);
-			DisplayError("Do something with states in SyncRegState");
-#endif
+			if (ShowDebugMessages) {
+				CPU_Message("%d\n%d\nreg: %s (%d)", SyncTo->MIPS_RegState[count], MipsRegState(count), GPR_Name[count], count);
+				DisplayError("%d\n%d\nreg: %s (%d)", SyncTo->MIPS_RegState[count], MipsRegState(count), GPR_Name[count], count);
+				DisplayError("Do something with states in SyncRegState");
+		}
 			changed = FALSE;
 		}
 	}

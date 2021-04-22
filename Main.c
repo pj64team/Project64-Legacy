@@ -45,7 +45,7 @@
 #include "RomTools_Common.h"
 
 LARGE_INTEGER Frequency, Frames[NoOfFrames], LastFrame;
-BOOL HaveDebugger, AutoLoadMapFile, ShowUnhandledMemory, ShowTLBMisses,
+BOOL HaveDebugger, ShowDebugMessages, AutoLoadMapFile, ShowUnhandledMemory, ShowTLBMisses,
 ShowDListAListCount, ShowCompMem, Profiling, IndividualBlock, AutoStart,
 AutoSleep, DisableRegCaching, UseIni, UseTlb, UseLinking, RomBrowser,
 IgnoreMove, Recursion, ShowPifRamErrors, LimitFPS, ShowCPUPer, AutoZip,
@@ -444,6 +444,8 @@ void LoadSettings(void) {
 	BasicMode = Settings_ReadBool(APPS_NAME, STR_SETTINGS, STR_BASIC, Default_BasicMode);
 	AutoSleep = Settings_ReadBool(APPS_NAME, STR_SETTINGS, STR_AUTOSLEEP, Default_AutoSleep);
 	AutoFullScreen = Settings_ReadBool(APPS_NAME, STR_SETTINGS, STR_AUTOFS, Default_AutoFullScreen);
+	HaveDebugger = Settings_ReadBool(APPS_NAME, STR_SETTINGS, STR_HAVEDEBUGGER, FALSE);
+	ShowDebugMessages = Settings_ReadBool(APPS_NAME, STR_SETTINGS, STR_SHOWMOREMESSAGES, FALSE);
 
 	if (BasicMode) {
 		HaveDebugger = FALSE;
@@ -467,9 +469,6 @@ void LoadSettings(void) {
 		ShowCPUPer = Default_ShowCPUPer;
 	}
 	else {
-#if (!defined(EXTERNAL_RELEASE))
-		HaveDebugger = TRUE;
-#endif
 		LimitFPS = Settings_ReadBool(APPS_NAME, STR_SETTINGS, STR_LIMITFPS, Default_LimitFPS);
 		AutoStart = Settings_ReadBool(APPS_NAME, STR_SETTINGS, STR_AUTOSTART, Default_AutoStart);
 		RomBrowser = Settings_ReadBool(APPS_NAME, STR_SETTINGS, STR_USERB, Default_UseRB);
@@ -534,10 +533,10 @@ int InitalizeApplication(HINSTANCE hInstance) {
 	LoadSettings();
 	SetupRegisters(&Registers);
 	QueryPerformanceFrequency(&Frequency);
-#if (!defined(EXTERNAL_RELEASE))
-	LoadLogOptions(&LogOptions, FALSE);
-	StartLog();
-#endif
+	if (HaveDebugger) {
+		LoadLogOptions(&LogOptions, FALSE);
+		StartLog();
+	}
 	LoadRomBrowserColumnInfo();
 	InitilizeInitialCompilerVariable();
 	return TRUE;
@@ -562,9 +561,7 @@ void CheckedMenuItem(UINT uMenuID, BOOL* Flag, char* FlagName) {
 
 
 LRESULT CALLBACK Main_Proc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
-#if (!defined(EXTERNAL_RELEASE))
 	UINT uState;
-#endif
 	HMENU hMenu;
 
 	switch (uMsg) {
@@ -978,7 +975,6 @@ LRESULT CALLBACK Main_Proc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
 			CheckedMenuItem(ID_OPTIONS_SHOWCPUUSAGE, &ShowCPUPer, STR_SHOWCPU);
 			Settings_Write(APPS_NAME, "Settings", STR_SHOWCPU, ShowCPUPer ? STR_TRUE : STR_FALSE);
 			break;
-#if (!defined(EXTERNAL_RELEASE))
 		case ID_OPTIONS_PROFILING_ON:
 		case ID_OPTIONS_PROFILING_OFF:
 			if (HaveDebugger) {
@@ -1060,9 +1056,7 @@ LRESULT CALLBACK Main_Proc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
 				Settings_Write(APPS_NAME, STR_DEBUG, "Generate Log File", LogOptions.GenerateLog ? STR_TRUE : STR_FALSE);
 
 				LoadLogOptions(&LogOptions, FALSE);
-#ifndef EXTERNAL_RELEASE
 				StartLog();
-#endif
 			}
 			break;
 		case ID_DEBUGGER_MEMORY: Enter_Memory_Window(); break;
@@ -1147,7 +1141,6 @@ LRESULT CALLBACK Main_Proc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
 				Settings_Write(APPS_NAME, STR_DEBUG, STR_PIFERRORS, ShowPifRamErrors ? STR_TRUE : STR_FALSE);
 			}
 			break;
-#endif
 		case ID_HELP_CONTENTS:
 		{
 			char path_buffer[_MAX_PATH], drive[_MAX_DRIVE], dir[_MAX_DIR];
@@ -1501,7 +1494,6 @@ void SetupMenu(HWND hWnd) {
 	if (AlwaysOnTop) {
 		CheckMenuItem(hMenu, ID_OPTIONS_ALWAYSONTOP, MF_BYCOMMAND | MFS_CHECKED);
 	}
-#if (!defined(EXTERNAL_RELEASE))
 	if (HaveDebugger) {
 		if (AutoLoadMapFile) {
 			CheckMenuItem(hMenu, ID_OPTIONS_MAPPINGS_AUTOLOADMAPFILE, MF_BYCOMMAND | MFS_CHECKED);
@@ -1535,7 +1527,6 @@ void SetupMenu(HWND hWnd) {
 			CheckMenuItem(hMenu, ID_OPTIONS_PROFILING_OFF, MF_BYCOMMAND | MFS_CHECKED);
 		}
 	}
-#endif
 
 #ifdef BETA_VERSION
 	{
@@ -1692,9 +1683,8 @@ void ShutdownApplication(void) {
 	SaveRecentFiles();
 	Release_Memory();
 	ResetTimerList();
-#if (!defined(EXTERNAL_RELEASE))
-	StopLog();
-#endif
+	if (HaveDebugger)
+		StopLog();
 	CloseHandle(hPauseMutex);
 	CoUninitialize();
 }

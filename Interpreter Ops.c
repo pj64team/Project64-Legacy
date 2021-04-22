@@ -309,9 +309,9 @@ void _fastcall r4300i_LW (void) {
 	DWORD Address =  GPR[Opcode.IMM.base].UW[0] + (short)Opcode.IMM.immediate;	
 	if ((Address & 3) != 0) { ADDRESS_ERROR_EXCEPTION(Address,TRUE); }
 
-#if (!defined(EXTERNAL_RELEASE))
-	Log_LW(PROGRAM_COUNTER,Address);
-#endif
+	if (ShowDebugMessages)
+		Log_LW(PROGRAM_COUNTER,Address);
+
 	if (Opcode.BRANCH.rt == 0) { return; }
 
 	if (!r4300i_LW_VAddr(Address,&GPR[Opcode.BRANCH.rt].UW[0])) {
@@ -432,9 +432,10 @@ void _fastcall r4300i_SWL (void) {
 void _fastcall r4300i_SW (void) {
 	DWORD Address =  GPR[Opcode.IMM.base].UW[0] + (short)Opcode.IMM.immediate;	
 	if ((Address & 3) != 0) { ADDRESS_ERROR_EXCEPTION(Address,FALSE); }
-#if (!defined(EXTERNAL_RELEASE))
-	Log_SW(PROGRAM_COUNTER,Address,GPR[Opcode.BRANCH.rt].UW[0]);
-#endif
+
+	if (ShowDebugMessages)
+		Log_SW(PROGRAM_COUNTER,Address,GPR[Opcode.BRANCH.rt].UW[0]);
+
 	if (!r4300i_SW_VAddr(Address,GPR[Opcode.BRANCH.rt].UW[0])) {
 		if (ShowTLBMisses)
 			DisplayError("SW TLB: %X",Address);
@@ -535,11 +536,9 @@ void _fastcall r4300i_SWR (void) {
 }
 
 void _fastcall r4300i_CACHE (void) {
-#if (!defined(EXTERNAL_RELEASE))
-	if (!LogOptions.LogCache) { return; }
+	if (HaveDebugger && !LogOptions.LogCache) { return; }
 	LogMessage("%08X: Cache operation %d, 0x%08X", PROGRAM_COUNTER, Opcode.BRANCH.rt,
 		GPR[Opcode.IMM.base].UW[0] + (short)Opcode.IMM.immediate );
-#endif
 }
 
 void _fastcall r4300i_LL (void) {
@@ -576,9 +575,10 @@ void _fastcall r4300i_LWC1 (void) {
 void _fastcall r4300i_SC (void) {
 	DWORD Address =  GPR[Opcode.IMM.base].UW[0] + (short)Opcode.IMM.immediate;	
 	if ((Address & 3) != 0) { ADDRESS_ERROR_EXCEPTION(Address,FALSE); }
-#if (!defined(EXTERNAL_RELEASE))
-	Log_SW(PROGRAM_COUNTER,Address,GPR[Opcode.BRANCH.rt].UW[0]);
-#endif
+
+	if (ShowDebugMessages)
+		Log_SW(PROGRAM_COUNTER,Address,GPR[Opcode.BRANCH.rt].UW[0]);
+
 	if (LLBit == 1) {
 		if (!r4300i_SW_VAddr(Address,GPR[Opcode.BRANCH.rt].UW[0])) {
 			DisplayError("SW TLB: %X",Address);
@@ -740,9 +740,8 @@ void _fastcall r4300i_SPECIAL_DIV (void) {
 		LO.DW = GPR[Opcode.BRANCH.rs].W[0] / GPR[Opcode.BRANCH.rt].W[0];
 		HI.DW = GPR[Opcode.BRANCH.rs].W[0] % GPR[Opcode.BRANCH.rt].W[0];
 	} else {
-#ifndef EXTERNAL_RELEASE
-		DisplayError("DIV by 0 ???");
-#endif
+		if (ShowDebugMessages)
+			DisplayError("DIV by 0 ???");
 	}
 }
 
@@ -751,9 +750,8 @@ void _fastcall r4300i_SPECIAL_DIVU (void) {
 		LO.DW = (int)(GPR[Opcode.BRANCH.rs].UW[0] / GPR[Opcode.BRANCH.rt].UW[0]);
 		HI.DW = (int)(GPR[Opcode.BRANCH.rs].UW[0] % GPR[Opcode.BRANCH.rt].UW[0]);
 	} else {
-#ifndef EXTERNAL_RELEASE
-		DisplayError("DIVU by 0 ???");
-#endif
+		if (ShowDebugMessages)
+			DisplayError("DIVU by 0 ???");
 	}
 }
 
@@ -788,9 +786,8 @@ void _fastcall r4300i_SPECIAL_DDIV (void) {
 		LO.DW = GPR[Opcode.BRANCH.rs].DW / GPR[Opcode.BRANCH.rt].DW;
 		HI.DW = GPR[Opcode.BRANCH.rs].DW % GPR[Opcode.BRANCH.rt].DW;
 	} else {
-#ifndef EXTERNAL_RELEASE
-		DisplayError("DDIV by 0 ???");
-#endif
+		if (ShowDebugMessages)
+			DisplayError("DDIV by 0 ???");
 	}
 }
 
@@ -799,9 +796,8 @@ void _fastcall r4300i_SPECIAL_DDIVU (void) {
 		LO.UDW = GPR[Opcode.BRANCH.rs].UDW / GPR[Opcode.BRANCH.rt].UDW;
 		HI.UDW = GPR[Opcode.BRANCH.rs].UDW % GPR[Opcode.BRANCH.rt].UDW;
 	} else {
-#ifndef EXTERNAL_RELEASE
-		DisplayError("DDIVU by 0 ???");
-#endif
+		if (ShowDebugMessages)
+			DisplayError("DDIVU by 0 ???");
 	}
 }
 
@@ -876,9 +872,8 @@ void _fastcall r4300i_SPECIAL_DSUBU (void) {
 
 void _fastcall r4300i_SPECIAL_TEQ (void) {
 	if (GPR[Opcode.BRANCH.rs].DW == GPR[Opcode.BRANCH.rt].DW) {
-#ifndef EXTERNAL_RELEASE
-		DisplayError("Should trap this ???");
-#endif
+		if (ShowDebugMessages)
+			DisplayError("Should trap this ???");
 	}
 }
 
@@ -972,18 +967,15 @@ void _fastcall r4300i_REGIMM_BGEZAL (void) {
 }
 /************************** COP0 functions **************************/
 void _fastcall r4300i_COP0_MF (void) {
-#if (!defined(EXTERNAL_RELEASE))
-	if (LogOptions.LogCP0reads) {
+	if (HaveDebugger && LogOptions.LogCP0reads) {
 		LogMessage("%08X: R4300i Read from %s (0x%08X)", PROGRAM_COUNTER,
 			Cop0_Name[Opcode.REG.rd], CP0[Opcode.REG.rd]);
 	}
-#endif
 	GPR[Opcode.BRANCH.rt].DW = (int)CP0[Opcode.REG.rd];
 }
 
 void _fastcall r4300i_COP0_MT (void) {
-#if (!defined(EXTERNAL_RELEASE))
-	if (LogOptions.LogCP0changes) {
+	if (HaveDebugger && LogOptions.LogCP0changes) {
 		LogMessage("%08X: Writing 0x%X to %s register (Originally: 0x%08X)",PROGRAM_COUNTER,
 			GPR[Opcode.BRANCH.rt].UW[0],Cop0_Name[Opcode.REG.rd], CP0[Opcode.REG.rd]);
 		if (Opcode.REG.rd == 11) { //Compare
@@ -991,7 +983,6 @@ void _fastcall r4300i_COP0_MT (void) {
 				CAUSE_REGISTER, (CAUSE_REGISTER & ~CAUSE_IP7));
 		}
 	}
-#endif
 	switch (Opcode.REG.rd) {	
 	case 0: //Index
 	case 2: //EntryLo0
@@ -1028,17 +1019,15 @@ void _fastcall r4300i_COP0_MT (void) {
 			CP0[Opcode.REG.rd] = GPR[Opcode.BRANCH.rt].UW[0];
 		}
 		if ((CP0[Opcode.REG.rd] & 0x18) != 0) { 
-#ifndef EXTERNAL_RELEASE
-			DisplayError("Left kernel mode ??");
-#endif
+			if (ShowDebugMessages)
+				DisplayError("Left kernel mode ??");
 		}
 		CheckInterrupts();
 		break;		
 	case 13: //cause
 		CP0[Opcode.REG.rd] &= 0xFFFFCFF;
-#ifndef EXTERNAL_RELEASE
-		if ((GPR[Opcode.BRANCH.rt].UW[0] & 0x300) != 0 ){ DisplayError("Set IP0 or IP1"); }
-#endif
+		if (ShowDebugMessages)
+			if ((GPR[Opcode.BRANCH.rt].UW[0] & 0x300) != 0 ){ DisplayError("Set IP0 or IP1"); }
 		break;
 	default:
 		R4300i_UnknownOpcode();
@@ -1099,9 +1088,8 @@ void _fastcall r4300i_COP1_DMF (void) {
 void _fastcall r4300i_COP1_CF (void) {
 	TEST_COP1_USABLE_EXCEPTION
 	if (Opcode.FP.fs != 31 && Opcode.FP.fs != 0) {
-#ifndef EXTERNAL_RELEASE
-		DisplayError("CFC1 what register are you writing to ?");
-#endif
+		if (ShowDebugMessages)
+			DisplayError("CFC1 what register are you writing to ?");
 		return;
 	}
 	GPR[Opcode.BRANCH.rt].DW = (int)FPCR[Opcode.FP.fs];
@@ -1129,9 +1117,8 @@ void _fastcall r4300i_COP1_CT (void) {
 		}
 		return;
 	}
-#ifndef EXTERNAL_RELEASE
-	DisplayError("CTC1 what register are you writing to ?");
-#endif
+	if (ShowDebugMessages)
+		DisplayError("CTC1 what register are you writing to ?");
 }
 
 /************************* COP1: BC1 functions ***********************/
@@ -1313,16 +1300,14 @@ void _fastcall r4300i_COP1_S_CMP (void) {
 	Temp1 = *(float *)FPRFloatLocation[Opcode.FP.ft];
 
 	if (_isnan(Temp0) || _isnan(Temp1)) {
-#ifndef EXTERNAL_RELEASE
-		DisplayError("Not a number?");
-#endif
+		if (ShowDebugMessages)
+			DisplayError("Not a number?");
 		less = FALSE;
 		equal = FALSE;
 		unorded = TRUE;
 		if ((Opcode.REG.funct & 8) != 0) {
-#ifndef EXTERNAL_RELEASE
-			DisplayError("Signal InvalidOperationException\nin r4300i_COP1_S_CMP\n%X  %ff\n%X  %ff", Temp0, Temp0, Temp1, Temp1);
-#endif
+			if (ShowDebugMessages)
+				DisplayError("Signal InvalidOperationException\nin r4300i_COP1_S_CMP\n%X  %ff\n%X  %ff", Temp0, Temp0, Temp1, Temp1);
 		}
 	} else {
 		less = Temp0 < Temp1;
@@ -1469,16 +1454,14 @@ void _fastcall r4300i_COP1_D_CMP (void) {
 	Temp1.DW = *(__int64 *)FPRDoubleLocation[Opcode.FP.ft];
 
 	if (_isnan(Temp0.D) || _isnan(Temp1.D)) {
-#ifndef EXTERNAL_RELEASE
-		DisplayError("Nan ?");
-#endif
+		if (ShowDebugMessages)
+			DisplayError("Not A Number?");
 		less = FALSE;
 		equal = FALSE;
 		unorded = TRUE;
 		if ((Opcode.REG.funct & 8) != 0) {
-#ifndef EXTERNAL_RELEASE
-			DisplayError("Signal InvalidOperationException\nin r4300i_COP1_D_CMP");
-#endif
+			if (ShowDebugMessages)
+				DisplayError("Signal InvalidOperationException\nin r4300i_COP1_D_CMP");
 		}
 	} else {
 		less = Temp0.D < Temp1.D;
@@ -1529,23 +1512,19 @@ void _fastcall R4300i_UnknownOpcode (void) {
 		R4300iOpcodeName(Opcode.Hex,PROGRAM_COUNTER));
 	strcat(Message,"Stoping Emulation !");
 	
-#if (!defined(EXTERNAL_RELEASE))
 	if (HaveDebugger && !inFullScreen) {
 		int response;
 
-		strcat(Message,"\n\nDo you wish to enter the debugger ?");
+		strcat(Message,"\n\nDo you wish to enter the debugger?");
 	
 		response = MessageBox(NULL,Message,GS(MSG_MSGBOX_TITLE), MB_YESNO | MB_ICONERROR );
 		if (response == IDYES) {
 			Enter_R4300i_Commands_Window ();
 		}
 		ExitThread(0);
-	} else {
+	} 
+	else {
 		DisplayError(Message);
 		ExitThread(0);
 	}
-#else
-	DisplayError(Message);
-	ExitThread(0);
-#endif
 }

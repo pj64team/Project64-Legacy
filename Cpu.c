@@ -145,9 +145,15 @@ void CheckTimer (void) {
 void CloseCpu (void) {
 	DWORD ExitCode, OldProtect, count;
 	
-	if (!CPURunning) { return; }
+	if (!CPURunning || hCPU == NULL) { return; }
+
+	CPU_Action.CloseCPU = TRUE;
+	CPU_Action.Stepping = FALSE;
+	CPU_Action.DoSomething = TRUE;
+	PulseEvent(CPU_Action.hStepping);
+
 	ManualPaused = FALSE;
-	if (CPU_Paused) { PauseCpu (); Sleep(1000); }
+	if (CPU_Paused) { PauseCpu(); }
 	
 	{
 		BOOL Temp = AlwaysOnTop;
@@ -157,20 +163,18 @@ void CloseCpu (void) {
 	}
 
 	for (count = 0; count < 20; count ++ ) {
-		CPU_Action.CloseCPU = TRUE;
-		CPU_Action.Stepping = FALSE;
-		CPU_Action.DoSomething = TRUE;
-		PulseEvent( CPU_Action.hStepping );
-		Sleep(100 + (count * 10));
 		GetExitCodeThread(hCPU, &ExitCode);
 		if (ExitCode != STILL_ACTIVE) {
 			hCPU = NULL;
-			count = 100;
+			break;
 		}
+		Sleep(50);
+		//if (CPU_Action.CloseCPU == TRUE)
+		//	PulseEvent(CPU_Action.hStepping);
 	}
 
 	if (hCPU != NULL) { 
-		DisplayError("Force closing emulation thread");
+		//DisplayError("Emulation thread failed to terminate plugins\nReport this if you can reproduce reliably");
 		TerminateThread(hCPU, 0);
 		hCPU = NULL;
 		SetupPlugins(hMainWindow);
@@ -260,9 +264,8 @@ int DelaySlotEffectsCompare (DWORD PC, DWORD Reg1, DWORD Reg2) {
 		case R4300i_SPECIAL_DDIVU:
 			break;
 		default:
-#ifndef EXTERNAL_RELEASE
-			DisplayError("Does %s effect Delay slot at %X?",R4300iOpcodeName(Command.Hex,PC+4), PC);
-#endif
+			if (ShowDebugMessages)
+				DisplayError("Does %s effect Delay slot at %X?",R4300iOpcodeName(Command.Hex,PC+4), PC);
 			return TRUE;
 		}
 		break;
@@ -282,15 +285,13 @@ int DelaySlotEffectsCompare (DWORD PC, DWORD Reg1, DWORD Reg2) {
 				case R4300i_COP0_CO_TLBWR: break;
 				case R4300i_COP0_CO_TLBP: break;
 				default: 
-#ifndef EXTERNAL_RELEASE
-					DisplayError("Does %s effect Delay slot at %X?\n6",R4300iOpcodeName(Command.Hex,PC+4), PC);
-#endif
+					if (ShowDebugMessages)
+						DisplayError("Does %s effect Delay slot at %X?\n6",R4300iOpcodeName(Command.Hex,PC+4), PC);
 					return TRUE;
 				}
 			} else {
-#ifndef EXTERNAL_RELEASE
-				DisplayError("Does %s effect Delay slot at %X?\n7",R4300iOpcodeName(Command.Hex,PC+4), PC);
-#endif
+				if (ShowDebugMessages)
+					DisplayError("Does %s effect Delay slot at %X?\n7",R4300iOpcodeName(Command.Hex,PC+4), PC);
 				return TRUE;
 			}
 		}
@@ -310,9 +311,8 @@ int DelaySlotEffectsCompare (DWORD PC, DWORD Reg1, DWORD Reg2) {
 		case R4300i_COP1_W: break;
 		case R4300i_COP1_L: break;
 		default:
-#ifndef EXTERNAL_RELEASE
-			DisplayError("Does %s effect Delay slot at %X?",R4300iOpcodeName(Command.Hex,PC+4), PC);
-#endif
+			if (ShowDebugMessages)
+				DisplayError("Does %s effect Delay slot at %X?",R4300iOpcodeName(Command.Hex,PC+4), PC);
 			return TRUE;
 		}
 		break;
@@ -352,9 +352,8 @@ int DelaySlotEffectsCompare (DWORD PC, DWORD Reg1, DWORD Reg2) {
 	case R4300i_SDC1: break;
 	case R4300i_SD: break;
 	default:
-#ifndef EXTERNAL_RELEASE
-		DisplayError("Does %s effect Delay slot at %X?",R4300iOpcodeName(Command.Hex,PC+4), PC);
-#endif
+		if (ShowDebugMessages)
+			DisplayError("Does %s effect Delay slot at %X?",R4300iOpcodeName(Command.Hex,PC+4), PC);
 		return TRUE;
 	}
 	return FALSE;
@@ -640,27 +639,24 @@ BOOL Machine_LoadState(void) {
 			if (SaveRDRAMSize != RdramSize) {
 				if (RdramSize == 0x400000) { 
 					if (VirtualAlloc(N64MEM + 0x400000, 0x400000, MEM_COMMIT, PAGE_READWRITE)==NULL) {
-#ifndef EXTERNAL_RELEASE
-						DisplayError("Failed to Extend memory to 8mb");
-#else
-						DisplayError(GS(MSG_MEM_ALLOC_ERROR));
-#endif
+						if (HaveDebugger)
+							DisplayError("Failed to Extend memory to 8mb");
+						else
+							DisplayError(GS(MSG_MEM_ALLOC_ERROR));
 						ExitThread(0);
 					}
 					if (VirtualAlloc((BYTE *)JumpTable + 0x400000, 0x400000, MEM_COMMIT, PAGE_READWRITE)==NULL) {
-#ifndef EXTERNAL_RELEASE
-						DisplayError("Failed to Extend Jump Table to 8mb");
-#else
-						DisplayError(GS(MSG_MEM_ALLOC_ERROR));
-#endif
+						if (HaveDebugger)
+							DisplayError("Failed to Extend Jump Table to 8mb");
+						else
+							DisplayError(GS(MSG_MEM_ALLOC_ERROR));
 						ExitThread(0);
 					}
 					if (VirtualAlloc((BYTE *)DelaySlotTable + (0x400000 >> 0xA), (0x400000 >> 0xA), MEM_COMMIT, PAGE_READWRITE)==NULL) {
-#ifndef EXTERNAL_RELEASE
-						DisplayError("Failed to Extend Delay Slot Table to 8mb");
-#else
-						DisplayError(GS(MSG_MEM_ALLOC_ERROR));
-#endif
+						if (HaveDebugger)
+							DisplayError("Failed to Extend Delay Slot Table to 8mb");
+						else
+							DisplayError(GS(MSG_MEM_ALLOC_ERROR));
 						ExitThread(0);
 					}
 				} else {
@@ -746,27 +742,24 @@ BOOL Machine_LoadState(void) {
 		if (SaveRDRAMSize != RdramSize) {
 			if (RdramSize == 0x400000) { 
 				if (VirtualAlloc(N64MEM + 0x400000, 0x400000, MEM_COMMIT, PAGE_READWRITE)==NULL) {
-#ifndef EXTERNAL_RELEASE
-					DisplayError("Failed to Extend memory to 8mb");
-#else
-					DisplayError(GS(MSG_MEM_ALLOC_ERROR));
-#endif
+					if (HaveDebugger)
+						DisplayError("Failed to Extend memory to 8mb");
+					else
+						DisplayError(GS(MSG_MEM_ALLOC_ERROR));
 					ExitThread(0);
 				}
 				if (VirtualAlloc((BYTE *)JumpTable + 0x400000, 0x400000, MEM_COMMIT, PAGE_READWRITE)==NULL) {
-#ifndef EXTERNAL_RELEASE
-					DisplayError("Failed to Extend Jump Table to 8mb");
-#else
-					DisplayError(GS(MSG_MEM_ALLOC_ERROR));
-#endif
+					if (HaveDebugger)
+						DisplayError("Failed to Extend Jump Table to 8mb");
+					else
+						DisplayError(GS(MSG_MEM_ALLOC_ERROR));
 					ExitThread(0);
 				}
 				if (VirtualAlloc((BYTE *)DelaySlotTable + (0x400000 >> 0xA), (0x400000 >> 0xA), MEM_COMMIT, PAGE_READWRITE)==NULL) {
-#ifndef EXTERNAL_RELEASE
-					DisplayError("Failed to Extend Delay Slot Table to 8mb");
-#else
-					DisplayError(GS(MSG_MEM_ALLOC_ERROR));
-#endif
+					if (HaveDebugger)
+						DisplayError("Failed to Extend Delay Slot Table to 8mb");
+					else
+						DisplayError(GS(MSG_MEM_ALLOC_ERROR));
 					ExitThread(0);
 				}
 			} else {
@@ -857,10 +850,10 @@ BOOL Machine_LoadState(void) {
 	Stop_x86_Log();
 	Start_x86_Log();
 #endif
-#ifndef EXTERNAL_RELEASE
-	StopLog();
-	StartLog();
-#endif
+	if (HaveDebugger) {
+		StopLog();
+		StartLog();
+	}
 	sprintf(String,"%s %s",GS(MSG_LOADED_STATE),FileName);
 	SendMessage( hStatusWnd, SB_SETTEXT, 0, (LPARAM)String );
 	return TRUE;
@@ -1217,12 +1210,12 @@ void StartEmulation ( void ) {
 	
 	RecompPos = RecompCode;
 
-#if (!defined(EXTERNAL_RELEASE))
+	if (HaveDebugger)
 	Enable_R4300i_Commands_Window();
 	if (InR4300iCommandsWindow) {
 		SetCoreToStepping();
 	}
-#endif
+
     DlistCount = 0;
 	AlistCount = 0;
 

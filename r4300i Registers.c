@@ -23,7 +23,6 @@
  * should be forwarded to them so if they want them.
  *
  */
-#if (!defined(EXTERNAL_RELEASE))
 #include <windows.h>
 #include <commctrl.h>
 #include <stdio.h>
@@ -1197,4 +1196,3 @@ void __cdecl UpdateCurrentR4300iRegisterPanel ( void ) {
 		}
 	}
 }
-#endif

@@ -125,7 +125,7 @@ extern "C" {
 
 /********* Global Variables **********/
 extern LARGE_INTEGER Frequency, Frames[NoOfFrames], LastFrame;
-extern BOOL HaveDebugger, AutoLoadMapFile, ShowUnhandledMemory, ShowTLBMisses, 
+extern BOOL HaveDebugger, ShowDebugMessages, AutoLoadMapFile, ShowUnhandledMemory, ShowTLBMisses, 
 	ShowDListAListCount, ShowCompMem, Profiling, IndividualBlock, AutoStart, 
 	AutoSleep, DisableRegCaching, UseIni, UseTlb, UseLinking, RomBrowser,
 	IgnoreMove, Recursion, ShowPifRamErrors, LimitFPS, ShowCPUPer, AutoZip, 

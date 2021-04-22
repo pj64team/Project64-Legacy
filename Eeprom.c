@@ -66,17 +66,13 @@ void EepromCommand(BYTE* Command) {
 		}
 		break;
 	case 4: // Read from Eeprom
-#ifndef EXTERNAL_RELEASE
-		if (Command[0] != 2) { DisplayError("What am I meant to do with this Eeprom Command"); }
-		if (Command[1] != 8) { DisplayError("What am I meant to do with this Eeprom Command"); }
-#endif
+		if (ShowDebugMessages && Command[0] != 2) { DisplayError("What am I meant to do with this Eeprom Command"); }
+		if (ShowDebugMessages && Command[1] != 8) { DisplayError("What am I meant to do with this Eeprom Command"); }
 		ReadFromEeprom(&Command[4], Command[3]);
 		break;
 	case 5:
-#ifndef EXTERNAL_RELEASE
-		if (Command[0] != 10) { DisplayError("What am I meant to do with this Eeprom Command"); }
-		if (Command[1] != 1) { DisplayError("What am I meant to do with this Eeprom Command"); }
-#endif
+		if (ShowDebugMessages && Command[0] != 10) { DisplayError("What am I meant to do with this Eeprom Command"); }
+		if (ShowDebugMessages && Command[1] != 1) { DisplayError("What am I meant to do with this Eeprom Command"); }
 		WriteToEeprom(&Command[4], Command[3]);
 		break;
 	default:

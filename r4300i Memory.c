@@ -24,7 +24,6 @@
  *
  */
 
-#if (!defined(EXTERNAL_RELEASE))
 #include <windows.h>
 #include <commctrl.h>
 #include <stdio.h>
@@ -357,4 +356,3 @@ void Setup_Memory_Window (HWND hDlg) {
 	SetWindowPos(hDlg,NULL,X,Y,WindowWidth,WindowHeight, SWP_NOZORDER | SWP_SHOWWINDOW);		 
 	
 }
-#endif

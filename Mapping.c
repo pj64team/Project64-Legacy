@@ -27,7 +27,6 @@
 #include <windows.h>
 #include <stdio.h>
 
-#if (!defined(EXTERNAL_RELEASE))
 #include "main.h"
 #include "R4300i Commands.h"
 #include "BreakPoints.h"
@@ -105,14 +104,20 @@ void GetMapDirectory ( char * Directory ) {
 char * LabelName (DWORD Address) {
 	DWORD count;
 
-	for (count = 0; count < NoOfMapEntries; count ++ ) {
-		if (MapTable[count].VAddr == Address) {
-			sprintf(strLabelName,"%s",MapTable[count].Label);
-			return strLabelName;
-		}
+	if (!HaveDebugger) {
+		sprintf(strLabelName, "0x%08X", Address);
+		return strLabelName;
 	}
-	sprintf(strLabelName,"0x%08X",Address);
-	return strLabelName;
+	else {
+		for (count = 0; count < NoOfMapEntries; count++) {
+			if (MapTable[count].VAddr == Address) {
+				sprintf(strLabelName, "%s", MapTable[count].Label);
+				return strLabelName;
+			}
+		}
+		sprintf(strLabelName, "0x%08X", Address);
+		return strLabelName;
+	}
 }
 
 void OpenZipMapFile(char * FileName) {
@@ -293,12 +298,3 @@ void SetMapDirectory ( char * Directory ) {
 		RegSetValueEx(hKeyResults,"Map Directory",0,REG_SZ,(LPBYTE)Directory,strlen(Directory));
 	}
 }
-
-#else 
-char strLabelName[100];
-
-char * LabelName (DWORD Address) {
-	sprintf(strLabelName,"0x%08X",Address);
-	return strLabelName;
-}
-#endif

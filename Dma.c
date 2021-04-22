@@ -42,9 +42,8 @@ void FirstDMA (void) {
 	case 10: *(DWORD *)&N64MEM[0x318] = RdramSize; break;
 	default: 
 		*(DWORD *)&N64MEM[0x318] = RdramSize;
-#ifndef EXTERNAL_RELEASE
-		DisplayError("Unhandled CicChip(%d) in first DMA",GetCicChipID(ROM));
-#endif
+		if (ShowDebugMessages)
+			DisplayError("Unhandled CicChip(%d) in first DMA",GetCicChipID(ROM));
 	}
 }
 
@@ -56,9 +55,8 @@ void PI_DMA_READ (void) {
 	PI_DRAM_ADDR_REG &= ~7;	// Tax Express fix
 
 	if ( PI_DRAM_ADDR_REG + PI_RD_LEN_REG + 1 > RdramSize) {
-#ifndef EXTERNAL_RELEASE
-		DisplayError("PI_DMA_READ not in Memory");
-#endif
+		if (ShowDebugMessages)
+			DisplayError("PI_DMA_READ not in Memory");
 		PI_STATUS_REG &= ~PI_STATUS_DMA_BUSY;
 		MI_INTR_REG |= MI_INTR_PI;
 		CheckInterrupts();
@@ -99,17 +97,15 @@ void PI_DMA_READ (void) {
 	}
 
 	if (SaveUsing == FlashRam) {
-#ifndef EXTERNAL_RELEASE
-		DisplayError("**** FLashRam DMA Read address %X *****",PI_CART_ADDR_REG);
-#endif
+		if (ShowDebugMessages)
+			DisplayError("**** FLashRam DMA Read address %X *****",PI_CART_ADDR_REG);
 		PI_STATUS_REG &= ~PI_STATUS_DMA_BUSY;
 		MI_INTR_REG |= MI_INTR_PI;
 		CheckInterrupts();
 		return;
 	}
-#ifndef EXTERNAL_RELEASE
-	DisplayError("PI_DMA_READ where are you dmaing to ?");
-#endif	
+	if (ShowDebugMessages)
+		DisplayError("PI_DMA_READ where are you dmaing to ?");
 	PI_STATUS_REG &= ~PI_STATUS_DMA_BUSY;
 	MI_INTR_REG |= MI_INTR_PI;
 	CheckInterrupts();
@@ -125,9 +121,8 @@ void PI_DMA_WRITE (void) {
 
 	PI_STATUS_REG |= PI_STATUS_DMA_BUSY;
 	if ( PI_DRAM_ADDR_REG + PI_WR_LEN_REG + 1 > RdramSize) {
-#ifndef EXTERNAL_RELEASE
-		DisplayError("PI_DMA_WRITE not in Memory");
-#endif	
+		if (ShowDebugMessages)
+			DisplayError("PI_DMA_WRITE not in Memory");
 		PI_STATUS_REG &= ~PI_STATUS_DMA_BUSY;
 		MI_INTR_REG |= MI_INTR_PI;
 		CheckInterrupts();
@@ -241,9 +236,7 @@ void PI_DMA_WRITE (void) {
 		return;
 	}
 	
-#ifndef EXTERNAL_RELEASE
-	if (ShowUnhandledMemory) { DisplayError("PI_DMA_WRITE not in ROM"); }
-#endif
+	if (HaveDebugger && ShowUnhandledMemory) { DisplayError("PI_DMA_WRITE not in ROM"); }
 	PI_STATUS_REG &= ~PI_STATUS_DMA_BUSY;
 	MI_INTR_REG |= MI_INTR_PI;
 	CheckInterrupts();
@@ -254,9 +247,8 @@ void SI_DMA_READ (void) {
 	BYTE * PifRamPos = &PIF_Ram[0];
 	
 	if ((int)SI_DRAM_ADDR_REG > (int)RdramSize) {
-#ifndef EXTERNAL_RELEASE
-		DisplayError("SI DMA\nSI_DRAM_ADDR_REG not in RDRam space");
-#endif
+		if (ShowDebugMessages)
+			DisplayError("SI DMA\nSI_DRAM_ADDR_REG not in RDRam space");
 		return;
 	}
 	
@@ -296,38 +288,36 @@ void SI_DMA_READ (void) {
 		}
 	}
 	
-#if (!defined(EXTERNAL_RELEASE))
-	if (LogOptions.LogPRDMAMemStores) {
-		int count;
-		char HexData[100], AsciiData[100], Addon[20];
-		LogMessage("\tData DMAed to RDRAM:");			
-		LogMessage("\t--------------------");
-		for (count = 0; count < 16; count ++ ) {
-			if ((count % 4) == 0) { 
-				sprintf(HexData,"\0"); 
-				sprintf(AsciiData,"\0"); 
-			}
- 			sprintf(Addon,"%02X %02X %02X %02X", 
-				PIF_Ram[(count << 2) + 0], PIF_Ram[(count << 2) + 1], 
-				PIF_Ram[(count << 2) + 2], PIF_Ram[(count << 2) + 3] );
-			strcat(HexData,Addon);
-			if (((count + 1) % 4) != 0) {
-				sprintf(Addon,"-");
+	if (HaveDebugger && LogOptions.LogPRDMAMemStores) {
+			int count;
+			char HexData[100], AsciiData[100], Addon[20];
+			LogMessage("\tData DMAed to RDRAM:");			
+			LogMessage("\t--------------------");
+			for (count = 0; count < 16; count ++ ) {
+				if ((count % 4) == 0) { 
+					sprintf(HexData,"\0"); 
+					sprintf(AsciiData,"\0"); 
+				}
+ 				sprintf(Addon,"%02X %02X %02X %02X", 
+					PIF_Ram[(count << 2) + 0], PIF_Ram[(count << 2) + 1], 
+					PIF_Ram[(count << 2) + 2], PIF_Ram[(count << 2) + 3] );
 				strcat(HexData,Addon);
-			} 
+				if (((count + 1) % 4) != 0) {
+					sprintf(Addon,"-");
+					strcat(HexData,Addon);
+				} 
 			
-			sprintf(Addon,"%c%c%c%c", 
-				PIF_Ram[(count << 2) + 0], PIF_Ram[(count << 2) + 1], 
-				PIF_Ram[(count << 2) + 2], PIF_Ram[(count << 2) + 3] );
-			strcat(AsciiData,Addon);
+				sprintf(Addon,"%c%c%c%c", 
+					PIF_Ram[(count << 2) + 0], PIF_Ram[(count << 2) + 1], 
+					PIF_Ram[(count << 2) + 2], PIF_Ram[(count << 2) + 3] );
+				strcat(AsciiData,Addon);
 			
-			if (((count + 1) % 4) == 0) {
-				LogMessage("\t%s %s",HexData, AsciiData);
-			} 
-		}
-		LogMessage("");
+				if (((count + 1) % 4) == 0) {
+					LogMessage("\t%s %s",HexData, AsciiData);
+				} 
+			}
+			LogMessage("");
 	}
-#endif
 
 	if (DelaySI) {
 		ChangeTimer(SiTimer,0x900);
@@ -342,9 +332,8 @@ void SI_DMA_WRITE (void) {
 	BYTE * PifRamPos = &PIF_Ram[0];
 	
 	if ((int)SI_DRAM_ADDR_REG > (int)RdramSize) {
-#ifndef EXTERNAL_RELEASE
-		DisplayError("SI DMA\nSI_DRAM_ADDR_REG not in RDRam space");
-#endif
+		if (ShowDebugMessages)
+			DisplayError("SI DMA\nSI_DRAM_ADDR_REG not in RDRam space");
 		return;
 	}
 	
@@ -383,8 +372,7 @@ void SI_DMA_WRITE (void) {
 		}
 	}
 	
-#if (!defined(EXTERNAL_RELEASE))
-	if (LogOptions.LogPRDMAMemLoads) {
+	if (HaveDebugger && LogOptions.LogPRDMAMemLoads) {
 		int count;
 		char HexData[100], AsciiData[100], Addon[20];
 		LogMessage("");
@@ -415,7 +403,6 @@ void SI_DMA_WRITE (void) {
 		}
 		LogMessage("");
 	}
-#endif
 
 	PifRamWrite();
 	
@@ -432,20 +419,18 @@ void SP_DMA_READ (void) {
 	SP_DRAM_ADDR_REG &= 0x1FFFFFFF;
 
 	if (SP_DRAM_ADDR_REG > RdramSize) {
-#ifndef EXTERNAL_RELEASE
-		DisplayError("SP DMA\nSP_DRAM_ADDR_REG not in RDRam space");
-#endif
+		if (ShowDebugMessages)
+			DisplayError("SP DMA\nSP_DRAM_ADDR_REG not in RDRam space");
 		SP_DMA_BUSY_REG = 0;
 		SP_STATUS_REG  &= ~SP_STATUS_DMA_BUSY;
 		return;
 	}
 	
 	if (SP_RD_LEN_REG + 1  + (SP_MEM_ADDR_REG & 0xFFF) > 0x1000) {
-#ifndef EXTERNAL_RELEASE
-		DisplayError("SP DMA\ncould not fit copy in memory segement");
+		if (ShowDebugMessages)
+			DisplayError("SP DMA\ncould not fit copy in memory segement");
 		SP_DMA_BUSY_REG = 0;
 		SP_STATUS_REG  &= ~SP_STATUS_DMA_BUSY;
-#endif
 		return;		
 	}
 
@@ -467,16 +452,14 @@ void SP_DMA_READ (void) {
 
 void SP_DMA_WRITE (void) { 
 	if (SP_DRAM_ADDR_REG > RdramSize) {
-#ifndef EXTERNAL_RELEASE
-		DisplayError("SP DMA WRITE\nSP_DRAM_ADDR_REG not in RDRam space");
-#endif
+		if (ShowDebugMessages)
+			DisplayError("SP DMA WRITE\nSP_DRAM_ADDR_REG not in RDRam space");
 		return;
 	}
 	
 	if (SP_WR_LEN_REG + 1 + (SP_MEM_ADDR_REG & 0xFFF) > 0x1000) {
-#ifndef EXTERNAL_RELEASE
-		DisplayError("SP DMA WRITE\ncould not fit copy in memory segement");
-#endif
+		if (ShowDebugMessages)
+			DisplayError("SP DMA WRITE\ncould not fit copy in memory segement");
 		return;		
 	}
 

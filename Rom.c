@@ -752,9 +752,8 @@ DWORD WINAPI OpenChosenFile(LPVOID lpArgs) {
 	}
 	Sleep(100); // Adjusted down to 100ms from 1000ms
 	CloseCpu();
-#if (!defined(EXTERNAL_RELEASE))
-	ResetMappings();
-#endif
+	if (HaveDebugger)
+		ResetMappings();
 	SetNewFileDirectory();
 	strcpy(MapFile, CurrentFileName);
 	if (_strnicmp(&CurrentFileName[strlen(CurrentFileName) - 4], ".ZIP", 4) == 0) {
@@ -849,11 +848,9 @@ DWORD WINAPI OpenChosenFile(LPVOID lpArgs) {
 			ShowRomList(hMainWindow);
 			return 0;
 		}
-#if (!defined(EXTERNAL_RELEASE))
-		if (AutoLoadMapFile) {
+		if (HaveDebugger && AutoLoadMapFile) {
 			OpenZipMapFile(MapFile);
 		}
-#endif
 	}
 	else {
 		DWORD dwRead, dwToRead, TotalRead;
@@ -950,8 +947,7 @@ DWORD WINAPI OpenChosenFile(LPVOID lpArgs) {
 	}
 #endif
 	SendMessage(hStatusWnd, SB_SETTEXT, 0, (LPARAM)"");
-#if (!defined(EXTERNAL_RELEASE))
-	if (AutoLoadMapFile) {
+	if (HaveDebugger && AutoLoadMapFile) {
 		char* p;
 
 		p = strrchr(MapFile, '.');
@@ -968,7 +964,6 @@ DWORD WINAPI OpenChosenFile(LPVOID lpArgs) {
 			OpenMapFile(MapFile);
 		}
 	}
-#endif
 
 	GetRomName(RomName, ROM);
 	if (strlen(RomName) == 0)
@@ -1223,10 +1218,10 @@ void RecalculateCRCs(BYTE* data, DWORD data_size) {
 		crc[1] = t5 ^ t2 ^ t1;
 	}
 
-	if (*(DWORD*)&data[0x10] != crc[0] || *(DWORD*)&data[0x14] != crc[1]) {/*
-#ifndef EXTERNAL_RELEASE
-		DisplayError("Calculated CRC does not match CRC1 and CRC2.");
-#endif*/
+	if (*(DWORD*)&data[0x10] != crc[0] || *(DWORD*)&data[0x14] != crc[1]) {
+		/*if (ShowDebugMessages)
+			DisplayError("Calculated CRC does not match CRC1 and CRC2.");
+		*/
 		data[0x13] = (crc[0] & 0xFF000000) >> 24;
 		data[0x12] = (BYTE)((crc[0] & 0x00FF0000) >> 16);
 		data[0x11] = (crc[0] & 0x0000FF00) >> 8;

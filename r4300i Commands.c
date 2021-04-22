@@ -33,7 +33,6 @@
 
 char CommandName[100];
 
-#if (!defined(EXTERNAL_RELEASE))
 #define R4300i_MaxCommandLines		30
 
 typedef struct {
@@ -604,7 +603,6 @@ void R4300i_Commands_Setup ( HWND hDlg ) {
 		SWP_SHOWWINDOW);
 
 }
-#endif
 
 char * R4300iRegImmName ( DWORD OpCode, DWORD PC ) {
 	OPCODE command;
@@ -1287,7 +1285,6 @@ char * R4300iOpcodeName ( DWORD OpCode, DWORD PC ) {
 	return CommandName;
 }
 
-#if (!defined(EXTERNAL_RELEASE))
 void RefreshR4300iCommands ( void ) {
 	DWORD location, LinesUsed;
 	char AsciiAddress[20];
@@ -1376,5 +1373,3 @@ void Update_r4300iCommandList (void) {
 		InvalidateRect( R4300i_Commands_hDlg, NULL, TRUE );
 	}
 }
-
-#endif
