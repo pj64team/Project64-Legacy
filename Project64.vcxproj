@@ -85,7 +85,7 @@
     <OutDir>..\PJ64_1.6.1\</OutDir>
     <IntDir>.\Release_External\</IntDir>
     <LinkIncremental>false</LinkIncremental>
-    <TargetName>$(ProjectName)_1.6.1</TargetName>
+    <TargetName>$(ProjectName)_1.6.2</TargetName>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
     <RunCodeAnalysis>false</RunCodeAnalysis>
   </PropertyGroup>
@@ -93,7 +93,7 @@
     <OutDir>..\PJ64_1.6.1\</OutDir>
     <IntDir>.\Release_External\</IntDir>
     <LinkIncremental>false</LinkIncremental>
-    <TargetName>$(ProjectName)_1.6.1_XP</TargetName>
+    <TargetName>$(ProjectName)_1.6.2_XP</TargetName>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
     <RunCodeAnalysis>false</RunCodeAnalysis>
     <EnableMicrosoftCodeAnalysis>true</EnableMicrosoftCodeAnalysis>
@@ -202,7 +202,7 @@
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <SubSystem>Windows</SubSystem>
       <IgnoreSpecificDefaultLibraries>LIBC;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
-      <OutputFile>..\PJ64_1.6.1\Project64_1.6.1.exe</OutputFile>
+      <OutputFile>..\PJ64_1.6.1\Project64_1.6.2.exe</OutputFile>
       <AdditionalLibraryDirectories>C:\Development\PJ64 Source C++ 6.0;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>Compression/zlibstat.lib;htmlhelp.lib;winmm.lib;comctl32.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalOptions> /NXCOMPAT:NO %(AdditionalOptions)</AdditionalOptions>
@@ -258,7 +258,7 @@
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <SubSystem>Windows</SubSystem>
       <IgnoreSpecificDefaultLibraries>LIBC;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
-      <OutputFile>..\PJ64_1.6.1\Project64_1.6.1_XP.exe</OutputFile>
+      <OutputFile>..\PJ64_1.6.1\Project64_1.6.2_XP.exe</OutputFile>
       <AdditionalLibraryDirectories>C:\Development\PJ64 Source C++ 6.0;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>Compression/zlibstat.lib;htmlhelp.lib;winmm.lib;comctl32.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalOptions> /NXCOMPAT:NO %(AdditionalOptions)</AdditionalOptions>

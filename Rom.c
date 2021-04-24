@@ -43,7 +43,7 @@
 DWORD RomFileSize;
 int RomRamSize, RomSaveUsing, RomCPUType, RomSelfMod,
 RomUseTlb, RomUseLinking, RomCF, RomUseLargeBuffer, RomUseCache,
-RomDelaySI, RomSPHack, RomAudioSignal, RomDelayRDP, RomDelayRSP, RomEmulateAI, RomModVIS;
+RomDelaySI, RomSPHack, RomAudioSignal, RomEmulateAI, RomModVIS;
 char CurrentFileName[MAX_PATH + 1] = { "" }, RomName[MAX_PATH + 1] = { "" }, RomFullName[MAX_PATH + 1] = { "" };
 char LastRoms[10][MAX_PATH + 1], LastDirs[10][MAX_PATH + 1];
 BYTE RomHeader[0x1000];
@@ -564,15 +564,13 @@ void LoadRomOptions(void) {
 	if (RomSelfMod != ModCode_Default) { SelfModCheck = RomSelfMod; }
 	UseTlb = RomUseTlb;
 	DelaySI = RomDelaySI;
-	DelayRDP = RomDelayRDP;
-	DelayRSP = RomDelayRSP;
 	EmulateAI = RomEmulateAI;
 	AudioSignal = RomAudioSignal;
 	SPHack = RomSPHack;
 	UseLinking = SystemABL;
 	DisableRegCaching = !RomUseCache;
-	if (UseIni && RomUseLinking == 0) { UseLinking = TRUE; }
-	if (UseIni && RomUseLinking == 1) { UseLinking = FALSE; }
+	if (RomUseLinking == 0) { UseLinking = TRUE; }
+	if (RomUseLinking == 1) { UseLinking = FALSE; }
 	ModVI = RomModVIS;
 
 	switch (GetRomRegion(ROM)) {
@@ -624,16 +622,13 @@ void ReadRomOptions(void) {
 	RomEmulateAI = FALSE;
 	RomModVIS = 1500;
 
-	// To do!
-	// These two were made automatic some time ago
-	// Test and remove all references in the code if every game it fixed still works
-	RomDelayRDP = FALSE;
-	RomDelayRSP = FALSE;
-
 	if (strlen(RomFullName) != 0) {
 		char Identifier[100], * String = NULL;
 
 		RomID(Identifier, RomHeader);
+
+		if (!Settings_EntryExists(RDS_NAME, Identifier))
+			return;
 
 		RomCF = Settings_ReadInt(RDS_NAME, Identifier, "Counter Factor", -1);
 		if (RomCF > 6 || RomCF < 1)
@@ -646,26 +641,24 @@ void ReadRomOptions(void) {
 		else if (strcmp(String, "FlashRam") == 0) { RomSaveUsing = FlashRam; }
 		else { RomSaveUsing = Auto; }
 		if (String) free(String);
-
-		if (UseIni) {
-			Settings_Read(RDS_NAME, Identifier, STR_CPUTYPE, "", &String);
-			if (strcmp(String, "Interpreter") == 0) { RomCPUType = CPU_Interpreter; }
-			else if (strcmp(String, "Recompiler") == 0) { RomCPUType = CPU_Recompiler; }
-			else if (strcmp(String, "SyncCores") == 0) { RomCPUType = CPU_SyncCores; }
-			else { RomCPUType = CPU_Default; }
-			if (String) free(String);
-
-			Settings_Read(RDS_NAME, Identifier, "Self-modifying code Method", "", &String);
-			if (strcmp(String, "None") == 0) { RomSelfMod = ModCode_None; }
-			else if (strcmp(String, "Cache") == 0) { RomSelfMod = ModCode_Cache; }
-			else if (strcmp(String, "Protected Memory") == 0) { RomSelfMod = ModCode_ProtectedMemory; }
-			else if (strcmp(String, "Check Memory") == 0) { RomSelfMod = ModCode_CheckMemoryCache; }
-			else if (strcmp(String, "Check Memory & cache") == 0) { RomSelfMod = ModCode_CheckMemoryCache; }
-			else if (strcmp(String, "Check Memory Advance") == 0) { RomSelfMod = ModCode_CheckMemory2; }
-			else if (strcmp(String, "Change Memory") == 0) { RomSelfMod = ModCode_ChangeMemory; }
-			else { RomSelfMod = ModCode_Default; }
-			if (String) free(String);
-		}
+		
+		Settings_Read(RDS_NAME, Identifier, STR_CPUTYPE, "", &String);
+		if (strcmp(String, "Interpreter") == 0) { RomCPUType = CPU_Interpreter; }
+		else if (strcmp(String, "Recompiler") == 0) { RomCPUType = CPU_Recompiler; }
+		else if (strcmp(String, "SyncCores") == 0) { RomCPUType = CPU_SyncCores; }
+		else { RomCPUType = CPU_Default; }
+		if (String) free(String);
+		
+		Settings_Read(RDS_NAME, Identifier, "Self-modifying code Method", "", &String);
+		if (strcmp(String, "None") == 0) { RomSelfMod = ModCode_None; }
+		else if (strcmp(String, "Cache") == 0) { RomSelfMod = ModCode_Cache; }
+		else if (strcmp(String, "Protected Memory") == 0) { RomSelfMod = ModCode_ProtectedMemory; }
+		else if (strcmp(String, "Check Memory") == 0) { RomSelfMod = ModCode_CheckMemoryCache; }
+		else if (strcmp(String, "Check Memory & cache") == 0) { RomSelfMod = ModCode_CheckMemoryCache; }
+		else if (strcmp(String, "Check Memory Advance") == 0) { RomSelfMod = ModCode_CheckMemory2; }
+		else if (strcmp(String, "Change Memory") == 0) { RomSelfMod = ModCode_ChangeMemory; }
+		else { RomSelfMod = ModCode_Default; }
+		if (String) free(String);
 
 		Settings_Read(RDS_NAME, Identifier, "Linking", "", &String);
 		if (strcmp(String, "On") == 0) { RomUseLinking = 0; }
@@ -674,14 +667,15 @@ void ReadRomOptions(void) {
 
 		if (Settings_HasSetting(RDS_NAME, Identifier, "ExpansionPak"))
 			RomRamSize = 0x800000;
+		else
+			RomRamSize = 0x400000;
+
 		RomUseTlb = !Settings_HasSetting(RDS_NAME, Identifier, "Disable TLB");
 		RomDelaySI = Settings_HasSetting(RDS_NAME, Identifier, "Delay SI");
 		RomAudioSignal = Settings_HasSetting(RDS_NAME, Identifier, "Audio Signal");
 		RomSPHack = Settings_HasSetting(RDS_NAME, Identifier, "SP Hack");
 		RomUseCache = !Settings_HasSetting(RDS_NAME, Identifier, "Disable Reg Cache");
 		RomUseLargeBuffer = Settings_HasSetting(RDS_NAME, Identifier, "Use Large Buffer");
-		RomDelayRSP = Settings_HasSetting(RDS_NAME, Identifier, "Delay RSP");
-		RomDelayRDP = Settings_HasSetting(RDS_NAME, Identifier, "Delay RDP");
 		RomEmulateAI = Settings_HasSetting(RDS_NAME, Identifier, "Emulate AI");
 		RomModVIS = Settings_ReadInt(RDS_NAME, Identifier, "VI", RomModVIS);
 		// To do!
@@ -1115,10 +1109,6 @@ void SaveRomOptions(void) {
 	else				Settings_Delete(RDS_NAME, Identifier, "Disable Reg Cache");
 	if (!RomUseTlb)		Settings_Write(RDS_NAME, Identifier, "Disable TLB", "");
 	else				Settings_Delete(RDS_NAME, Identifier, "Disable TLB");
-	if (RomDelayRDP)	Settings_Write(RDS_NAME, Identifier, "Delay RDP", "");
-	else				Settings_Delete(RDS_NAME, Identifier, "Delay RDP");
-	if (RomDelayRSP)	Settings_Write(RDS_NAME, Identifier, "Delay RSP", "");
-	else				Settings_Delete(RDS_NAME, Identifier, "Delay RSP");
 	if (RomDelaySI)		Settings_Write(RDS_NAME, Identifier, "Delay SI", "");
 	else				Settings_Delete(RDS_NAME, Identifier, "Delay SI");
 	if (RomEmulateAI)	Settings_Write(RDS_NAME, Identifier, "Emulate AI", "");

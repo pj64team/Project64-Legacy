@@ -209,7 +209,7 @@ void AddDropDownItem(HWND hDlg, WORD CtrlID, int StringID, int ItemData, int* Va
 
 BOOL CALLBACK DefaultOptionsProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam) {
 	int indx;
-	BOOL clear_mem;
+	BOOL temp;
 
 	switch (uMsg) {
 	case WM_INITDIALOG:
@@ -220,11 +220,16 @@ BOOL CALLBACK DefaultOptionsProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lPa
 		SetDlgItemText(hDlg, IDC_TEXT4, GS(ADVANCE_MEM_SIZE));
 		SetDlgItemText(hDlg, IDC_TEXT5, GS(ADVANCE_ABL));
 		SetFlagControl(hDlg, &AutoStart, IDC_START_ON_ROM_OPEN, ADVANCE_AUTO_START);
-		SetFlagControl(hDlg, &UseIni, IDC_USEINI, ADVANCE_OVERWRITE);
 		SetFlagControl(hDlg, &AutoZip, IDC_ZIP, ADVANCE_COMPRESS);
 
-		clear_mem = Settings_ReadBool(APPS_NAME, STR_SETTINGS, STR_CLEAR_MEMORY, TRUE);
-		SetFlagControl(hDlg, &clear_mem, IDC_CLEAR_MEMORY, ADVANCE_CLEAR_MEMORY);
+		temp = Settings_ReadBool(APPS_NAME, STR_SETTINGS, STR_CLEAR_MEMORY, TRUE);
+		SetFlagControl(hDlg, &temp, IDC_CLEAR_MEMORY, ADVANCE_CLEAR_MEMORY);
+
+		temp = Settings_ReadBool(APPS_NAME, STR_SETTINGS, STR_HAVEDEBUGGER, TRUE);
+		SetFlagControl(hDlg, &temp, IDC_USEDEBUGGER, ADVANCE_USEDEBUGGER);
+
+		temp = Settings_ReadBool(APPS_NAME, STR_SETTINGS, STR_SHOWMOREMESSAGES, TRUE);
+		SetFlagControl(hDlg, &temp, IDC_SHOWMOREERRORS, ADVANCE_SHOREMORERRORS);
 
 		AddDropDownItem(hDlg, IDC_CPU_TYPE, CORE_INTERPTER, CPU_Interpreter, &SystemCPU_Type);
 		AddDropDownItem(hDlg, IDC_CPU_TYPE, CORE_RECOMPILER, CPU_Recompiler, &SystemCPU_Type);
@@ -251,14 +256,17 @@ BOOL CALLBACK DefaultOptionsProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lPa
 			AutoStart = SendMessage(GetDlgItem(hDlg, IDC_START_ON_ROM_OPEN), BM_GETSTATE, 0, 0) == BST_CHECKED ? TRUE : FALSE;
 			Settings_Write(APPS_NAME, STR_SETTINGS, STR_AUTOSTART, AutoStart ? STR_TRUE : STR_FALSE);
 
-			UseIni = SendMessage(GetDlgItem(hDlg, IDC_USEINI), BM_GETSTATE, 0, 0) == BST_CHECKED ? TRUE : FALSE;
-			Settings_Write(APPS_NAME, STR_SETTINGS, STR_USERDS, UseIni ? STR_TRUE : STR_FALSE);
-
 			AutoZip = SendMessage(GetDlgItem(hDlg, IDC_ZIP), BM_GETSTATE, 0, 0) == BST_CHECKED ? TRUE : FALSE;
 			Settings_Write(APPS_NAME, STR_SETTINGS, STR_COMPRESS_STATES, AutoZip ? STR_TRUE : STR_FALSE);
 
-			clear_mem = SendMessage(GetDlgItem(hDlg, IDC_CLEAR_MEMORY), BM_GETSTATE, 0, 0) == BST_CHECKED ? TRUE : FALSE;
-			Settings_Write(APPS_NAME, STR_SETTINGS, STR_CLEAR_MEMORY, clear_mem ? STR_TRUE : STR_FALSE);
+			temp = SendMessage(GetDlgItem(hDlg, IDC_CLEAR_MEMORY), BM_GETSTATE, 0, 0) == BST_CHECKED ? TRUE : FALSE;
+			Settings_Write(APPS_NAME, STR_SETTINGS, STR_CLEAR_MEMORY, temp ? STR_TRUE : STR_FALSE);
+
+			temp = SendMessage(GetDlgItem(hDlg, IDC_USEDEBUGGER), BM_GETSTATE, 0, 0) == BST_CHECKED ? TRUE : FALSE;
+			Settings_Write(APPS_NAME, STR_SETTINGS, STR_HAVEDEBUGGER, temp ? STR_TRUE : STR_FALSE);
+
+			temp = SendMessage(GetDlgItem(hDlg, IDC_SHOWMOREERRORS), BM_GETSTATE, 0, 0) == BST_CHECKED ? TRUE : FALSE;
+			Settings_Write(APPS_NAME, STR_SETTINGS, STR_SHOWMOREMESSAGES, temp ? STR_TRUE : STR_FALSE);
 
 			// Core Defaults
 			indx = SendMessage(GetDlgItem(hDlg, IDC_CPU_TYPE), CB_GETCURSEL, 0, 0);
@@ -942,7 +950,6 @@ BOOL CALLBACK RomSettingsProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam
 		AddDropDownItem(hDlg, IDC_SELFMOD, SMCM_CHANGE_MEM, ModCode_ChangeMemory, &RomSelfMod);
 		AddDropDownItem(hDlg, IDC_SELFMOD, SMCM_CHECK_ADV, ModCode_CheckMemory2, &RomSelfMod);
 
-		AddDropDownItem(hDlg, IDC_RDRAM_SIZE, ROM_DEFAULT, -1, &RomRamSize);
 		AddDropDownItem(hDlg, IDC_RDRAM_SIZE, RDRAM_4MB, 0x400000, &RomRamSize);
 		AddDropDownItem(hDlg, IDC_RDRAM_SIZE, RDRAM_8MB, 0x800000, &RomRamSize);
 
@@ -968,8 +975,6 @@ BOOL CALLBACK RomSettingsProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam
 		SetFlagControl(hDlg, &RomUseTlb, IDC_USE_TLB, ROM_USE_TLB);
 		SetFlagControl(hDlg, &RomUseCache, IDC_ROM_REGCACHE, ROM_REG_CACHE);
 		SetFlagControl(hDlg, &RomDelaySI, IDC_DELAY_SI, ROM_DELAY_SI);
-		//SetFlagControl(hDlg,&RomDelayRDP, IDC_DELAY_RDP, ROM_DELAY_RDP);
-		//SetFlagControl(hDlg,&RomDelayRSP, IDC_DELAY_RSP, ROM_DELAY_RSP);
 		SetFlagControl(hDlg, &RomEmulateAI, IDC_EMULATE_AI, ROM_EMULATE_AI);
 		SetFlagControl(hDlg, &RomAudioSignal, IDC_AUDIO_SIGNAL, ROM_AUDIO_SIGNAL);
 		SetFlagControl(hDlg, &RomSPHack, IDC_ROM_SPHACK, ROM_SP_HACK);
@@ -987,8 +992,6 @@ BOOL CALLBACK RomSettingsProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam
 			EnableWindow(GetDlgItem(hDlg, IDC_SELFMOD), FALSE);
 			EnableWindow(GetDlgItem(hDlg, IDC_USE_TLB), FALSE);
 			EnableWindow(GetDlgItem(hDlg, IDC_DELAY_SI), FALSE);
-			//EnableWindow(GetDlgItem(hDlg,IDC_DELAY_RDP),FALSE);
-			//EnableWindow(GetDlgItem(hDlg,IDC_DELAY_RSP),FALSE);
 			EnableWindow(GetDlgItem(hDlg, IDC_EMULATE_AI), FALSE);
 			EnableWindow(GetDlgItem(hDlg, IDC_ROM_SPHACK), FALSE);
 			EnableWindow(GetDlgItem(hDlg, IDC_ROM_REGCACHE), FALSE);
@@ -1018,7 +1021,6 @@ BOOL CALLBACK RomSettingsProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam
 				Settings_Write(RDN_NAME, Identifier, "Note", String);
 			}
 
-			if (!UseIni) { break; }
 			indx = SendMessage(GetDlgItem(hDlg, IDC_RDRAM_SIZE), CB_GETCURSEL, 0, 0);
 			RomRamSize = SendMessage(GetDlgItem(hDlg, IDC_RDRAM_SIZE), CB_GETITEMDATA, indx, 0);
 			indx = SendMessage(GetDlgItem(hDlg, IDC_SAVE_TYPE), CB_GETCURSEL, 0, 0);
@@ -1032,8 +1034,6 @@ BOOL CALLBACK RomSettingsProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam
 			indx = SendMessage(GetDlgItem(hDlg, IDC_BLOCK_LINKING), CB_GETCURSEL, 0, 0);
 			RomUseLinking = SendMessage(GetDlgItem(hDlg, IDC_BLOCK_LINKING), CB_GETITEMDATA, indx, 0);
 			RomDelaySI = SendMessage(GetDlgItem(hDlg, IDC_DELAY_SI), BM_GETSTATE, 0, 0) == BST_CHECKED ? TRUE : FALSE;
-			//RomDelayRDP = SendMessage(GetDlgItem(hDlg,IDC_DELAY_RDP),BM_GETSTATE, 0,0) == BST_CHECKED?TRUE:FALSE;
-			//RomDelayRSP = SendMessage(GetDlgItem(hDlg,IDC_DELAY_RSP),BM_GETSTATE, 0,0) == BST_CHECKED?TRUE:FALSE;
 			RomEmulateAI = SendMessage(GetDlgItem(hDlg, IDC_EMULATE_AI), BM_GETSTATE, 0, 0) == BST_CHECKED ? TRUE : FALSE;
 			RomAudioSignal = SendMessage(GetDlgItem(hDlg, IDC_AUDIO_SIGNAL), BM_GETSTATE, 0, 0) == BST_CHECKED ? TRUE : FALSE;
 			RomSPHack = SendMessage(GetDlgItem(hDlg, IDC_ROM_SPHACK), BM_GETSTATE, 0, 0) == BST_CHECKED ? TRUE : FALSE;

@@ -26,7 +26,7 @@
 extern DWORD RomFileSize;
 extern int RomRamSize, RomSaveUsing, RomCPUType, RomSelfMod,
 RomUseTlb, RomUseLinking, RomCF, RomUseLargeBuffer, RomUseCache,
-RomDelaySI, RomSPHack, RomAudioSignal, RomDelayRDP, RomDelayRSP, RomEmulateAI, RomModVIS;
+RomDelaySI, RomSPHack, RomAudioSignal, RomEmulateAI, RomModVIS;
 extern char CurrentFileName[MAX_PATH + 1], RomName[MAX_PATH + 1], RomFullName[MAX_PATH + 1];
 extern char LastRoms[10][MAX_PATH + 1], LastDirs[10][MAX_PATH + 1];
 extern BYTE RomHeader[0x1000];

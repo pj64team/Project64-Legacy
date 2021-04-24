@@ -47,10 +47,9 @@
 LARGE_INTEGER Frequency, Frames[NoOfFrames], LastFrame;
 BOOL HaveDebugger, ShowDebugMessages, AutoLoadMapFile, ShowUnhandledMemory, ShowTLBMisses,
 ShowDListAListCount, ShowCompMem, Profiling, IndividualBlock, AutoStart,
-AutoSleep, DisableRegCaching, UseIni, UseTlb, UseLinking, RomBrowser,
+AutoSleep, DisableRegCaching, UseTlb, UseLinking, RomBrowser,
 IgnoreMove, Recursion, ShowPifRamErrors, LimitFPS, ShowCPUPer, AutoZip,
-AutoFullScreen, SystemABL, AlwaysOnTop, BasicMode, DelaySI, RememberCheats, AudioSignal,
-DelayRSP, DelayRDP, EmulateAI;
+AutoFullScreen, SystemABL, AlwaysOnTop, BasicMode, DelaySI, RememberCheats, AudioSignal, EmulateAI;
 unsigned int CurrentFrame;
 int CPU_Type, SystemCPU_Type, SelfModCheck, SystemSelfModCheck, RomsToRemember, RomDirsToRemember;
 HWND hMainWindow, hHiddenWin, hStatusWnd, hCheatSearchDlg;
@@ -458,7 +457,6 @@ void LoadSettings(void) {
 
 		// Settings
 		AutoStart = Default_AutoStart;
-		UseIni = Default_UseIni;
 		RomBrowser = Default_UseRB;
 		Recursion = Default_Recursion;
 		AutoZip = Default_AutoZip;
@@ -473,7 +471,6 @@ void LoadSettings(void) {
 		AutoStart = Settings_ReadBool(APPS_NAME, STR_SETTINGS, STR_AUTOSTART, Default_AutoStart);
 		RomBrowser = Settings_ReadBool(APPS_NAME, STR_SETTINGS, STR_USERB, Default_UseRB);
 		Recursion = Settings_ReadBool(APPS_NAME, STR_SETTINGS, STR_USERECUR, Default_Recursion);
-		UseIni = Settings_ReadBool(APPS_NAME, STR_SETTINGS, STR_USERDS, Default_UseIni);
 		AutoZip = Settings_ReadBool(APPS_NAME, STR_SETTINGS, STR_COMPRESS_STATES, Default_AutoZip);
 		ShowCPUPer = Settings_ReadBool(APPS_NAME, STR_SETTINGS, STR_SHOWCPU, Default_ShowCPUPer);
 		AlwaysOnTop = Settings_ReadBool(APPS_NAME, STR_SETTINGS, STR_ALWAYSONTOP, Default_AlwaysOnTop);

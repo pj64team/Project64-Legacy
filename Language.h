@@ -247,6 +247,8 @@ char * GS               ( int StringID );
 #define ADVANCE_OVERWRITE		507
 #define ADVANCE_COMPRESS		508
 #define ADVANCE_CLEAR_MEMORY    509
+#define ADVANCE_USEDEBUGGER     510
+#define ADVANCE_SHOREMORERRORS  511
 
 //Rom Options
 #define ROM_CPU_STYLE			520

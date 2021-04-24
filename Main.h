@@ -42,15 +42,15 @@ extern "C" {
 
 /********* General Defaults **********/
 #if (!defined(EXTERNAL_RELEASE))
-#define AppVer   "Project64 - Build 58"
-#define AppName  "Project64 (Build 58)"
+#define AppVer   "Project64 - Build 59"
+#define AppName  "Project64 (Build 59)"
 #else
 //#define BETA_VERSION
-#define AppVer   "Project64 Legacy - 1.6.1"
+#define AppVer   "Project64 Legacy - 1.6.2"
 #ifdef BETA_VERSION
-#define AppName  "Project64 Version 1.6.1"
+#define AppName  "Project64 Version 1.6.2 Beta"
 #else
-#define AppName  "Project64 Legacy - Open Beta"
+#define AppName  "Project64 Legacy - 1.6.2 Alpha"
 #endif
 #endif
 
@@ -59,7 +59,7 @@ extern "C" {
 #define Default_AutoSleep			TRUE
 #define Default_AutoFullScreen		FALSE
 #define Default_DisableRegCaching	FALSE
-#define Default_RdramSize			0x400000
+#define Default_RdramSize			0x800000
 #define Default_UseIni				TRUE
 #define Default_AutoZip				TRUE
 #define Default_LimitFPS			TRUE
@@ -127,10 +127,9 @@ extern "C" {
 extern LARGE_INTEGER Frequency, Frames[NoOfFrames], LastFrame;
 extern BOOL HaveDebugger, ShowDebugMessages, AutoLoadMapFile, ShowUnhandledMemory, ShowTLBMisses, 
 	ShowDListAListCount, ShowCompMem, Profiling, IndividualBlock, AutoStart, 
-	AutoSleep, DisableRegCaching, UseIni, UseTlb, UseLinking, RomBrowser,
+	AutoSleep, DisableRegCaching, UseTlb, UseLinking, RomBrowser,
 	IgnoreMove, Recursion, ShowPifRamErrors, LimitFPS, ShowCPUPer, AutoZip, 
-	AutoFullScreen, SystemABL, AlwaysOnTop, BasicMode, DelaySI, RememberCheats,AudioSignal, 
-	DelayRDP, DelayRSP, EmulateAI;
+	AutoFullScreen, SystemABL, AlwaysOnTop, BasicMode, DelaySI, RememberCheats,AudioSignal, EmulateAI;
 extern unsigned int CurrentFrame;
 extern int CPU_Type, SystemCPU_Type, SelfModCheck, SystemSelfModCheck, RomsToRemember, RomDirsToRemember;
 extern HWND hMainWindow, hHiddenWin, hStatusWnd;

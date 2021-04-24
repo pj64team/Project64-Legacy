@@ -252,9 +252,12 @@
 #define IDC_RECOMPSET_TEXT              1253
 #define IDC_VIS_TEXT                    1254
 #define IDC_CHECK2                      1256
+#define IDC_SHOWMOREERRORS              1256
 #define IDC_EDIT1                       1257
 #define IDC_CLEARMEMORY                 1258
 #define IDC_CLEAR_MEMORY                1258
+#define IDC_CHECK1                      1259
+#define IDC_USEDEBUGGER                 1259
 #define ID_FILE_OPEN_ROM                40001
 #define ID_FILE_ROM_INFO                40002
 #define ID_FILE_EXIT                    40005
@@ -334,7 +337,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        181
 #define _APS_NEXT_COMMAND_VALUE         40169
-#define _APS_NEXT_CONTROL_VALUE         1259
+#define _APS_NEXT_CONTROL_VALUE         1260
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif
