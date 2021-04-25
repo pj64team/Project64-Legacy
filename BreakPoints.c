@@ -41,7 +41,7 @@
 #define IDC_FUNCTION_COMBO		106
 
 void BPoint_AddButtonPressed ( void);
-void Create_BPoint_Window    ( int );
+void __cdecl Create_BPoint_Window    ( int );
 void DrawBPItem              ( LPARAM );
 void HideBPointPanel         ( int Panel);
 void Paint_BPoint_Win        ( HWND );
@@ -214,7 +214,7 @@ int CheckForR4300iBPoint ( DWORD Location ) {
 	return FALSE;
 }
 
-void Create_BPoint_Window (int Child) {
+void __cdecl Create_BPoint_Window (int Child) {
 	DWORD ThreadID;
 
 	if (Child) {

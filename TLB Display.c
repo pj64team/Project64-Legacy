@@ -34,7 +34,7 @@
 LRESULT CALLBACK TLB_Proc (HWND, UINT, WPARAM, LPARAM);
 HWND TlbDlg = NULL;
 
-void Create_TLB_Window ( int Child ) {
+void __cdecl Create_TLB_Window ( int Child ) {
 	if ( Child ) {
 		DialogBox( hInst, MAKEINTRESOURCE(IDD_TLB), NULL,(DLGPROC) TLB_Proc );
 		TlbDlg = NULL;

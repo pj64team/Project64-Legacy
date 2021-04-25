@@ -731,7 +731,7 @@ void ExecuteInterpreterOpCode (void) {
 	}		
 }
 	
-void StartInterpreterCPU (void ) { 
+void __cdecl StartInterpreterCPU (void ) { 
 	//DWORD Value, Value2, Addr = 0x80031000;
 
 	if (CoInitialize(NULL) != S_OK)

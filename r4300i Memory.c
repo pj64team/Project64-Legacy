@@ -44,7 +44,7 @@ LRESULT CALLBACK Memory_Window_Proc (HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM
 static HWND Memory_Win_hDlg, hAddrEdit, hVAddr, hPAddr, hList, hScrlBar;
 static int InMemoryWindow = FALSE;
 
-void Create_Memory_Window ( int Child ) {
+void __cdecl Create_Memory_Window ( int Child ) {
 	DWORD ThreadID;
 	if ( Child ) {
 		InMemoryWindow = TRUE;

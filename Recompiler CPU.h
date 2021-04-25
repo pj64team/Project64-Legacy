@@ -213,7 +213,7 @@ void CompileExit            ( DWORD TargetPC, REG_INFO ExitRegSet, int reason, i
 void CompileSystemCheck     ( DWORD TimerModifier, DWORD TargetPC, REG_INFO RegSet );
 void FixRandomReg           ( void );
 void FreeSection            ( BLOCK_SECTION * Section, BLOCK_SECTION * Parent);
-void StartRecompilerCPU     ( void );
+void __cdecl StartRecompilerCPU     ( void );
 void GenerateSectionLinkage ( BLOCK_SECTION * Section );
 void InitilizeInitialCompilerVariable ( void);
 

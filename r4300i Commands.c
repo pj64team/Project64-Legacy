@@ -70,7 +70,7 @@ static HWND R4300i_Commands_hDlg, hList, hAddress, hFunctionlist, hGoButton, hBr
 static R4300ICOMMANDLINE r4300iCommandLine[30];
 BOOL InR4300iCommandsWindow = FALSE;
 
-void Create_R4300i_Commands_Window ( int Child ) {
+void __cdecl Create_R4300i_Commands_Window ( int Child ) {
 	DWORD ThreadID;
 	if ( Child ) {
 		InR4300iCommandsWindow = TRUE;

@@ -232,7 +232,7 @@ void StartErrorLog (void) {
 	Error_Message("");
 }
 
-void StartSyncCPU (void ) { 
+void __cdecl StartSyncCPU (void ) { 
 	DWORD Addr;
 	BYTE * Block;
 #ifdef Log_x86Code

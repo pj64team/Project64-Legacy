@@ -23,7 +23,7 @@
  * should be forwarded to them so if they want them.
  *
  */
-void StartSyncCPU   ( void );
+void __cdecl StartSyncCPU   ( void );
 void SwitchSyncRegisters (void);
 void SyncToPC       ( void );
 void FreeSyncMemory ( void );

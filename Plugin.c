@@ -47,7 +47,7 @@ BOOL PluginsChanged ( HWND hDlg );
 BOOL ValidPluginVersion ( PLUGIN_INFO * PluginInfo );
 
 
-void AudioThread (void) {
+void __cdecl AudioThread (void) {
 	SetThreadPriority(GetCurrentThread(), THREAD_PRIORITY_TIME_CRITICAL );
 	for (;;) { AiUpdate(TRUE); }
 }

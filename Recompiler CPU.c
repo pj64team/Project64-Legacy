@@ -2855,7 +2855,7 @@ void MarkCodeBlock (DWORD PAddr) {
 	}
 }
 
-void StartRecompilerCPU (void ) { 
+void __cdecl StartRecompilerCPU (void ) { 
 	DWORD Addr;
 	BYTE * Block;
 		

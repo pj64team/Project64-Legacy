@@ -45,7 +45,7 @@
 
 #define IDC_TAB_CONTROL			1000
 
-void Create_R4300i_Register_Window     ( int );
+void __cdecl Create_R4300i_Register_Window     ( int );
 void PaintR4300iAIPanel                ( HWND );
 void PaintR4300iCP0Panel               ( HWND );
 void PaintR4300iFPRPanel               ( HWND );
@@ -109,7 +109,7 @@ HWND R4300i_Registers_hDlg, hTab, hStatic, hGPR[32], hCP0[32], hFPR[32], hSpecia
 int InR4300iRegisterWindow = FALSE;
 FARPROC r4300iRegRefreshProc;
 
-void Create_R4300i_Register_Window ( int Child ) {
+void __cdecl Create_R4300i_Register_Window ( int Child ) {
 	DWORD ThreadID;
 	
 	if ( Child ) {
