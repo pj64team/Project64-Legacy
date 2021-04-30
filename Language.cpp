@@ -25,9 +25,9 @@ LANG_STR DefaultString[] = {
 	{ INI_VERSION,         "Version"                 },
 	{ INI_DATE,            "Date"                    },
 	{ INI_HOMEPAGE,        "Visit Home Page"         },
-	{ INI_CURRENT_RDB,     "ROM Database (.RDB)"     },
-	{ INI_CURRENT_CHT,     "Cheat Code file (.CHT)"  },
-	{ INI_CURRENT_RDX,     "Extended Rom Info (.RDX)"},
+	{ INI_CURRENT_RDB,     "ROM Database (.RDS)"     },
+	{ INI_CURRENT_CHT,     "Cheat Code file (.CDB)"  },
+	{ INI_CURRENT_RDX,     "Extended Rom Info (.RDI)"},
 	{ INI_TITLE,           "About INI Files"         },
 
 /*********************************************************************************

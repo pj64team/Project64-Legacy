@@ -1182,7 +1182,7 @@ LRESULT CALLBACK Main_Proc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
 			}
 		}
 		break;
-		case ID_HELP_SUPPORTFORUM: ShellExecute(NULL, "open", "http://pj64sp.emulation64.com/forum", NULL, NULL, SW_SHOWMAXIMIZED); break;
+		case ID_HELP_SUPPORTFORUM: ShellExecute(NULL, "open", "https://project64.emulation64.com/dev", NULL, NULL, SW_SHOWMAXIMIZED); break;
 		case ID_HELP_HOMEPAGE: ShellExecute(NULL, "open", "http://project64.emulation64.com", NULL, NULL, SW_SHOWMAXIMIZED); break;
 		case ID_HELP_ABOUT: AboutBox(); break;
 		case ID_HELP_ABOUTSETTINGFILES: AboutIniBox(); break;
