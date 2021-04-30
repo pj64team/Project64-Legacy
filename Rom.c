@@ -683,6 +683,8 @@ void ReadRomOptions(void) {
 		if (RomModVIS > 4500 || RomModVIS < 500)
 			RomModVIS = 1500;
 	}
+	else
+		RomRamSize = 0x800000;
 }
 
 void OpenN64Image(void) {
