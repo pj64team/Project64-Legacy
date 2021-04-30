@@ -607,7 +607,7 @@ void RemoveRecentList(HWND hWnd) {
 }
 
 void ReadRomOptions(void) {
-	RomRamSize = -1;
+	RomRamSize = 0x800000;
 	RomSaveUsing = Auto;
 	RomCF = -1;
 	RomCPUType = CPU_Default;
@@ -683,8 +683,6 @@ void ReadRomOptions(void) {
 		if (RomModVIS > 4500 || RomModVIS < 500)
 			RomModVIS = 1500;
 	}
-	else
-		RomRamSize = 0x800000;
 }
 
 void OpenN64Image(void) {
