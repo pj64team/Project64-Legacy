@@ -187,15 +187,15 @@ void PifRamWrite(void) {
 			CheckInterrupts();
 			break;
 		case 0x10:
-			memset(PifRom, 0, 0x7C0); 
+			memset(PifRom, 0, 0x7C0);
 			break;
 		case 0x30:
 			PIF_Ram[0x3F] = 0x80;
 			break;
 		case 0xC0:
-			memset(PIF_Ram, 0, 0x40); 
+			memset(PIF_Ram, 0, 0x40);
 			break;
-		case 0x02: 
+		case 0x02:
 			break;	// CIC NUS 6105 Encryption related, already handled in PifRamRead
 		default:
 			if (ShowPifRamErrors) {
@@ -209,12 +209,12 @@ void PifRamWrite(void) {
 		switch (PIF_Ram[CurPos]) {
 		case 0x00:
 			Channel += 1;
-			if (Channel > 6) { 
-				CurPos = 0x40; 
+			if (Channel > 6) {
+				CurPos = 0x40;
 			}
 			break;
-		case 0xFE: 
-			CurPos = 0x40; 
+		case 0xFE:
+			CurPos = 0x40;
 			break;
 		case 0xFF:
 			break;
@@ -236,7 +236,7 @@ void PifRamWrite(void) {
 						EepromCommand(&PIF_Ram[CurPos]);
 				}
 				else {
-					if (ShowDebugMessages)
+					if (ShowPifRamErrors)
 						DisplayError("Command on channel 5?");
 				}
 				CurPos += PIF_Ram[CurPos] + (PIF_Ram[CurPos + 1] & 0x3F) + 1;
@@ -263,13 +263,13 @@ void ProcessControllerCommand(int Control, BYTE* Command) {
 	case 0x00: // check
 	case 0xFF: // reset & check ?
 		if ((Command[1] & 0x80) != 0) {
-			break; 
+			break;
 		}
 
-		if (ShowDebugMessages && Command[0] != 1) {
+		if (ShowPifRamErrors && Command[0] != 1) {
 			DisplayError("What am I meant to do with this Controller Command");
 		}
-		if (ShowDebugMessages && Command[1] != 3) {
+		if (ShowPifRamErrors && Command[1] != 3) {
 			DisplayError("What am I meant to do with this Controller Command");
 		}
 
@@ -284,10 +284,10 @@ void ProcessControllerCommand(int Control, BYTE* Command) {
 			case PLUGIN_MEMPAK:
 				Command[5] = 1;
 				break;
-			case PLUGIN_RAW: 
-				Command[5] = 1; 
+			case PLUGIN_RAW:
+				Command[5] = 1;
 				break;
-			default: 
+			default:
 				Command[5] = 0;
 				break;
 			}
@@ -297,10 +297,10 @@ void ProcessControllerCommand(int Control, BYTE* Command) {
 		}
 		break;
 	case 0x01: // read controller
-		if (ShowDebugMessages && Command[0] != 1) {
+		if (ShowPifRamErrors && Command[0] != 1) {
 			DisplayError("What am I meant to do with this Controller Command");
 		}
-		if (ShowDebugMessages && Command[1] != 4) {
+		if (ShowPifRamErrors && Command[1] != 4) {
 			DisplayError("What am I meant to do with this Controller Command");
 		}
 
@@ -312,10 +312,10 @@ void ProcessControllerCommand(int Control, BYTE* Command) {
 		if (HaveDebugger && LogOptions.LogControllerPak) {
 			LogControllerPakData("Read: Before Getting Results");
 		}
-		if (ShowDebugMessages && Command[0] != 3) {
+		if (ShowPifRamErrors && Command[0] != 3) {
 			DisplayError("What am I meant to do with this Controller Command");
 		}
-		if (ShowDebugMessages && Command[1] != 33) {
+		if (ShowPifRamErrors && Command[1] != 33) {
 			DisplayError("What am I meant to do with this Controller Command");
 		}
 
@@ -326,10 +326,10 @@ void ProcessControllerCommand(int Control, BYTE* Command) {
 				memset(&Command[5], (address >= 0x8000 && address < 0x9000) ? 0x80 : 0x00, 0x20);
 				Command[0x25] = Mempacks_CalulateCrc(&Command[5]);
 				break;
-			case PLUGIN_MEMPAK: 
+			case PLUGIN_MEMPAK:
 				ReadFromMempak(Control, address, &Command[5]);
 				break;
-			case PLUGIN_RAW: 
+			case PLUGIN_RAW:
 				if (ControllerCommand) {
 					ControllerCommand(Control, Command);
 				}
@@ -349,21 +349,21 @@ void ProcessControllerCommand(int Control, BYTE* Command) {
 	case 0x03: //write controller pak
 
 		if (HaveDebugger && LogOptions.LogControllerPak) {
-			LogControllerPakData("Write: Before Processing"); 
+			LogControllerPakData("Write: Before Processing");
 		}
-		if (ShowDebugMessages && Command[0] != 35) {
-			DisplayError("What am I meant to do with this Controller Command"); 
+		if (ShowPifRamErrors && Command[0] != 35) {
+			DisplayError("What am I meant to do with this Controller Command");
 		}
-		if (ShowDebugMessages && Command[1] != 1) {
+		if (ShowPifRamErrors && Command[1] != 1) {
 			DisplayError("What am I meant to do with this Controller Command");
 		}
 
 		if (Controllers[Control].Present == TRUE) {
 			DWORD address = ((Command[3] << 8) | Command[4]);
 			switch (Controllers[Control].Plugin) {
-			case PLUGIN_MEMPAK: 
+			case PLUGIN_MEMPAK:
 				WriteToMempak(Control, address, &Command[5]); break;
-			case PLUGIN_RAW: 
+			case PLUGIN_RAW:
 				if (ControllerCommand) {
 					ControllerCommand(Control, Command);
 				}
@@ -396,10 +396,10 @@ void ReadControllerCommand(int Control, BYTE* Command) {
 	switch (Command[2]) {
 	case 0x01: // read controller
 		if (Controllers[Control].Present == TRUE) {
-			if (ShowDebugMessages && Command[0] != 1) {
+			if (ShowPifRamErrors && Command[0] != 1) {
 				DisplayError("What am I meant to do with this Controller Command");
 			}
-			if (ShowDebugMessages && Command[1] != 4) {
+			if (ShowPifRamErrors && Command[1] != 4) {
 				DisplayError("What am I meant to do with this Controller Command");
 			}
 
@@ -417,10 +417,10 @@ void ReadControllerCommand(int Control, BYTE* Command) {
 	case 0x02: //read from controller pack
 		if (Controllers[Control].Present == TRUE) {
 			switch (Controllers[Control].Plugin) {
-			case PLUGIN_RAW: 
+			case PLUGIN_RAW:
 				if (ControllerCommand) {
 					ReadController(Control, Command);
-				} 
+				}
 				break;
 			}
 		}
@@ -428,7 +428,7 @@ void ReadControllerCommand(int Control, BYTE* Command) {
 	case 0x03: //write controller pak
 		if (Controllers[Control].Present == TRUE) {
 			switch (Controllers[Control].Plugin) {
-			case PLUGIN_RAW: 
+			case PLUGIN_RAW:
 				if (ControllerCommand) {
 					ReadController(Control, Command);
 				}
@@ -457,7 +457,7 @@ int LoadPifRom(BYTE country) {
 		break;
 	default:
 		// Failed to detect the rom as PAL or NTSC
-		if (ShowDebugMessages)
+		if (ShowPifRamErrors)
 			DisplayError(GS(MSG_UNKNOWN_COUNTRY));
 		memset(PifRom, 0, 0x7C0);
 		return FALSE;
@@ -475,7 +475,7 @@ int LoadPifRom(BYTE country) {
 	SetFilePointer(hPifFile, 0, NULL, FILE_BEGIN);
 	read_status = ReadFile(hPifFile, PifRom, 0x7C0, &dwRead, NULL);
 	CloseHandle(hPifFile);
-	
+
 	// Failed to read the file or did not read enough bytes
 	if (read_status == FALSE || dwRead != 0x7C0) {
 		memset(PifRom, 0, 0x7C0);
