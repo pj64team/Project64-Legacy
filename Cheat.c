@@ -38,6 +38,7 @@
 
 #define UM_CLOSE_CHEATS         (WM_USER + 132)
 #define UM_CHANGECODEEXTENSION  (WM_USER + 101)
+#define UM_CHANGECOMMEXTENSION  (WM_USER + 102)
 #define IDC_MYTREE				0x500
 
 #define MaxCheats				500
@@ -76,9 +77,11 @@ void ReadOptionsString(HWND hDlg);
 BOOL CheatUsesCodeExtensions(char* CheatString);
 void DeleteCheat(int CheatNo);
 BOOL LoadCheatExt(char* CheatName, char* CheatExt, int MaxCheatExtLen);
+BOOL LoadCommExt(char* CheatName, char* CommExt, int MaxCommExtLen);
 void RefreshCheatManager(void);
 void SaveCheat(char* CheatName, BOOL Active);
 void SaveCheatExt(char* CheatName, char* CheatExt);
+void SaveCommExt(char* CheatName, char* CommExt);
 int  _TreeView_GetCheckState(HWND hwndTreeView, HTREEITEM hItem);
 BOOL _TreeView_SetCheckState(HWND hwndTreeView, HTREEITEM hItem, int State);
 DWORD ConvertXP64Address(DWORD Address); //Witten
@@ -122,10 +125,35 @@ void AddCheatExtension(int CheatNo, char* CheatName, int CheatNameLen) {
 	//Add cheat extension to the end
 	if (CheatUsesCodeExtensions(String)) {
 		char CheatExt[200];
-		if (!LoadCheatExt(CheatName, CheatExt, sizeof(CheatExt))) { strcpy(CheatExt, "?"); }
+		if (!LoadCheatExt(CheatName, CheatExt, sizeof(CheatExt))) {
+			strcpy(CheatExt, "?");
+		}
 		sprintf(CheatName, CHT_EXT, CheatName, CheatExt);
 	}
-	if (String) free(String);
+	if (String)
+		free(String);
+}
+
+void AddCommandExtension(int CheatNo, char* CheatName, int CheatNameLen) {
+	char* String = NULL, Identifier[100], CheatNumber[20];
+
+	// TO DO!
+	CheatNameLen = 0;
+	RomID(Identifier, RomHeader);
+
+	sprintf(CheatNumber, CHT_ENT, CheatNo);
+	Settings_Read(CDB_NAME, Identifier, CheatNumber, STR_EMPTY, &String);
+
+	//Add cheat extension to the end
+	if (CheatUsesCommExtensions(String)) {
+		char CommExt[200];
+		if (!LoadCommExt(CheatName, CommExt, sizeof(CommExt))) {
+			strcpy(CommExt, "?");
+		}
+		sprintf(CheatName, CHT_EXT, CheatName, CommExt);
+	}
+	if (String)
+		free(String);
 }
 
 /********************************************************************************************
@@ -614,14 +642,16 @@ BOOL CheatActive(char* Name) {
 
 ********************************************************************************************/
 LRESULT CALLBACK CheatsCodeExProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam) {
-	static DWORD CheatNo;
+	static DWORD CheatNo, ProcType;
+
 	switch (uMsg) {
 	case WM_INITDIALOG:
 	{
 		char* String = NULL, Identifier[100], CheatName[300], CheatExt[300], * ReadPos;
 		DWORD len;
 
-		CheatNo = lParam;
+		CheatNo = ((DWORD *)lParam)[0];
+		ProcType = ((DWORD*)lParam)[1];
 
 		SetWindowText(hDlg, GS(CHEAT_CODE_EXT_TITLE));
 		SetDlgItemText(hDlg, IDC_NOTE, GS(CHEAT_CODE_EXT_TXT));
@@ -633,7 +663,10 @@ LRESULT CALLBACK CheatsCodeExProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lP
 		LoadCheatExt(CheatName, CheatExt, sizeof(CheatExt));
 
 		RomID(Identifier, RomHeader);
-		sprintf(CheatName, CHT_ENT_O, CheatNo);
+		if (ProcType == 0)
+			sprintf(CheatName, CHT_ENT_O, CheatNo);
+		else
+			sprintf(CheatName, CHT_ENT_SO, CheatNo);
 		Settings_Read(CDB_NAME, Identifier, CheatName, STR_EMPTY, &String);
 
 		// Add support for options redirection (This allows for one group of options to be used by multiple cheats)
@@ -681,7 +714,10 @@ LRESULT CALLBACK CheatsCodeExProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lP
 			if (index < 0) { index = 0; }
 			GetDlgItemText(hDlg, IDC_CHEAT_NAME, CheatName, sizeof(CheatName));
 			index = SendMessage(GetDlgItem(hDlg, IDC_CHEAT_LIST), LB_GETTEXT, index, (LPARAM)CheatExten);
-			SaveCheatExt(CheatName, CheatExten);
+			if (ProcType == 0)
+				SaveCheatExt(CheatName, CheatExten);
+			else
+				SaveCommExt(CheatName, CheatExten);
 			LoadCheats();
 		}
 		EndDialog(hDlg, 0);
@@ -706,15 +742,15 @@ LRESULT CALLBACK CheatsCodeExProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lP
 ********************************************************************************************/
 LRESULT CALLBACK CheatsCodeQuantProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam) {
 	static size_t Start, Stop, SelStart, SelStop;
-	static DWORD CheatNo;
-
+	static DWORD CheatNo, ProcType;
 
 	switch (uMsg) {
 	case WM_INITDIALOG:
 	{
 		char* String = NULL, Identifier[100], CheatName[300], CheatExt[300], * ReadPos;
 
-		CheatNo = lParam;
+		CheatNo = ((DWORD*)lParam)[0];
+		ProcType = ((DWORD*)lParam)[1];
 
 		SetWindowText(hDlg, GS(IDD_Cheats_CodeEx));
 		SetDlgItemText(hDlg, IDC_DIGITAL_TEXT, GS(CHEAT_CHOOSE_VALUE));
@@ -816,25 +852,61 @@ LRESULT CALLBACK CheatsCodeQuantProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM
 ********************************************************************************************/
 BOOL CheatUsesCodeExtensions(char* CheatString) {
 	BOOL CodeExtension;
-	DWORD count, len;
-
+	DWORD count;
 	char* ReadPos;
 
-	if (strlen(CheatString) == 0) { return FALSE; }
-	if (strchr(CheatString, '"') == NULL) { return FALSE; }
-	len = strrchr(CheatString, '"') - strchr(CheatString, '"') - 1;
+	// Conditions to stop, empty CheatString, no ", or just one "
+	if (strlen(CheatString) == 0 || strchr(CheatString, '"') == NULL || strrchr(CheatString, '"') - strchr(CheatString, '"') == 0)
+		return FALSE;
 
 	ReadPos = strrchr(CheatString, '"') + 2;
 	CodeExtension = FALSE;
 	for (count = 0; count < MaxGSEntries && CodeExtension == FALSE; count++) {
-		if (strchr(ReadPos, ' ') == NULL) { break; }
+
+		// The value always follows a space
+		if (strchr(ReadPos, ' ') == NULL)
+			break;
 		ReadPos = strchr(ReadPos, ' ') + 1;
-		if (ReadPos[0] == '?' && ReadPos[1] == '?') { CodeExtension = TRUE; }
-		if (ReadPos[2] == '?' && ReadPos[3] == '?') { CodeExtension = TRUE; }
-		if (strchr(ReadPos, ',') == NULL) { continue; }
+
+		// Value can have the leading or ending or both pairs be ??
+		if ((ReadPos[0] == '?' && ReadPos[1] == '?') || (ReadPos[2] == '?' && ReadPos[3] == '?')) 
+			CodeExtension = TRUE;
+
+		// The next set to scan for follows after a ,
+		if (strchr(ReadPos, ',') == NULL)
+			continue;
 		ReadPos = strchr(ReadPos, ',') + 1;
 	}
 	return CodeExtension;
+}
+
+BOOL CheatUsesCommExtensions(char* CheatString) {
+	BOOL CommExtension;
+	DWORD count;
+	char* ReadPos;
+
+	// Conditions to stop, empty CheatString, no ", or just one "
+	if (strlen(CheatString) == 0 || strchr(CheatString, '"') == NULL || strrchr(CheatString, '"') - strchr(CheatString, '"') == 0)
+		return FALSE;
+
+	ReadPos = strrchr(CheatString, '"') + 2;
+	CommExtension = FALSE;
+	for (count = 0; count < MaxGSEntries && CommExtension == FALSE; count++) {
+
+		// The address must be at least 8 characters long, the leading 2 are the activator and are not used right now
+		if (strlen(ReadPos) < 8)
+			break;
+
+		// This is less strict than the value check on code extensions, XX?????? where ? can either contain a hex number or the ?
+		if (ReadPos[2] == '?' || ReadPos[3] == '?' || ReadPos[4] == '?' || ReadPos[5] == '?' || ReadPos[6] == '?' || ReadPos[7] == '?')
+			CommExtension = TRUE;
+
+		// The next set to scan for follows after a ,
+		if (strchr(ReadPos, ',') == NULL)
+			break;
+		ReadPos = strchr(ReadPos, ',') + 1;
+	}
+	return CommExtension;
 }
 
 void VerifyInput(HWND hDlg) {
@@ -1303,6 +1375,8 @@ LRESULT CALLBACK CheatEditProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
 		//Add cheat Notes
 		sprintf(CheatName, CHT_ENT_N, item.lParam);
 		Settings_Read(CDB_NAME, Identifier, CheatName, STR_EMPTY, &String);
+		// Support cheat note redirection (Only one level)
+		Settings_Read(CDB_NAME, Identifier, String, String, &String);
 		SetDlgItemText(hDlg, IDC_NOTES, String);
 		if (String) free(String);
 
@@ -1655,6 +1729,7 @@ LRESULT CALLBACK CheatListProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
 
 			if (TVHT_ONITEMLABEL & ht.flags)
 			{
+				PostMessage(hDlg, UM_CHANGECOMMEXTENSION, 0, (LPARAM)ht.hItem);
 				PostMessage(hDlg, UM_CHANGECODEEXTENSION, 0, (LPARAM)ht.hItem);
 			}
 		}
@@ -1673,6 +1748,8 @@ LRESULT CALLBACK CheatListProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
 				RomID(Identifier, RomHeader);
 				sprintf(Lookup, CHT_ENT_N, item.lParam);
 				Settings_Read(CDB_NAME, Identifier, Lookup, STR_EMPTY, &String);
+				// Support Cheat Note redirection (Once only)
+				Settings_Read(CDB_NAME, Identifier, String, String, &String);
 				SetDlgItemText(hDlg, IDC_NOTES, String);
 				if (String) free(String);
 			}
@@ -1703,20 +1780,71 @@ LRESULT CALLBACK CheatListProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
 		sprintf(CheatName, CHT_ENT_O, item.lParam);
 		Settings_Read(CDB_NAME, Identifier, CheatName, STR_EMPTY, &String);
 		if (strlen(String) > 0) {
-			DialogBoxParam(hInst, MAKEINTRESOURCE(IDD_Cheats_CodeEx), hDlg, (DLGPROC)CheatsCodeExProc, item.lParam);
+			DWORD pass[2] = { item.lParam, 0 };
+			DialogBoxParam(hInst, MAKEINTRESOURCE(IDD_Cheats_CodeEx), hDlg, (DLGPROC)CheatsCodeExProc, (LPARAM)pass);
 		}
 		else {
 			if (String) free(String);
 			sprintf(CheatName, CHT_ENT_R, item.lParam);
 			Settings_Read(CDB_NAME, Identifier, CheatName, STR_EMPTY, &String);
 			if (strlen(String) > 0) {
-				DialogBoxParam(hInst, MAKEINTRESOURCE(IDD_Cheats_Range), hDlg, (DLGPROC)CheatsCodeQuantProc, item.lParam);
+				DWORD pass[2] = { item.lParam, 0 };
+				DialogBoxParam(hInst, MAKEINTRESOURCE(IDD_Cheats_Range), hDlg, (DLGPROC)CheatsCodeQuantProc, (LPARAM)pass);
 			}
 		}
 		if (String) free(String);
 
 		GetCheatName(item.lParam, CheatName, sizeof(CheatName));
 		if (!LoadCheatExt(CheatName, CheatExt, sizeof(CheatExt))) {
+			sprintf(CheatExt, "?");
+		}
+		item.mask = TVIF_PARAM | TVIF_TEXT;
+		item.pszText = CheatName;
+		item.cchTextMax = sizeof(CheatName);
+		if (strrchr(CheatName, '\\') != NULL) {
+			strcpy(CheatName, strrchr(CheatName, '\\') + 1);
+		}
+		sprintf(CheatName, CHT_EXT, CheatName, CheatExt);
+		TreeView_SetItem(hCheatTree, &item);
+	}
+	break;
+	case UM_CHANGECOMMEXTENSION:
+	{
+		char Identifier[100], * String = NULL, CheatName[500], CheatExt[300];
+		HTREEITEM hItemChanged = (HTREEITEM)lParam;
+		TVITEM item;
+
+		item.mask = TVIF_PARAM;
+		item.hItem = hItemChanged;
+		TreeView_GetItem(hCheatTree, &item);
+
+		RomID(Identifier, RomHeader);
+		sprintf(CheatName, CHT_ENT, item.lParam);
+		Settings_Read(CDB_NAME, Identifier, CheatName, STR_EMPTY, &String);
+		if (!CheatUsesCommExtensions(String)) {
+			break;
+		}
+		if (String) free(String);
+
+		sprintf(CheatName, CHT_ENT_SO, item.lParam);
+		Settings_Read(CDB_NAME, Identifier, CheatName, STR_EMPTY, &String);
+		if (strlen(String) > 0) {
+			DWORD pass[2] = { item.lParam, 1 };
+			DialogBoxParam(hInst, MAKEINTRESOURCE(IDD_Cheats_CodeEx), hDlg, (DLGPROC)CheatsCodeExProc, (LPARAM)pass);
+		}
+		else {
+			if (String) free(String);
+			sprintf(CheatName, CHT_ENT_R, item.lParam);
+			Settings_Read(CDB_NAME, Identifier, CheatName, STR_EMPTY, &String);
+			if (strlen(String) > 0) {
+				DWORD pass[2] = { item.lParam, 1 };
+				DialogBoxParam(hInst, MAKEINTRESOURCE(IDD_Cheats_Range), hDlg, (DLGPROC)CheatsCodeQuantProc, (LPARAM)pass);
+			}
+		}
+		if (String) free(String);
+
+		GetCheatName(item.lParam, CheatName, sizeof(CheatName));
+		if (!LoadCommExt(CheatName, CheatExt, sizeof(CheatExt))) {
 			sprintf(CheatExt, "?");
 		}
 		item.mask = TVIF_PARAM | TVIF_TEXT;
@@ -1844,20 +1972,77 @@ BOOL LoadCheatExt(char* CheatName, char* CheatExt, int MaxCheatExtLen) {
 	}
 }
 
+BOOL LoadCommExt(char* CheatName, char* CommExt, int MaxCommExtLen) {
+	char String[350], Identifier[100], * Val = NULL;
+
+	RomID(Identifier, RomHeader);
+	sprintf(String, "%s.comm", CheatName);
+
+	Settings_Read(APPS_NAME, Identifier, String, STR_EMPTY, &Val);
+
+	if (!Val)
+		return FALSE;
+	else {
+		strncpy(CommExt, Val, MaxCommExtLen);
+		free(Val);
+		return TRUE;
+	}
+}
+
 void LoadCode(LPSTR CheatName, LPSTR CheatString)
 {
 	char* ReadPos = CheatString;
 	int count2;
 
 	for (count2 = 0; count2 < MaxGSEntries; count2++) {
-		char CheatExt[200];
+		char CheatExt[200], Address[9];
 		WORD Value;
 
-		// This is the address and where new code has been added to handle "Special Option" (Partial address replacement)
-		Codes[NoOfCodes].Code[count2].Command = AsciiToHex(ReadPos);
+		// The address will need extra processing with the Special Option feature
+		strncpy(Address, ReadPos, sizeof(Address));
+		Address[8] = '\0';
+
+		// Basic error checking, cheat address is 2 characters for activator + 6 for the memory address
+		if (strchr(ReadPos, ' ') == NULL || strlen(Address) != 8)
+			return;
+
+		// Special Option feature will contain '?' that must be replaced within the last 6 characters
+		if (strchr(Address + 2, '?') != NULL) {
+
+			if (LoadCommExt(CheatName, CheatExt, sizeof(CheatExt))) {
+				int i, r;
+
+				// The format is $X Name Here (Where X is a hex value, from 0 to FFFFFF)
+				if (strchr(CheatExt, ' ') == NULL)
+					return;
+
+				for (i = 2, r = 1; i < strlen(Address); i++) {
+					if (Address[i] == '?') {
+
+						// The case where there is no replacement value but Address still has a ?
+						if (CheatExt[r] == ' ')
+							return;
+						Address[i] = CheatExt[r];
+						r++;
+					}
+				}
+				
+				// The replacement string still has something left
+				if (CheatExt[r] != ' ')
+					return;
+			}
+
+			// A Special Option is not chosen yet the cheat is active???
+			else
+				return;
+		}
+
+		// If we've reached this point in the code then any Special Options have been loaded and we are clear to translate the ascii to hex
+		Codes[NoOfCodes].Code[count2].Command = AsciiToHex(Address);
 
 		// There is always a space following the address to separate the value
-		if (strchr(ReadPos, ' ') == NULL) { break; }
+		if (strchr(ReadPos, ' ') == NULL)
+			break;
 		ReadPos = strchr(ReadPos, ' ') + 1;
 
 		// 16 bit replacement
@@ -1865,9 +2050,8 @@ void LoadCode(LPSTR CheatName, LPSTR CheatString)
 			if (LoadCheatExt(CheatName, CheatExt, sizeof(CheatExt))) {
 				Value = CheatExt[0] == '$' ? (WORD)AsciiToHex(&CheatExt[1]) : (WORD)atol(CheatExt);
 			}
-			else {
-				count2 = 0; break;
-			}
+			else
+				return;
 			Codes[NoOfCodes].Code[count2].Value = Value;
 		}
 		// 8 bit replacement
@@ -1876,9 +2060,8 @@ void LoadCode(LPSTR CheatName, LPSTR CheatString)
 			if (LoadCheatExt(CheatName, CheatExt, sizeof(CheatExt))) {
 				Value = CheatExt[0] == '$' ? (BYTE)AsciiToHex(&CheatExt[1]) : (BYTE)atol(CheatExt);
 			}
-			else {
-				count2 = 0; break;
-			}
+			else
+				return;
 			Codes[NoOfCodes].Code[count2].Value += (Value << 16);
 		}
 		// Lower 8 bit replacement of 16 bit value
@@ -1887,9 +2070,8 @@ void LoadCode(LPSTR CheatName, LPSTR CheatString)
 			if (LoadCheatExt(CheatName, CheatExt, sizeof(CheatExt))) {
 				Value = CheatExt[0] == '$' ? (BYTE)AsciiToHex(&CheatExt[1]) : (BYTE)atol(CheatExt);
 			}
-			else {
-				count2 = 0; break;
-			}
+			else
+				return;
 			Codes[NoOfCodes].Code[count2].Value += Value;
 		}
 		// No special replacement, read the value directly
@@ -1897,14 +2079,21 @@ void LoadCode(LPSTR CheatName, LPSTR CheatString)
 			Codes[NoOfCodes].Code[count2].Value = (WORD)AsciiToHex(ReadPos);
 		}
 
-		// Finished parsing the line	
-		if (strchr(ReadPos, ',') == NULL) { continue; }
+		// Finished parsing the line, since the logic is a bit messed up the count2 must be incremented here
+		// Before this used to always loop and stop at the start but this was changed to stop here because it made more sense
+		// Unfortunately this is still being rewritten
+		if (strchr(ReadPos, ',') == NULL) {
+			count2++;
+			break;
+		}
 
 		// Move on to the next entry
 		ReadPos = strchr(ReadPos, ',') + 1;
 	}
 
-	if (count2 == 0) { return; }
+	if (count2 == 0)
+		return;
+
 	if (count2 < MaxGSEntries) {
 		Codes[NoOfCodes].Code[count2].Command = 0;
 		Codes[NoOfCodes].Code[count2].Value = 0;
@@ -2286,6 +2475,7 @@ void RefreshCheatManager(void) {
 	for (count = 0; count < MaxCheats; count++) {
 		if (!GetCheatName(count, CheatName, sizeof(CheatName))) { continue; }	// To do! Remove this. Work-around for the time being, scan all 500 entries. Current version does not renumber cheats from 0 to 500)
 		IsCheatActive = CheatActive(CheatName);
+		AddCommandExtension(count, CheatName, sizeof(CheatName));
 		AddCheatExtension(count, CheatName, sizeof(CheatName));
 		AddCodeLayers(count, CheatName, TVI_ROOT, IsCheatActive);
 	}
@@ -2313,6 +2503,14 @@ void SaveCheatExt(char* CheatName, char* CheatExt) {
 	RomID(Identifier, RomHeader);
 	sprintf(String, "%s.exten", CheatName);
 	Settings_Write(APPS_NAME, Identifier, String, CheatExt);
+}
+
+void SaveCommExt(char* CheatName, char* CommExt) {
+	char String[300], Identifier[100];
+
+	RomID(Identifier, RomHeader);
+	sprintf(String, "%s.comm", CheatName);
+	Settings_Write(APPS_NAME, Identifier, String, CommExt);
 }
 
 int _TreeView_GetCheckState(HWND hwndTreeView, HTREEITEM hItem)

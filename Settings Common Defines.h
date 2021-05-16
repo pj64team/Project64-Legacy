@@ -51,6 +51,7 @@
 #define CHT_ENT "Cheat%d"
 #define CHT_ENT_S "Cheat%d%s"
 #define CHT_ENT_O "Cheat%d_O"
+#define CHT_ENT_SO "Cheat%d_SO"
 #define CHT_ENT_RN "Cheat%d_RN"
 #define CHT_ENT_N "Cheat%d_N"
 #define CHT_ENT_R "Cheat%d_R"
