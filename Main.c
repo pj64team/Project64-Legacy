@@ -96,6 +96,7 @@ LRESULT CALLBACK AboutIniBoxProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lPa
 		}
 
 		// RDS
+		SetDlgItemText(hDlg, IDC_RDB, GS(INI_CURRENT_RDB));
 		Settings_Read(RDS_NAME, STR_META, STR_AUTHOR, "", &read);
 		if (strlen(read) == 0) {
 			EnableWindow(GetDlgItem(hDlg, IDC_RDB), FALSE);
@@ -182,7 +183,7 @@ LRESULT CALLBACK AboutIniBoxProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lPa
 		SetDlgItemText(hDlg, IDC_RDX_DATE, String);
 		if (read) free(read);
 
-		Settings_Read(RDI_NAME, STR_META, STR_AUTHOR, "", &read);
+		Settings_Read(RDI_NAME, STR_META, STR_HOMEPAGE, "", &read);
 		strncpy(RDXHomePage, read, sizeof(RDXHomePage));
 		SetDlgItemText(hDlg, IDC_RDX_HOME, GS(INI_HOMEPAGE));
 		if (strlen(RDXHomePage) == 0) {
