@@ -25,7 +25,9 @@
  */
 #ifndef CHEATS
 #define CHEATS
+
 #define MaxGSEntries	100
+#define MaxCheats		500
 
 typedef struct {
 	DWORD Command;
@@ -44,7 +46,6 @@ void LoadCheats			( void );
 void ManageCheats		( HWND hParent );
 void ApplyGSButton		(void);
 int ApplyCheatEntry		(GAMESHARK_CODE * Code, BOOL Execute );
-BOOL GetCheatName		(int CheatNo, char * CheatName, int CheatNameLen);
 
 LRESULT CALLBACK Cheat_Proc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 

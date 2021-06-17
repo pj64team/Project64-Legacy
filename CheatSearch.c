@@ -16,6 +16,7 @@
 #include "Memory.h"
 #include "MemDump.h"
 #include "Cheats.h"
+#include "Cheats_Preprocessor.h"
 #include "CheatSearch_Input.h"
 #include "RomTools_Common.h"
 #include "CheatSearch_Search.h"
@@ -1436,56 +1437,27 @@ void CE_UpdateControls(HWND hDlg, int item) {
 	ListView_EnsureVisible(GetDlgItem(hDlg, IDL_CS_CHEAT_CREATE), item, FALSE);
 }
 
-// Cheat file uses this format
-//	CheatX=ROM_NAME,ActivatorAddress Value
-// If multiple cheats have the same name then they will be appended in one entry as follows
-//	CheatX=ROM_NAME,ActivatorAddress Value, ActivatorAddress Value
-//	and so forth, the comma being the separator between codes
-// NOTE: This will remove all entries with the same name as item's
+// Save the cheat to file
+// All entries with the same name as item's shall be saved and removed
 void CE_SaveCheat(int item) {
-	char Identifier[100], CheatName[STRING_MAX], NewCheatName[STRING_MAX], * cheat, * tmp;
-	int CheatLen, count, CheatNo, MaxCheats;
+	char junk[50], *codestring = NULL, *tmp = NULL;
+	int CheatLen, count;
 	CODEENTRY* code;
-
-	// From a #define in Cheat.c
-	// Update at a later date to have a universally allowed amount
-	MaxCheats = 500;
-	CheatNo = 0;
+	CHEAT make_cheat = { 0 };
 
 	code = CS_GetCodeAt(&cheat_dev, item);
 
 	if (code == NULL)
 		return;
 
-	strncpy(NewCheatName, code->Name, STRING_MAX);
+	// Direct copy of these, no processing needed
+	Cheats_Store(&make_cheat.name, code->Name, sizeof(code->Name));
+	Cheats_Store(&make_cheat.note, code->Note, sizeof(code->Note));
 
-	for (count = 0; count < MaxCheats; count++) {
-		GetCheatName(count, CheatName, sizeof(CheatName));
-		if (strlen(CheatName) == 0) {
-			CheatNo = count;
-			break;
-		}
-		if (strcmp(CheatName, NewCheatName) == 0) {
-			DisplayError(GS(MSG_CHEAT_NAME_IN_USE));
-			return;
-		}
-	}
-	if (count == MaxCheats) {
-		DisplayError(GS(MSG_MAX_CHEATS));
-		return;
-	}
+	// For storing the null character start at 1
+	CheatLen = 1;
 
-	// Cheat name is in the format ROM_NAME hence +2 for the quotation marks and +1 for null terminator
-	CheatLen = strlen(NewCheatName) + 3;
-
-	cheat = NULL;
-	tmp = (char*)realloc(cheat, sizeof(*cheat) * CheatLen);
-	if (!tmp) return;	// Failed to allocate memory
-	cheat = tmp;
-
-	sprintf(cheat, "\"%s\"", NewCheatName);
-
-	// Scan for additional entries and append to the current string being built
+	// Build the code string (It is currently stored in an array
 	// Each code is 14 characters long ,XXXXXXXX XXXX
 	for (count = 0; ; count++) {
 
@@ -1493,46 +1465,31 @@ void CE_SaveCheat(int item) {
 		if (code == NULL)
 			break;
 
-		if (strcmp(NewCheatName, code->Name) == 0) {
-			sprintf(CheatName, ",%02X%06X %04X", code->Activator, code->Address, code->Value);
-			CheatLen += strlen(CheatName);
-			tmp = (char*)realloc(cheat, sizeof(*cheat) * CheatLen);
+		if (strcmp(make_cheat.name, code->Name) == 0) {
+			sprintf(junk, ",%02X%06X %04X", code->Activator, code->Address, code->Value);
+			CheatLen += strlen(junk);
+			tmp = realloc(codestring, sizeof(*codestring) * CheatLen);
 			if (!tmp) return;	// Failed to allocate memory
-			cheat = tmp;
-			strcat(cheat, CheatName);
+			codestring = tmp;
+			strcat(codestring, junk);
 		}
 	}
 
-	//Add to ini
-	RomID(Identifier, RomHeader);
+	// Write the cheat out
+	if (Cheats_Write(&make_cheat)) {
+		// Remove all entries with the same name
+		for (count = 0; ; count++) {
+			code = CS_GetCodeAt(&cheat_dev, count);
+			if (code == NULL)
+				break;
 
-	Settings_Write(CDB_NAME, Identifier, ROM_NAME, RomFullName);
-	sprintf(NewCheatName, CHT_ENT, CheatNo);
-	Settings_Write(CDB_NAME, Identifier, NewCheatName, cheat);
-	if (cheat) { free(cheat); cheat = NULL; }
-
-	code = CS_GetCodeAt(&cheat_dev, item);
-	CheatLen = strlen(code->Note) + 5;
-	if (CheatLen > 5) {
-		cheat = (char*)malloc(CheatLen);
-		strncpy(cheat, code->Note, CheatLen);
-		sprintf(NewCheatName, CHT_ENT_N, CheatNo);
-		Settings_Write(CDB_NAME, Identifier, NewCheatName, cheat);
-		if (cheat) { free(cheat); cheat = NULL; }
+			if (strcmp(make_cheat.name, code->Name) == 0)
+				CS_RemoveCodeAt(&cheat_dev, count);
+		}
 	}
 
-	// Remove all entries that were saved
-	strncpy(NewCheatName, code->Name, STRING_MAX);
-
-	count = 0;
-	code = CS_GetCodeAt(&cheat_dev, 0);
-	while (code != NULL) {
-		if (strcmp(NewCheatName, code->Name) == 0)
-			CS_RemoveCodeAt(&cheat_dev, count);
-		else
-			count++;
-		code = CS_GetCodeAt(&cheat_dev, count);
-	}
+	// Clean-up
+	Cheats_ClearCheat(&make_cheat);
 }
 
 void CS_UpdateSearchProc(HWND hDlg) {

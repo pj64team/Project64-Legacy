@@ -155,6 +155,7 @@
 #define IDC_NOTES                       1120
 #define IDC_CHEAT_LIST                  1121
 #define IDC_CHEAT_NAME                  1122
+#define IDC_CHEAT_FULL                  1123
 #define IDC_VALUE                       1124
 #define IDC_RANGE                       1125
 #define IDC_ADD                         1126
@@ -335,7 +336,7 @@
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        181
+#define _APS_NEXT_RESOURCE_VALUE        182
 #define _APS_NEXT_COMMAND_VALUE         40169
 #define _APS_NEXT_CONTROL_VALUE         1260
 #define _APS_NEXT_SYMED_VALUE           101

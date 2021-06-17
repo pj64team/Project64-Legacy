@@ -324,6 +324,7 @@
     <ClCompile Include="CheatSearch_Dev.c" />
     <ClCompile Include="CheatSearch_Input.c" />
     <ClCompile Include="CheatSearch_Search.c" />
+    <ClCompile Include="Cheats_Preprocessor.c" />
     <ClCompile Include="Compression\adler32.c" />
     <ClCompile Include="Compression\compress.c" />
     <ClCompile Include="Compression\crc32.c" />
@@ -393,6 +394,7 @@
     <ClInclude Include="CheatSearch_Dev.h" />
     <ClInclude Include="CheatSearch_Input.h" />
     <ClInclude Include="CheatSearch_Search.h" />
+    <ClInclude Include="Cheats_Preprocessor.h" />
     <ClInclude Include="Compression\crc32.h" />
     <ClInclude Include="Compression\deflate.h" />
     <ClInclude Include="Compression\gzguts.h" />

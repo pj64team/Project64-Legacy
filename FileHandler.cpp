@@ -198,9 +198,7 @@ void FileStuff::AddSettingValue(char* id, char* setting, char* value) {
 			strcpy(delstr, setting);
 
 			if (value != NULL && strlen(value) != 0)
-				sprintf(delstr, "%s=", setting);
-			else
-				sprintf(delstr, "%s", setting);
+				strcat(delstr, "=");
 
 			RemoveSetting(id, delstr);
 
@@ -730,7 +728,7 @@ bool Entry::IsGameHeader(string str) {
 			continue;
 		else {
 			if (format[i] == 'X') {
-				if ((str[i] >= '0' && str[i] <= '9') || (str[i] >= 'A' && str[i] <= 'F') || (str[i] >= 'a' && str[i] <= 'f'))
+				if (isxdigit(str[i]))
 					continue;
 			}
 
@@ -769,7 +767,17 @@ Entry::read_states Entry::StoreData(string str) {
 		if (str.length() >= 2 && str[0] == '/' && str[1] == '/')
 			can_be_sorted = false;
 
-		data.push_back(str);
+		if (can_be_sorted) {
+			// Basic insertion sort
+			for (int i = 0; i < data.size(); i++) {
+				if ((*(data.begin() + i)).compare(str) == 0) {
+				}
+			}
+			data.insert(data.begin(), str);
+		}
+		else
+			data.push_back(str);
+
 		return read_states::GOOD;
 	}
 }

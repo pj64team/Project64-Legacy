@@ -273,6 +273,9 @@
     <ClCompile Include="CheatSearch_Search.c">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Cheats_Preprocessor.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BreakPoints.h">
@@ -477,6 +480,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="CheatSearch_Search.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Cheats_Preprocessor.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
