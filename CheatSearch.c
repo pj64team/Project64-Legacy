@@ -244,9 +244,8 @@ BOOL CALLBACK CheatSearchDlgProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lPa
 			break;
 		case IDB_CS_SEARCH:
 			Search(hDlg);
-			/*
-			if (search.searchBy == searchingbyvalue)
-				WriteProject64ChtDev(hDlg);*/
+			if (search.searchBy == searchbyvalue)
+				WriteProject64ChtDev(hDlg);
 			break;
 		case IDB_CS_RESET:
 			CS_ClearResults(&results);
@@ -1253,7 +1252,7 @@ CHTDEVENTRY* ReadProject64ChtDev() {
 	return NULL; //ChtDev;
 }
 
-void WriteProject64ChtDev(HWND hDlg) {/*
+void WriteProject64ChtDev(HWND hDlg) {
 	FILE * pFile;
 
 	char Identifier[100];
@@ -1261,15 +1260,14 @@ void WriteProject64ChtDev(HWND hDlg) {/*
 	CHTDEVENTRY *ChtDev;
 
 	//ChtDev = ReadProject64ChtDev(GetCheatDevIniFileName());
-	ChtDev = (CHTDEVENTRYA *)malloc(sizeof(CHTDEVENTRYA));
+	ChtDev = (CHTDEVENTRY *)malloc(sizeof(CHTDEVENTRY));
 
 	RomID(Identifier, RomHeader);
 	ChtDev->Identifier = Identifier;
 
-	// This was dropped, and should now reflect RomFullName the new entry that contains the RDS' Name for the game
-	ChtDev->Name = RomName;
+	ChtDev->Name = RomFullName;
 
-	ChtDev->LastSearch = (LASTSEARCHA *)malloc(sizeof(LASTSEARCHA));
+	ChtDev->LastSearch = (LASTSEARCH *)malloc(sizeof(LASTSEARCH));
 
 	ChtDev->LastSearch->SearchType = "Value";
 
@@ -1291,17 +1289,17 @@ void WriteProject64ChtDev(HWND hDlg) {/*
 	fprintf(pFile, "<?xml version=""1.0"" encoding=""ISO-8859-1""?>\n");
 	fprintf(pFile, "<CheatDev>\n");
 
-	fprintf(pFile, "   <Game>\n");
-	fprintf(pFile, "      <ID>%s</ID>\n", ChtDev->Identifier);
-	fprintf(pFile, "      <Name>%s</Name>\n", ChtDev->Name);
-	fprintf(pFile, "      <LastSearch>\n");
-	fprintf(pFile, "         <SearchType>%s</SearchType>\n", ChtDev->LastSearch->SearchType);
-	fprintf(pFile, "         <Value>%s</Value>\n", ChtDev->LastSearch->SearchValue);
-	fprintf(pFile, "         <ValueSearchType>%d</ValueSearchType>\n", ChtDev->LastSearch->ValueSearchType);
-	fprintf(pFile, "         <NumBits>%d</NumBits>\n", ChtDev->LastSearch->NumBits);
-	fprintf(pFile, "         <Results>%s</Results>\n", ChtDev->LastSearch->Results);
-	fprintf(pFile, "      </LastSearch>\n");
-	fprintf(pFile, "   </Game>\n");
+	fprintf(pFile, "\t<Game>\n");
+	fprintf(pFile, "\t\t<ID>%s</ID>\n", ChtDev->Identifier);
+	fprintf(pFile, "\t\t<Name>%s</Name>\n", ChtDev->Name);
+	fprintf(pFile, "\t\t<LastSearch>\n");
+	fprintf(pFile, "\t\t\t<SearchType>%s</SearchType>\n", ChtDev->LastSearch->SearchType);
+	fprintf(pFile, "\t\t\t<Value>%s</Value>\n", ChtDev->LastSearch->SearchValue);
+	fprintf(pFile, "\t\t\t<ValueSearchType>%d</ValueSearchType>\n", ChtDev->LastSearch->ValueSearchType);
+	fprintf(pFile, "\t\t\t<NumBits>%d</NumBits>\n", ChtDev->LastSearch->NumBits);
+	fprintf(pFile, "\t\t\t<Results>\n%s\n\t\t\t</Results>\n", ChtDev->LastSearch->Results);
+	fprintf(pFile, "\t\t</LastSearch>\n");
+	fprintf(pFile, "\t</Game>\n");
 
 	fprintf(pFile, "</CheatDev>\n");
 
@@ -1309,7 +1307,7 @@ void WriteProject64ChtDev(HWND hDlg) {/*
 	fclose (pFile);
 
 	free(ChtDev->LastSearch);
-	free(ChtDev);*/
+	free(ChtDev);
 }
 
 // TO DO!
@@ -1328,7 +1326,13 @@ char* ResultsToString(void) {
 	else {
 		maxlength = (9 + 5 + 5) * min(results.num_stored, LISTVIEW_MAXSHOWN) + 1;
 	}
-	result = (char*)calloc(maxlength, sizeof(char));
+	maxlength += (2 * (maxlength / 8));	// The amount of /r/n to insert
+	result = calloc(maxlength, sizeof(*result));
+
+	if (result == NULL)
+		return;
+
+	strcat_s(result, maxlength, "\t\t\t\t");
 
 	for (count = 0; count < min(results.num_stored, LISTVIEW_MAXSHOWN); count++) {
 		hit = CS_GetHit(&results, count);
@@ -1353,7 +1357,10 @@ char* ResultsToString(void) {
 		}
 		else {
 			if (count < min(results.num_stored, LISTVIEW_MAXSHOWN) - 1) {
-				sprintf_s(s, 16, "  ,");
+				if ((count + 1) % 8 == 0)
+					strcat_s(result, maxlength, "\n\t\t\t");
+
+				sprintf_s(s, 16, "\t");
 				strcat_s(result, maxlength, s);
 			}
 		}
@@ -1440,7 +1447,6 @@ void CE_UpdateControls(HWND hDlg, int item) {
 // Save the cheat to file
 // All entries with the same name as item's shall be saved and removed
 void CE_SaveCheat(int item) {
-	char junk[50], *codestring = NULL, *tmp = NULL;
 	int CheatLen, count;
 	CODEENTRY* code;
 	CHEAT make_cheat = { 0 };
@@ -1466,12 +1472,24 @@ void CE_SaveCheat(int item) {
 			break;
 
 		if (strcmp(make_cheat.name, code->Name) == 0) {
+			char junk[50], * tmp = NULL;
+
 			sprintf(junk, ",%02X%06X %04X", code->Activator, code->Address, code->Value);
 			CheatLen += strlen(junk);
-			tmp = realloc(codestring, sizeof(*codestring) * CheatLen);
-			if (!tmp) return;	// Failed to allocate memory
-			codestring = tmp;
-			strcat(codestring, junk);
+			tmp = realloc(make_cheat.codestring, sizeof(*make_cheat.codestring) * CheatLen);
+			if (!tmp)
+				return;	// Failed to allocate memory
+
+			// First entry
+			if (make_cheat.codestring == NULL) {
+				make_cheat.codestring = tmp;
+				strcpy(make_cheat.codestring, junk);
+			}
+			// Additional entries, append them
+			else {
+				make_cheat.codestring = tmp;
+				strcat(make_cheat.codestring, junk);
+			}
 		}
 	}
 
