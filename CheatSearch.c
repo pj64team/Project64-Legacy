@@ -1263,45 +1263,69 @@ void WriteProject64ChtDev(HWND hDlg) {
 	ChtDev = (CHTDEVENTRY *)malloc(sizeof(CHTDEVENTRY));
 
 	RomID(Identifier, RomHeader);
+
 	ChtDev->Identifier = Identifier;
-
 	ChtDev->Name = RomFullName;
-
 	ChtDev->LastSearch = (LASTSEARCH *)malloc(sizeof(LASTSEARCH));
-
 	ChtDev->LastSearch->SearchType = "Value";
 
 	Edit_GetText(GetDlgItem(hDlg, IDT_SEARCH_VALUE), s, 9);
 	ChtDev->LastSearch->SearchValue = s;
 
 	ChtDev->LastSearch->ValueSearchType = search.searchType;
-
 	ChtDev->LastSearch->NumBits = search.searchNumBits;
-
 	ChtDev->LastSearch->Results = ResultsToString();
 
-	pFile = fopen (GetCheatDevIniFileName(), "w");
-	if (pFile == NULL) {
-		// file error
-		return;
+	pFile = fopen (GetCheatDevIniFileName(), "wb");
+	if (pFile == NULL)
+		return;	// File Error
+
+	fprintf(pFile, "<?xml version=""1.0"" encoding=""ISO-8859-1""?>\r\n");
+	fprintf(pFile, "<CheatDev>\r\n");
+	fprintf(pFile, "\t<Game>\r\n");
+	fprintf(pFile, "\t\t<ID>%s</ID>\r\n", ChtDev->Identifier);
+	fprintf(pFile, "\t\t<Name>%s</Name>\r\n", ChtDev->Name);
+	fprintf(pFile, "\t\t<LastSearch>\r\n");
+	fprintf(pFile, "\t\t\t<SearchType>%s</SearchType>\r\n", ChtDev->LastSearch->SearchType);
+	fprintf(pFile, "\t\t\t<Value>%s</Value>\r\n", ChtDev->LastSearch->SearchValue);
+
+	switch (ChtDev->LastSearch->ValueSearchType) {
+	case unknown:
+		fprintf(pFile, "\t\t\t<ValueSearchType>%s</ValueSearchType>\r\n", "Unknown");
+		break;
+	case dec:
+		fprintf(pFile, "\t\t\t<ValueSearchType>%s</ValueSearchType>\r\n", "Decimal");
+		break;
+	case hex:
+		fprintf(pFile, "\t\t\t<ValueSearchType>%s</ValueSearchType>\r\n", "Hexadecimal");
+		break;
+	case changed:
+		fprintf(pFile, "\t\t\t<ValueSearchType>%s</ValueSearchType>\r\n", "Changed");
+		break;
+	case unchanged:
+		fprintf(pFile, "\t\t\t<ValueSearchType>%s</ValueSearchType>\r\n", "Unchanged");
+		break;
+	case higher:
+		fprintf(pFile, "\t\t\t<ValueSearchType>%s</ValueSearchType>\r\n", "Higher");
+		break;
+	case lower:
+		fprintf(pFile, "\t\t\t<ValueSearchType>%s</ValueSearchType>\r\n", "Lower");
+		break;
+	default:
+		fprintf(pFile, "\t\t\t<ValueSearchType>%s</ValueSearchType>\r\n", "Unsupported");
+		break;
 	}
 
-	fprintf(pFile, "<?xml version=""1.0"" encoding=""ISO-8859-1""?>\n");
-	fprintf(pFile, "<CheatDev>\n");
+	if (ChtDev->LastSearch->NumBits == bits8)
+		fprintf(pFile, "\t\t\t<NumBits>%s</NumBits>\r\n", "8bit");
+	else
+		fprintf(pFile, "\t\t\t<NumBits>%s</NumBits>\r\n", "16bit");
 
-	fprintf(pFile, "\t<Game>\n");
-	fprintf(pFile, "\t\t<ID>%s</ID>\n", ChtDev->Identifier);
-	fprintf(pFile, "\t\t<Name>%s</Name>\n", ChtDev->Name);
-	fprintf(pFile, "\t\t<LastSearch>\n");
-	fprintf(pFile, "\t\t\t<SearchType>%s</SearchType>\n", ChtDev->LastSearch->SearchType);
-	fprintf(pFile, "\t\t\t<Value>%s</Value>\n", ChtDev->LastSearch->SearchValue);
-	fprintf(pFile, "\t\t\t<ValueSearchType>%d</ValueSearchType>\n", ChtDev->LastSearch->ValueSearchType);
-	fprintf(pFile, "\t\t\t<NumBits>%d</NumBits>\n", ChtDev->LastSearch->NumBits);
-	fprintf(pFile, "\t\t\t<Results>\n%s\n\t\t\t</Results>\n", ChtDev->LastSearch->Results);
-	fprintf(pFile, "\t\t</LastSearch>\n");
-	fprintf(pFile, "\t</Game>\n");
+	fprintf(pFile, "\t\t\t<Results>\r\n%s\r\n\t\t\t</Results>\r\n", ChtDev->LastSearch->Results);
+	fprintf(pFile, "\t\t</LastSearch>\r\n");
+	fprintf(pFile, "\t</Game>\r\n");
 
-	fprintf(pFile, "</CheatDev>\n");
+	fprintf(pFile, "</CheatDev>\r\n");
 
 	// terminate
 	fclose (pFile);
@@ -1315,54 +1339,49 @@ void WriteProject64ChtDev(HWND hDlg) {
 // Currently it only backs up the listview shown, it would break future searches if loaded
 // -- Assuming there were over 4096 hits (Or whatever LISTVIEW_MAXSHOW is)
 char* ResultsToString(void) {
-	DWORD count;
-	char s[16], * result;
-	long maxlength = 0;
+	DWORD count, maxlength = 0;
+	char s[20], * result = NULL;
 	CS_HITS* hit;
 
-	if (search.searchNumBits == bits8) {
-		maxlength = (9 + 3 + 3) * min(results.num_stored, LISTVIEW_MAXSHOWN) + 1;
-	}
-	else {
-		maxlength = (9 + 5 + 5) * min(results.num_stored, LISTVIEW_MAXSHOWN) + 1;
-	}
-	maxlength += (2 * (maxlength / 8));	// The amount of /r/n to insert
+	if (results.num_stored == 0)
+		return result;
+
+	maxlength = (sizeof(s) * min(results.num_stored, LISTVIEW_MAXSHOWN) + 1);
+	maxlength += (6 * (maxlength / 8));	// Extra space to store \r\n\t\t\t\t
+
 	result = calloc(maxlength, sizeof(*result));
 
 	if (result == NULL)
-		return;
+		return result;
 
 	strcat_s(result, maxlength, "\t\t\t\t");
 
 	for (count = 0; count < min(results.num_stored, LISTVIEW_MAXSHOWN); count++) {
 		hit = CS_GetHit(&results, count);
 
-		sprintf_s(s, 16, "%08X,", hit->address);
-		strcat_s(result, maxlength, s);
+		if (count != 0 && count % 8 != 0)
+			strcat_s(result, maxlength, ",   ");
 
-		if (search.searchNumBits == bits8)
-			sprintf_s(s, 16, "%02X,", hit->value);
-		else
-			sprintf_s(s, 16, "%04X,", hit->value);
-
-		strcat_s(result, maxlength, s);
-
-		if (secondSearch) {
-			if (search.searchNumBits == bits8)
-				sprintf_s(s, 16, "%02X,", hit->prev_value);
+		// 8 hex, a comma, up to 4 hex, a comma, 4 hex, a comma, null character
+		// So 20 minimum to do a copy
+		if (search.searchNumBits == bits8) {
+			if (secondSearch)
+				sprintf_s(s, sizeof(s), "%06X %02X %02X", hit->address, hit->value, hit->prev_value);
 			else
-				sprintf_s(s, 16, "%04X,", hit->prev_value);
-
-			strcat_s(result, maxlength, s);
+				sprintf_s(s, sizeof(s), "%06X %02X", hit->address, hit->value);
 		}
 		else {
-			if (count < min(results.num_stored, LISTVIEW_MAXSHOWN) - 1) {
-				if ((count + 1) % 8 == 0)
-					strcat_s(result, maxlength, "\n\t\t\t");
+			if (secondSearch)
+				sprintf_s(s, sizeof(s), "%06X %04X %04X", hit->address, hit->value, hit->prev_value);
+			else
+				sprintf_s(s, sizeof(s), "%06X %04X", hit->address, hit->value);
+		}
 
-				sprintf_s(s, 16, "\t");
-				strcat_s(result, maxlength, s);
-			}
+		strcat_s(result, maxlength, s);
+
+		if (count < min(results.num_stored, LISTVIEW_MAXSHOWN) - 1) {
+			if ((count + 1) % 8 == 0)
+				strcat_s(result, maxlength, "\r\n\t\t\t\t");
 		}
 	}
 
