@@ -13,7 +13,7 @@ BOOL Cheats_LoadOption(CHEAT* cheat);
 
 
 BOOL Cheats_Read(CHEAT* cheat, unsigned int cheat_num) {
-	char Identifier[100], CheatFormat[100];
+	char Identifier[100], CheatFormat[20];
 	char* tmp, *find1, *find2;
 
 	RomID(Identifier, RomHeader);
@@ -71,16 +71,20 @@ BOOL Cheats_Read(CHEAT* cheat, unsigned int cheat_num) {
 
 	// Make sure the code string that is associated with the name is valid
 	Cheats_Verify(cheat);
-	
+
 	// Load any options that may exist (If none this will be an empty string)
 	sprintf(CheatFormat, CHT_ENT_O, cheat_num);
 	Settings_Read(CDB_NAME, Identifier, CheatFormat, STR_EMPTY, &cheat->options);
 	FetchRedirection(&cheat->options);
 	
 	// Load any option that may be selected (If none this will be an empty string)
-	sprintf(CheatFormat, CHT_EXT_O, cheat->name);
-	Settings_Read(APPS_NAME, Identifier, CheatFormat, STR_EMPTY, &cheat->selected);
-		
+	tmp = malloc(sizeof(*tmp) * (strlen(cheat->name) + strlen(CHT_EXT_O) + 1));
+	if (tmp != NULL) {
+		sprintf(tmp, CHT_EXT_O, cheat->name);
+		Settings_Read(APPS_NAME, Identifier, tmp, STR_EMPTY, &cheat->selected);
+		free(tmp);
+	}
+
 	// See if the selected option can be loaded, if it can't replacedstring will be shrunk
 	if (!Cheats_LoadOption(cheat)) {
 		// Could not load the option
@@ -96,7 +100,7 @@ BOOL Cheats_Read(CHEAT* cheat, unsigned int cheat_num) {
 	sprintf(CheatFormat, CHT_ENT_N, cheat_num);
 	Settings_Read(CDB_NAME, Identifier, CheatFormat, STR_EMPTY, &cheat->note);
 	FetchRedirection(&cheat->note);
-
+	
 	return TRUE;
 }
 
