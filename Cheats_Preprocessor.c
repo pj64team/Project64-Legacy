@@ -511,22 +511,25 @@ BOOL Cheats_LoadOption(CHEAT* cheat) {
 			}
 		}
 
-		// Decide what to do with rep, the 'counter' for the replacement string
-		if (serial_replacement) {
-			// This must contain a :
-			if (Ext[rep] == ':')
-				rep++;
+		// These checks are to be made only if a replacement occured (rep would be greater than 1)
+		if (rep != 1) {
+			// Decide what to do with rep, the 'counter' for the replacement string
+			if (serial_replacement) {
+				// This must contain a :
+				if (Ext[rep] == ':')
+					rep++;
+				else {
+					// Reached the end of the replacement
+					if (Ext[rep] != ' ')
+						return FALSE;
+				}
+			}
 			else {
-				// Reached the end of the replacement
+				// By this point the next character should be a space, to denote the end of the replacement
 				if (Ext[rep] != ' ')
 					return FALSE;
+				rep = 1;
 			}
-		}
-		else {
-			// By this point the next character should be a space, to denote the end of the replacement
-			if (Ext[rep] != ' ')
-				return FALSE;
-			rep = 1;
 		}
 
 		// Check the next code
