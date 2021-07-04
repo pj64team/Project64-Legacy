@@ -1197,11 +1197,9 @@ LRESULT CALLBACK CheatListProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
 		GetWindowRect(GetDlgItem(hDlg, IDC_UNMARK), &rcButton);
 
 		hCheatTree = CreateWindowEx(WS_EX_CLIENTEDGE, WC_TREEVIEW, STR_EMPTY,
-			WS_CHILD | WS_BORDER | WS_VISIBLE | WS_VSCROLL | TVS_HASLINES |
-			TVS_HASBUTTONS | TVS_LINESATROOT | TVS_DISABLEDRAGDROP | WS_TABSTOP |
-			TVS_FULLROWSELECT, 8, 15, rcList.right - rcList.left - 16, rcButton.top - rcList.top - 22, hDlg, (HMENU)IDC_MYTREE, hInst, NULL);
+			WS_CHILD | WS_TABSTOP | WS_VISIBLE, 8, 15, rcList.right - rcList.left - 16, rcButton.top - rcList.top - 22, hDlg, (HMENU)IDC_MYTREE, hInst, NULL);
 		Style = GetWindowLong(hCheatTree, GWL_STYLE);
-		SetWindowLong(hCheatTree, GWL_STYLE, TVS_CHECKBOXES | TVS_SHOWSELALWAYS | Style);
+		SetWindowLong(hCheatTree, GWL_STYLE, TVS_HASLINES | TVS_HASBUTTONS | TVS_LINESATROOT | TVS_DISABLEDRAGDROP | TVS_CHECKBOXES | TVS_SHOWSELALWAYS | Style);
 
 		{
 			HIMAGELIST hImageList;
@@ -1223,13 +1221,12 @@ LRESULT CALLBACK CheatListProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
 		int nWidth = LOWORD(lParam);  // width of client area 
 		int nHeight = HIWORD(lParam); // height of client area 
 
-		SetWindowPos(GetDlgItem(hDlg, IDC_CHEATSFRAME), NULL, 0, 0, nWidth, nHeight - 100, SWP_NOOWNERZORDER);
-		SetWindowPos(GetDlgItem(hDlg, IDC_NOTESFRAME), NULL, 0, nHeight - 96, nWidth, 95, SWP_NOOWNERZORDER);
-		SetWindowPos(GetDlgItem(hDlg, IDC_NOTES), NULL, 6, nHeight - 80, nWidth - 12, 72, SWP_NOOWNERZORDER);
-		SetWindowPos(GetDlgItem(hDlg, IDC_UNMARK), NULL, nWidth - 110, nHeight - 124, 0, 0, SWP_NOSIZE | SWP_NOOWNERZORDER);
-		SetWindowPos(GetDlgItem(hDlg, IDC_DELETE), NULL, nWidth - 165, nHeight - 124, 0, 0, SWP_NOSIZE | SWP_NOOWNERZORDER);
-		SetWindowPos(hCheatTree, NULL, 0, 0, nWidth - 13, nHeight - 142, SWP_NOMOVE | SWP_NOOWNERZORDER);
-
+		SetWindowPos(hCheatTree, HWND_TOP, 0, 0, nWidth - 13, nHeight - 142, SWP_NOMOVE | SWP_NOOWNERZORDER);
+		SetWindowPos(GetDlgItem(hDlg, IDC_CHEATSFRAME), HWND_TOP, 0, 0, nWidth, nHeight - 100, SWP_NOOWNERZORDER);
+		SetWindowPos(GetDlgItem(hDlg, IDC_NOTESFRAME), HWND_TOP, 0, nHeight - 96, nWidth, 95, SWP_NOOWNERZORDER);
+		SetWindowPos(GetDlgItem(hDlg, IDC_NOTES), HWND_TOP, 6, nHeight - 80, nWidth - 12, 72, SWP_NOOWNERZORDER);
+		SetWindowPos(GetDlgItem(hDlg, IDC_UNMARK), HWND_TOP, nWidth - 110, nHeight - 124, 0, 0, SWP_NOSIZE | SWP_NOOWNERZORDER);
+		SetWindowPos(GetDlgItem(hDlg, IDC_DELETE), HWND_TOP, nWidth - 165, nHeight - 124, 0, 0, SWP_NOSIZE | SWP_NOOWNERZORDER);
 	}
 	break;
 	case WM_COMMAND:
@@ -1578,7 +1575,7 @@ void ManageCheats(HWND hParent) {
 		Y = (GetSystemMetrics(SM_CYSCREEN) - WindowHeight) / 2;
 	}
 	Style = hParent ? WS_SIZEBOX | WS_SYSMENU : WS_SIZEBOX | WS_SYSMENU | WS_MINIMIZEBOX;
-	hManageWindow = CreateWindow("PJ64.Cheats", GS(CHEAT_TITLE), Style, X, Y, WindowWidth, WindowHeight, hParent, NULL, hInst, NULL);
+	hManageWindow = CreateWindowEx(NULL, "PJ64.Cheats", GS(CHEAT_TITLE), Style, X, Y, WindowWidth, WindowHeight, hParent, NULL, hInst, NULL);
 	RefreshCheatManager();
 	ShowWindow(hManageWindow, SW_SHOW);
 	if (hParent) {
