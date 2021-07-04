@@ -32,6 +32,7 @@ string LineReadHandler(char* filename, char* id, size_t line);
 void WriteHandler(char* filename, char* id, char* setting, char* value, supported_writes write_type);
 
 
+
 ////////////////////////////////
 // CLASS IMPLEMENTATION (PUBLIC)
 ////////////////////////////////
@@ -71,53 +72,55 @@ string FileStuff::GetFileName() {
 
 string FileStuff::GetValue(char* id, char* setting, char* def, bool fetch) {
 	string value;
-	int len;
-	size_t find;
-	vector<string>::iterator found;
 	Entry* entry;
 
-	len = setting == NULL ? 0 : strlen(setting);
+	// No setting to search for, return the (def)ault string if one was provided otherwise return the defined empty string STR_EMPTY
+	if (setting == NULL)
+		return (def == NULL) ? STR_EMPTY : string(def);
 
 	// Find the start of the section we are interested in and the end
 	entry = FindEntry("[" + (string)id + "]");
 
 	if (entry != NULL && !entry->data.empty()) {
-		if (fetch) {			
-			// Search for setting=
-			found = find_if(entry->data.begin(), entry->data.end(), [setting, len](string p) { return p.compare(0, len + 1, (string)setting + "=") == 0; });
-			if (found != entry->data.end()) {
+		vector<string>::iterator found;
+		size_t find, str_end, str_len;
 
+		str_len = strlen(setting);
+
+		// Search for setting=
+		if (fetch) {
+			str_len++;	// Searching for setting= so increment the length by 1
+			found = find_if(entry->data.begin(), entry->data.end(), [setting, str_len](string p) { return p.compare(0, str_len, (string)setting + "=") == 0; });
+
+			if (found != entry->data.end()) {
 				// Make sure that comments are ignored
 				find = (*found).find("//");
-				if (find != string::npos)
-					value = (*found).substr(len + 1, find - len + 1);
-				else
-					value = (*found).substr(len + 1, find);
+				str_end = (find == string::npos) ? (*found).length() - str_len : find - str_len;
 
-				// Trim whitespace off the end
-				for (int i = value.length() - 1; i >= 0; i--) {
-					if (isspace(value[i]))
-						value[i] = '\0';
-					else
-						break;
-				}
+				value = (*found).substr(str_len, str_end);
 			}
 		}
 
 		// No = but this may be an entry alone (For example ExpansionPak // Use expansion)
 		else {
-			found = find_if(entry->data.begin(), entry->data.end(), [setting, len](string p) { return p.compare(0, len, setting) == 0; });
-			if (found != entry->data.end()) {
-				if (setting == NULL)
-					value = STR_EMPTY;
-				else
-					value = string(setting);
-			}
+			found = find_if(entry->data.begin(), entry->data.end(), [setting, str_len](string p) { return p.compare(0, str_len, setting) == 0; });
+
+			if (found != entry->data.end())
+				value = string(setting);
 		}
 	}
 
 	if (value.empty())
 		value = (def == NULL) ? STR_EMPTY : string(def);
+	else {
+		// Trim whitespace
+		for (int i = value.length() - 1; i > 0; i--) {
+			if (isspace(value[i]))
+				value[i] = '\0';
+			else
+				break;
+		}
+	}
 
 	return value;
 }
@@ -125,10 +128,15 @@ string FileStuff::GetValue(char* id, char* setting, char* def, bool fetch) {
 string FileStuff::GetLine(char* id, size_t line_number) {
 	Entry* entry;
 
+	if (line_number < 1)
+		return STR_EMPTY;
+	else
+		line_number--;
+
 	entry = FindEntry("[" + (string)id + "]");
 
-	if (entry != NULL && !entry->data.empty() && (size_t)line_number - 1 < entry->data.size())
-		return entry->data[line_number - 1];
+	if (entry != NULL && !entry->data.empty() && line_number < entry->data.size())
+		return entry->data[line_number];
 
 	return STR_EMPTY;
 }
@@ -141,7 +149,6 @@ string FileStuff::GetKeys(char* id) {
 	string result;
 	size_t loc = string::npos;
 	Entry* entry;
-	const char remove_chars[] = { '\r', '\n' };
 	const string find_str[] = { "=", "//" };
 
 	entry = FindEntry("[" + string(id) + "]");
@@ -151,13 +158,17 @@ string FileStuff::GetKeys(char* id) {
 
 	for (string line : entry->data) {
 
-		// A key will not have a new line or carriage return, remove these from the line
-		for (const char re : remove_chars)
-			line.erase(std::remove(line.begin(), line.end(), re), line.end());
-
-		// Nothing to examine, either this is an empty line or a comment noted by // at the start
-		if (line.empty()|| line.compare(0, 2, "//") == 0)
+		// Ignore comments and empty lines
+		if (isspace(line[0]) || line.compare(0, 2, "//") == 0)
 			continue;
+
+		// Strip empty space at the end
+		for (int i = line.length() - 1; i > 0; i--) {
+			if (isspace(line[i]))
+				line[i] = '\0';
+			else
+				break;
+		}
 
 		for (string s : find_str) {
 			loc = line.find(s);
@@ -176,59 +187,41 @@ string FileStuff::GetKeys(char* id) {
 }
 
 void FileStuff::AddSettingValue(char* id, char* setting, char* value) {
-	Entry* entry;
-	string tmp;
-
-	entry = FindEntry("[" + string(id) + "]");
+	Entry* entry = FindEntry("[" + string(id) + "]");
 
 	// Add a new entry if none was found
 	if (entry == NULL) {
-		Entry temp;
-		temp.ClearData();
-		filebuffer.push_back(temp);
+		filebuffer.push_back(Entry());
 		entry = &filebuffer.back();
-
 		entry->StoreData("[" + string(id) + "]" + LINEFEED);
 	}
-	// Existing entry, delete the setting of the same name if it exists
-	else {
-		char* delstr = (char*)malloc(sizeof(char) * (strlen(setting) + 2));
 
-		if (delstr != NULL) {
-			strcpy(delstr, setting);
-
-			if (value != NULL && strlen(value) != 0)
-				strcat(delstr, "=");
-
-			RemoveSetting(id, delstr);
-
-			free(delstr);
-		}
-	}
-
-	// Insert the new setting/value pair into the file buffer
+	// Insert the setting/value pair into the file buffer
 	if (value != NULL && strlen(value) != 0)
 		entry->StoreData((string)setting + "=" + value + LINEFEED);
 	else
 		entry->StoreData((string)setting + LINEFEED);
+
+	if (entry->unsortable_lines == 0 && entry->data.size() != 0) {
+		std::sort(entry->data.begin(), entry->data.end(), entry->CompareKeys);
+	}
 }
 
 void FileStuff::WriteLine(char* id, char* line) {
-	Entry* entry;
-
-	entry = FindEntry("[" + string(id) + "]");
+	Entry* entry = FindEntry("[" + string(id) + "]");
 
 	// No entry found, need to add a blank Entry to the back and set the header
 	if (entry == NULL) {
-		Entry tmp;
-		tmp.ClearData();
-		filebuffer.push_back(tmp);
+		filebuffer.push_back(Entry());
 		entry = &filebuffer.back();
-
 		entry->StoreData("[" + (string)id + "]" + LINEFEED);
 	}
 
 	entry->StoreData(line);
+
+	if (entry->unsortable_lines == 0 && entry->data.size() != 0) {
+		std::sort(entry->data.begin(), entry->data.end(), entry->CompareKeys);
+	}
 }
 
 void FileStuff::ChangeCurrentKey(char* id, char* oldkey, char* newkey) {
@@ -267,9 +260,8 @@ void FileStuff::RemoveSetting(char* id, char* setting) {
 }
 
 void FileStuff::RemoveEntry(char* id) {
-	Entry* entry;
+	Entry* entry = FindEntry("[" + string(id) + "]");
 
-	entry = FindEntry("[" + string(id) + "]");
 	if (entry != NULL)
 		filebuffer.erase(filebuffer.begin() + current_entry);
 }
@@ -280,16 +272,13 @@ void FileStuff::WriteToFile() {
 	// Write the modified file buffer to memory
 	myFile.open(fullpath, ios::binary);
 
-	// Write to file the entire filebuffer
-	for (size_t i = 0; i < filebuffer.size(); i++) {
-		myFile << filebuffer[i].header;
+	// Write to the file using the filebuffer
+	for (Entry f : filebuffer) {
+		myFile << f.header;
 
-		for (size_t o = 0; o < filebuffer[i].data.size(); o++) {
-			myFile << filebuffer[i].data[o];
-		}
-
-		if (!filebuffer[i].data.empty())
-			myFile << LINEFEED;
+		// Write out the data (If any)
+		for (string d : f.data)
+			myFile << d;
 	}
 
 	// Clean-up
@@ -303,13 +292,6 @@ void FileStuff::DeleteLine(char* id, char* line) {
 	RemoveSetting(id, line);
 }
 
-void FileStuff::SortEntry(char* id) {
-	Entry* entry;
-
-	entry = FindEntry("[" + string(id) + "]");
-	if (entry != NULL && !entry->data.empty())
-		entry->SortData();
-}
 
 
 /////////////////////////////////
@@ -318,7 +300,7 @@ void FileStuff::SortEntry(char* id) {
 void FileStuff::LoadFile() {
 	ifstream myFile;
 	string junk;
-	Entry entry;
+	Entry entry = Entry();
 	Entry::read_states state;
 
 	// Check if the file is loaded
@@ -332,23 +314,53 @@ void FileStuff::LoadFile() {
 	myFile.open(fullpath, ios_base::binary);
 	myFile.seekg(0, ios::beg);
 
-	// Make sure entry is empty, it will be filled and added to the filebuffer
-	entry.ClearData();
-
-	junk.reserve(100);
+	junk.reserve(200);
 	// Line by line parsing, if this is too slow move to reading chunks at a time into a buffer
 	while (getline(myFile, junk)) {
 		state = entry.StoreData(junk + "\n");
 
 		switch (state) {
-		case Entry::read_states::FULL:
-			entry.TrimEmptyLines();
+		case Entry::read_states::FULL: {
+			size_t start;
+			string tail;
+
+			tail.reserve(100);
+
+			// Starting from the last entry find where data does not contain comments or new lines
+			for (start = entry.data.size() - 1; start > 0; start--) {
+				if (entry.data[start].compare(0, 2, "//") == 0 || entry.data[start].compare(0, 2, "\r\n") == 0 || entry.data[start][0] == '\n') {
+					continue;
+				}
+				break;
+			}
+
+			if (start != entry.data.size() - 1) {
+				// A copy of the data that will be removed (Comments and new lines)
+				for (size_t i = start + 1; i < entry.data.size(); i++) {
+					tail += entry.data[i];
+					entry.unsortable_lines--;
+				}
+
+				// Erase the lines that have just been saved
+				entry.data.erase(entry.data.begin() + start + 1, entry.data.end());
+			}
+
+			// Save the entry, at this point comments and new lines should have been removed
 			filebuffer.push_back(entry);
+
+			// Now save the comments and new lines that were at the end of the entry
+			if (!tail.empty()) {
+				entry.ClearData();
+				entry.StoreData(tail);
+				filebuffer.push_back(entry);
+			}
+
+			// Finished saving the previous entry, start the new one
 			entry.ClearData();
 			entry.StoreData(junk + "\n");
+		}
 			break;
 		case Entry::read_states::UNFORMATTED:
-			entry.TrimEmptyLines();
 			filebuffer.push_back(entry);
 			entry.ClearData();
 			break;
@@ -358,7 +370,6 @@ void FileStuff::LoadFile() {
 	}
 
 	if (!entry.header.empty()) {
-		entry.TrimEmptyLines();
 		filebuffer.push_back(entry);
 	}
 
@@ -369,6 +380,15 @@ void FileStuff::LoadFile() {
 	// Clean up by closing the file handle
 	if (myFile.is_open())
 		myFile.close();
+	
+	// Sort the file before updating it
+	for (Entry &e : filebuffer) {
+		if (e.unsortable_lines == 0 && e.data.size() != 0) {
+			std::sort(e.data.begin(), e.data.end(), e.CompareKeys);
+		}
+	}
+
+	WriteToFile();
 }
 
 bool FileStuff::HasChanged() {
@@ -409,6 +429,7 @@ Entry* FileStuff::FindEntry(string search) {
 	// Failure to find anything
 	return NULL;
 }
+
 
 
 //////////////////////////
@@ -517,7 +538,7 @@ void WriteHandler(char* filename, char* id, char* setting, char* value, supporte
 
 	file = GetTheFile(filename);
 
-	// To do
+	// TO DO!
 	// Write a section here that verifies there is at least 1 setting left
 	// If there would be 0 settings left that would be equivalent to an entry deletion
 
@@ -542,10 +563,6 @@ void WriteHandler(char* filename, char* id, char* setting, char* value, supporte
 		file->DeleteLine(id, setting);
 		break;
 	}
-
-	// If the entry was not deleted then sort the section
-	if (write_type != supported_writes::DELETE_ENTRY)
-		file->SortEntry(id);
 
 	// This is very hacky, until a delayed write is added in this will have to do
 	if (write_type != supported_writes::CHANGE_KEY)
@@ -624,6 +641,8 @@ int EntryExists(char* filename, char *id) {
 	return CheckEntryExists(filename, id);
 }
 
+
+
 ////////////////////////////////////////////
 // Implementation of the struct starts here
 ////////////////////////////////////////////
@@ -632,56 +651,8 @@ Entry::Entry() {
 	ClearData();
 }
 
-void Entry::SortData() {
 
-	vector<string>::iterator found, it;
-	const static string s[] = { "Good Name=", "Internal Name=", "Name=" };
-
-	// Sorting can only happen if the data does not have comments (// Example) or empty lines (Mainly newlines \r\n or \r or \n)
-	if (!can_be_sorted || data.empty())
-		return;
-
-	it = data.begin();
-
-	// Only prioritize Good Name, Internal Name, and Name if this is a game entry
-	// The format is [xxxxxxxx-xxxxxxxx-C:xx] where x are hex characters
-	if (IsGameHeader(header)) {
-		for (size_t i = 0; i < sizeof(s) / sizeof(s[0]); i++) {
-			found = find_if(data.begin(), data.end(), [i](string p) { return p.compare(0, s[i].length(), s[i]) == 0; });
-			if (found != data.end()) {
-				std::swap(*it, *found);
-				++it;
-			}
-		}
-	}
-
-	std::sort(it, data.end(),
-		[](const string& a, const string& b) {
-
-		// CheatX(_Y)= is a special case, otherwise use the normal method
-		// Where X is a number and _Y is an optional parameter, where Y is either N, O, or similar but = is always there, as is _ after the number
-		if (a.find("Cheat", 0) == 0 && b.find("Cheat", 0) == 0) {
-			int loc_a, loc_b;
-			string num_a, num_b;
-
-			loc_a = a.find_first_of("=_");
-			loc_b = b.find_first_of("=_");
-
-			if (loc_a != string::npos && loc_b != string::npos) {
-				num_a = a.substr(5, loc_a - 5);
-				num_b = b.substr(5, loc_b - 5);
-
-				return (atoi(num_a.c_str()) < atoi(num_b.c_str()));
-			}
-		}
-
-		// The usual case
-		return (a.compare(b) > 0) ? false : true;
-	});
-}
-
-
-bool Entry::IsHeader(string str) {
+bool Entry::IsHeader(const string& str) {
 	// This regular expression was causing a massive slowdown on the debug build
 	// return regex_match(str, regex("^\\[([A-Za-z0-9]|\\s)+\\]\\s*(?://?.*?\\s*)?$"));
 
@@ -690,19 +661,18 @@ bool Entry::IsHeader(string str) {
 	if (str.length() > 3 && str[0] == '[') {
 		size_t loc1, loc2, loc3;
 
-		loc1 = str.find(']', 1);
-		loc2 = str.find("//", 1);
-		loc3 = str.find("=");
-
 		// Did not find a matching closing square bracket
+		loc1 = str.find(']', 1);
 		if (loc1 == string::npos)
 			return false;
 
 		// There is a comment before the closing square bracket
+		loc2 = str.find("//", 1);
 		if (loc2 < loc1)
 			return false;
 
 		// There is an equal sign before the comment, this is a value and not a header
+		loc3 = str.find("=");
 		if (loc3 < loc2)
 			return false;
 
@@ -713,39 +683,38 @@ bool Entry::IsHeader(string str) {
 }
 
 
-bool Entry::IsGameHeader(string str) {
+bool Entry::IsGameHeader(const string& str) {
 	// This regular expression was causing a massive slowdown on the debug build
 	// return regex_match(str, regex("^\\[([A-Fa-f0-9]){8}-([A-Fa-f0-9]){8}-C:([A-Fa-f0-9]){2}\\]\\s*(?://?.*?\\s*)?$"));
 
 	// The format to check against, X is a hex value so much be checked for 0 through 9 and A through F, including a through f
-	char format[] = "[XXXXXXXX-XXXXXXXX-C:XX]";
+	const std::string format = "[XXXXXXXX-XXXXXXXX-C:XX]";
 
-	if (str.size() < strlen(format))
+	if (str.length() < format.length())
 		return false;
 
-	for (size_t i = 0; i < strlen(format); i++) {
+	for (size_t i = 0; i < format.length(); i++) {
 		if (str[i] == format[i])
 			continue;
-		else {
-			if (format[i] == 'X') {
-				if (isxdigit(str[i]))
-					continue;
-			}
 
-			return false;
-		}
+		if (format[i] == 'X' && isxdigit(str[i]))
+			continue;
+
+		return false;
 	}
 	return true;
 }
 
-Entry::read_states Entry::StoreData(string str) {
+Entry::read_states Entry::StoreData(const string& str) {
+	vector<string>::iterator found;
+	size_t find;
+	string key;
 
 	// Store the header if not empty, otherwise return false (Basically, the entry is full so failed to store)
 	if (IsGameHeader(str) || IsHeader(str)) {
 		if (!header.empty())
 			return read_states::FULL;
 		else {
-			ClearData();
 			header = str;
 			return read_states::GOOD;
 		}
@@ -753,57 +722,110 @@ Entry::read_states Entry::StoreData(string str) {
 
 	// Not a header, simply text
 	if (header.empty()) {
-		ClearData();
 		header = str;
-		can_be_sorted = false;
 		return read_states::UNFORMATTED;
 	}
-	// Data to be added
-	else {
-		if (str.empty() || str[0] == '\r' || str[0] == '\n')
-			empty_lines++;
 
-		// Do not sort if the line passed (str) is a comment ex: // This is a comment
-		if (str.length() >= 2 && str[0] == '/' && str[1] == '/')
-			can_be_sorted = false;
-
-		if (can_be_sorted) {
-			// Basic insertion sort
-			for (int i = 0; i < data.size(); i++) {
-				if ((*(data.begin() + i)).compare(str) == 0) {
-				}
-			}
-			data.insert(data.begin(), str);
-		}
-		else
-			data.push_back(str);
-
+	// Do not sort if the line passed (str) is a comment ex: // This is a comment
+	if (str.compare(0, 2, "//") == 0 || isspace(str[0])) {
+		unsortable_lines++;
+		data.push_back(str);
 		return read_states::GOOD;
 	}
+
+	// The key for matching will include the = or be the entire line
+	find = str.find("=");
+	key = (find == string::npos) ? str : str.substr(0, find + 1);
+
+	// Check to see if the entry exists (It must start with key)
+	found = find_if(data.begin(), data.end(), [&key](const string& p) { 		
+		return p.compare(0, key.length(), key) == 0;
+	});
+
+	// A match was found, update the entry
+	if (found != data.end()) {
+		*found = str;
+		return read_states::GOOD;
+	}
+
+	// Add to the back of the vector
+	data.push_back(str);	
+	return read_states::GOOD;
 }
 
 void Entry::ClearData() {
 	header.clear();
 	data.clear();
-	can_be_sorted = true;
-	empty_lines = 0;
+	unsortable_lines = 0;
 }
 
-void Entry::TrimEmptyLines() {
-
-	if (data.empty())
-		return;
-
-	// Remove empty lines from the end
-	while (data.back().empty() || data.back()[0] == '\r' || data.back()[0] == '\n') {
-		data.pop_back();
-		empty_lines--;
-
-		if (data.empty())
-			break;
+bool Entry::CompareKeys(const string& str1, const string& str2) {
+	int num1, num2;
+	size_t key1_length, key2_length;
+	const string name_key = "Name=";
+	
+	if (IsCheatKey(str1, num1) && IsCheatKey(str2, num2)) {
+		if (num1 != num2)
+			return num1 < num2;
 	}
 
-	// Failed to remove all the empty lines
-	if (empty_lines != 0)
-		can_be_sorted = false;
+	// Give priority to Name=
+	if (str1.compare(0, name_key.length(), name_key) == 0)
+		return true;
+
+	if (str2.compare(0, name_key.length(), name_key) == 0)
+		return false;
+
+	key1_length = str1.find("=");
+	key1_length = (key1_length == string::npos) ? str1.length() : key1_length++;
+
+	key2_length = str2.find("=");
+	key2_length = (key2_length == string::npos) ? str2.length() : key2_length++;
+
+	// Custom scanning to avoid making substrings
+	for (size_t scan = 0; scan < min(key1_length, key2_length); scan++) {
+		if (str1[scan] < str2[scan])
+			return true;
+
+		if (str1[scan] > str2[scan])
+			return false;
+	}
+
+	// Strings compared the same up to the length checked, now see if a string is longer (include equality here)
+	if (key1_length <= key2_length)
+		return true;
+	else
+		return false;
+}
+
+// A cheat is defined as an entry that has the following format CheatX(_Y)=
+// Where X is a number (as of June 2021, no more than 500) and _Y is an optional parameter, either _O or _N
+// In order to properly sort these entries the number must be extracted and compared as an integer and not as text
+bool Entry::IsCheatKey(const string& key, int& num) {
+	const string cheat = "Cheat";
+	const char* start;
+	size_t num_start;
+
+	num = 0;
+
+	// Must start with Cheat (using a const for this)
+	if (key.compare(0, cheat.length(), cheat) != 0)
+		return false;
+
+	// The section between Cheat and _ or = must contain only numbers
+	for (num_start = cheat.length(); num_start < key.length(); num_start++) {
+
+		// Additional stop conditions, the cheat may contain _O= or _N= or may simply end with a =
+		if (key[num_start] == '_' || key[num_start] == '=')
+			break;
+
+		if (!isdigit(key[num_start]))
+			return false;
+	}
+
+	// The start of the string to convert
+	start = key.c_str() + cheat.length();
+
+	num = atoi(start);
+	return true;
 }

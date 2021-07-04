@@ -37,8 +37,7 @@ using namespace std;
 struct Entry {
 	string header;
 	vector<string> data;
-	bool can_be_sorted = true;
-	size_t empty_lines = 0;
+	size_t unsortable_lines;
 
 	// GOOD = The header has been accepted and/or the data has been aded
 	// FULL = A header has been passed to an already contructed entry, save the current entry and make a new one that contains the header
@@ -47,27 +46,22 @@ struct Entry {
 
 	Entry();
 
-	// Data will be sorted as such
-	// Good Name=The Rom Good Name
-	// Internal Name=Internal Name
-	// Name=This is the new standard, it is either Good Name or generated based on the Internal Name or File Name
-	// Anything else that follows is to be sorted alphabetically, with exception of Cheat which contains numbers that must be compared wholly
-	void SortData();
-
 	// A normal header is encased in brackets [ ] at the start and may end with a comment
-	bool IsHeader(string str);
+	bool IsHeader(const string& str);
 
 	// A game header is very specific [XXXXXXXX:XXXXXXXX-C:XX] (Where X represents a Hex number) and may end with a comment
-	bool IsGameHeader(string str);
+	bool IsGameHeader(const string& str);
 
 	// The rules are as follows
 	// The header must always contain something, if it is a Game Header or Header it may contain data (Returns true)
 	// If the header is neither then it will only contain a string (regular text inside the file) and it cannot store data (Returns false) or be sorted
 	// Only one header may be contained at a time, therefore attempting to store another header will return false
-	read_states StoreData(string str);
+	read_states StoreData(const string& str);
 
 	void ClearData();
-	void TrimEmptyLines();
+
+	static bool CompareKeys(const string& key1, const string& key2);
+	static bool IsCheatKey(const string& key, int& num);
 };
 
 // This class will handle the majority of the work when doing file related things
@@ -98,9 +92,6 @@ public:
 	void RemoveSetting(char* id, char* setting);
 	void RemoveEntry(char* id);
 	void DeleteLine(char* id, char* line);
-
-	// Sorting, using Entry's SortData
-	void SortEntry(char* id);
 
 	// Basic file write
 	void WriteToFile();
