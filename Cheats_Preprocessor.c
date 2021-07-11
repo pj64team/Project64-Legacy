@@ -276,7 +276,7 @@ void Cheats_ClearCheat(CHEAT* cheat) {
 //  With a comma following additional cheats to be activated, example 80?????? ????,80?????? ????
 // The 80 is an activator and has limits -- This will be checked for at a later time for now this code is written without verification of activator
 BOOL Cheats_Verify(CHEAT *cheat) {
-	int address_replace = -1, addr_tmp, value_replace = -1, val_tmp;
+	int address_replace = -1, addr_tmp, value_replace = -1, val_tmp, tmp;
 	char* find;
 
 	if ((cheat->name != NULL && strlen(cheat->name) == 0) || (cheat->codestring != NULL && strlen(cheat->codestring) == 0)) {
@@ -319,6 +319,16 @@ BOOL Cheats_Verify(CHEAT *cheat) {
 					return FALSE;
 				}
 			}
+		}
+
+		// 16bit cheat code addresses (81 activator) must be even aligned
+		tmp = strtoul(find, NULL, 16);
+		if (strncmp(find, "81", 2) == 0 && tmp & 1) {
+			char junk[500];
+			sprintf(junk, "Detected Odd Aligned 16 bit code!\r\nThis is not supported by any known cheat device!\r\n%s, %.13s", cheat->name, find);
+			DisplayError(junk);
+			cheat->type = BAD_CODE;
+			return FALSE;
 		}
 
 		// Set the number of replaces for address if not set
