@@ -35,6 +35,7 @@ const char* N64GSCODETYPES16BIT[] = { "16-bit Constant Write (81)", "81",
 	"16-Bit Different To Activator (D3)", "D3" };
 
 #define LISTVIEW_MAXSHOWN 4096
+#define WM_LV_UPDATE (WM_APP + 1)
 
 
 /////////////////////////////////////
@@ -53,7 +54,9 @@ void Defaults_CheatSearchDlg();
 void CE_UpdateControls(HWND hDlg, int item);
 void CE_SaveCheat(int item);
 void CS_UpdateSearchProc(HWND hDlg);
+void CS_UpdateListView(HWND hDlg);
 DWORD WINAPI LiveUpdate(LPVOID arg);
+void StopLiveUpdate();
 
 CHTDEVENTRY* ReadProject64ChtDev();
 void WriteProject64ChtDev(HWND hDlg);
@@ -75,8 +78,9 @@ CS_DEV cheat_dev;
 BOOL secondSearch = FALSE;
 BOOL searched = FALSE;
 
-HANDLE chtLVMutex = NULL;
+HANDLE hThread = NULL;
 BOOL doingLiveUpdate = FALSE;
+HANDLE hLUMutex;
 /////////////////////////////////////
 // End of Global Variables 
 /////////////////////////////////////
@@ -105,6 +109,9 @@ void Close_CheatSearchDlg() {
 	CS_ClearResults(&results);
 	CS_ClearDev(&cheat_dev);
 
+	// Stop the live update
+	StopLiveUpdate();
+
 	if (hCheatSearchDlg != NULL) {
 		DestroyWindow(hCheatSearchDlg);
 		hCheatSearchDlg = NULL;
@@ -114,6 +121,7 @@ void Close_CheatSearchDlg() {
 void Defaults_CheatSearchDlg() {
 	searched = FALSE;
 	secondSearch = FALSE;
+	StopLiveUpdate();
 
 	Button_Enable(GetDlgItem(hCheatSearchDlg, IDB_CS_CHEAT_EDIT), FALSE);
 	Button_Enable(GetDlgItem(hCheatSearchDlg, IDB_CS_CHEAT_REMOVE), FALSE);
@@ -225,7 +233,9 @@ BOOL CALLBACK CheatSearchDlgProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lPa
 			break;
 		}
 		break;
-
+	case WM_LV_UPDATE:
+		CS_UpdateListView(hDlg);
+		break;
 	case WM_COMMAND:
 		switch (LOWORD(wParam)) {
 		case IDR_SEARCH_VALUE:
@@ -571,6 +581,18 @@ void PopulateSearchResultList(HWND hDlg) {
 	hListView = GetDlgItem(hDlg, IDL_SEARCH_RESULT_LIST);
 	ListView_DeleteAllItems(hListView);
 
+	// The listview only displays up to 4096 entries but it can store more
+	// The macro ListView_SetItemCount preallocates memory for the number of entries
+	if (results.num_stored > LISTVIEW_MAXSHOWN) {
+		ListView_SetItemCount(hListView, LISTVIEW_MAXSHOWN);
+		sprintf(title, "Results (found %u / displaying first 4096)", results.num_stored);
+	}
+	else {
+		ListView_SetItemCount(hListView, results.num_stored);
+		sprintf(title, "Results (found %u)", results.num_stored);
+	}
+	SetResultsGroupBoxTitle(hDlg, title);
+
 	// There is a different format for Text and Value searches
 	state = Button_GetCheck(GetDlgItem(hDlg, IDR_SEARCH_TEXT));
 
@@ -633,15 +655,6 @@ void PopulateSearchResultList(HWND hDlg) {
 			}
 		}
 	}
-
-	// The listview only displays up to 4096 entries but it can store more
-	count = results.num_stored;
-
-	if (count > LISTVIEW_MAXSHOWN)
-		sprintf(title, "Results (found %u / displaying first 4096)", count);
-	else
-		sprintf(title, "Results (found %u)", count);
-	SetResultsGroupBoxTitle(hDlg, title);
 
 	// Force a redraw of the listview control
 	SetWindowRedraw(hListView, TRUE);
@@ -720,10 +733,6 @@ void UpdateCheatCreateList(HWND hDlg) {
 		ctr++;
 		curr = CS_GetCodeAt(&cheat_dev, ctr);
 	}
-
-	// TO DO!
-	// Wrong place to live update the values....
-	//CreateThread(NULL, 0, LiveUpdate, &hDlg, 0, NULL);
 }
 
 void Search(HWND hDlg) {
@@ -731,6 +740,8 @@ void Search(HWND hDlg) {
 	long bufferSize, count;
 	char startAddress[11], endAddress[11];
 	DWORD dwstartAddress;
+
+	StopLiveUpdate();
 
 	// Reset the results window, this depends on what was ticked.
 	InitSearchResultList(hDlg);
@@ -757,8 +768,15 @@ void Search(HWND hDlg) {
 
 		// Copy RDRAM into a buffer and byteswap, note this is still in Big Endian
 		buffer = (BYTE*)malloc(bufferSize);
+		if (buffer == NULL) {
+			DisplayError("Empty buffer?");
+			return;
+		}
 		for (count = 0; count < bufferSize - 4; count += 4) {
-			r4300i_LW_PAddr(dwstartAddress + count, (DWORD*)&word);
+			// Big Endian format
+			word.UW = *(DWORD*)(N64MEM + dwstartAddress + count);
+
+			// Convert to Little Endian
 			buffer[count] = word.UB[2];
 			buffer[count + 1] = word.UB[3];
 			buffer[count + 2] = word.UB[0];
@@ -873,10 +891,20 @@ void Search(HWND hDlg) {
 
 		CS_ClearResults(&results);
 
-		// Copy RDRAM and convert to Little Endian format
+		if (bufferSize <= 0)
+			return;
+
+		// Allocate memory for the buffer
 		buffer = (BYTE*)malloc(bufferSize);
+		if (buffer == NULL)
+			return;
+
+		// Copy RDRAM and convert to Little Endian format
 		for (count = 0; count < bufferSize - 4; count += 4) {
-			r4300i_LW_PAddr(strtoul(startAddress, NULL, 16) + count, (DWORD*)&word);
+			// Big Endian format
+			word.UW = *(DWORD*)(N64MEM + dwstartAddress + count);
+
+			// Convert to Little Endian
 			buffer[count] = word.UB[3];
 			buffer[count + 1] = word.UB[2];
 			buffer[count + 2] = word.UB[1];
@@ -912,7 +940,7 @@ void Search(HWND hDlg) {
 		free(buffer);
 	}
 
-	// Unused -- Implementation seeems unnecessary but will check with Gent
+	// Unused -- Implementation seems unnecessary but will check with Gent
 	else if (search.searchBy == searchbyjal) {
 		return;
 	}
@@ -924,6 +952,10 @@ void Search(HWND hDlg) {
 
 	// Update to include changed, unchanged, higher, lower, etc...
 	InitSearchFormatList(hDlg);
+
+	// The Live Update thread (hThread should always be NULL since Live Update is stopped before searching)
+	if (hThread == NULL)
+		hThread = CreateThread(NULL, 0, LiveUpdate, hDlg, 0, NULL);
 }
 
 LRESULT CALLBACK CheatSearch_Add_Proc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam) {
@@ -1169,7 +1201,7 @@ void UpdateCheatCodePreview(HWND hDlg) {
 	int ndxCodeType;
 	char address[7];
 	char value[5];
-	char s[STRING_MAX];
+	char s[14];	// Maximum of 8 (activator and address) + 1 (space) + 4 (16bit value) + 1 (null character)
 
 	// Nothing to update if not searching by value
 	if (search.searchBy != searchbyvalue)
@@ -1180,15 +1212,9 @@ void UpdateCheatCodePreview(HWND hDlg) {
 	Edit_GetText(GetDlgItem(hDlg, IDT_CSE_VALUE_HEX), value, 5);
 
 	if (search.searchNumBits == bits8)
-		sprintf((char*)&s,
-			"%X %02X",
-			(DWORD)strtoul(N64GSCODETYPES8BIT[ndxCodeType * 2 + 1], NULL, 16) << 24 ^ ((DWORD)strtoul(address, NULL, 16) & 0x00FFFFFF),
-			(DWORD)strtoul(value, NULL, 16));
+		sprintf(s, "%02s%06s %02s", N64GSCODETYPES8BIT[ndxCodeType * 2 + 1], address, value);
 	else
-		sprintf((char*)&s,
-			"%X %04X",
-			(DWORD)strtoul(N64GSCODETYPES16BIT[ndxCodeType * 2 + 1], NULL, 16) << 24 ^ ((DWORD)strtoul(address, NULL, 16) & 0x00FFFFFF),
-			(DWORD)strtoul(value, NULL, 16));
+		sprintf(s, "%02s%06s %04s", N64GSCODETYPES16BIT[ndxCodeType * 2 + 1], address, value);
 
 	Edit_SetText(GetDlgItem(hDlg, IDT_CSE_PREVIEW), s);
 }
@@ -1253,20 +1279,24 @@ CHTDEVENTRY* ReadProject64ChtDev() {
 }
 
 void WriteProject64ChtDev(HWND hDlg) {
-	FILE * pFile;
+	FILE* pFile;
 
 	char Identifier[100];
 	char s[16];
-	CHTDEVENTRY *ChtDev;
+	CHTDEVENTRY* ChtDev;
 
 	//ChtDev = ReadProject64ChtDev(GetCheatDevIniFileName());
-	ChtDev = (CHTDEVENTRY *)malloc(sizeof(CHTDEVENTRY));
+	ChtDev = (CHTDEVENTRY*)malloc(sizeof(CHTDEVENTRY));
+	if (ChtDev == NULL)
+		return;
 
 	RomID(Identifier, RomHeader);
 
 	ChtDev->Identifier = Identifier;
 	ChtDev->Name = RomFullName;
-	ChtDev->LastSearch = (LASTSEARCH *)malloc(sizeof(LASTSEARCH));
+	ChtDev->LastSearch = (LASTSEARCH*)malloc(sizeof(LASTSEARCH));
+	if (ChtDev->LastSearch == NULL)
+		return;
 	ChtDev->LastSearch->SearchType = "Value";
 
 	Edit_GetText(GetDlgItem(hDlg, IDT_SEARCH_VALUE), s, 9);
@@ -1276,7 +1306,7 @@ void WriteProject64ChtDev(HWND hDlg) {
 	ChtDev->LastSearch->NumBits = search.searchNumBits;
 	ChtDev->LastSearch->Results = ResultsToString();
 
-	pFile = fopen (GetCheatDevIniFileName(), "wb");
+	pFile = fopen(GetCheatDevIniFileName(), "wb");
 	if (pFile == NULL)
 		return;	// File Error
 
@@ -1328,7 +1358,7 @@ void WriteProject64ChtDev(HWND hDlg) {
 	fprintf(pFile, "</CheatDev>\r\n");
 
 	// terminate
-	fclose (pFile);
+	fclose(pFile);
 
 	free(ChtDev->LastSearch);
 	free(ChtDev);
@@ -1548,40 +1578,143 @@ void CS_UpdateSearchProc(HWND hDlg) {
 		VALUE_SEARCH.max_value = 0xFFFF;
 }
 
+// Update the values displayed on the list view
+// This is called through a custom message
+void CS_UpdateListView(HWND hDlg) {
+	HWND hListView;
+	char s[10];	// Large enough to store the address and values (The address is the limiting factor, 8 + 1 for null value characters)
+	size_t i, limit, address, counter;
+	WORD value;
+
+	// For allocating the buffer
+	char startAddress[11], endAddress[11];
+	size_t buffer_size, dwstartAddress;
+	BYTE* buffer;
+
+	MIPS_WORD word;
+
+	hListView = GetDlgItem(hDlg, IDL_SEARCH_RESULT_LIST);
+
+	limit = ListView_GetItemCount(hListView);
+
+	// Live Update currently only works when searching by value
+	// Will also do nothing if there are no entries in the list view
+	if (search.searchBy != searchbyvalue || limit <= 0)
+		return;
+
+	// Address search range (This is where our values will be updated from)
+	Edit_GetText(GetDlgItem(hDlg, IDT_ADDRESS_START), startAddress, sizeof(startAddress));
+	Edit_GetText(GetDlgItem(hDlg, IDT_ADDRESS_END), endAddress, sizeof(endAddress));
+	dwstartAddress = strtoul(startAddress, NULL, 16);
+
+	buffer_size = strtoul(endAddress, NULL, 16) - strtoul(startAddress, NULL, 16);
+	buffer = malloc(buffer_size);
+
+	if (buffer == NULL || buffer_size <= 0)
+		return;
+
+	// Copy RDRAM into a buffer and byteswap, note this is still in Big Endian
+	for (counter = 0; counter < buffer_size - 4; counter += 4) {
+		// Big Endian format
+		word.UW = *(DWORD*)(N64MEM + dwstartAddress + counter);
+
+		// Convert to Little Endian
+		buffer[counter] = word.UB[2];
+		buffer[counter + 1] = word.UB[3];
+		buffer[counter + 2] = word.UB[0];
+		buffer[counter + 3] = word.UB[1];
+	}
+	//***********************************************
+
+	// To help reduce the lag when updating many entries
+	SetWindowRedraw(hListView, FALSE);
+
+	for (i = 0; i < limit; i++) {
+
+		ListView_GetItemText(hListView, i, 0, (LPSTR)&s, sizeof(s));
+		s[sizeof(s) - 1] = '\0';
+		address = strtoul(s, NULL, 16);
+
+		// 8bit
+		if (search.searchNumBits == bits8) {
+			value = (BYTE)buffer[address - 1];
+
+			// Hex Display
+			sprintf_s(s, sizeof(s), "%02X", value);
+			ListView_SetItemText(hListView, i, 1, (LPSTR)&s);
+
+			// Dec Display
+			sprintf_s(s, sizeof(s), "%02u", value);
+			ListView_SetItemText(hListView, i, 2, (LPSTR)&s);
+		}
+		// 16bit
+		if (search.searchNumBits == bits16) {
+			value = (WORD)(buffer[address + 1] << 8) + buffer[address];
+
+			// Hex Display
+			sprintf_s(s, sizeof(s), "%04X", value);
+			ListView_SetItemText(hListView, i, 1, (LPSTR)&s);
+
+			// Dec Display
+			sprintf_s(s, sizeof(s), "%04u", value);
+			ListView_SetItemText(hListView, i, 2, (LPSTR)&s);
+		}
+	}
+
+	free(buffer);
+
+	// Force a redraw of the listview control
+	SetWindowRedraw(hListView, TRUE);
+	InvalidateRect(hListView, NULL, TRUE);
+}
+
 
 // This thread is created to scan through the address hits and continually update the value or text ListView control
 // The updated values/text will be marked in red text
 DWORD WINAPI LiveUpdate(LPVOID arg) {
 	DWORD wait_result;
-	HANDLE hList;
 
-	hList = (HANDLE)arg;
-	wait_result = 0;
+	if (hLUMutex == NULL)
+		hLUMutex = CreateMutex(NULL, FALSE, NULL);
 
-	/*
-	int count = 0;
+	wait_result = WaitForSingleObject(hLUMutex, INFINITE);
 
-	while (doingLiveUpdate) {
-		wait_result = WaitForSingleObject(gLVMutex, INFINITE);
+	if (wait_result == WAIT_OBJECT_0)
+		doingLiveUpdate = TRUE;
+	ReleaseMutex(hLUMutex);
 
-		// Got control of the mutex, that means nothing else is using the listview control
-		if (wait_result == WAIT_OBJECT_0) {
-			RomList_SortList();
-			count = ItemList.ListCount;
+	while (TRUE) {
+		Sleep(250);
+
+		wait_result = WaitForSingleObject(hLUMutex, INFINITE);
+
+		if (wait_result == WAIT_OBJECT_0 && doingLiveUpdate == TRUE) {
+			SendMessage(arg, WM_LV_UPDATE, 0, 0);
+			ReleaseMutex(hLUMutex);
 		}
-
-		// Abandoned mutex, why???
-		if (wait_result == WAIT_ABANDONED) {
-			DisplayError(GS(MSG_MEM_ALLOC_ERROR));
-			ExitThread(0);
+		else {
+			ReleaseMutex(hLUMutex);
+			return 0;
 		}
+	}
+}
 
-		if (!ReleaseMutex(gLVMutex))
-			MessageBox(NULL, "Failed to release a mutex???", "Error!", MB_OK);
+void StopLiveUpdate() {
+	DWORD wait_result;
 
-		// Be sure the mutex is released, as the displaying of items is also going to use the mutex
-		ListView_SetItemCount(hRomList, count);
-		Sleep(50);
-	}*/
-	return 0;
+	// Nothing to stop
+	if (hThread == NULL || hLUMutex == NULL)
+		return;
+
+	// Atomic access, update doingLiveUpdate to stop the thread
+	wait_result = WaitForSingleObject(hLUMutex, INFINITE);
+	if (wait_result == WAIT_OBJECT_0)
+		doingLiveUpdate = FALSE;
+	ReleaseMutex(hLUMutex);
+
+	if (hThread == NULL)
+		return;
+
+	WaitForSingleObject(hThread, INFINITE);
+	hThread = NULL;
 }
