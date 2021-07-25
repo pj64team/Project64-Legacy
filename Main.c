@@ -730,11 +730,11 @@ LRESULT CALLBACK Main_Proc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
 		}
 		break;
 	case WM_KEYDOWN:
-		if (!CPURunning) { break; }
+		if (!CPURunning || !hCPU) { break; }
 		if (WM_KeyDown) { WM_KeyDown(wParam, lParam); };
 		break;
 	case WM_KEYUP:
-		if (!CPURunning) { break; }
+		if (!CPURunning || !hCPU) { break; }
 		if (WM_KeyUp) { WM_KeyUp(wParam, lParam); };
 		break;
 		//case WM_ERASEBKGND: break;
