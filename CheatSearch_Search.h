@@ -24,7 +24,6 @@ typedef enum SEARCHTYPE {
 typedef enum SEARCHBY {
 	searchbyvalue,
 	searchbytext,
-	searchbyjal
 } SEARCHBY;
 
 // This struct is to be filled and maintained by the GUI
@@ -43,18 +42,19 @@ typedef struct CS_HITS {
 
 // The search results
 typedef struct CS_RESULTS {
-	CS_HITS *hits;			// The stored results of the scan
+	CS_HITS* hits;			// The stored results of the scan
 	DWORD allocated;		// The amount of memory allocated to results array
 	DWORD num_stored;		// The amount of search resutls stored in the results array
 } CS_RESULTS;
 
 
-void CS_InitSearch(CS_SEARCH *search);
-void CS_InitResults(CS_RESULTS *res);
-void CS_AddResult(CS_RESULTS *res, DWORD address, DWORD value);
-void CS_AddTextResult(CS_RESULTS *res, DWORD address, char *value);
-void CS_ClearResults(CS_RESULTS *res);
-void CS_AddHit(CS_RESULTS *res, CS_HITS *hit);
-CS_HITS *CS_GetHit(CS_RESULTS *res, DWORD loc);
+void CS_InitSearch(CS_SEARCH* search);
+void CS_InitResults(CS_RESULTS* res);
+void CS_ReserveSpace(CS_RESULTS* res, DWORD amount);
+void CS_AddResult(CS_RESULTS* res, DWORD address, WORD value);
+void CS_AddTextResult(CS_RESULTS* res, DWORD address, char* value);
+void CS_ClearResults(CS_RESULTS* res);
+void CS_AddHit(CS_RESULTS* res, CS_HITS* hit);
+CS_HITS* CS_GetHit(CS_RESULTS* res, DWORD loc);
 
 #endif

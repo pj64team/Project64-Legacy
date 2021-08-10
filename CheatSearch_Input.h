@@ -13,7 +13,6 @@ struct CUSTOM_PROC VALUE_HEX;
 struct CUSTOM_PROC ADDR_HEX;
 struct CUSTOM_PROC VALUE_SEARCH;
 
-LRESULT CALLBACK CheatSearch_Window_Proc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam);
 LRESULT CALLBACK CheatSearch_Add_Proc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam);
 LRESULT CALLBACK HexEditControlProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 LRESULT CALLBACK DecEditControlProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
