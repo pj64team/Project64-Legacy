@@ -738,7 +738,7 @@ void Search(HWND hDlg) {
 				for (count = dwstartAddress; count < dwendAddress; count++) {
 					memValue = Value_ReadByte(count);
 					if (search.searchType == unknown || ((BYTE)searchValue == memValue))
-						CS_AddResult(&results, count + 1, memValue);
+						CS_AddResult(&results, count, memValue);
 				}
 			}
 			else {
@@ -770,7 +770,7 @@ void Search(HWND hDlg) {
 				hit = CS_GetHit(&results, count);
 
 				if (search.searchNumBits == bits8)
-					mem_value = Value_ReadByte(hit->address - 1);
+					mem_value = Value_ReadByte(hit->address);
 				else
 					mem_value = Value_ReadWord(hit->address);
 
@@ -1743,7 +1743,7 @@ LRESULT CheatSearchResults_ReadItem(NMHDR* lParam) {
 					if (search.searchNumBits == bits16)
 						sprintf(cpy, "%04X", Value_ReadWord(curr->address));
 					else
-						sprintf(cpy, "%02X", Value_ReadByte(curr->address - 1));
+						sprintf(cpy, "%02X", Value_ReadByte(curr->address));
 				}
 				lstrcpy(lpdi->item.pszText, cpy);
 				break;
@@ -1756,7 +1756,7 @@ LRESULT CheatSearchResults_ReadItem(NMHDR* lParam) {
 					if (search.searchNumBits == bits16)
 						sprintf(cpy, "%u", Value_ReadWord(curr->address));
 					else
-						sprintf(cpy, "%u", Value_ReadByte(curr->address - 1));
+						sprintf(cpy, "%u", Value_ReadByte(curr->address));
 				}
 				lstrcpy(lpdi->item.pszText, cpy);
 				break;
