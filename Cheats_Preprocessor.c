@@ -424,7 +424,7 @@ BOOL Cheats_Verify(CHEAT *cheat) {
 // Where parenthesis notes potential repeating sections
 BOOL Cheats_LoadOption(CHEAT* cheat) {
 	char* Ext, * check;
-	unsigned int i, rep;
+	unsigned int i, rep, old_rep;
 	BOOL serial_replacement;
 
 	// Cannot replace if the code is bad
@@ -468,6 +468,8 @@ BOOL Cheats_LoadOption(CHEAT* cheat) {
 	check = cheat->replacedstring;
 	rep = 1;	// To skip past the $ in Ext
 	while (check != NULL) {
+
+		old_rep = rep;	// This will be used to ensure a replacement actually happened (If these two are equal then no replacement occured)
 
 		if (check[0] != ',')
 			return FALSE;
@@ -522,7 +524,7 @@ BOOL Cheats_LoadOption(CHEAT* cheat) {
 		}
 
 		// These checks are to be made only if a replacement occured (rep would be greater than 1)
-		if (rep != 1) {
+		if (rep != old_rep) {
 			// Decide what to do with rep, the 'counter' for the replacement string
 			if (serial_replacement) {
 				// This must contain a :
