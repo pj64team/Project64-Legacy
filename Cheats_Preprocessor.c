@@ -471,8 +471,10 @@ BOOL Cheats_LoadOption(CHEAT* cheat) {
 
 		old_rep = rep;	// This will be used to ensure a replacement actually happened (If these two are equal then no replacement occured)
 
-		if (check[0] != ',')
+		if (check[0] != ',') {
+			cheat->type = BAD_REPLACE;
 			return FALSE;
+		}
 		else
 			check++;
 
@@ -483,23 +485,29 @@ BOOL Cheats_LoadOption(CHEAT* cheat) {
 		for (i = 2; i < 8; i++) {
 			if (check[i] == '?') {
 				// Regular option does not allow for address replacement
-				if (cheat->type == O_REPLACE)
+				if (cheat->type == O_REPLACE) {
+					cheat->type = BAD_REPLACE;
 					return FALSE;
+				}
 
 				// Replacement requires Ext to contain a valid hexadecimal number
 				if (strlen(Ext) >= rep && isxdigit(Ext[rep])) {
 					check[i] = Ext[rep];
 					rep++;
 				}
-				else
+				else {
+					cheat->type = BAD_REPLACE;
 					return FALSE;
+				}
 			}
 		}
 
 		// Only for Multiple Option, a : must be present
 		if (cheat->type == MO_REPLACE) {
-			if (Ext[rep] != ':')
+			if (Ext[rep] != ':') {
+				cheat->type = BAD_REPLACE;
 				return FALSE;
+			}
 			else
 				rep++;
 		}
@@ -510,16 +518,20 @@ BOOL Cheats_LoadOption(CHEAT* cheat) {
 		for (i = 0; i < 4; i++) {
 			if (check[i] == '?') {
 				// Special Option does not allow for value replacement
-				if (cheat->type == SO_REPLACE)
+				if (cheat->type == SO_REPLACE) {
+					cheat->type = BAD_REPLACE;
 					return FALSE;
+				}
 
 				// Replacement requires Ext to contain a valid hexadecimal number
 				if (strlen(Ext) >= rep && isxdigit(Ext[rep])) {
 					check[i] = Ext[rep];
 					rep++;
 				}
-				else
+				else {
+					cheat->type = BAD_REPLACE;
 					return FALSE;
+				}
 			}
 		}
 
@@ -532,14 +544,18 @@ BOOL Cheats_LoadOption(CHEAT* cheat) {
 					rep++;
 				else {
 					// Reached the end of the replacement
-					if (Ext[rep] != ' ')
+					if (Ext[rep] != ' ') {
+						cheat->type = BAD_REPLACE;
 						return FALSE;
+					}
 				}
 			}
 			else {
 				// By this point the next character should be a space, to denote the end of the replacement
-				if (Ext[rep] != ' ')
+				if (Ext[rep] != ' ') {
+					cheat->type = BAD_REPLACE;
 					return FALSE;
+				}
 				rep = 1;
 			}
 		}
