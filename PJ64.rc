@@ -24,7 +24,11 @@ LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
 // Bitmap
 //
 
+// Updated IDB_BITMAP3 for About Dialog image - Gent (13.09.2021)
+
 IDB_BITMAP1             BITMAP                  "tri-state.bmp"
+
+IDB_BITMAP3             BITMAP                  "PJ64_3.bmp"
 
 
 /////////////////////////////////////////////////////////////////////////////
@@ -50,9 +54,10 @@ LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_UK
 // Bitmap
 //
 
-// Updated IDB_BITMAP3 for About Dialog image - Gent (13.09.2021
 
-IDB_BITMAP3             BITMAP                  "PJ64.BMP"
+// Updated Language Image
+
+IDB_BITMAP2             BITMAP                  "PJ64.BMP"
 
 #endif    // English (United Kingdom) resources
 /////////////////////////////////////////////////////////////////////////////
