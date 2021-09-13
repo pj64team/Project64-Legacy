@@ -50,6 +50,8 @@ LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_UK
 // Bitmap
 //
 
+// Updated IDB_BITMAP3 for About Dialog image - Gent (13.09.2021
+
 IDB_BITMAP3             BITMAP                  "PJ64.BMP"
 
 #endif    // English (United Kingdom) resources
