@@ -50,7 +50,7 @@ LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_UK
 // Bitmap
 //
 
-IDB_BITMAP2             BITMAP                  "PJ64.BMP"
+IDB_BITMAP3             BITMAP                  "PJ64.BMP"
 
 #endif    // English (United Kingdom) resources
 /////////////////////////////////////////////////////////////////////////////
