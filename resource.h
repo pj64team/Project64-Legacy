@@ -37,6 +37,8 @@
 #define IDB_BITMAP1                     167
 #define IDR_ABOUT_TXT                   177
 #define IDD_Debugger_MemDump            178
+#define IDB_BITMAP2                     182
+#define IDB_BITMAP3                     183
 #define IDC_CLOSE_BUTTON                1001
 #define RSP_LIST                        1004
 #define RSP_ABOUT                       1006
