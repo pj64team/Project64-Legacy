@@ -195,10 +195,12 @@ LRESULT CALLBACK AboutBoxProc (HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
 			mouse_click.x += dialog.left;
 			mouse_click.y += dialog.top;
 
-			GetWindowRect(GetDlgItem(hDlg, IDB_PJ64LOGO), &image);
+			// Disabled URL on Image Click - Gent (13-09.2021)
+			
+			// GetWindowRect(GetDlgItem(hDlg, IDB_PJ64LOGO), &image);
 
-			if (PtInRect(&image, mouse_click))
-				ShellExecute(NULL, "open", "http://project64.emulation64.com", NULL, NULL, SW_SHOWMAXIMIZED);
+			// if (PtInRect(&image, mouse_click))
+			// ShellExecute(NULL, "open", "http://project64.emulation64.com", NULL, NULL, SW_SHOWMAXIMIZED);
 
 			break;
 		}
