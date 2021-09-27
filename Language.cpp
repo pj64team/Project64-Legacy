@@ -102,6 +102,7 @@ LANG_STR DefaultString[] = {
 	{ POPUP_INFO,      "Rom Information"  },
 	{ POPUP_SETTINGS,  "Edit Game Settings"  },
 	{ POPUP_CHEATS,    "Edit Cheats"  },
+	{ POPUP_GAMEINFO,  "Game Information"},
 
 /*********************************************************************************
 * Rom Browser                                                                    *
@@ -370,6 +371,7 @@ LANG_STR DefaultString[] = {
 	{ MSG_DEL_TITLE,          "Delete Cheat"},
 	{ MSG_CHEAT_NAME_IN_USE,  "Cheat Name is already in use"},
 	{ MSG_MAX_CHEATS,         "You Have reached the Maxiumn amount of cheats for this rom"},
+	{ MSG_NO_GAME_INFORMATION,"No game information available"},
 
 };
 

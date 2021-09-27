@@ -110,6 +110,7 @@ char * GS               ( int StringID );
 #define POPUP_INFO				211
 #define POPUP_SETTINGS			212
 #define POPUP_CHEATS			213
+#define POPUP_GAMEINFO			214
 
 // Menu Descriptions
 #define MENUDES_OPEN			250
@@ -417,4 +418,4 @@ char * GS               ( int StringID );
 #define MSG_DEL_TITLE           2042
 #define MSG_CHEAT_NAME_IN_USE   2043
 #define MSG_MAX_CHEATS          2044
-
+#define MSG_NO_GAME_INFORMATION	2045

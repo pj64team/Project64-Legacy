@@ -485,6 +485,7 @@
   </ItemGroup>
   <ItemGroup>
     <Image Include="PJ64_2.bmp" />
+    <Image Include="PJ64_3.bmp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
