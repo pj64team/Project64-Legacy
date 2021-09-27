@@ -523,5 +523,8 @@
     <Image Include="PJ64_2.bmp">
       <Filter>Resource Files</Filter>
     </Image>
+    <Image Include="PJ64_3.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
   </ItemGroup>
 </Project>

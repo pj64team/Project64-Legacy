@@ -24,8 +24,6 @@ LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
 // Bitmap
 //
 
-// Updated IDB_BITMAP3 for About Dialog image - Gent (13.09.2021)
-
 IDB_BITMAP1             BITMAP                  "tri-state.bmp"
 
 IDB_BITMAP3             BITMAP                  "PJ64_3.bmp"
@@ -53,9 +51,6 @@ LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_UK
 //
 // Bitmap
 //
-
-
-// Updated Language Image
 
 IDB_BITMAP2             BITMAP                  "PJ64.BMP"
 
@@ -522,8 +517,6 @@ BEGIN
     CONTROL         "",IDC_STATIC,"Static",SS_ETCHEDHORZ,3,107,260,1
 END
 
-// Changed the About dialog with up to date information and a better design - Gent (13.09.2021)
-
 IDD_About DIALOGEX 0, 0, 555, 198
 STYLE DS_SETFONT | DS_MODALFRAME | DS_3DLOOK | DS_FIXEDSYS | DS_CENTER | WS_POPUP | WS_CAPTION | WS_SYSMENU
 EXSTYLE WS_EX_CLIENTEDGE | WS_EX_APPWINDOW
@@ -904,6 +897,7 @@ BEGIN
         MENUITEM "Choose Rom Directory...",     ID_FILE_ROMDIRECTORY
         MENUITEM SEPARATOR
         MENUITEM "Rom Information",             ID_POPUPMENU_ROMINFORMATION
+        MENUITEM "Game Information",            ID_POPUPMENU_GAMEINFORMATION
         MENUITEM SEPARATOR
         MENUITEM "Edit Game Settings",          ID_EDITSETTINGS
         MENUITEM "Edit Cheats",                 ID_EDITCHEATS

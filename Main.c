@@ -792,6 +792,40 @@ LRESULT CALLBACK Main_Proc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
 
 		}
 		break;
+		case ID_POPUPMENU_GAMEINFORMATION:
+		{
+			char String[300];
+			char Identifier[100], * read;
+			char OrigRomName[sizeof(RomName)], OrigFileName[sizeof(CurrentFileName)], OrigFullName[sizeof(RomFullName)];
+			BYTE OrigByteHeader[sizeof(RomHeader)];
+			DWORD OrigFileSize;
+
+			//Make copy of current Game values
+			strncpy(OrigRomName, RomName, sizeof(OrigRomName));
+			strncpy(OrigFileName, CurrentFileName, sizeof(OrigFileName));
+			memcpy(OrigByteHeader, RomHeader, sizeof(RomHeader));
+			strncpy(OrigFullName, RomFullName, sizeof(RomFullName));
+			strncpy(CurrentFileName, CurrentRBFileName, sizeof(CurrentFileName));
+			OrigFileSize = RomFileSize;
+
+			//Load header of selected Rom
+			LoadRomHeader();
+			RomID(Identifier, RomHeader);
+
+			Settings_Read(RDI_NAME, Identifier, "GameInformation", "", &read);
+			if (strcmp(read, "")==0)
+			{
+				MessageBox(NULL, GS(MSG_NO_GAME_INFORMATION), GS(MSG_MSGBOX_TITLE), MB_OK | MB_ICONINFORMATION | MB_SETFOREGROUND);
+			}
+			else
+			{
+				sprintf(String, "https://www.project64.emulation64.com/index.php?id=%s", read);
+				if (read) free(read);
+				ShellExecute(NULL, "open", String, NULL, NULL, SW_SHOWNORMAL);
+			}
+
+			break;
+		}
 		case ID_FILE_OPEN_ROM: OpenN64Image(); break;
 		case ID_FILE_ROM_INFO: RomInfo(); break;
 		case ID_FILE_STARTEMULATION:

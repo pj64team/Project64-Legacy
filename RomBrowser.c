@@ -678,10 +678,12 @@ void RomList_PopupMenu(LPNMHDR pnmh) {
 	MenuSetText(hPopupMenu, 2, GS(MENU_REFRESH), NULL);
 	MenuSetText(hPopupMenu, 3, GS(MENU_CHOOSE_ROM), NULL);
 	MenuSetText(hPopupMenu, 5, GS(POPUP_INFO), NULL);
-	MenuSetText(hPopupMenu, 7, GS(POPUP_SETTINGS), NULL);
-	MenuSetText(hPopupMenu, 8, GS(POPUP_CHEATS), NULL);
+	MenuSetText(hPopupMenu, 6, GS(POPUP_GAMEINFO), NULL);
+	MenuSetText(hPopupMenu, 8, GS(POPUP_SETTINGS), NULL);
+	MenuSetText(hPopupMenu, 9, GS(POPUP_CHEATS), NULL);
 
 	if (strlen(CurrentRBFileName) == 0) {
+		DeleteMenu(hPopupMenu,9,MF_BYPOSITION);
 		DeleteMenu(hPopupMenu,8,MF_BYPOSITION);
 		DeleteMenu(hPopupMenu,7,MF_BYPOSITION);
 		DeleteMenu(hPopupMenu,6,MF_BYPOSITION);
@@ -690,9 +692,9 @@ void RomList_PopupMenu(LPNMHDR pnmh) {
 		DeleteMenu(hPopupMenu,1,MF_BYPOSITION);
 		DeleteMenu(hPopupMenu,0,MF_BYPOSITION);
 	} else {
-		if (BasicMode && !RememberCheats) { DeleteMenu(hPopupMenu,8,MF_BYPOSITION); }
-		if (BasicMode) { DeleteMenu(hPopupMenu,7,MF_BYPOSITION); }
-		if (BasicMode && !RememberCheats) { DeleteMenu(hPopupMenu,6,MF_BYPOSITION); }
+		if (BasicMode && !RememberCheats) { DeleteMenu(hPopupMenu,9,MF_BYPOSITION); }
+		if (BasicMode) { DeleteMenu(hPopupMenu,8,MF_BYPOSITION); }
+		if (BasicMode && !RememberCheats) { DeleteMenu(hPopupMenu,7,MF_BYPOSITION); }
 	}
 	
 	TrackPopupMenu(hPopupMenu, 0, Mouse.x, Mouse.y, 0,hMainWindow, NULL);
