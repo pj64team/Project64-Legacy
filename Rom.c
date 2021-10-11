@@ -37,7 +37,7 @@
 #include "resource.h"
 #include "RomTools_Common.h"
 
-#define MenuLocOfUsedFiles	11
+#define MenuLocOfUsedFiles	12
 #define MenuLocOfUsedDirs	(MenuLocOfUsedFiles + 1)
 
 DWORD RomFileSize;

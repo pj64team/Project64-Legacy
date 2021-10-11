@@ -47,6 +47,7 @@ LANG_STR DefaultString[] = {
 	{ MENU_FILE,     "&File"     },
 		{ MENU_OPEN,       "&Open Rom"               },
 		{ MENU_ROM_INFO,   "Rom &Info...."           },
+		{ MENU_GAME_INFO,	"&Game Information"},
 		{ MENU_START,      "Start Emulation"         },
 		{ MENU_END,        "&End Emulation"          },
 		{ MENU_CHOOSE_ROM, "Choose Rom Directory..." },
