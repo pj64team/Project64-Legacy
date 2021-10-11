@@ -1441,6 +1441,7 @@ void GameInfo(void) {
 
 	Settings_Read(RDI_NAME, Identifier, "GameInformation", "", &read);
 	if ((strlen(read) > 0) && (read[strlen(read) - 1] == '\r')) read[strlen(read) - 1] = '\0';
+	if ((strlen(read) > 0) && (read[strlen(read) - 1] == '\n')) read[strlen(read) - 1] = '\0';
 	if ((strcmp(read, "") == 0) || strcmp(read, " ") == 0)
 	{
 		MessageBox(NULL, GS(MSG_NO_GAME_INFORMATION), GS(MSG_MSGBOX_TITLE), MB_OK | MB_ICONINFORMATION | MB_SETFOREGROUND);
