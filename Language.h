@@ -55,6 +55,7 @@ char * GS               ( int StringID );
 	#define MENU_RECENT_ROM		107
 	#define MENU_RECENT_DIR		108
 	#define MENU_EXIT			109
+    #define MENU_GAME_INFO		110
 
 #define MENU_SYSTEM				120
 	#define MENU_RESET			121
@@ -150,6 +151,7 @@ char * GS               ( int StringID );
 #define MENUDES_GAME_INFO		284
 #define MENUDES_GAME_SETTINGS	285
 #define MENUDES_GAME_CHEATS		286
+#define MENUDES_GAMEINFORMATION 287
 
 /*********************************************************************************
 * Rom Browser                                                                    *

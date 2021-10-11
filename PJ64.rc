@@ -764,8 +764,9 @@ MAIN_MENU MENU
 BEGIN
     POPUP "&File"
     BEGIN
-        MENUITEM "&Open Rom",                   ID_FILE_OPEN_ROM
-        MENUITEM "Rom &Info....",               ID_FILE_ROM_INFO, GRAYED
+        MENUITEM "&Open Rom\t Ctrl+O",          ID_FILE_OPEN_ROM
+        MENUITEM "Rom &Information\tCtrl+I",    ID_FILE_ROM_INFO, GRAYED
+        MENUITEM "&Game Information\tCtrl+G",   ID_FILE_GAMEINFORMATION, GRAYED
         MENUITEM SEPARATOR
         MENUITEM "Start Emulation\tF11",        ID_FILE_STARTEMULATION, GRAYED
         MENUITEM "&End Emulation\tF12",         ID_FILE_ENDEMULATION, GRAYED
@@ -956,6 +957,8 @@ BEGIN
     "C",            ID_OPTIONS_CHEATS,      VIRTKEY, CONTROL, NOINVERT
     "T",            ID_OPTIONS_SETTINGS,    VIRTKEY, CONTROL, NOINVERT
     "R",            ID_SYSTEM_CHEATSEARCH,  VIRTKEY, CONTROL, NOINVERT
+    "G",            ID_FILE_GAMEINFORMATION, VIRTKEY, CONTROL, NOINVERT
+    "I",            ID_FILE_ROM_INFO,       VIRTKEY, CONTROL, NOINVERT
 END
 
 IDR_ROMBROWSER ACCELERATORS
