@@ -1031,7 +1031,7 @@ void SetFpuLocations (void) {
 		}
 	} else {
 		for (count = 0; count < 32; count ++) {
-			FPRFloatLocation[count] = (void *)(&FPR[count].W[1]);
+			FPRFloatLocation[count] = (void *)(&FPR[count].W[0]);
 			//FPRDoubleLocation[count] = FPRFloatLocation[count];
 			FPRDoubleLocation[count] = (void *)(&FPR[count].DW);
 		}
