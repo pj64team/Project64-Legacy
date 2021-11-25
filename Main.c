@@ -291,6 +291,7 @@ void __cdecl DisplayErrorFatal(char* Message, ...) {
 		CPU_Paused = TRUE;
 		SendMessage(hMainWindow, WM_COMMAND, ID_OPTIONS_FULLSCREEN, 0); //ID_FILE_ENDEMULATION
 		CPU_Paused = FALSE;
+		ShowCursor(TRUE);
 	}
 
 	va_start(ap, Message);
@@ -809,6 +810,7 @@ LRESULT CALLBACK Main_Proc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
 				CPU_Paused = TRUE;
 				SendMessage(hMainWindow, WM_COMMAND, ID_OPTIONS_FULLSCREEN, 0);
 				CPU_Paused = FALSE;
+				ShowCursor(TRUE);
 			}
 			CloseCpu();
 			hMenu = GetMenu(hMainWindow);
@@ -952,6 +954,7 @@ LRESULT CALLBACK Main_Proc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
 			}
 			else {
 				CPU_Action.ChangeWindow = TRUE;
+				ShowCursor(inFullScreen); //This sets to FALSE as inFullScreen is FALSE right before fullscreen is invoked
 				CPU_Action.DoSomething = TRUE;
 			}
 			/* Moved to only occur after changing to windowed mode, see above
