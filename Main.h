@@ -117,7 +117,7 @@ extern "C" {
 
 /********** Rom Browser **************/
 #define Default_UseRB				TRUE
-#define Default_Recursion			FALSE
+#define Default_Recursion			TRUE
 #define Default_RomStatus			"Unknown"
 
 /************* Logging ***************/
