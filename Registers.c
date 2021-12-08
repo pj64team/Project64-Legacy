@@ -78,7 +78,7 @@ char *Cop0_Name[32] = {"Index","Random","EntryLo0","EntryLo1","Context","PageMas
                     "","","ECC","CacheErr","TagLo","TagHi","ErrEPC",""};
 
 DWORD PROGRAM_COUNTER, * CP0,*FPCR,*RegRDRAM,*RegSP,*RegDPC,*RegMI,*RegVI,*RegAI,*RegPI,
-	*RegRI,*RegSI, HalfLine, RegModValue, ViFieldNumber, LLBit, LLAddr;
+	*RegRI,*RegSI, HalfLine, RegModValue, ViFieldSerration, LLBit, LLAddr;
 void * FPRDoubleLocation[32], * FPRFloatLocation[32];
 MIPS_DWORD *GPR, *FPR, HI, LO;
 N64_REGISTERS Registers;
@@ -1333,10 +1333,17 @@ void UpdateCurrentHalfLine (void) {
 	}
 	//DisplayError("Timer: %X",Timers.Timer);
 	//HalfLine = (Timer / 1500) + VI_INTR_REG;
-	HalfLine = (Timers.Timer / 1500);
+	HalfLine = (Timers.Timer / RomModVIS);
 	HalfLine &= ~1;
-	HalfLine += ViFieldNumber;
+	HalfLine |= ViFieldSerration;
+	VI_V_CURRENT_LINE_REG = HalfLine;
 	//Timers.Timer -= 1500;
+}
+
+void UpdateFieldSerration(int interlaced)
+{
+	ViFieldSerration ^= 1;
+	ViFieldSerration &= interlaced;
 }
 
 /*void WriteBackRegisters (BLOCK_SECTION * Section) {

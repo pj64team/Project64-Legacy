@@ -349,7 +349,7 @@ typedef struct {
 extern char *GPR_Name[32], *GPR_NameHi[32], *GPR_NameLo[32], *FPR_Name[32], *FPR_NameHi[32],
 	*FPR_NameLo[32],*FPR_Ctrl_Name[32],*Cop0_Name[32];
 extern DWORD PROGRAM_COUNTER, * CP0,*FPCR,*RegRDRAM,*RegSP,*RegDPC,*RegMI,*RegVI,*RegAI,*RegPI,
-	*RegRI,*RegSI, HalfLine, RegModValue, ViFieldNumber, LLBit, LLAddr;
+	*RegRI,*RegSI, HalfLine, RegModValue, ViFieldSerration, LLBit, LLAddr;
 void * FPRDoubleLocation[32], * FPRFloatLocation[32];
 extern MIPS_DWORD *GPR, *FPR, HI, LO;
 extern N64_REGISTERS Registers;
@@ -385,4 +385,5 @@ void UnMap_GPR                ( BLOCK_SECTION * Section, DWORD Reg, int WriteBac
 BOOL UnMap_X86reg             ( BLOCK_SECTION * Section, DWORD x86Reg );
 void UnProtectGPR             ( BLOCK_SECTION * Section, DWORD Reg );
 void UpdateCurrentHalfLine    ( void );
+void UpdateFieldSerration     ( int interlaced );
 void WriteBackRegisters       ( BLOCK_SECTION * Section );
