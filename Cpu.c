@@ -1069,16 +1069,9 @@ void RefreshScreen (void ){
 	ChangeTimer(ViTimer,Timers.Timer + Timers.NextTimer[ViTimer] + VI_INTR_TIME);
 	EmuAI_SetVICountPerFrame(VI_INTR_TIME);
 	
-	if ((VI_STATUS_REG & 0x10) != 0) {
-		if (ViFieldNumber == 0) {
-			ViFieldNumber = 1;
-		} else {
-			ViFieldNumber = 0;
-		}
-	} else {
-		ViFieldNumber = 0;
-	}
-	
+
+	UpdateFieldSerration((VI_STATUS_REG & 0x40) != 0);
+
 	if (ShowCPUPer || Profiling) { StartTimer("CPU Idle"); }
 	if (LimitFPS) {	Timer_Process(NULL); }
 	if (ShowCPUPer || Profiling) { StopTimer(); }
@@ -1226,7 +1219,7 @@ void StartEmulation ( void ) {
 	for (count = 0; count < MaxTimers; count ++) { Timers.Active[count] = FALSE; }
 	ChangeTimer(ViTimer,5000); 
 	ChangeCompareTimer();
-	ViFieldNumber = 0;
+	ViFieldSerration = 0;
 	DMAUsed = FALSE;
 	CPU_Paused = FALSE;
 	ManualPaused = FALSE;
