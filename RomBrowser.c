@@ -195,8 +195,8 @@ void AddRomToList (char *RomLocation) {
 
 void CreateRomListControl (HWND hParent) {
 	DWORD dwStyle;
-	hRomList = CreateWindowEx( WS_EX_CLIENTEDGE,WC_LISTVIEW,NULL,
-					WS_TABSTOP | WS_VISIBLE | WS_CHILD | WS_BORDER |
+	hRomList = CreateWindow( WC_LISTVIEW,NULL,
+					WS_TABSTOP | WS_VISIBLE | WS_CHILD |
 					LVS_OWNERDATA | LVS_OWNERDRAWFIXED | LVS_SINGLESEL | LVS_REPORT,
 					0,0,0,0,hParent,(HMENU)IDC_ROMLIST,hInst,NULL);
 	
