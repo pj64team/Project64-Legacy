@@ -16,9 +16,9 @@ void GetRomManufacturer (BYTE *Manufacturer, BYTE *RomData);
 void GetRomCountry (BYTE *Country, BYTE *RomData);
 void GetRomCRC1 (DWORD *Crc1, BYTE *RomData);
 void GetRomCRC2 (DWORD *Crc2, BYTE *RomData);
-int GetRomCicChipID (BYTE *RomData);
+enum CIC_Chip GetRomCicChipID (BYTE *RomData);
 void GetRomCicChipString(BYTE* RomData, char String[], int length);
-void BuildRomCicChipString(int ID, char String[], int length, int region);
+void BuildRomCicChipString(enum CIC_CHIP ID, char String[], int length, int region);
 void RomID (char *ID, BYTE *RomData);
 void RomIDPreScanned (char *ID, DWORD *CRC1, DWORD *CRC2, BYTE *Country);
 

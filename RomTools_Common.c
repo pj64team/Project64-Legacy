@@ -165,7 +165,7 @@ void GetRomCRC2(DWORD* Crc2, BYTE* RomData) {
 	*Crc2 = *(DWORD*)(RomData + 0x14);
 }
 
-int GetRomCicChipID(BYTE* RomData) {
+enum CIC_Chip GetRomCicChipID(BYTE* RomData) {
 	return GetCicChipID(RomData);
 }
 
@@ -173,22 +173,38 @@ void GetRomCicChipString(BYTE* RomData, char String[], int length) {
 	BuildRomCicChipString(GetRomCicChipID(RomData), String, length, GetRomRegion(RomData));
 }
 
-void BuildRomCicChipString(int ID, char String[], int length, int region) {
-	if (ID < 0) {
-		snprintf(&String[0], length, "Unknown");
-	}
-	else {
-		// PAL region is 71XX chip, NTSC is 61XX chip
-		// PAL region's 01 is NTSC's region 02, same for PAL's 02 being NTSC's 01
-		if (region == PAL_Region) {
-			if (ID == 2)
-				ID = 1;
-			else if (ID == 1)
-				ID = 2;
-			snprintf(&String[0], length, "CIC-NUS-71%02X", ID);
-		}
-		else
-			snprintf(&String[0], length, "CIC-NUS-61%02X", ID);
+void BuildRomCicChipString(enum CIC_CHIP ID, char String[], int length, int region) {
+	switch (ID) {
+		case CIC_NUS_6101:
+			region == PAL_Region ? strcpy(&String[0], "CIC-NUS-7102") : strcpy(&String[0], "CIC-NUS-6101");
+			break;
+		case CIC_NUS_6102:
+			region == PAL_Region ? strcpy(&String[0], "CIC-NUS-7101") : strcpy(&String[0], "CIC-NUS-6102");
+			break;
+		case CIC_NUS_6103:
+			region == PAL_Region ? strcpy(&String[0], "CIC-NUS-7103") : strcpy(&String[0], "CIC-NUS-6103");
+			break;
+		case CIC_NUS_6105:
+			region == PAL_Region ? strcpy(&String[0], "CIC-NUS-7105") : strcpy(&String[0], "CIC-NUS-6105");
+			break;
+		case CIC_NUS_6106:
+			region == PAL_Region ? strcpy(&String[0], "CIC-NUS-7106") : strcpy(&String[0], "CIC-NUS-6106");
+			break;
+		case CIC_NUS_5167:
+			strcpy(&String[0], "CIC-NUS-5167");
+			break;
+		case CIC_NUS_8303:
+			strcpy(&String[0], "CIC-NUS-8303");
+			break;
+		case CIC_NUS_DDUS:
+			strcpy(&String[0], "CIC-NUS-DDUS");
+			break;
+		case CIC_NUS_8401:
+			strcpy(&String[0], "CIC-NUS-8401");
+			break;
+		default:
+			snprintf(&String[0], length, "Unknown");
+			break;
 	}
 }
 

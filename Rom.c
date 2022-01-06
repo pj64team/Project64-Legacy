@@ -927,7 +927,7 @@ DWORD WINAPI OpenChosenFile(LPVOID lpArgs) {
 	*(DWORD*)&RomHeader[0x14] = *(DWORD*)&ROM[0x14];
 
 	// Bypass hardware checks on ALECK64
-	if (GetCicChipID(ROM) == 10) {
+	if (GetCicChipID(ROM) == CIC_NUS_8401) {
 		ROM[0x67c] = 0;
 		ROM[0x67d] = 0;
 		ROM[0x67e] = 0;
@@ -1151,19 +1151,22 @@ void SetRomDirectory(char* Directory) {
 }
 
 void RecalculateCRCs(BYTE* data, DWORD data_size) {
-	int bootcode, i;
+	int i;
 	unsigned int seed, crc[2];
 	unsigned int t1, t2, t3, t4, t5, t6, r, d, j;
+	enum CIC_Chip chip;
 
-	switch ((bootcode = 6100 + GetCicChipID(data))) {
-	case 6101:
-	case 6102:
+	chip = GetCicChipID(data);
+
+	switch (chip) {
+	case CIC_NUS_6101:
+	case CIC_NUS_6102:
 		seed = 0xF8CA4DDC; break;
-	case 6103:
+	case CIC_NUS_6103:
 		seed = 0xA3886759; break;
-	case 6105:
+	case CIC_NUS_6105:
 		seed = 0xDF26F436; break;
-	case 6106:
+	case CIC_NUS_6106:
 		seed = 0x1FEA617A; break;
 	default:
 		return;
@@ -1187,7 +1190,7 @@ void RecalculateCRCs(BYTE* data, DWORD data_size) {
 		else
 			t2 ^= t6 ^ d;
 
-		if (bootcode == 6105) {
+		if (chip == CIC_NUS_6105) {
 			j = 0x40 + 0x0710 + (i & 0xFF);
 			t1 += (data[j + 3] << 24 | data[j + 2] << 16 | data[j + 1] << 8 | data[j]) ^ d;
 		}
@@ -1195,11 +1198,11 @@ void RecalculateCRCs(BYTE* data, DWORD data_size) {
 			t1 += t5 ^ d;
 	}
 
-	if (bootcode == 6103) {
+	if (chip == CIC_NUS_6103) {
 		crc[0] = (t6 ^ t4) + t3;
 		crc[1] = (t5 ^ t2) + t1;
 	}
-	else if (bootcode == 6106) {
+	else if (chip == CIC_NUS_6106) {
 		crc[0] = (t6 * t4) + t3;
 		crc[1] = (t5 * t2) + t1;
 	}
