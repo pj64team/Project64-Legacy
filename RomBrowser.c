@@ -62,26 +62,26 @@
 #define COLOR_HIGHLIGHTED	2
 
 typedef struct {
-	char     szFullFileName[MAX_PATH+1];
-	char     Status[60];
-	char     FileName[200];
-	char     InternalName[22];
-	char     GoodName[200];
-	char     CartID[3];
-	char     PluginNotes[250];
-	char     CoreNotes[250];
-	char     UserNotes[250];
-	char     Developer[30];
-	char     ReleaseDate[30];
-	char     Genre[15];
-	int		 Players;
-	int      RomSize;
-	BYTE     Manufacturer;
-	BYTE     Country;
-	DWORD    CRC1;
-	DWORD    CRC2;
-	int      CicChip;
-	char     ForceFeedback[15];
+	char szFullFileName[MAX_PATH+1];
+	char Status[60];
+	char FileName[200];
+	char InternalName[22];
+	char GoodName[200];
+	char CartID[3];
+	char PluginNotes[250];
+	char CoreNotes[250];
+	char UserNotes[250];
+	char Developer[30];
+	char ReleaseDate[30];
+	char Genre[15];
+	int	Players;
+	int  RomSize;
+	BYTE Manufacturer;
+	BYTE Country;
+	DWORD CRC1;
+	DWORD CRC2;
+	enum CHIP_ID CicChip;
+	char ForceFeedback[15];
 } ROM_INFO;
 
 typedef struct {

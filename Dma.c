@@ -33,13 +33,15 @@ int DMAUsed;
 
 void FirstDMA (void) {
 	switch (GetCicChipID(ROM)) {
-	case 1: *(DWORD *)&N64MEM[0x318] = RdramSize; break;
-	case 2: *(DWORD *)&N64MEM[0x318] = RdramSize; break;
-	case 3: *(DWORD *)&N64MEM[0x318] = RdramSize; break;
-	case 5: *(DWORD *)&N64MEM[0x3F0] = RdramSize; break;
-	case 6: *(DWORD *)&N64MEM[0x318] = RdramSize; break;
-	case 9: *(DWORD *)&N64MEM[0x318] = RdramSize; break;
-	case 10: *(DWORD *)&N64MEM[0x318] = RdramSize; break;
+	case CIC_NUS_6101: *(DWORD *)&N64MEM[0x318] = RdramSize; break;
+	case CIC_NUS_6102: *(DWORD *)&N64MEM[0x318] = RdramSize; break;
+	case CIC_NUS_6103: *(DWORD *)&N64MEM[0x318] = RdramSize; break;
+	case CIC_NUS_6105: *(DWORD *)&N64MEM[0x3F0] = RdramSize; break;
+	case CIC_NUS_6106: *(DWORD *)&N64MEM[0x318] = RdramSize; break;
+	case CIC_NUS_5167: *(DWORD *)&N64MEM[0x318] = RdramSize; break;
+	case CIC_NUS_8303: *(DWORD *)&N64MEM[0x318] = RdramSize; break;
+	case CIC_NUS_8401: *(DWORD *)&N64MEM[0x318] = RdramSize; break;
+	case CIC_NUS_DDUS: *(DWORD *)&N64MEM[0x318] = RdramSize; break;
 	default: 
 		*(DWORD *)&N64MEM[0x318] = RdramSize;
 		if (ShowDebugMessages)

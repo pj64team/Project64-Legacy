@@ -315,7 +315,7 @@ int FreeX86Reg (BLOCK_SECTION * Section) {
 	return -1;
 }
 
-void InitalizeR4300iRegisters (int UsePif, int Country, int CIC_Chip) {
+void InitalizeR4300iRegisters (int UsePif, int Country, enum CIC_CHIP CIC_Chip) {
 	memset(CP0,0,sizeof(Registers.CP0));	
 	memset(FPCR,0,sizeof(Registers.FPCR));	
 	memset(RegRDRAM,0,sizeof(Registers.RDRAM));	
@@ -333,7 +333,7 @@ void InitalizeR4300iRegisters (int UsePif, int Country, int CIC_Chip) {
 	if (CIC_Chip < 0) {
 		if (ShowDebugMessages)
 			DisplayError(GS(MSG_UNKNOWN_CIC_CHIP));
-		CIC_Chip = 2;
+		CIC_Chip = CIC_NUS_6102;
 	}
 	LO.DW                 = 0x0;
 	HI.DW                 = 0x0;
@@ -354,31 +354,31 @@ void InitalizeR4300iRegisters (int UsePif, int Country, int CIC_Chip) {
 	if (UsePif) {
 		PROGRAM_COUNTER = 0xBFC00000;			
 		switch (CIC_Chip) {
-		case 1:
+		case CIC_NUS_6101:
 			PIF_Ram[36] = 0x00;
 			PIF_Ram[37] = 0x06;
 			PIF_Ram[38] = 0x3F;
 			PIF_Ram[39] = 0x3F;
 			break;
-		case 2:
+		case CIC_NUS_6102:
 			PIF_Ram[36] = 0x00;
 			PIF_Ram[37] = 0x02;
 			PIF_Ram[38] = 0x3F;
 			PIF_Ram[39] = 0x3F;
 			break;
-		case 3:			
+		case CIC_NUS_6103:			
 			PIF_Ram[36] = 0x00;
 			PIF_Ram[37] = 0x02;
 			PIF_Ram[38] = 0x78;
 			PIF_Ram[39] = 0x3F;
 			break;
-		case 5:			
+		case CIC_NUS_6105:			
 			PIF_Ram[36] = 0x00;
 			PIF_Ram[37] = 0x02;
 			PIF_Ram[38] = 0x91;
 			PIF_Ram[39] = 0x3F;
 			break;
-		case 6:			
+		case CIC_NUS_6106:			
 			PIF_Ram[36] = 0x00;
 			PIF_Ram[37] = 0x02;
 			PIF_Ram[38] = 0x85;
@@ -410,23 +410,23 @@ void InitalizeR4300iRegisters (int UsePif, int Country, int CIC_Chip) {
 		switch (GetRomRegion(ROM)) {
 		case PAL_Region:
 			switch (CIC_Chip) {
-			case 2:
+			case CIC_NUS_6102:
 				GPR[5].DW=0xFFFFFFFFC0F1D859;
 				GPR[14].DW=0x000000002DE108EA;
 				GPR[24].DW=0x0000000000000000;
 				break;
-			case 3:
+			case CIC_NUS_6103:
 				GPR[5].DW=0xFFFFFFFFD4646273;
 				GPR[14].DW=0x000000001AF99984;
 				GPR[24].DW=0x0000000000000000;
 				break;
-			case 5:
+			case CIC_NUS_6105:
 				*(DWORD *)&IMEM[0x04] = 0xBDA807FC;
 				GPR[5].DW=0xFFFFFFFFDECAAAD1;
 				GPR[14].DW=0x000000000CF85C13;
 				GPR[24].DW=0x0000000000000002;
 				break;
-			case 6:
+			case CIC_NUS_6106:
 				GPR[5].DW=0xFFFFFFFFB04DC903;
 				GPR[14].DW=0x000000001AF99984;
 				GPR[24].DW=0x0000000000000002;
@@ -440,19 +440,19 @@ void InitalizeR4300iRegisters (int UsePif, int Country, int CIC_Chip) {
 		case NTSC_Region:
 		default:
 			switch (CIC_Chip) {
-			case 2:
+			case CIC_NUS_6102:
 				GPR[5].DW=0xFFFFFFFFC95973D5;
 				GPR[14].DW=0x000000002449A366;
 				break;
-			case 3:
+			case CIC_NUS_6103:
 				GPR[5].DW=0xFFFFFFFF95315A28;
 				GPR[14].DW=0x000000005BACA1DF;
 				break;
-			case 5:
+			case CIC_NUS_6105:
 				*(DWORD *)&IMEM[0x04] = 0x8DA807FC;
 				GPR[5].DW=0x000000005493FB9A;
 				GPR[14].DW=0xFFFFFFFFC2C20384;
-			case 6:
+			case CIC_NUS_6106:
 				GPR[5].DW=0xFFFFFFFFE067221F;
 				GPR[14].DW=0x000000005CD2B70F;
 				break;
@@ -464,10 +464,10 @@ void InitalizeR4300iRegisters (int UsePif, int Country, int CIC_Chip) {
 		}
 
 		switch (CIC_Chip) {
-		case 1: 
+		case CIC_NUS_6101:
 			GPR[22].DW=0x000000000000003F; 
 			break;
-		case 2: 
+		case CIC_NUS_6102:
 			GPR[1].DW=0x0000000000000001;
 			GPR[2].DW=0x000000000EBDA536;
 			GPR[3].DW=0x000000000EBDA536;
@@ -478,7 +478,7 @@ void InitalizeR4300iRegisters (int UsePif, int Country, int CIC_Chip) {
 			GPR[22].DW=0x000000000000003F; 
 			GPR[25].DW=0xFFFFFFFF9DEBB54F;
 			break;
-		case 3: 
+		case CIC_NUS_6103:
 			GPR[1].DW=0x0000000000000001;
 			GPR[2].DW=0x0000000049A5EE96;
 			GPR[3].DW=0x0000000049A5EE96;
@@ -489,7 +489,7 @@ void InitalizeR4300iRegisters (int UsePif, int Country, int CIC_Chip) {
 			GPR[22].DW=0x0000000000000078; 
 			GPR[25].DW=0xFFFFFFFF825B21C9;
 			break;
-		case 5: 
+		case CIC_NUS_6105:
 			*(DWORD *)&IMEM[0x00] = 0x3C0DBFC0;
 			*(DWORD *)&IMEM[0x08] = 0x25AD07C0;
 			*(DWORD *)&IMEM[0x0C] = 0x31080080;
@@ -507,7 +507,7 @@ void InitalizeR4300iRegisters (int UsePif, int Country, int CIC_Chip) {
 			GPR[22].DW=0x0000000000000091; 
 			GPR[25].DW=0xFFFFFFFFCDCE565F;
 			break;
-		case 6: 
+		case CIC_NUS_6106:
 			GPR[1].DW=0x0000000000000000;
 			GPR[2].DW=0xFFFFFFFFA95930A4;
 			GPR[3].DW=0xFFFFFFFFA95930A4;
@@ -518,7 +518,14 @@ void InitalizeR4300iRegisters (int UsePif, int Country, int CIC_Chip) {
 			GPR[22].DW=0x0000000000000085; 
 			GPR[25].DW=0x00000000465E3F72;
 			break;
-		case 9: 
+		case CIC_NUS_8303:
+		case CIC_NUS_5167:
+			GPR[22].DW = 0x00000000000000DD;
+			break;
+		case CIC_NUS_DDUS:
+			GPR[22].DW = 0x00000000000000DE;
+			break;
+		case CIC_NUS_8401:
 			GPR[1].DW=0x0000000000000001;
 			GPR[2].DW=0x000000000EBDA536;
 			GPR[3].DW=0x000000000EBDA536;

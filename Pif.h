@@ -24,8 +24,22 @@
  *
  */
 extern BYTE PifRom[0x7C0], *PIF_Ram;
+extern enum CIC_Chip
+{
+	CIC_UNKNOWN,	// Default
+	CIC_NUS_6101,	// Also 7102
+	CIC_NUS_6102,	// Also 7101
+	CIC_NUS_6103,	// Also 7103
+	CIC_NUS_6104,	// Unused
+	CIC_NUS_6105,	// Also 7105
+	CIC_NUS_6106,	// Also 7106
+	CIC_NUS_5167,	// N64DD IPL
+	CIC_NUS_8303,	// N64DD IPL TOOL
+	CIC_NUS_DDUS,	// N64DD IPL US (alternative)
+	CIC_NUS_8401	// Aleck64
+} CIC_Chip;
 
-int  GetCicChipID ( BYTE *RomData );
+enum CIC_Chip GetCicChipID ( BYTE *RomData );
 int  LoadPifRom   ( BYTE country );
 void PifRamWrite  ( void );
 void PifRamRead   ( void );

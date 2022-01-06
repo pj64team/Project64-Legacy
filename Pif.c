@@ -38,29 +38,33 @@ void ReadControllerCommand(int Control, BYTE* Command);
 
 BYTE PifRom[0x7C0], * PIF_Ram;
 
-int GetCicChipID(BYTE* RomData) {
+enum CIC_Chip GetCicChipID(BYTE* RomData) {
 	_int64 CRC = 0;
 	int count;
 
 	for (count = 0x40; count < 0x1000; count += 4) {
 		CRC += *(DWORD*)(RomData + count);
 	}
+
 	switch (CRC) {
-	case 0x000000D0027FDF31: return 1;
-	case 0x000000CFFB631223: return 1;
-	case 0x000000C34B2826B8: return 1;	// iQue 
-	case 0x0000002F35CF0DE9: return 1;	// iQue (Paper Mario)
-	case 0x000000C92ADFE50A: return 1;	// iQue (Sin and Punishment)
-	case 0x000000D057C85244: return 2;
-	case 0x000000D6497E414B: return 3;
-	case 0x0000011A49F60E96: return 5;
-	case 0x000000D6D5BE5580: return 6;
-	case 0x000000D2E53EF008: return 9;	// Added to support N64DD IPLROM (J)
+	case 0x000000D0027FDF31: return CIC_NUS_6101;
+	case 0x000000CFFB631223: return CIC_NUS_6101;
+	case 0x000000C34B2826B8: return CIC_NUS_6101;	// iQue 
+	case 0x0000002F35CF0DE9: return CIC_NUS_6101;	// iQue (Paper Mario)
+	case 0x000000C92ADFE50A: return CIC_NUS_6101;	// iQue (Sin and Punishment)
+	case 0x000000D057C85244: return CIC_NUS_6102;
+	case 0x000000D6497E414B: return CIC_NUS_6103;
+	case 0x0000011A49F60E96: return CIC_NUS_6105;
+	case 0x000000D6D5BE5580: return CIC_NUS_6106;
+	case 0x000001053BC19870: return CIC_NUS_5167;
+	case 0x000000D2E53EF008: return CIC_NUS_8303;	// Added to support N64DD IPLROM (J)
+	case 0x000000D2E53EF39F: return CIC_NUS_8303;
+	case 0x000000D2E53E5DDA: return CIC_NUS_DDUS;
 	default:
 		// Aleck64, they all seem to start with A7 or A8 past 32 bits
 		if (CRC >> 32 == 0xA7 || CRC >> 32 == 0xA8)
-			return 10;
-		return -1;
+			return CIC_NUS_8401;
+		return CIC_UNKNOWN;
 	}
 }
 
