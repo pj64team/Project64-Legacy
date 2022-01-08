@@ -203,8 +203,13 @@ int DelaySlotEffectsCompare (DWORD PC, DWORD Reg1, DWORD Reg2) {
 	OPCODE Command;
 
 	if (!r4300i_LW_VAddr(PC + 4, &Command.Hex)) {
-		DisplayError("Failed to load word 2");
-		ExitThread(0);
+		if (ShowDebugMessages) {
+			char msg[100];
+			sprintf(msg, "%s\r\nPC: %08X", "Failed to load word 2" , PC + 4);
+			DisplayError(msg);
+		}
+		Command.Hex = 0x0;
+//		ExitThread(0);
 //		return TRUE;
 	}
 
