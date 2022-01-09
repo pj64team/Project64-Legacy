@@ -523,6 +523,9 @@ int InitalizeApplication(HINSTANCE hInstance) {
 	//Language selection if none found
 	LoadLanguage();
 
+	// Moved before Allocate_Memory call because the Sync CPU allocation of memory relies on a setting
+	LoadSettings();
+
 	if (!Allocate_Memory()) {
 		DisplayError(GS(MSG_MEM_ALLOC_ERROR));
 		return FALSE;
@@ -531,7 +534,6 @@ int InitalizeApplication(HINSTANCE hInstance) {
 	hPauseMutex = CreateMutex(NULL, FALSE, NULL);
 
 	InitiliazeCPUFlags();
-	LoadSettings();
 	SetupRegisters(&Registers);
 	QueryPerformanceFrequency(&Frequency);
 	if (HaveDebugger) {
