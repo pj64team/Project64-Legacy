@@ -1492,6 +1492,12 @@ int r4300i_LW_NonMemory ( DWORD PAddr, DWORD * Value ) {
 		return TRUE;
 	}	
 #endif
+
+	// N64DD hacked cartridges read from here and take a long time to boot if this isn't handled
+	if (PAddr == 0x18000200) {
+		Value = 0x0;
+		return TRUE;
+	}
 	
 	if (PAddr < 0x03F00000) {
 		if (PAddr < RdramSize)
