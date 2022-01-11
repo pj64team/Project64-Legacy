@@ -4840,14 +4840,15 @@ void Compile_R4300i_COP0_MT (BLOCK_SECTION * Section) {
 		}
 		break;
 	case 13: //cause
-		if (IsConst(Opcode.BRANCH.rt)) {
-			AndConstToVariable(0xFFFFCFF,&CP0[Opcode.REG.rd], Cop0_Name[Opcode.REG.rd]);
-			
-			if (ShowDebugMessages && (MipsRegLo(Opcode.BRANCH.rt) & 0x300) != 0 ){ DisplayError("Set IP0 or IP1"); }
+		AndConstToVariable(0xFFFFCFF, &CP0[Opcode.REG.rd], Cop0_Name[Opcode.REG.rd]);
 
-		} else {
+		if (IsConst(Opcode.BRANCH.rt)) {			
+			if (ShowDebugMessages && (MipsRegLo(Opcode.BRANCH.rt) & 0x300) != 0 ) {
+				DisplayError("Set IP0 or IP1"); 
+			}
+		} /*else {
 			Compile_R4300i_UnknownOpcode(Section);
-		}
+		}*/
 		Pushad();
 		Call_Direct(CheckInterrupts,"CheckInterrupts");
 		Popad();
