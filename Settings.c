@@ -1012,6 +1012,9 @@ BOOL CALLBACK RomSettingsProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam
 			int junklen;
 
 			if (strlen(RomFullName) == 0) { break; }
+
+			LoadRomRecalcCRCs(CurrentFileName, (DWORD*)&RomHeader[0x10], (DWORD*)&RomHeader[0x14]);
+
 			RomID(Identifier, RomHeader);
 
 			// Do not write to file if there is no note
