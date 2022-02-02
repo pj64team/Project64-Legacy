@@ -774,11 +774,18 @@ void __cdecl StartInterpreterCPU (void ) {
 				//Value2 = Value;
 				if (CPU_Action.Stepping) {
 					do {
+						if (CPU_Action.Skipping == TRUE) {
+							CPU_Action.Skipping = FALSE;
+							PROGRAM_COUNTER += 4;
+							continue;
+						}
 						SetR4300iCommandViewto(PROGRAM_COUNTER);
 						UpdateCurrentR4300iRegisterPanel();
 						Refresh_Memory();
+
 						WaitForSingleObject(CPU_Action.hStepping, INFINITE);
-						if (CPU_Action.Stepping) { ExecuteInterpreterOpCode(); }
+						if (CPU_Action.Stepping)
+							ExecuteInterpreterOpCode();
 					} while (CPU_Action.Stepping);
 				}
 			}

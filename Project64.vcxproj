@@ -354,7 +354,7 @@
     <ClCompile Include="r4300i Memory.c" />
     <ClCompile Include="r4300i Registers.c" />
     <ClCompile Include="Real-Time Clock.c" />
-    <ClCompile Include="RomTools_Common.c" />
+    <ClCompile Include="RomTools_Common.cpp" />
     <ClCompile Include="Settings Api.c" />
     <ClCompile Include="TLB Display.c" />
     <ClCompile Include="Cheat.c" />
@@ -362,7 +362,7 @@
     <ClCompile Include="main2.cpp" />
     <ClCompile Include="MemTest.cpp" />
     <ClCompile Include="Profiling.c" />
-    <ClCompile Include="RomBrowser.c" />
+    <ClCompile Include="RomBrowser.cpp" />
     <ClCompile Include="Settings.c" />
     <ClCompile Include="Win32Timer.c" />
     <ClCompile Include="Eeprom.c" />
@@ -458,6 +458,7 @@
     <ClInclude Include="X86.h" />
     <ClInclude Include="Language.h" />
     <ClInclude Include="MemTest.h" />
+    <ClInclude Include="xxhash64.h" />
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="left.ico" />

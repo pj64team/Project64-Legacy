@@ -3,6 +3,9 @@
 #include "RomTools_Common.h"
 #include "Settings Api.h"
 #include "Pif.h"
+#include "xxhash64.h"
+#include "FileHandler.h"
+#include <string>
 
 void CountryCodeToString(char string[], BYTE Country, int length) {
 	switch (Country) {
@@ -110,24 +113,19 @@ void GetRomName(char* Name, BYTE* RomData) {
 }
 
 void GetRomFullName(char* FullName, BYTE* RomData, char* FullPath) {
-	char* String = NULL, Identifier[100], InternalName[25], ShortCountryCode[25];
+	char Identifier[100], InternalName[25], ShortCountryCode[25];
 	BYTE Country;
+	std::string junk;
 
 	RomID(Identifier, RomData);
 
-	Settings_Read(RDS_NAME, Identifier, "Name", STR_EMPTY, &String);
+	junk = ReadStr(RDS_NAME, Identifier, "Name", STR_EMPTY);
 
-	// The name entry is not empty, use it
-	if (String != NULL && strlen(String) != 0) {	// TO DO! Fix this up later, it was hacked so Gent could have a build to play with
-													// Basically Change MAX_PATH to a passed variable or something, not just use MAX_PATH and assume things
-		strncpy(FullName, String, MAX_PATH);
-		free(String);
+	// We have an existing entry in the RDS, use that as the full name
+	if (!junk.empty()) {
+		strncpy(FullName, junk.c_str(), junk.length());
 		return;
 	}
-
-	// Empty string, be sure to free memory
-	if (String != NULL && strlen(String) == 0)
-		free(String);
 
 	// Generate a Name using the Internal Name and the Country Code
 	GetRomName(InternalName, RomData);
@@ -165,7 +163,7 @@ void GetRomCRC2(DWORD* Crc2, BYTE* RomData) {
 	*Crc2 = *(DWORD*)(RomData + 0x14);
 }
 
-enum CIC_Chip GetRomCicChipID(BYTE* RomData) {
+enum CIC_CHIP GetRomCicChipID(BYTE* RomData) {
 	return GetCicChipID(RomData);
 }
 
@@ -221,4 +219,13 @@ void RomID(char* ID, BYTE* RomData) {
 
 void RomIDPreScanned(char* ID, DWORD* CRC1, DWORD* CRC2, BYTE* Country) {
 	sprintf(ID, "%08X-%08X-C:%02X", *CRC1, *CRC2, *Country);
+}
+
+void RomHASH(char* ID, BYTE* FullRom, size_t rom_size) {
+	uint64_t hash = XXHash64::hash(FullRom, rom_size, 64);
+	sprintf(ID, "%llu", hash);
+}
+
+void RomCRC32(char* ID, BYTE* FullRom, size_t rom_size) {
+
 }

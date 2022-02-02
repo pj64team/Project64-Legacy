@@ -53,6 +53,7 @@ typedef struct {
 	BOOL RestoreState;
 	BOOL DoInterrupt;
 	BOOL Stepping;
+	BOOL Skipping;
 } CPU_ACTION;
 
 
@@ -88,6 +89,7 @@ void RefreshScreen      ( void );
 void RunRsp             ( void );
 void SetCoreToRunning   ( void );
 void SetCoreToStepping  ( void );
+void SetCoreToSkipping  ( void );
 void StartEmulation     ( void );
 void StepOpcode         ( void );
 void TimerDone          ( void );
@@ -127,7 +129,13 @@ extern SYSTEM_TIMERS Timers;
 extern HANDLE hPauseMutex;
 extern OPCODE Opcode;
 extern HANDLE hCPU;
-extern BOOL inFullScreen, CPURunning, SPHack;
+#ifdef __cplusplus
+extern "C" {
+#endif
+	extern BOOL inFullScreen, CPURunning, SPHack;
+#ifdef __cplusplus
+}
+#endif
 extern int DlistWaitFor, VIWaitMult;
 
 #ifdef Interpreter_StackTest

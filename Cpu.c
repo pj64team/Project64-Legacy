@@ -1187,6 +1187,11 @@ void SetCoreToStepping ( void ) {
 	CPU_Action.Stepping = TRUE;
 }
 
+void SetCoreToSkipping(void) {
+	CPU_Action.Stepping = TRUE;
+	CPU_Action.Skipping = TRUE;
+}
+
 void StartEmulation ( void ) {
 	DWORD ThreadID, count;
 	CloseCpu();

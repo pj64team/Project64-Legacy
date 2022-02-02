@@ -367,11 +367,17 @@ void (__cdecl *WM_KeyUp)         ( WPARAM wParam, LPARAM lParam );
 void (__cdecl *RumbleCommand)	 ( int Control, BOOL bRumble );
 
 /********** Plugin: Functions *********************/
+#ifdef __cplusplus
+extern "C" {
+#endif
 void PluginConfiguration ( HWND hWnd );
 void SetupPlugins        ( HWND hWnd );
 void SetupPluginScreen   ( HWND hDlg );
 void ShutdownPlugins     ( void );
 void ResetAudio(HWND hWnd);
+#ifdef __cplusplus
+}
+#endif
 
 /********** External Global Variables ***************/
 #define MaxDlls	100

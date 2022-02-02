@@ -275,7 +275,7 @@ void Enable_R4300i_Commands_Window ( void ) {
 	EnableWindow(hScrlBar,         TRUE);
 	EnableWindow(hGoButton,        TRUE);
 	EnableWindow(hStepButton,      TRUE);
-	EnableWindow(hSkipButton,      FALSE);
+	EnableWindow(hSkipButton,      TRUE);
 	EnableWindow(hR4300iRegisters, TRUE);
 	EnableWindow(hRSPRegisters,    FALSE);
 	EnableWindow(hRSPDebugger,     FALSE);
@@ -428,10 +428,11 @@ LRESULT CALLBACK R4300i_Commands_Proc (HWND hDlg, UINT uMsg, WPARAM wParam, LPAR
 		case IDC_STEP_BUTTON:			
 			StepOpcode();
 			break;
-		/*case IDC_SKIP_BUTTON:
-			SkipNextR4300iOpCode = TRUE;
-			WaitingForrsPStep   = FALSE;
-			break;*/
+		case IDC_SKIP_BUTTON:
+			SetCoreToSkipping();
+			//SkipNextR4300iOpCode = TRUE;
+			//WaitingForrsPStep   = FALSE;
+			break;
 		case IDC_BP_BUTTON:	Enter_BPoint_Window(); break;
 		case IDC_R4300I_REGISTERS_BUTTON: Enter_R4300i_Register_Window(); break;
 		case IDC_MEMORY_BUTTON: Enter_Memory_Window(); break;
