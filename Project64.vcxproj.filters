@@ -108,7 +108,7 @@
     <ClCompile Include="Profiling.c">
       <Filter>Source Files\General Source</Filter>
     </ClCompile>
-    <ClCompile Include="RomBrowser.c">
+    <ClCompile Include="RomBrowser.cpp">
       <Filter>Source Files\General Source</Filter>
     </ClCompile>
     <ClCompile Include="Settings.c">
@@ -186,7 +186,7 @@
     <ClCompile Include="n64_cic_nus_6105.c">
       <Filter>Source Files\CPU Source</Filter>
     </ClCompile>
-    <ClCompile Include="RomTools_Common.c">
+    <ClCompile Include="RomTools_Common.cpp">
       <Filter>Source Files\General Source</Filter>
     </ClCompile>
     <ClCompile Include="Real-Time Clock.c">
@@ -483,6 +483,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Cheats_Preprocessor.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="xxhash64.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

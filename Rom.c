@@ -127,8 +127,8 @@ void ByteSwapRom(BYTE* Rom, DWORD RomLen) {
 		}
 		break;
 	case 0x80371240: break;
-	default:
-		DisplayError(GS(MSG_UNKNOWN_FILE_FORMAT));
+	//default:
+		//DisplayError(GS(MSG_UNKNOWN_FILE_FORMAT));
 	}
 }
 
@@ -1154,7 +1154,7 @@ void RecalculateCRCs(BYTE* data, DWORD data_size) {
 	int i;
 	unsigned int seed, crc[2];
 	unsigned int t1, t2, t3, t4, t5, t6, r, d, j;
-	enum CIC_Chip chip;
+	enum CIC_CHIP chip;
 
 	chip = GetCicChipID(data);
 
@@ -1382,4 +1382,136 @@ void LoadRomRecalcCRCs(char* FileName, BYTE* CRC1, BYTE* CRC2) {
 	// Make sure to free allocated space
 	if (data != NULL)
 		free(data);
+}
+
+// This was a test, unzipping is a limiting factor when calculating the xxhash
+// Leaving the code as this will likely be used again in the future
+BOOL LoadDataForRomBrowser(char* FileName, BYTE* Data, int DataLen, int* RomSize) {
+	BYTE* data = NULL;
+	DWORD data_size = 0;
+	char hash[100];
+
+	if (_strnicmp(&FileName[strlen(FileName) - 4], ".ZIP", 4) == 0) {
+		int len, port = 0, FoundRom;
+		unz_file_info info;
+		char zname[132];
+		unzFile file;
+		BYTE Test[4];
+
+		// Should not happen at this point, the file should have been opened once already
+		file = unzOpen(FileName);
+		if (file == NULL) {
+			return FALSE;
+		}
+
+		port = unzGoToFirstFile(file);
+		FoundRom = FALSE;
+		while (port == UNZ_OK && FoundRom == FALSE) {
+			unzGetCurrentFileInfo(file, &info, zname, 128, NULL, 0, NULL, 0);
+
+			if (unzLocateFile(file, zname, 1) != UNZ_OK) {
+				unzClose(file);
+				return FALSE;
+			}
+
+			if (unzOpenCurrentFile(file) != UNZ_OK) {
+				unzClose(file);
+				return FALSE;
+			}
+
+			unzReadCurrentFile(file, Test, 4);
+			if (IsValidRomImage(Test)) {
+				FoundRom = TRUE;
+				data_size = info.uncompressed_size;
+
+				data = (BYTE*)malloc(sizeof(BYTE) * data_size);
+				if (!data) {
+					unzCloseCurrentFile(file);
+					unzClose(file);
+					return FALSE;
+				}
+
+				memcpy(data, Test,  4);
+				unzReadCurrentFile(file, data + 4, data_size - 4);
+				*RomSize = data_size;
+
+				if (unzCloseCurrentFile(file) == UNZ_CRCERROR) {
+					unzClose(file);
+					return FALSE;
+				}
+				unzClose(file);
+			}
+			if (FoundRom == FALSE) {
+				unzCloseCurrentFile(file);
+				port = unzGoToNextFile(file);
+			}
+		}
+		if (FoundRom == FALSE) {
+			unzClose(file);
+			return FALSE;
+		}
+	}
+	else {
+		DWORD dwRead, dwToRead, TotalRead;
+		HANDLE hFile;
+		BYTE Test[4];
+
+		hFile = CreateFile(FileName, GENERIC_READ, FILE_SHARE_READ, NULL,
+			OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL | FILE_FLAG_RANDOM_ACCESS,
+			NULL);
+
+		if (hFile == INVALID_HANDLE_VALUE)
+			return FALSE;
+
+		// Read the first 4 bytes (This will let us know if the file is a valid rom)
+		SetFilePointer(hFile, 0, 0, FILE_BEGIN);
+		if (!ReadFile(hFile, Test, 4, &dwRead, NULL)) {
+			CloseHandle(hFile);
+			return FALSE;
+		}
+
+		// Test the first 4 bytes and only continue if it is a valid rom
+		if (!IsValidRomImage(Test)) {
+			CloseHandle(hFile);
+			return FALSE;
+		}
+
+		// Allocate memory for the buffer
+		data_size = GetFileSize(hFile, NULL);
+		data = (BYTE*)malloc(sizeof(BYTE) * data_size);
+		if (!data) {
+			CloseHandle(hFile);
+			return FALSE;
+		}
+
+		// Read the entire file into memory
+		SetFilePointer(hFile, 0, 0, FILE_BEGIN);
+		if (!ReadFile(hFile, data, data_size, &dwRead, NULL)) {
+			CloseHandle(hFile);
+			return FALSE;
+		}
+		*RomSize = data_size;
+
+		// Failed to read the entire file, abort
+		if (data_size != dwRead) {
+			CloseHandle(hFile);
+			return FALSE;
+		}
+		CloseHandle(hFile);
+	}
+
+	ByteSwapRom(data, data_size);
+
+	// This is the new Identifier for the ROM, xxhash
+	RomHASH(hash, data, data_size);	
+
+	// Since the rom is fully loaded into memory do the CRC recalculation
+	RecalculateCRCs(data, data_size);
+
+	// The rom browser only needs the first 0x1000 bytes
+	memcpy(Data, data, DataLen);
+
+	free(data);
+
+	return TRUE;
 }
