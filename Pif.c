@@ -38,7 +38,7 @@ void ReadControllerCommand(int Control, BYTE* Command);
 
 BYTE PifRom[0x7C0], * PIF_Ram;
 
-enum CIC_Chip GetCicChipID(BYTE* RomData) {
+enum CIC_CHIP GetCicChipID(BYTE* RomData) {
 	_int64 CRC = 0;
 	int count;
 

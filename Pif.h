@@ -23,8 +23,11 @@
  * should be forwarded to them so if they want them.
  *
  */
+#ifndef PIF_H
+#define PIF_H
+
 extern BYTE PifRom[0x7C0], *PIF_Ram;
-extern enum CIC_Chip
+typedef enum CIC_CHIP
 {
 	CIC_UNKNOWN,	// Default
 	CIC_NUS_6101,	// Also 7102
@@ -37,9 +40,18 @@ extern enum CIC_Chip
 	CIC_NUS_8303,	// N64DD IPL TOOL
 	CIC_NUS_DDUS,	// N64DD IPL US (alternative)
 	CIC_NUS_8401	// Aleck64
-} CIC_Chip;
+} CIC_CHIP;
 
-enum CIC_Chip GetCicChipID ( BYTE *RomData );
+#ifdef __cplusplus
+extern "C" {
+#endif
+	enum CIC_CHIP GetCicChipID(BYTE* RomData);
+#ifdef __cplusplus
+};
+#endif
+
 int  LoadPifRom   ( BYTE country );
 void PifRamWrite  ( void );
 void PifRamRead   ( void );
+
+#endif
