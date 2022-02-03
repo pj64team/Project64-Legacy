@@ -1262,7 +1262,7 @@ LRESULT RomList_FindItem(NMHDR* lParam) {
 	startPos = findInfo->iStart;
 
 	// Either the last item was selected or nothing was, start at the top
-	if (startPos >= RomList.size() || startPos < 0)
+	if (startPos >= RomList.size() - 1 || startPos < 0)
 		startPos = 0;
 
 	currentPos = startPos;
@@ -1316,7 +1316,7 @@ LRESULT RomList_FindItem(NMHDR* lParam) {
 		}
 
 		// Start at the top if we've reached the bottom of the list
-		if (currentPos == RomList.size())
+		if (currentPos == RomList.size() - 1)
 			currentPos = 0;
 		else
 			currentPos++;
