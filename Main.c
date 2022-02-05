@@ -1230,6 +1230,14 @@ LRESULT CALLBACK Main_Proc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
 		Close_CheatSearchDlg();		// Clean up in case cheat search window was open with a search
 		PostQuitMessage(0);
 		break;
+	case WM_DROPFILES: {
+		HDROP hDrop = (HDROP)wParam;
+		DragQueryFile(hDrop, 0, CurrentFileName, sizeof(CurrentFileName));
+		DragFinish(hDrop);
+
+		CreateThread(NULL, 0, OpenChosenFile, NULL, 0, NULL);
+		break;
+	}
 	default:
 		return DefWindowProc(hWnd, uMsg, wParam, lParam);
 	}
@@ -1792,6 +1800,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpszArgs,
 		WS_CLIPSIBLINGS | WS_SYSMENU | WS_MINIMIZEBOX, X, Y, WindowWidth, WindowHeight,
 		NULL, NULL, hInst, NULL
 	);
+
+	DragAcceptFiles(hMainWindow, TRUE);
 
 	if (!hMainWindow) { return FALSE; }
 	if (strlen(lpszArgs) > 0) {
