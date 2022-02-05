@@ -1800,7 +1800,15 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpszArgs,
 		SetupPlugins(hMainWindow);
 		SetupMenu(hMainWindow);
 		ShowWindow(hMainWindow, nWinMode);
-		strcpy(CurrentFileName, lpszArgs);
+
+		// For some reason lpszArgs is encased with " " if the executable name is changed
+		if (lpszArgs[0] == '"' && lpszArgs[strlen(lpszArgs) - 1] == '"') {
+			strcpy(CurrentFileName, lpszArgs + 1);
+			CurrentFileName[strlen(CurrentFileName) - 1] = '\0';
+		}
+		else
+			strcpy(CurrentFileName, lpszArgs);
+
 		CreateThread(NULL, 0, OpenChosenFile, NULL, 0, &ThreadID);
 	}
 	else {
