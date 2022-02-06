@@ -124,6 +124,7 @@ void GetRomFullName(char* FullName, BYTE* RomData, char* FullPath) {
 	// We have an existing entry in the RDS, use that as the full name
 	if (!junk.empty()) {
 		strncpy(FullName, junk.c_str(), junk.length());
+		FullName[junk.length()] = '\0';
 		return;
 	}
 
