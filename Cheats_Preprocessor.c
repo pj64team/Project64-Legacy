@@ -320,15 +320,19 @@ BOOL Cheats_Verify(CHEAT *cheat) {
 				}
 			}
 		}
+		
+		// Bypass the check on replacements, this will be completely rewritten at a later date
+		if (find[7] != '?') {
 
-		// 16bit cheat code addresses (81 activator) must be even aligned
-		tmp = strtoul(find, NULL, 16);
-		if (strncmp(find, "81", 2) == 0 && tmp & 1) {
-			char junk[500];
-			sprintf(junk, "Detected Odd Aligned 16 bit code!\r\nThis is not supported by any known cheat device!\r\n%s, %.13s", cheat->name, find);
-			DisplayError(junk);
-			cheat->type = BAD_CODE;
-			return FALSE;
+			// 16bit cheat code addresses (81 activator) must be even aligned
+			tmp = strtoul(find, NULL, 16);
+			if (strncmp(find, "81", 2) == 0 && tmp & 1) {
+				char junk[500];
+				sprintf(junk, "Detected Odd Aligned 16 bit code!\r\nThis is not supported by any known cheat device!\r\n%s, %.13s", cheat->name, find);
+				DisplayError(junk);
+				cheat->type = BAD_CODE;
+				return FALSE;
+			}
 		}
 
 		// Set the number of replaces for address if not set
