@@ -59,7 +59,7 @@ LANG_STR DefaultString[] = {
 		{ MENU_RESET,       "&Reset"                 },
 		{ MENU_PAUSE,       "&Pause"                 },
 		{ MENU_RESUME,      "R&esume"                },
-		{ MENU_BITMAP,      "Generate Bitmap"        },
+		{ MENU_BITMAP,      "Screenshot Capture"        },
 		{ MENU_LIMIT_FPS,   "Limit FPS"              },
 		{ MENU_SAVE,        "&Save"                  },
 		{ MENU_SAVE_AS,     "Save As..."             },
