@@ -1,7 +1,7 @@
 /*
  * Project 64 - A Nintendo 64 emulator.
  *
- * (c) Copyright 2001 zilmar (zilmar@emulation64.com) and 
+ * (c) Copyright 2001 zilmar (zilmar@emulation64.com) and
  * Jabo (jabo@emulation64.com).
  *
  * pj64 homepage: www.pj64.net
@@ -57,7 +57,7 @@ typedef struct {
 } CPU_ACTION;
 
 
-#define MaxTimers	6
+#define MaxTimers				6
 #define CompareTimer			0
 #define SiTimer					1
 #define PiTimer					2
@@ -73,26 +73,26 @@ typedef struct {
 	int  Timer;
 } SYSTEM_TIMERS;
 
-void ChangeCompareTimer ( void );
-void ChangeTimer        ( int Type, int Value );
-void CheckTimer         ( void );
-void CloseCpu           ( void );
-int  DelaySlotEffectsCompare ( DWORD PC, DWORD Reg1, DWORD Reg2 );
-int  DelaySlotEffectsJump (DWORD JumpPC);
-void DoSomething        ( void );
-void InPermLoop         ( void );
-void InitiliazeCPUFlags ( void );
-BOOL Machine_LoadState  ( void );
-BOOL Machine_SaveState  ( void );
-void PauseCpu           ( void );
-void RefreshScreen      ( void );
-void RunRsp             ( void );
-void SetCoreToRunning   ( void );
-void SetCoreToStepping  ( void );
-void SetCoreToSkipping  ( void );
-void StartEmulation     ( void );
-void StepOpcode         ( void );
-void TimerDone          ( void );
+void ChangeCompareTimer(void);
+void ChangeTimer(int Type, int Value);
+void CheckTimer(void);
+void CloseCpu(void);
+int  DelaySlotEffectsCompare(DWORD PC, DWORD Reg1, DWORD Reg2);
+int  DelaySlotEffectsJump(DWORD JumpPC);
+void DoSomething(void);
+void InPermLoop(void);
+void InitiliazeCPUFlags(void);
+BOOL Machine_LoadState(void);
+BOOL Machine_SaveState(void);
+void PauseCpu(void);
+void RefreshScreen(void);
+void RunRsp(void);
+void SetCoreToRunning(void);
+void SetCoreToStepping(void);
+void SetCoreToSkipping(void);
+void StartEmulation(void);
+void StepOpcode(void);
+void TimerDone(void);
 
 #define NORMAL					0
 #define DO_DELAY_SLOT			1
@@ -116,12 +116,12 @@ enum SaveType {
 #ifdef CFB_READ
 extern DWORD CFBStart, CFBEnd;
 
-void __cdecl SetFrameBuffer (DWORD Address, DWORD Length);
+void __cdecl SetFrameBuffer(DWORD Address, DWORD Length);
 #endif
 
 
 extern int NextInstruction, JumpToLocation, ManualPaused, CPU_Paused, CountPerOp;
-extern char SaveAsFileName[255], LoadFileName[255];
+extern char SaveAsFileName[MAX_PATH], LoadFileName[MAX_PATH];
 extern int DlistCount, AlistCount, CurrentSaveSlot;
 extern enum SaveType SaveUsing;
 extern CPU_ACTION CPU_Action;
@@ -136,7 +136,6 @@ extern "C" {
 #ifdef __cplusplus
 }
 #endif
-extern int DlistWaitFor, VIWaitMult;
 
 #ifdef Interpreter_StackTest
 extern DWORD StackValue;
