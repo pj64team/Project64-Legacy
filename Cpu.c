@@ -144,7 +144,7 @@ void CheckTimer (void) {
 }
 
 void CloseCpu (void) {
-	DWORD ExitCode, OldProtect, count;
+	DWORD ExitCode, OldProtect;
 	
 	if (!CPURunning || hCPU == NULL) { return; }
 
@@ -163,19 +163,12 @@ void CloseCpu (void) {
 		AlwaysOnTop = Temp;
 	}
 
-	for (count = 0; count < 20; count ++ ) {
-		GetExitCodeThread(hCPU, &ExitCode);
-		if (ExitCode != STILL_ACTIVE) {
-			hCPU = NULL;
-			break;
-		}
-		Sleep(50);
-		//if (CPU_Action.CloseCPU == TRUE)
-		//	PulseEvent(CPU_Action.hStepping);
-	}
+	ExitCode = WaitForSingleObject(hCPU, 50);
+	if (ExitCode != WAIT_ABANDONED)
+		hCPU = NULL;
 
 	if (hCPU != NULL) { 
-		//DisplayError("Emulation thread failed to terminate plugins\nReport this if you can reproduce reliably");
+		DisplayError("Emulation thread failed to terminate plugins\nReport this if you can reproduce reliably");
 		TerminateThread(hCPU, 0);
 		hCPU = NULL;
 		SetupPlugins(hMainWindow);
