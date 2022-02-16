@@ -36,10 +36,11 @@
 #include "EmulateAI.h"
 #include "resource.h" 
 #include "CheatSearch.h"
+#include "RomTools_Common.h"
 
 
 int NextInstruction, JumpToLocation, ManualPaused, CPU_Paused, CountPerOp;
-char SaveAsFileName[255], LoadFileName[255];
+char SaveAsFileName[MAX_PATH], LoadFileName[MAX_PATH];
 int DlistCount, AlistCount, CurrentSaveSlot;
 enum SaveType SaveUsing;
 CPU_ACTION CPU_Action;
@@ -1041,7 +1042,7 @@ void PauseCpu (void) {
 
 void RefreshScreen (void ){ 
 	static DWORD VI_INTR_TIME = 500000;
-	static DWORD DlistWaitFor = -2, VIWaitMult = 0;
+	static int DlistWaitFor = -2, VIWaitMult = 0;
 	LARGE_INTEGER Time;
 	char Label[100];
 	
