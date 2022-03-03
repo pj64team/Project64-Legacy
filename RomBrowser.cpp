@@ -1120,10 +1120,10 @@ void ShowRomList(HWND hParent) {
 
 	if (hRomList != NULL && IsWindowVisible(hRomList))
 		return;
-
-	SetupMenu(hMainWindow);
-	IgnoreMove = TRUE;
+	
 	SetupPlugins(hHiddenWin);
+	SetupMenu(hMainWindow);
+	IgnoreMove = TRUE;	
 	ShowWindow(hMainWindow, SW_HIDE);
 
 	if (hRomList == NULL)
