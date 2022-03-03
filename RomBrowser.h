@@ -61,6 +61,7 @@ extern "C" {
 	extern char CurrentRBFileName[MAX_PATH + 1];
 	extern ROMBROWSER_FIELDS RomBrowserFields[];
 	extern int NoOfFields;
+	extern HWND hRomList;
 #ifdef __cplusplus
 }
 #endif
