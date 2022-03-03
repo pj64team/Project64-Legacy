@@ -197,7 +197,7 @@ void DisplayCPUPer (void) {
 		if (strcmp(TS_Entries[count].Label,"r4300i Running") == 0) { CPU   = TS_Entries[count].TimeTotal; }
 		if (strcmp(TS_Entries[count].Label,"RSP: Dlist"    ) == 0) { Dlist = TS_Entries[count].TimeTotal; }
 		if (strcmp(TS_Entries[count].Label,"RSP: Alist"    ) == 0) { Alist = TS_Entries[count].TimeTotal; }
-		if (strcmp(TS_Entries[count].Label,"CPU Idel"      ) == 0) { Idle  = TS_Entries[count].TimeTotal; }
+		if (strcmp(TS_Entries[count].Label,"CPU Idle"      ) == 0) { Idle  = TS_Entries[count].TimeTotal; }
 	}
 	
 	TotalTime = 0;
