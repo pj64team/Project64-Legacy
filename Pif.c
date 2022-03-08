@@ -47,25 +47,41 @@ enum CIC_CHIP GetCicChipID(BYTE* RomData) {
 	}
 
 	switch (CRC) {
-	case 0x000000D0027FDF31: return CIC_NUS_6101;
-	case 0x000000CFFB631223: return CIC_NUS_6101;
-	case 0x000000C34B2826B8: return CIC_NUS_6101;	// iQue 
-	case 0x0000002F35CF0DE9: return CIC_NUS_6101;	// iQue (Paper Mario)
-	case 0x000000C92ADFE50A: return CIC_NUS_6101;	// iQue (Sin and Punishment)
-	case 0x000000D057C85244: return CIC_NUS_6102;
-	case 0x000000D6497E414B: return CIC_NUS_6103;
-	case 0x0000011A49F60E96: return CIC_NUS_6105;
-	case 0x000000D6D5BE5580: return CIC_NUS_6106;
-	case 0x000001053BC19870: return CIC_NUS_5167;
-	case 0x000000D2E53EF008: return CIC_NUS_8303;	// Added to support N64DD IPLROM (J)
-	case 0x000000D2E53EF39F: return CIC_NUS_8303;
-	case 0x000000D2E53E5DDA: return CIC_NUS_DDUS;
-	default:
-		// Aleck64, they all seem to start with A7 or A8 past 32 bits
-		if (CRC >> 32 == 0xA7 || CRC >> 32 == 0xA8)
-			return CIC_NUS_8401;
-		return CIC_UNKNOWN;
+		case 0x000000D0027FDF31:
+		case 0x000000CFFB631223:
+		case 0x000000C34B2826B8:	// iQue 
+		case 0x0000002F35CF0DE9:	// iQue (Paper Mario)
+		case 0x000000C92ADFE50A:	// iQue (Sin and Punishment)
+			return CIC_NUS_6101;
+
+		case 0x000000D057C85244:
+			return CIC_NUS_6102;
+
+		case 0x000000D6497E414B:
+			return CIC_NUS_6103;
+
+		case 0x0000011A49F60E96:
+			return CIC_NUS_6105;
+
+		case 0x000000D6D5BE5580:
+			return CIC_NUS_6106;
+
+		case 0x000001053BC19870:
+			return CIC_NUS_5167;
+
+		case 0x000000D2E53EF008:	// Added to support N64DD IPLROM (J)
+		case 0x000000D2E53EF39F:
+			return CIC_NUS_8303;
+
+		case 0x000000D2E53E5DDA:	// Includes the 64DD hacked roms
+			return CIC_NUS_DDUS;
 	}
+	
+	// Aleck64, they all seem to start with A7 or A8 past 32 bits
+	if (CRC >> 32 == 0xA7 || CRC >> 32 == 0xA8)
+		return CIC_NUS_8401;
+	
+	return CIC_UNKNOWN;
 }
 
 void LogControllerPakData(char* Description) {
@@ -75,15 +91,19 @@ void LogControllerPakData(char* Description) {
 
 		LogMessage("\t%s:", Description);
 		LogMessage("\t------------------------------");
+
 		for (count = 0; count < 16; count++) {
 			if ((count % 4) == 0) {
 				sprintf(HexData, "\0");
 				sprintf(AsciiData, "\0");
 			}
+
 			sprintf(Addon, "%02X %02X %02X %02X",
 				PIF_Ram[(count << 2) + 0], PIF_Ram[(count << 2) + 1],
 				PIF_Ram[(count << 2) + 2], PIF_Ram[(count << 2) + 3]);
+
 			strcat(HexData, Addon);
+
 			if (((count + 1) % 4) != 0) {
 				sprintf(Addon, "-");
 				strcat(HexData, Addon);
@@ -98,22 +118,21 @@ void LogControllerPakData(char* Description) {
 					sprintf(Addon, "%s%c", Addon, PIF_Ram[(count << 2) + count2]);
 				}
 			}
+
 			strcat(AsciiData, Addon);
 
 			if (((count + 1) % 4) == 0) {
 				LogMessage("\t%s %s", HexData, AsciiData);
 			}
 		}
+
 		LogMessage("");
 	}
 }
 
 void PifRamRead(void) {
-	int Channel, CurPos;
 
-	Channel = 0;
-	CurPos = 0;
-
+	// CIC NUS 6105 challenge/response system
 	if (PIF_Ram[0x3F] == 0x2) {
 		char hold[32], resp[32] = { 0 };
 		int i, j;
@@ -132,45 +151,57 @@ void PifRamRead(void) {
 		return;
 	}
 
-	do {
+	for (size_t CurPos = 0, Channel = 0; CurPos < 0x40; ++CurPos) {
+
 		switch (PIF_Ram[CurPos]) {
-		case 0x00:
-			Channel += 1;
-			if (Channel > 6) {
+			case 0x00:
+				// Advance to the next Channel, signal stop if past Channel 6
+				Channel += 1;
+				if (Channel > 6)
+					CurPos = 0x40;
+				break;
+
+			case 0xFD:
+			case 0xFE:
+				// End of request
 				CurPos = 0x40;
-			}
-			break;
-		case 0xFE:
-			CurPos = 0x40;
-			break;
-		case 0xFF:
-			break;
-			//case 0xB4: case 0x56: case 0xB8: break; /* ??? */
-		default:
-			if ((PIF_Ram[CurPos] & 0xC0) == 0) {
-				if (Channel < 4) {
-					if (Controllers[Channel].Present && Controllers[Channel].RawData) {
-						if (ReadController) {
-							ReadController(Channel, &PIF_Ram[CurPos]);
+				break;
+
+			case 0xFF:
+				break;
+
+			case 0xB4:
+			case 0x56:
+			case 0xB8:
+				// What is this for?
+				break;
+
+			default:
+				if ((PIF_Ram[CurPos] & 0xC0) == 0) {
+					if (Channel < 4) {
+
+						if (Controllers[Channel].Present && Controllers[Channel].RawData) {
+							if (ReadController) {
+								ReadController(Channel, &PIF_Ram[CurPos]);
+							}
+						}
+						else {
+							ReadControllerCommand(Channel, &PIF_Ram[CurPos]);
 						}
 					}
-					else {
-						ReadControllerCommand(Channel, &PIF_Ram[CurPos]);
+					CurPos += PIF_Ram[CurPos] + (PIF_Ram[CurPos + 1] & 0x3F) + 1;
+					Channel += 1;
+				}
+				else {
+					if (ShowPifRamErrors) {
+						DisplayError("Unknown Command in PifRamRead(%X)", PIF_Ram[CurPos]);
 					}
+					CurPos = 0x40;
 				}
-				CurPos += PIF_Ram[CurPos] + (PIF_Ram[CurPos + 1] & 0x3F) + 1;
-				Channel += 1;
-			}
-			else {
-				if (ShowPifRamErrors) {
-					DisplayError("Unknown Command in PifRamRead(%X)", PIF_Ram[CurPos]);
-				}
-				CurPos = 0x40;
-			}
-			break;
+
+				break;
 		}
-		CurPos += 1;
-	} while (CurPos < 0x40);
+	}
 
 	if (ReadController) {
 		ReadController(-1, NULL);
@@ -178,81 +209,96 @@ void PifRamRead(void) {
 }
 
 void PifRamWrite(void) {
-	int Channel, CurPos;
-
-	Channel = 0;
 
 	if (PIF_Ram[0x3F] > 0x1) {
+
 		switch (PIF_Ram[0x3F]) {
-		case 0x08:
-			PIF_Ram[0x3F] = 0;
-			MI_INTR_REG |= MI_INTR_SI;
-			SI_STATUS_REG |= SI_STATUS_INTERRUPT;
-			CheckInterrupts();
-			break;
-		case 0x10:
-			memset(PifRom, 0, 0x7C0);
-			break;
-		case 0x30:
-			PIF_Ram[0x3F] = 0x80;
-			break;
-		case 0xC0:
-			memset(PIF_Ram, 0, 0x40);
-			break;
-		case 0x02:
-			break;	// CIC NUS 6105 Encryption related, already handled in PifRamRead
-		default:
-			if (ShowPifRamErrors) {
-				DisplayError("Unknown PifRam control: %d", PIF_Ram[0x3F]);
-			}
+			case 0x08:
+				PIF_Ram[0x3F] = 0;
+				MI_INTR_REG |= MI_INTR_SI;
+				SI_STATUS_REG |= SI_STATUS_INTERRUPT;
+				CheckInterrupts();
+				break;
+
+			case 0x10:
+				memset(PifRom, 0, 0x7C0);
+				break;
+
+			case 0x30:
+				PIF_Ram[0x3F] = 0x80;
+				break;
+
+			case 0xC0:
+				memset(PIF_Ram, 0, 0x40);
+				break;
+
+			case 0x02:
+				// CIC NUS 6105 Encryption related, already handled in PifRamRead
+				break;	
+
+			default:
+				if (ShowPifRamErrors) {
+					DisplayError("Unknown PifRam control: %d", PIF_Ram[0x3F]);
+				}
 		}
 		return;
 	}
 
-	for (CurPos = 0; CurPos < 0x40; CurPos++) {
+	for (size_t CurPos = 0, Channel = 0; CurPos < 0x40; CurPos++) {
+
 		switch (PIF_Ram[CurPos]) {
-		case 0x00:
-			Channel += 1;
-			if (Channel > 6) {
+			case 0x00:
+				Channel += 1;
+				if (Channel > 6) {
+					CurPos = 0x40;
+				}
+				break;
+
+			case 0xFD:
+			case 0xFE:
 				CurPos = 0x40;
-			}
-			break;
-		case 0xFE:
-			CurPos = 0x40;
-			break;
-		case 0xFF:
-			break;
-			//case 0xB4: case 0x56: case 0xB8: break; /* ??? */
-		default:
-			if ((PIF_Ram[CurPos] & 0xC0) == 0) {
-				if (Channel < 4) {
-					if (Controllers[Channel].Present && Controllers[Channel].RawData) {
-						if (ControllerCommand) {
-							ControllerCommand(Channel, &PIF_Ram[CurPos]);
+				break;
+
+			case 0xFF:
+				break;
+				
+			case 0xB4:
+			case 0x56:
+			case 0xB8:
+				// What is this for?
+				break;
+
+			default:
+				if ((PIF_Ram[CurPos] & 0xC0) == 0) {
+					if (Channel < 4) {
+						if (Controllers[Channel].Present && Controllers[Channel].RawData) {
+							if (ControllerCommand) {
+								ControllerCommand(Channel, &PIF_Ram[CurPos]);
+							}
+						}
+						else {
+							ProcessControllerCommand(Channel, &PIF_Ram[CurPos]);
 						}
 					}
-					else {
-						ProcessControllerCommand(Channel, &PIF_Ram[CurPos]);
+					else if (Channel == 4) {
+						if (RTC_Command(&PIF_Ram[CurPos]) == FALSE)
+							EepromCommand(&PIF_Ram[CurPos]);
 					}
-				}
-				else if (Channel == 4) {
-					if (RTC_Command(&PIF_Ram[CurPos]) == FALSE)
-						EepromCommand(&PIF_Ram[CurPos]);
+					else {
+						if (ShowPifRamErrors)
+							DisplayError("Command on channel 5?");
+					}
+
+					CurPos += PIF_Ram[CurPos] + (PIF_Ram[CurPos + 1] & 0x3F) + 1;
+					Channel += 1;
 				}
 				else {
-					if (ShowPifRamErrors)
-						DisplayError("Command on channel 5?");
+					if (ShowPifRamErrors) {
+						DisplayError("Unknown Command in PifRamWrite(%X)", PIF_Ram[CurPos]);
+					}
+					CurPos = 0x40;
 				}
-				CurPos += PIF_Ram[CurPos] + (PIF_Ram[CurPos + 1] & 0x3F) + 1;
-				Channel += 1;
-			}
-			else {
-				if (ShowPifRamErrors) {
-					DisplayError("Unknown Command in PifRamWrite(%X)", PIF_Ram[CurPos]);
-				}
-				CurPos = 0x40;
-			}
-			break;
+				break;
 		}
 	}
 
@@ -264,182 +310,190 @@ void PifRamWrite(void) {
 
 void ProcessControllerCommand(int Control, BYTE* Command) {
 	switch (Command[2]) {
-	case 0x00: // check
-	case 0xFF: // reset & check ?
-		if ((Command[1] & 0x80) != 0) {
+		case 0x00: // check
+		case 0xFF: // reset & check ?
+			if ((Command[1] & 0x80) != 0) {
+				break;
+			}
+
+			if (ShowPifRamErrors && (Command[0] != 1 || Command[1] != 3)) {
+				DisplayError("What am I meant to do with this Controller Command");
+			}
+
+			if (Controllers[Control].Present == TRUE) {
+				// This has been changed but keeps backwards compatibility
+				// 0x1, or TRUE is N64 Controller
+				Command[3] = 0x05;
+				Command[4] = 0x00;
+
+				switch (Controllers[Control].Plugin) {
+					case PLUGIN_RUMBLE_PAK:
+					case PLUGIN_MEMPAK:
+					case PLUGIN_RAW:
+						Command[5] = 1;
+						break;
+
+					default:
+						Command[5] = 0;
+						break;
+				}
+			}			
+			else if (Controllers[Control].Present == 0x2) {
+				// 0x2 is N64 Mouse
+				Command[3] = 0x02;
+				Command[4] = 0x00;
+				Command[5] = 0x00;
+			}
+			else {
+				// 0x1, FALSE, or any other value
+				Command[1] |= 0x80;
+			}
 			break;
-		}
 
-		if (ShowPifRamErrors && Command[0] != 1) {
-			DisplayError("What am I meant to do with this Controller Command");
-		}
-		if (ShowPifRamErrors && Command[1] != 3) {
-			DisplayError("What am I meant to do with this Controller Command");
-		}
-
-		if (Controllers[Control].Present == TRUE) {
-			Command[3] = 0x05;
-			Command[4] = 0x00;
-
-			switch (Controllers[Control].Plugin) {
-			case PLUGIN_RUMBLE_PAK:
-				Command[5] = 1;
-				break;
-			case PLUGIN_MEMPAK:
-				Command[5] = 1;
-				break;
-			case PLUGIN_RAW:
-				Command[5] = 1;
-				break;
-			default:
-				Command[5] = 0;
-				break;
+		case 0x01: // read controller
+			if (ShowPifRamErrors && (Command[0] != 1 || Command[1] != 4)) {
+				DisplayError("What am I meant to do with this Controller Command");
 			}
-		}
-		else {
-			Command[1] |= 0x80;
-		}
-		break;
-	case 0x01: // read controller
-		if (ShowPifRamErrors && Command[0] != 1) {
-			DisplayError("What am I meant to do with this Controller Command");
-		}
-		if (ShowPifRamErrors && Command[1] != 4) {
-			DisplayError("What am I meant to do with this Controller Command");
-		}
 
-		if (Controllers[Control].Present == FALSE) {
-			Command[1] |= 0x80;
-		}
-		break;
-	case 0x02: //read from controller pack
-		if (HaveDebugger && LogOptions.LogControllerPak) {
-			LogControllerPakData("Read: Before Getting Results");
-		}
-		if (ShowPifRamErrors && Command[0] != 3) {
-			DisplayError("What am I meant to do with this Controller Command");
-		}
-		if (ShowPifRamErrors && Command[1] != 33) {
-			DisplayError("What am I meant to do with this Controller Command");
-		}
-
-		if (Controllers[Control].Present == TRUE) {
-			DWORD address = ((Command[3] << 8) | Command[4]);
-			switch (Controllers[Control].Plugin) {
-			case PLUGIN_RUMBLE_PAK:
-				memset(&Command[5], (address >= 0x8000 && address < 0x9000) ? 0x80 : 0x00, 0x20);
-				Command[0x25] = Mempacks_CalulateCrc(&Command[5]);
-				break;
-			case PLUGIN_MEMPAK:
-				ReadFromMempak(Control, address, &Command[5]);
-				break;
-			case PLUGIN_RAW:
-				if (ControllerCommand) {
-					ControllerCommand(Control, Command);
-				}
-				break;
-			default:
-				memset(&Command[5], 0, 0x20);
-				Command[0x25] = 0;
+			if (Controllers[Control].Present == FALSE) {
+				Command[1] |= 0x80;
 			}
-		}
-		else {
-			Command[1] |= 0x80;
-		}
-		if (HaveDebugger && LogOptions.LogControllerPak) {
-			LogControllerPakData("Read: After Getting Results");
-		}
-		break;
-	case 0x03: //write controller pak
+			break;
 
-		if (HaveDebugger && LogOptions.LogControllerPak) {
-			LogControllerPakData("Write: Before Processing");
-		}
-		if (ShowPifRamErrors && Command[0] != 35) {
-			DisplayError("What am I meant to do with this Controller Command");
-		}
-		if (ShowPifRamErrors && Command[1] != 1) {
-			DisplayError("What am I meant to do with this Controller Command");
-		}
-
-		if (Controllers[Control].Present == TRUE) {
-			DWORD address = ((Command[3] << 8) | Command[4]);
-			switch (Controllers[Control].Plugin) {
-			case PLUGIN_MEMPAK:
-				WriteToMempak(Control, address, &Command[5]); break;
-			case PLUGIN_RAW:
-				if (ControllerCommand) {
-					ControllerCommand(Control, Command);
-				}
-				break;
-			case PLUGIN_RUMBLE_PAK:
-				if (RumbleCommand != NULL) {
-					if ((address & 0xFFE0) == 0xC000)
-						RumbleCommand(Control, *(BOOL*)(&Command[5]));
-					//break;
-				}
-			default:
-				Command[0x25] = Mempacks_CalulateCrc(&Command[5]);
+		case 0x02: //read from controller pack
+			if (HaveDebugger && LogOptions.LogControllerPak) {
+				LogControllerPakData("Read: Before Getting Results");
 			}
-		}
-		else {
-			Command[1] |= 0x80;
-		}
-		if (HaveDebugger && LogOptions.LogControllerPak) {
-			LogControllerPakData("Write: After Processing");
-		}
-		break;
-	default:
-		if (ShowPifRamErrors) {
-			DisplayError("Unknown ControllerCommand %d", Command[2]);
-		}
+
+			if (ShowPifRamErrors && (Command[0] != 3 || Command[1] != 33)) {
+				DisplayError("What am I meant to do with this Controller Command");
+			}
+
+			if (Controllers[Control].Present == TRUE) {
+				DWORD address = (Command[3] << 8) | (Command[4] & 0xE0);
+
+				switch (Controllers[Control].Plugin) {
+					case PLUGIN_RUMBLE_PAK:
+						memset(&Command[5], (address >= 0x8000 && address < 0x9000) ? 0x80 : 0x00, 0x20);
+						Command[0x25] = Mempacks_CalulateCrc(&Command[5]);
+						break;
+
+					case PLUGIN_MEMPAK:
+						ReadFromMempak(Control, address, &Command[5]);
+						break;
+
+					case PLUGIN_RAW:
+						if (ControllerCommand) {
+							ControllerCommand(Control, Command);
+						}
+						break;
+
+					default:
+						memset(&Command[5], 0, 0x20);
+						Command[0x25] = 0;
+				}
+			}
+			else {
+				Command[1] |= 0x80;
+			}
+
+			if (HaveDebugger && LogOptions.LogControllerPak) {
+				LogControllerPakData("Read: After Getting Results");
+			}
+			break;
+
+		case 0x03: //write controller pak
+			if (HaveDebugger && LogOptions.LogControllerPak) {
+				LogControllerPakData("Write: Before Processing");
+			}
+
+			if (ShowPifRamErrors && (Command[0] != 35 || Command[1] != 1)) {
+				DisplayError("What am I meant to do with this Controller Command");
+			}
+
+			if (Controllers[Control].Present == TRUE) {
+				DWORD address = (Command[3] << 8) | (Command[4] & 0xE0);
+
+				switch (Controllers[Control].Plugin) {
+					case PLUGIN_MEMPAK:
+						WriteToMempak(Control, address, &Command[5]);
+						break;
+
+					case PLUGIN_RAW:
+						if (ControllerCommand) {
+							ControllerCommand(Control, Command);
+						}
+						break;
+
+					case PLUGIN_RUMBLE_PAK:
+						if (RumbleCommand != NULL) {
+							if ((address & 0xFFE0) == 0xC000)
+								RumbleCommand(Control, *(BOOL*)(&Command[5]));
+							break;
+						}						
+				}
+
+				if (Controllers[Control].Plugin != PLUGIN_RAW) 
+					Command[0x25] = Mempacks_CalulateCrc(&Command[5]);
+			}
+			else {
+				Command[1] |= 0x80;
+			}
+
+			if (HaveDebugger && LogOptions.LogControllerPak) {
+				LogControllerPakData("Write: After Processing");
+			}
+			break;
+		default:
+			if (ShowPifRamErrors) {
+				DisplayError("Unknown ControllerCommand %d", Command[2]);
+			}
 	}
 }
 
 void ReadControllerCommand(int Control, BYTE* Command) {
 	switch (Command[2]) {
-	case 0x01: // read controller
-		if (Controllers[Control].Present == TRUE) {
-			if (ShowPifRamErrors && Command[0] != 1) {
-				DisplayError("What am I meant to do with this Controller Command");
-			}
-			if (ShowPifRamErrors && Command[1] != 4) {
-				DisplayError("What am I meant to do with this Controller Command");
-			}
-
-			if (GetKeys) {
-				BUTTONS Keys;
-
-				GetKeys(Control, &Keys);
-				*(DWORD*)&Command[3] = Keys.Value;
-			}
-			else {
-				*(DWORD*)&Command[3] = 0;
-			}
-		}
-		break;
-	case 0x02: //read from controller pack
-		if (Controllers[Control].Present == TRUE) {
-			switch (Controllers[Control].Plugin) {
-			case PLUGIN_RAW:
-				if (ControllerCommand) {
-					ReadController(Control, Command);
+		case 0x01: // read controller
+			if (Controllers[Control].Present == TRUE) {
+				if (ShowPifRamErrors && (Command[0] != 1 || Command[1] != 4)) {
+					DisplayError("What am I meant to do with this Controller Command");
 				}
-				break;
-			}
-		}
-		break;
-	case 0x03: //write controller pak
-		if (Controllers[Control].Present == TRUE) {
-			switch (Controllers[Control].Plugin) {
-			case PLUGIN_RAW:
-				if (ControllerCommand) {
-					ReadController(Control, Command);
+
+				if (GetKeys) {
+					BUTTONS Keys;
+
+					GetKeys(Control, &Keys);
+					*(DWORD*)&Command[3] = Keys.Value;
 				}
-				break;
+				else {
+					*(DWORD*)&Command[3] = 0;
+				}
 			}
-		}
-		break;
+			break;
+
+		case 0x02: //read from controller pack
+			if (Controllers[Control].Present == TRUE) {
+				switch (Controllers[Control].Plugin) {
+					case PLUGIN_RAW:
+						if (ControllerCommand) {
+							ReadController(Control, Command);
+						}
+						break;
+				}
+			}
+			break;
+
+		case 0x03: //write controller pak
+			if (Controllers[Control].Present == TRUE) {
+				switch (Controllers[Control].Plugin) {
+					case PLUGIN_RAW:
+						if (ControllerCommand) {
+							ReadController(Control, Command);
+						}
+						break;
+				}
+			}
+			break;
 	}
 }
 
@@ -453,22 +507,21 @@ int LoadPifRom(BYTE country) {
 	_splitpath(path_buffer, drive, dir, NULL, NULL);
 
 	switch (GetRomRegionByCode(country)) {
-	case PAL_Region:
-		sprintf(PifRomName, "%s%sPifrom\\pifpal.raw", drive, dir);
-		break;
-	case NTSC_Region:
-		sprintf(PifRomName, "%s%sPifrom\\pifntsc.raw", drive, dir);
-		break;
-	default:
-		// Failed to detect the rom as PAL or NTSC
-		if (ShowPifRamErrors)
-			DisplayError(GS(MSG_UNKNOWN_COUNTRY));
-		memset(PifRom, 0, 0x7C0);
-		return FALSE;
+		case PAL_Region:
+			sprintf(PifRomName, "%s%sPifrom\\pifpal.raw", drive, dir);
+			break;
+		case NTSC_Region:
+			sprintf(PifRomName, "%s%sPifrom\\pifntsc.raw", drive, dir);
+			break;
+		default:
+			// Failed to detect the rom as PAL or NTSC
+			if (ShowPifRamErrors)
+				DisplayError(GS(MSG_UNKNOWN_COUNTRY));
+			memset(PifRom, 0, 0x7C0);
+			return FALSE;
 	}
 
-	hPifFile = CreateFile(PifRomName, GENERIC_READ, FILE_SHARE_READ, NULL, OPEN_EXISTING,
-		FILE_ATTRIBUTE_NORMAL | FILE_FLAG_RANDOM_ACCESS, NULL);
+	hPifFile = CreateFile(PifRomName, GENERIC_READ, FILE_SHARE_READ, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL | FILE_FLAG_RANDOM_ACCESS, NULL);
 
 	// Failed to open the file
 	if (hPifFile == INVALID_HANDLE_VALUE) {
