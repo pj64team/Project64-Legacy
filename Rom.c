@@ -625,6 +625,8 @@ void ReadRomOptions(void) {
 	if (strlen(RomFullName) != 0) {
 		char Identifier[100], * String = NULL;
 
+		LoadRomRecalcCRCs(CurrentFileName, (DWORD*)&RomHeader[0x10], (DWORD*)&RomHeader[0x14]);
+
 		RomID(Identifier, RomHeader);
 
 		if (!Settings_EntryExists(RDS_NAME, Identifier))
