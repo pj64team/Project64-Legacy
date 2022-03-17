@@ -1584,20 +1584,24 @@ LRESULT CALLBACK Main_Proc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
 				}
 				break;*/
 
-				case ID_HELP_GAMEFAQ: {
+				case ID_HELP_GAMEFAQ:
+					ShellExecute(NULL, "open", "https://project64.emulation64.com/index.php?id=gamefaq", NULL, NULL, SW_SHOWMAXIMIZED); // Changed chm to online version for better user experience
+					break;
+
+					/*case ID_HELP_GAMEFAQ: {
 					char path_buffer[_MAX_PATH], drive[_MAX_DRIVE], dir[_MAX_DIR];
 					char fname[_MAX_FNAME], ext[_MAX_EXT], HelpFileName[_MAX_PATH];
 
 					GetModuleFileName(NULL, path_buffer, sizeof(path_buffer));
 					_splitpath(path_buffer, drive, dir, fname, ext);
 					_makepath(HelpFileName, drive, dir, "PJgameFAQ", "chm");
-
+					
 					// Gent no longer indexes these files so the old value of 1 no longer points to something valid, using NULL instead
 					if (HtmlHelp(hWnd, HelpFileName, HH_DISPLAY_TOPIC, (DWORD)NULL) == NULL) {
 						ShellExecute(hWnd, "open", HelpFileName, NULL, NULL, SW_SHOW);
-					}
+					
 				}
-				break;
+				break;}*/
 
 				case ID_HELP_SUPPORTFORUM:
 					ShellExecute(NULL, "open", "https://project64.emulation64.com/dev", NULL, NULL, SW_SHOWMAXIMIZED);
