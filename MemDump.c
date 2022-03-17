@@ -72,11 +72,11 @@ BOOL CALLBACK MemDumpDlgProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
 				SendDlgItemMessage(hDlg, IDC_MD_RANGE, CB_ADDSTRING, 0, (LPARAM)(LPCTSTR) ADDRESSRANGE[Count]);
 			}
 			SendDlgItemMessage(hDlg, IDC_MD_RANGE, CB_SETCURSEL, (WPARAM) 0, 0); //default selection is RDRAM
-			SendDlgItemMessage(hDlg, IDC_MD_RANGESTART, WM_SETTEXT, 0, (LPARAM)(LPCTSTR)"0xA0000000");
+			SendDlgItemMessage(hDlg, IDC_MD_RANGESTART, WM_SETTEXT, 0, (LPARAM)(LPCTSTR)"0x80000000"); //All Changed from A0 to 80 for easier defualt dump
 			if (RdramSize == 0x00400000) {
-				SendDlgItemMessage(hDlg, IDC_MD_RANGEEND, WM_SETTEXT, 0, (LPARAM)(LPCTSTR)"0xA03FFFFF");
+				SendDlgItemMessage(hDlg, IDC_MD_RANGEEND, WM_SETTEXT, 0, (LPARAM)(LPCTSTR)"0x803FFFFF");
 			} else {
-				SendDlgItemMessage(hDlg, IDC_MD_RANGEEND, WM_SETTEXT, 0, (LPARAM)(LPCTSTR)"0xA07FFFFF");
+				SendDlgItemMessage(hDlg, IDC_MD_RANGEEND, WM_SETTEXT, 0, (LPARAM)(LPCTSTR)"0x807FFFFF");
 			}
 
 			for (Count = 0; Count < 2; Count++) {
@@ -92,11 +92,11 @@ BOOL CALLBACK MemDumpDlgProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
 					switch (HIWORD(wParam)) {
 						case CBN_SELCHANGE:
 							if (SendDlgItemMessage(hDlg, IDC_MD_RANGE, CB_GETCURSEL, (WPARAM) 0, 0) == 0) {
-								SendDlgItemMessage(hDlg, IDC_MD_RANGESTART, WM_SETTEXT, 0, (LPARAM)(LPCTSTR)"0xA0000000");
+								SendDlgItemMessage(hDlg, IDC_MD_RANGESTART, WM_SETTEXT, 0, (LPARAM)(LPCTSTR)"0x80000000"); //All Changed from A0 to 80 for easier defualt dump
 								if (RdramSize == 0x00400000) {
-									SendDlgItemMessage(hDlg, IDC_MD_RANGEEND, WM_SETTEXT, 0, (LPARAM)(LPCTSTR)"0xA03FFFFF");
+									SendDlgItemMessage(hDlg, IDC_MD_RANGEEND, WM_SETTEXT, 0, (LPARAM)(LPCTSTR)"0x803FFFFF");
 								} else {
-									SendDlgItemMessage(hDlg, IDC_MD_RANGEEND, WM_SETTEXT, 0, (LPARAM)(LPCTSTR)"0xA07FFFFF");
+									SendDlgItemMessage(hDlg, IDC_MD_RANGEEND, WM_SETTEXT, 0, (LPARAM)(LPCTSTR)"0x807FFFFF");
 								}
 							}
 							break;
