@@ -938,8 +938,8 @@ void SetupR4300iVIPanel (HWND hDlg) {
 }
 
 void SetupR4300iRegistersMain (HWND hDlg) {
-#define WindowWidth  675
-#define WindowHeight 325
+#define WindowWidth  685
+#define WindowHeight 340
 	DWORD X, Y;
 
 	hTab = CreateWindowEx(0,WC_TABCONTROL,"", WS_TABSTOP | WS_CHILD | WS_VISIBLE,5,6,660,290,
