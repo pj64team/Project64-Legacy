@@ -312,7 +312,7 @@
       <SubSystem>Windows</SubSystem>
       <OutputFile>..\PJ64_1.6.1\Project64_Release.exe</OutputFile>
       <AdditionalLibraryDirectories>C:\Development\PJ64 Source C++ 6.0;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>Compression/zlibstat.lib;htmlhelp.lib;winmm.lib;comctl32.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>Compression/zlibstat.lib;htmlhelp.lib;winmm.lib;comctl32.lib;odbc32.lib;odbccp32.lib;nafxcw.lib;libcmt.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <DataExecutionPrevention>false</DataExecutionPrevention>
       <IgnoreSpecificDefaultLibraries>libc;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
       <Profile>true</Profile>
@@ -364,6 +364,7 @@
     <ClCompile Include="Profiling.c" />
     <ClCompile Include="RomBrowser.cpp" />
     <ClCompile Include="Settings.c" />
+    <ClCompile Include="WatchPoints.cpp" />
     <ClCompile Include="Win32Timer.c" />
     <ClCompile Include="Eeprom.c" />
     <ClCompile Include="FlashRam.c" />
@@ -435,6 +436,7 @@
     <ClInclude Include="RomBrowser.h" />
     <ClInclude Include="Settings.h" />
     <ClInclude Include="Types.h" />
+    <ClInclude Include="WatchPoints.h" />
     <ClInclude Include="Win32Timer.h" />
     <ClInclude Include="Eeprom.h" />
     <ClInclude Include="Flashram.h" />

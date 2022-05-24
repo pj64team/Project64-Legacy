@@ -408,7 +408,7 @@ LRESULT CALLBACK R4300i_Commands_Proc (HWND hDlg, UINT uMsg, WPARAM wParam, LPAR
 					if (CheckForR4300iBPoint(Location)) {
 						RemoveR4300iBreakPoint(Location);
 					} else {
-						Add_R4300iBPoint(Location, FALSE);
+						Add_R4300iBPoint(Location);
 					}
 					RefreshR4300iCommands();
 				}
@@ -1304,9 +1304,9 @@ void RefreshR4300iCommands ( void ) {
 }
 
 void SetR4300iCommandToRunning ( void ) { 
-	if (CheckForR4300iBPoint(PROGRAM_COUNTER)) {
+	//if (CheckForR4300iBPoint(PROGRAM_COUNTER)) {
 		StepOpcode();
-	}
+	//}
 	SetCoreToRunning();
 	if (InR4300iCommandsWindow == FALSE) { return; }
 	EnableWindow(hGoButton,    FALSE);
