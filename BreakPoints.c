@@ -1,7 +1,7 @@
 /*
  * Project 64 - A Nintendo 64 emulator.
  *
- * (c) Copyright 2001 zilmar (zilmar@emulation64.com) and 
+ * (c) Copyright 2001 zilmar (zilmar@emulation64.com) and
  * Jabo (jabo@emulation64.com).
  *
  * pj64 homepage: www.pj64.net
@@ -39,6 +39,10 @@
 #define IDC_REMOVEALL_BUTTON	104
 #define IDC_LOCATION_EDIT		105
 #define IDC_FUNCTION_COMBO		106
+#define IDC_TYPE_EXEC			107
+#define IDC_TYPE_READ			108
+#define IDC_TYPE_WRITE			109
+#define IDC_TYPE_READ_WRITE		110
 
 void BPoint_AddButtonPressed ( void);
 void __cdecl Create_BPoint_Window    ( int );
@@ -52,15 +56,16 @@ LRESULT CALLBACK BPoint_Proc   ( HWND, UINT, WPARAM, LPARAM );
 LRESULT CALLBACK RefreshBPProc ( HWND, UINT, WPARAM, LPARAM );
 
 static HWND BPoint_Win_hDlg, hTab, hList, hStatic, hR4300iLocation, hFunctionlist,
-    hAddButton, hRemoveButton, hRemoveAllButton;
+    hAddButton, hRemoveButton, hRemoveAllButton,
+	hTypeExec, hTypeRead, hTypeWrite, hTypeReadWrite;
 static BOOL InBPWindow = FALSE;
 static FARPROC RefProc;
 int RSPBP_count;
 
-int Add_R4300iBPoint( DWORD Location, int Confirm ) {
+int Add_R4300iBPoint( DWORD Location ) {
 	int count;
 
-	if (NoOfBpoints == MaxBPoints) { 
+	if (NoOfBpoints == MaxBPoints) {
 		DisplayError("Max amount of Break Points set");
 		return FALSE;
 	}
@@ -72,56 +77,54 @@ int Add_R4300iBPoint( DWORD Location, int Confirm ) {
 		}
 	}
 
-	if (Confirm) {
-		char Message[150], Label[100];
-		int Response;
-
-		sprintf(Label,"%s", LabelName(Location));
-		sprintf(Message,"0x%08X", Location);
-		if(strcmp(Label,Message) == 0) {
-			sprintf(Message,"Break when:\n\nR4300i's Program Counter = 0x%08X\n\nIs this correct?",
-				Location); 
-		} else {
-			sprintf(Message,"Break on:\n\n%s (R4300i PC = 0x%08X)\n\nIs this correct?",
-				Label, Location); 
-		}
-		Response = MessageBox(BPoint_Win_hDlg, Message, AppName, MB_YESNO | MB_ICONINFORMATION);
-		if (Response == IDNO) {
-			return FALSE;
-		}
-	}
 	BPoint[NoOfBpoints].Location = Location;
 	NoOfBpoints += 1;
 	RefreshBreakPoints();
 	/*if (CPU_Action.Stepping || hMipsCPU == NULL) {
-		ClearAllx86Code();	
+		ClearAllx86Code();
 	} else {
 		CPU_Action.ResetX86Code = TRUE;
-		CPU_Action.do_or_check_something += 1; 
-	}*/	
+		CPU_Action.do_or_check_something += 1;
+	}*/
 	return TRUE;
 }
 
 void BPoint_AddButtonPressed (void) {
 	DWORD Selected, Location;
-	char Title[10];
+	char Address[10];
 	TC_ITEM item;
 
 	item.mask = TCIF_PARAM;
 	TabCtrl_GetItem( hTab, TabCtrl_GetCurSel( hTab ), &item );
 	switch( item.lParam ) {
 	case R4300i_BP:
-		GetWindowText(hR4300iLocation,Title,sizeof(Title));
-		if (!Add_R4300iBPoint(AsciiToHex(Title),TRUE )) {
-			SendMessage(hR4300iLocation,EM_SETSEL,(WPARAM)0,(LPARAM)-1);
-			SetFocus(hR4300iLocation);	
+	{
+		int BreakType = 0;
+		if (SendMessage(hTypeRead, BM_GETCHECK, 0, 0) == BST_CHECKED) {
+			BreakType = 1;
+		} else if (SendMessage(hTypeWrite, BM_GETCHECK, 0, 0) == BST_CHECKED) {
+			BreakType = 2;
+		} else if (SendMessage(hTypeReadWrite, BM_GETCHECK, 0, 0) == BST_CHECKED) {
+			BreakType = 3;
+		}
+
+		GetWindowText(hR4300iLocation, Address, sizeof(Address));
+		if (BreakType == 0) {
+			if (!Add_R4300iBPoint(AsciiToHex(Address))) {
+				SendMessage(hR4300iLocation, EM_SETSEL, (WPARAM)0, (LPARAM)-1);
+				SetFocus(hR4300iLocation);
+			}
+		} else {
+			AddWatchPoint(AsciiToHex(Address), BreakType);
+			RefreshBreakPoints();
 		}
 		break;
+	}
 	case R4300i_FUNCTION:
 		Selected = SendMessage(hFunctionlist,CB_GETCURSEL,0,0);
 		Location = SendMessage(hFunctionlist,CB_GETITEMDATA,(WPARAM)Selected,0);
-		Add_R4300iBPoint(Location,TRUE );
-		SetFocus(hFunctionlist);	
+		Add_R4300iBPoint(Location);
+		SetFocus(hFunctionlist);
 		break;
 	case RSP_BP:
 		if (RspDebug.UseBPoints) { RspDebug.Add_BPoint(); }
@@ -130,7 +133,7 @@ void BPoint_AddButtonPressed (void) {
 
 }
 
-LRESULT CALLBACK BPoint_Proc (HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam) {	
+LRESULT CALLBACK BPoint_Proc (HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam) {
 	static RECT rcDisp;
 	static int CurrentPanel = R4300i_BP;
 	int selected;
@@ -156,12 +159,12 @@ LRESULT CALLBACK BPoint_Proc (HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam
 		switch (((NMHDR *)lParam)->code) {
 		case TCN_SELCHANGE:
 			InvalidateRect( hTab, &rcDisp, TRUE );
-			HideBPointPanel (CurrentPanel);			
+			HideBPointPanel (CurrentPanel);
 			item.mask = TCIF_PARAM;
 			TabCtrl_GetItem( hTab, TabCtrl_GetCurSel( hTab ), &item );
 			CurrentPanel = item.lParam;
 			InvalidateRect( hStatic, NULL, FALSE );
-			ShowBPointPanel ( CurrentPanel );			
+			ShowBPointPanel ( CurrentPanel );
 			break;
 		}
 		break;
@@ -173,13 +176,17 @@ LRESULT CALLBACK BPoint_Proc (HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam
 		case IDC_REMOVE_BUTTON:
 			selected = SendMessage(hList,LB_GETCURSEL,0,0);
 			if (selected < NoOfBpoints) {
-				DWORD location;
-				location = SendMessage(hList,LB_GETITEMDATA,selected,0);
+				DWORD location = SendMessage(hList,LB_GETITEMDATA,selected,0);
 				RemoveR4300iBreakPoint(location);
 				break;
 			}
-			selected -= NoOfBpoints;
-			if (selected < RSPBP_count) {
+			if (selected - NoOfBpoints < CountWatchPoints()) {
+				DWORD location = SendMessage(hList, LB_GETITEMDATA, selected, 0);
+				RemoveWatchPoint(location);
+				RefreshBreakPoints();
+				break;
+			}
+			if (selected - NoOfBpoints - CountWatchPoints() < RSPBP_count) {
 				RspDebug.RemoveBpoint(hList,SendMessage(hList,LB_GETCURSEL,0,0));
 				break;
 			}
@@ -187,6 +194,7 @@ LRESULT CALLBACK BPoint_Proc (HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam
 			break;
 		case IDC_REMOVEALL_BUTTON:
 			NoOfBpoints = 0;
+			RemoveAllWatchPoints();
 			if (RspDebug.UseBPoints) { RspDebug.RemoveAllBpoint(); }
 			RefreshBreakPoints();
 			RefreshR4300iCommands();
@@ -205,7 +213,7 @@ LRESULT CALLBACK BPoint_Proc (HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam
 
 int CheckForR4300iBPoint ( DWORD Location ) {
 	int count;
-	
+
 	for (count = 0; count < NoOfBpoints; count ++){
 		if (BPoint[count].Location == Location) {
 			return TRUE;
@@ -224,10 +232,10 @@ void __cdecl Create_BPoint_Window (int Child) {
 	} else {
 		if (!InBPWindow) {
 			CloseHandle(CreateThread(NULL,0,(LPTHREAD_START_ROUTINE)Create_BPoint_Window,
-				(LPVOID)TRUE,0, &ThreadID));	
+				(LPVOID)TRUE,0, &ThreadID));
 		} else {
 			BringWindowToTop(BPoint_Win_hDlg);
-		}	
+		}
 	}
 }
 
@@ -260,12 +268,12 @@ void Paint_BPoint_Win (HWND hDlg) {
 	rcBox.right  = 252;
 	rcBox.bottom = 287;
 	DrawEdge( ps.hdc, &rcBox, EDGE_ETCHED, BF_RECT );
-	
+
 	hOldFont = SelectObject(ps.hdc,GetStockObject(DEFAULT_GUI_FONT));
 	OldBkMode = SetBkMode( ps.hdc, TRANSPARENT );
-		
+
 	TextOut( ps.hdc, 9,159,"Breakpoints: ",13);
-		
+
 	SelectObject( ps.hdc,hOldFont );
 	SetBkMode( ps.hdc, OldBkMode );
 
@@ -280,10 +288,11 @@ void __cdecl RefreshBreakPoints (void) {
 
 	SendMessage(hList,LB_RESETCONTENT,0,0);
 	for (count = 0; count < NoOfBpoints; count ++ ) {
-		sprintf(Message," at 0x%08X (r4300i)", BPoint[count].Location);
-		SendMessage(hList,LB_ADDSTRING,0,(LPARAM)Message);	
-		SendMessage(hList,LB_SETITEMDATA,count,(LPARAM)BPoint[count].Location);	
+		sprintf(Message," at 0x%08X (r4300i x--)", BPoint[count].Location);
+		SendMessage(hList,LB_ADDSTRING,0,(LPARAM)Message);
+		SendMessage(hList,LB_SETITEMDATA,count,(LPARAM)BPoint[count].Location);
 	}
+	RefreshWatchPoints(hList);
 	count = SendMessage(hList,LB_GETCOUNT,0,0);
 	if (RspDebug.UseBPoints) { RspDebug.RefreshBpoints(hList); }
 	RSPBP_count = SendMessage(hList,LB_GETCOUNT,0,0) - count;
@@ -318,8 +327,7 @@ LRESULT CALLBACK RefreshBPProc( HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lPar
 		TabCtrl_GetItem( hTab, TabCtrl_GetCurSel( hTab ), &item );
 		switch (item.lParam) {
 		case R4300i_BP:
-			TextOut( ps.hdc, 29,60,"Break when the Program Counter equals",37);
-			TextOut( ps.hdc, 59,85,"0x",2);
+			TextOut( ps.hdc, 29,60,"Virtual Address:",16);
 			break;
 		case R4300i_FUNCTION:
 			TextOut( ps.hdc, 75,60,"Break on label:",15);
@@ -328,7 +336,7 @@ LRESULT CALLBACK RefreshBPProc( HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lPar
 			if (RspDebug.UseBPoints) { RspDebug.PaintBPPanel(ps); }
 			break;
 		}
-		
+
 		SelectObject( ps.hdc,hOldFont );
 		SetBkMode( ps.hdc, OldBkMode );
 
@@ -342,27 +350,27 @@ LRESULT CALLBACK RefreshBPProc( HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lPar
 
 void RemoveR4300iBreakPoint (DWORD Location) {
 	int count, location = -1;
-	
+
 	for (count = 0; count < NoOfBpoints; count ++){
 		if (BPoint[count].Location == Location) {
 			location = count;
 			count = NoOfBpoints;
 		}
 	}
-	
+
 	if (location >= 0) {
-		for (count = location; count < NoOfBpoints - 1; count ++ ){ 
+		for (count = location; count < NoOfBpoints - 1; count ++ ){
 			BPoint[count].Location = BPoint[count + 1].Location;
 		}
 		NoOfBpoints -= 1;
 		RefreshBreakPoints ();
 	}
-	
+
 	/*if (CPU_Action.Stepping || hMipsCPU == NULL) {
-		ClearAllx86Code();	
+		ClearAllx86Code();
 	} else {
 		CPU_Action.ResetX86Code = TRUE;
-		CPU_Action.do_or_check_something += 1; 
+		CPU_Action.do_or_check_something += 1;
 	}*/
 }
 
@@ -374,22 +382,22 @@ void Setup_BPoint_Win (HWND hDlg) {
 	hAddButton = CreateWindowEx(0,"BUTTON","&Add",
 		BS_PUSHBUTTON | WS_CHILD | WS_VISIBLE | WS_TABSTOP,
 		262,26,75,22,hDlg,(HMENU)IDOK,
-		hInst,NULL );	
+		hInst,NULL );
 	if ( hAddButton ) {
 		SendMessage(hAddButton,WM_SETFONT,(WPARAM)GetStockObject(DEFAULT_GUI_FONT),0);
 	}
 
 	hRemoveButton = CreateWindowEx(0,"BUTTON","&Remove",
-		WS_CHILD | BS_PUSHBUTTON | WS_VISIBLE | WS_TABSTOP | 
+		WS_CHILD | BS_PUSHBUTTON | WS_VISIBLE | WS_TABSTOP |
 		WS_DISABLED,262,177,75,22,hDlg,(HMENU)IDC_REMOVE_BUTTON,
-		hInst,NULL );	
+		hInst,NULL );
 	if ( hRemoveButton ) {
 		SendMessage(hRemoveButton,WM_SETFONT,(WPARAM)GetStockObject(DEFAULT_GUI_FONT),0);
 	}
 
 	hRemoveAllButton = CreateWindowEx(0,"BUTTON","Remove A&ll", WS_CHILD |
 		BS_PUSHBUTTON | WS_VISIBLE | WS_TABSTOP | WS_DISABLED,262,202,75,22,hDlg,
-		(HMENU)IDC_REMOVEALL_BUTTON,hInst,NULL );	
+		(HMENU)IDC_REMOVEALL_BUTTON,hInst,NULL );
 	if ( hRemoveAllButton ) {
 		SendMessage(hRemoveAllButton,WM_SETFONT,(WPARAM)GetStockObject(DEFAULT_GUI_FONT),0);
 	}
@@ -398,46 +406,63 @@ void Setup_BPoint_Win (HWND hDlg) {
 		5,6,250,150,hDlg,(HMENU)IDC_TAB_CONTROL,hInst,NULL );
 	if (hTab) {
 		TC_ITEM item;
-		
+
 		SendMessage(hTab, WM_SETFONT, (WPARAM)GetStockObject( DEFAULT_GUI_FONT ), 0 );
 		item.mask    = TCIF_TEXT | TCIF_PARAM;
 		item.pszText = " R4300i ";
 		item.lParam  = R4300i_BP;
-		TabCtrl_InsertItem( hTab,0, &item);		
+		TabCtrl_InsertItem( hTab,0, &item);
 		if (NoOfMapEntries != 0) {
 			item.mask    = TCIF_TEXT | TCIF_PARAM;
 			item.pszText = " Function ";
 			item.lParam  = R4300i_FUNCTION;
-			TabCtrl_InsertItem( hTab,1, &item);		
+			TabCtrl_InsertItem( hTab,1, &item);
 		}
-		if (RspDebug.UseBPoints) { 
+		if (RspDebug.UseBPoints) {
 			RECT rcBox;
 			rcBox.left   = 15;  rcBox.top    = 40;
 			rcBox.right  = 235; rcBox.bottom = 125;
 			item.mask    = TCIF_TEXT | TCIF_PARAM;
 			item.pszText = RspDebug.BPPanelName;
 			item.lParam  = RSP_BP;
-			TabCtrl_InsertItem( hTab,2, &item);	
+			TabCtrl_InsertItem( hTab,2, &item);
 			RspDebug.CreateBPPanel(hDlg,rcBox);
 		}
 	}
 
-	hR4300iLocation = CreateWindowEx(0,"EDIT","", WS_CHILD | WS_VISIBLE | WS_BORDER | 
-		ES_UPPERCASE | WS_TABSTOP,83,90,100,17,hDlg,(HMENU)IDC_LOCATION_EDIT,hInst,NULL);		
+	hR4300iLocation = CreateWindowEx(0,"EDIT","", WS_CHILD | WS_VISIBLE | WS_BORDER |
+		ES_UPPERCASE | WS_TABSTOP,115,65,100,17,hDlg,(HMENU)IDC_LOCATION_EDIT,hInst,NULL);
 	if (hR4300iLocation) {
-		char Title[20];
+		char Address[20];
 		SendMessage(hR4300iLocation,WM_SETFONT,(WPARAM)GetStockObject(DEFAULT_GUI_FONT),0);
 		SendMessage(hR4300iLocation,EM_SETLIMITTEXT,(WPARAM)8,(LPARAM)0);
-		sprintf(Title,"%08X",PROGRAM_COUNTER);
-		SetWindowText(hR4300iLocation,Title);
+		sprintf(Address,"%08X",PROGRAM_COUNTER);
+		SetWindowText(hR4300iLocation, Address);
 	}
+
+	hTypeExec = CreateWindowEx(0, "BUTTON", "Exec", WS_CHILD | WS_VISIBLE | WS_TABSTOP |
+		BS_AUTORADIOBUTTON, 40, 85, 45, 21, hDlg, (HMENU)IDC_TYPE_EXEC, hInst, NULL);
+	SendMessage(hTypeExec, BM_SETCHECK, BST_CHECKED, 0);
+	SendMessage(hTypeExec, WM_SETFONT, (WPARAM)GetStockObject(DEFAULT_GUI_FONT), 0);
+
+	hTypeRead = CreateWindowEx(0, "BUTTON", "Read", WS_CHILD | WS_VISIBLE |
+		BS_AUTORADIOBUTTON, 40, 106, 50, 21, hDlg, (HMENU)IDC_TYPE_READ, hInst, NULL);
+	SendMessage(hTypeRead, WM_SETFONT, (WPARAM)GetStockObject(DEFAULT_GUI_FONT), 0);
+
+	hTypeWrite = CreateWindowEx(0, "BUTTON", "Write", WS_CHILD | WS_VISIBLE |
+		BS_AUTORADIOBUTTON, 90, 106, 50, 21, hDlg, (HMENU)IDC_TYPE_WRITE, hInst, NULL);
+	SendMessage(hTypeWrite, WM_SETFONT, (WPARAM)GetStockObject(DEFAULT_GUI_FONT), 0);
+
+	hTypeReadWrite = CreateWindowEx(0, "BUTTON", "Read/Write", WS_CHILD | WS_VISIBLE |
+		BS_AUTORADIOBUTTON, 140, 106, 80, 21, hDlg, (HMENU)IDC_TYPE_READ_WRITE, hInst, NULL);
+	SendMessage(hTypeReadWrite, WM_SETFONT, (WPARAM)GetStockObject(DEFAULT_GUI_FONT), 0);
 
 	hFunctionlist = CreateWindowEx(0,"COMBOBOX","", WS_CHILD | WS_VSCROLL |
 		CBS_DROPDOWNLIST | CBS_SORT | WS_TABSTOP,55,90,150,150,hDlg,
-		(HMENU)IDC_FUNCTION_COMBO,hInst,NULL);		
+		(HMENU)IDC_FUNCTION_COMBO,hInst,NULL);
 	if (hFunctionlist) {
 		DWORD count, pos;
-		
+
 		SendMessage(hFunctionlist,WM_SETFONT,(WPARAM)GetStockObject(DEFAULT_GUI_FONT),0);
 		for (count = 0; count < NoOfMapEntries; count ++ ) {
 			pos = SendMessage(hFunctionlist,CB_ADDSTRING,(WPARAM)0,(LPARAM)MapTable[count].Label);
@@ -452,9 +477,9 @@ void Setup_BPoint_Win (HWND hDlg) {
 		SendMessage(hList,WM_SETFONT, (WPARAM)GetStockObject(DEFAULT_GUI_FONT),0);
 	}
 
-	hStatic = CreateWindowEx(0,"STATIC","", WS_CHILD | WS_VISIBLE, 5,6,250,150,hDlg,0,hInst,NULL );
-	RefProc = (FARPROC)SetWindowLong( hStatic,GWL_WNDPROC,(long)RefreshBPProc);
-	
+	hStatic = CreateWindowEx(0, "STATIC", "", WS_CHILD | WS_VISIBLE, 5, 6, 250, 150, hDlg, 0, hInst, NULL);
+	RefProc = (FARPROC)SetWindowLong(hStatic, GWL_WNDPROC, (long)RefreshBPProc);
+
 	SetWindowText(hDlg," Breakpoints");
 
 	if ( !GetStoredWinPos( "Break Point", &X, &Y ) ) {
@@ -477,7 +502,7 @@ void UpdateBPointGUI (void) {
 	DWORD count;
 
 	if (!InBPWindow) { return; }
-	
+
 	if (TabCtrl_GetCurSel(hTab) != 0) {
 		InvalidateRect( hTab, NULL, TRUE );
 		item.mask = TCIF_PARAM;
@@ -488,7 +513,7 @@ void UpdateBPointGUI (void) {
 		InvalidateRect( hStatic, NULL, FALSE );
 		ShowBPointPanel ( item.lParam );
 	}
-	
+
 	for (count = TabCtrl_GetItemCount(hTab); count > 1; count--) {
 		TabCtrl_DeleteItem(hTab, count - 1);
 	}
@@ -499,14 +524,14 @@ void UpdateBPointGUI (void) {
 		item.lParam  = R4300i_FUNCTION;
 		TabCtrl_InsertItem( hTab,1, &item);
 	}
-	if (RspDebug.UseBPoints) { 
+	if (RspDebug.UseBPoints) {
 		RECT rcBox;
 		rcBox.left   = 15;  rcBox.top    = 40;
 		rcBox.right  = 235; rcBox.bottom = 125;
 		item.mask    = TCIF_TEXT | TCIF_PARAM;
 		item.pszText = RspDebug.BPPanelName;
 		item.lParam  = RSP_BP;
-		TabCtrl_InsertItem( hTab,2, &item);	
+		TabCtrl_InsertItem( hTab,2, &item);
 		RspDebug.CreateBPPanel(BPoint_Win_hDlg, rcBox);
 	}
 	InvalidateRect( BPoint_Win_hDlg, NULL, TRUE );
@@ -515,7 +540,7 @@ void UpdateBPointGUI (void) {
 
 void UpdateBP_FunctionList (void) {
 	DWORD pos, count;
-	
+
 	if (!InBPWindow) { return; }
 
 	SendMessage(hFunctionlist,CB_RESETCONTENT,(WPARAM)0,(LPARAM)0);

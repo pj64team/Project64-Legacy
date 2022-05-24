@@ -1,8 +1,7 @@
 /*
  * Project 64 - A Nintendo 64 emulator.
  *
- * (c) Copyright 2001 zilmar (zilmar@emulation64.com) and 
- * Jabo (jabo@emulation64.com).
+ * (c) Copyright 2022 parasyte (jay@kodewerx.org)
  *
  * pj64 homepage: www.pj64.net
  *
@@ -23,16 +22,22 @@
  * should be forwarded to them so if they want them.
  *
  */
-#include "Main.h"
 
-#include "BreakPoints.h"
-#include "WatchPoints.h"
-#include "R4300i Registers.h"
-#include "R4300i Memory.h"
-#include "TLB Display.h"
-#include "Logging.h"
-//#include "Reverse Code.h"
+#ifndef __watchpoints_h
+#define __watchpoints_h
 
-#include "R4300i Commands.h"
-#include "mapping.h"
-#include "CPU Log.h"
+typedef enum {
+	READ = 1,
+	WRITE,
+	READ_WRITE,
+} WATCH_TYPE;
+
+void InitWatchPoints(void);
+void AddWatchPoint(DWORD Location, WATCH_TYPE Type);
+void RemoveWatchPoint(DWORD Location);
+void RemoveAllWatchPoints(void);
+BOOL CheckForWatchPoint(DWORD Location, WATCH_TYPE Type);
+int CountWatchPoints(void);
+void RefreshWatchPoints(HWND hList);
+
+#endif
