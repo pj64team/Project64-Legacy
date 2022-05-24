@@ -230,6 +230,44 @@ int ApplyCheatEntry(GAMESHARK_CODE* Code, BOOL Execute) {
 
 	switch (Code->Command & 0xFF000000) {
 		// Gameshark / AR
+	case 0x40000000:
+	{
+		// Write bytes with virtual addresses (supports TLB mapping)
+		Address = Code[1].Command;
+		int count = Code[1].Value + 1;
+		int i;
+		for (i = 0; i < count; i += 2) {
+			switch (i % 6) {
+			case 0:
+				Memory = Code[(i / 6) + 2].Command >> 16;
+				break;
+			case 2:
+				Memory = Code[(i / 6) + 2].Command;
+				break;
+			default:
+				Memory = Code[(i / 6) + 2].Value;
+				break;
+			}
+			r4300i_SH_VAddr(Address, Memory);
+			Address += 2;
+		}
+		if (count % 2) {
+			switch (i % 6) {
+			case 0:
+				Memory = Code[(i / 6) + 2].Command >> 24;
+				break;
+			case 2:
+				Memory = Code[(i / 6) + 2].Command >> 8;
+				break;
+			default:
+				Memory = Code[(i / 6) + 2].Value >> 8;
+				break;
+			}
+			r4300i_SB_VAddr(Address, (BYTE)Memory);
+		}
+
+		return (count / 6) + (count % 6 ? 1 : 0) + 2;
+	}
 	case 0x50000000:													// Added by Witten (witten@pj64cheats.net)
 	{
 		int numrepeats = (Code->Command & 0x0000FF00) >> 8;
