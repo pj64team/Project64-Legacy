@@ -554,7 +554,8 @@ void LoadRomOptions(void) {
 	}
 	RdramSize = NewRamSize;
 	CPU_Type = SystemCPU_Type;
-	if (RomCPUType != CPU_Default) { CPU_Type = RomCPUType; }
+	if (HaveDebugger) { CPU_Type = CPU_Interpreter; }
+	else if (RomCPUType != CPU_Default) { CPU_Type = RomCPUType; }
 	CountPerOp = RomCF;
 	if (CountPerOp < 1 || CountPerOp > 6)
 		CountPerOp = Default_CountPerOp;

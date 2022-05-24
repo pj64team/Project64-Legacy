@@ -604,6 +604,7 @@ int InitalizeApplication(HINSTANCE hInstance) {
 	}
 	LoadRomBrowserColumnInfo();
 	InitilizeInitialCompilerVariable();
+	InitWatchPoints();
 	return TRUE;
 }
 

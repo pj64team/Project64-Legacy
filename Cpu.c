@@ -1179,6 +1179,7 @@ void SetCoreToRunning  ( void ) {
 
 void SetCoreToStepping ( void ) {
 	CPU_Action.Stepping = TRUE;
+	CPU_Action.DoSomething = FALSE;
 }
 
 void SetCoreToSkipping(void) {
