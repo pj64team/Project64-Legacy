@@ -367,8 +367,8 @@ void RemoveR4300iBreakPoint (DWORD Location) {
 }
 
 void Setup_BPoint_Win (HWND hDlg) {
-#define WindowWidth  350
-#define WindowHeight 320
+#define WindowWidth  380
+#define WindowHeight 350
 	DWORD X, Y;
 
 	hAddButton = CreateWindowEx(0,"BUTTON","&Add",

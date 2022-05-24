@@ -188,12 +188,12 @@ LRESULT CALLBACK Memory_Window_Proc (HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM
 		rcBox.left   = 5;
 		rcBox.top    = 5;
 		rcBox.right  = 666;
-		rcBox.bottom = 310;
+		rcBox.bottom = 358;
 		DrawEdge( ps.hdc, &rcBox, EDGE_RAISED, BF_RECT );
 		rcBox.left   = 8;
 		rcBox.top    = 8;
 		rcBox.right  = 663;
-		rcBox.bottom = 307;
+		rcBox.bottom = 355;
 		DrawEdge( ps.hdc, &rcBox, EDGE_ETCHED, BF_RECT );
 		EndPaint( hDlg, &ps );
 		return TRUE;
@@ -282,8 +282,8 @@ void __cdecl Refresh_Memory ( void ) {
 }
 
 void Setup_Memory_Window (HWND hDlg) {
-#define WindowWidth  683
-#define WindowHeight 341
+#define WindowWidth  690
+#define WindowHeight 405
 	DWORD X, Y;
 	
 	hVAddr = CreateWindowEx(0,"BUTTON", "Virtual Addressing", WS_CHILD | WS_VISIBLE | 
@@ -294,7 +294,7 @@ void Setup_Memory_Window (HWND hDlg) {
 		BS_AUTORADIOBUTTON, 375,13,155,21,hDlg,(HMENU)IDC_PADDR,hInst,NULL );
 
 	hList = CreateWindowEx(WS_EX_CLIENTEDGE,WC_LISTVIEW, "", WS_CHILD | WS_VISIBLE | 
-		/*LVS_OWNERDRAWFIXED | */ LVS_REPORT | LVS_NOSORTHEADER, 14,39,622,261,hDlg,
+		/*LVS_OWNERDRAWFIXED | */ LVS_REPORT | LVS_NOSORTHEADER, 14,39,625,310,hDlg,
 		(HMENU)IDC_LIST_VIEW,hInst,NULL );
 	if (hList) {
 		LV_COLUMN  col;
@@ -335,7 +335,7 @@ void Setup_Memory_Window (HWND hDlg) {
 	SendMessage(hAddrEdit,WM_SETFONT, (WPARAM)GetStockObject(ANSI_FIXED_FONT),0);
 
 	hScrlBar = CreateWindowEx(WS_EX_STATICEDGE, "SCROLLBAR","", WS_CHILD | WS_VISIBLE | 
-		WS_TABSTOP | SBS_VERT, 635,39,18,260, hDlg, (HMENU)IDC_SCRL_BAR, hInst, NULL );
+		WS_TABSTOP | SBS_VERT, 635,39,20,310, hDlg, (HMENU)IDC_SCRL_BAR, hInst, NULL );
 	if (hScrlBar) {
 		SCROLLINFO si;
 
