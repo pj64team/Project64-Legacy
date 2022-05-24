@@ -496,8 +496,8 @@ LRESULT CALLBACK R4300i_Commands_Proc (HWND hDlg, UINT uMsg, WPARAM wParam, LPAR
 }
 
 void R4300i_Commands_Setup ( HWND hDlg ) {
-#define WindowWidth  457
-#define WindowHeight 494
+#define WindowWidth  480
+#define WindowHeight 520
 	DWORD X, Y;
 	
 	hList = CreateWindowEx(WS_EX_STATICEDGE, "LISTBOX","", WS_CHILD | WS_VISIBLE | 
