@@ -276,6 +276,9 @@
     <ClCompile Include="Cheats_Preprocessor.c">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="WatchPoints.cpp">
+      <Filter>Source Files\Debugger Source</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BreakPoints.h">
@@ -487,6 +490,9 @@
     </ClInclude>
     <ClInclude Include="xxhash64.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="WatchPoints.h">
+      <Filter>Header Files\Debugger Headers</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

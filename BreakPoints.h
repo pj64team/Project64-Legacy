@@ -27,7 +27,7 @@
 #define __breakpoints_h 
 
 void __cdecl Enter_BPoint_Window    ( void );
-int  Add_R4300iBPoint       ( DWORD Location, int Confirm );
+int  Add_R4300iBPoint       ( DWORD Location );
 int  CheckForR4300iBPoint   ( DWORD Location );
 void __cdecl RefreshBreakPoints     ( void );
 void RemoveR4300iBreakPoint ( DWORD Location );
