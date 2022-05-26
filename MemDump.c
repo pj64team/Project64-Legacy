@@ -277,7 +277,7 @@ void DumpPCAndDisassembled (HWND hDlg, DWORD startAddress, DWORD endAddress) {
 			}	
 
 			if (validOpCode) {
-				if (SelfModCheck == ModCode_ChangeMemory) {
+				if (CPU_Type == CPU_Recompiler && SelfModCheck == ModCode_ChangeMemory) {
 					if ( (OpCode >> 16) == 0x7C7C) {
 						OpCode = OrigMem[(OpCode & 0xFFFF)].OriginalValue;
 					}
