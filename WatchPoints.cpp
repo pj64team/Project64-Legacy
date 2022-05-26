@@ -73,7 +73,11 @@ BOOL CheckForWatchPoint(DWORD Location, WATCH_TYPE Type) {
 
 	int value = search->second;
 	if (value & (int)Type) {
-		TriggerDebugger(TRUE);
+		TriggerDebugger();
+
+		// Block the CPU thread until resumed by the debugger
+		WaitForSingleObject(CPU_Action.hStepping, INFINITE);
+
 		return TRUE;
 	}
 
