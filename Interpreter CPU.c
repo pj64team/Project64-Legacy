@@ -675,49 +675,33 @@ void BuildInterpreter (void ) {
 	R4300i_CoP1_L[63] = R4300i_UnknownOpcode;	
 }
 
-BOOL WatchPointHit = FALSE;
-
 void ExecuteInterpreterOpCode (void) {
 	if (!r4300i_LW_VAddr(PROGRAM_COUNTER, &Opcode.Hex)) {
 		DoTLBMiss(NextInstruction == JUMP, PROGRAM_COUNTER);
 		NextInstruction = NORMAL;
 		return;
 	}
+	COUNT_REGISTER += CountPerOp;
+	if (CPU_Type != CPU_SyncCores) { Timers.Timer -= CountPerOp; }
 
-	if (WatchPointHit) {
-		// When resuming execution after a watchpoint triggers, continue executing the rest of the instruction.
-		// PC will finally be incremented, and the CPU will continue running as normal.
-		WatchPointHit = FALSE;
-	} else {
-		COUNT_REGISTER += CountPerOp;
-		if (CPU_Type != CPU_SyncCores) { Timers.Timer -= CountPerOp; }
-
-		RANDOM_REGISTER -= 1;
-		if ((int)RANDOM_REGISTER < (int)WIRED_REGISTER) {
-			RANDOM_REGISTER = 31;
-		}
-
-		((void(_fastcall*)()) R4300i_Opcode[Opcode.BRANCH.op])();
-		if (GPR[0].DW != 0) {
-#ifdef Interpreter_ZeroWrites
-			if (ShowDebugMessages)
-				DisplayError("GPR[0].DW has been written to");
-#endif
-			GPR[0].DW = 0;
-		}
-#ifdef Interpreter_StackTest
-		if (StackValue != GPR[29].UW[0]) {
-			DisplayError("Stack has Been changed");
-		}
-#endif
-
-		// Watchpoints may be triggered by the opcode most recently executed (by the _fastcall line above)
-		if (WatchPointHit) {
-			// Do not increment PC when a watchpoint occurs. This leaves the instruction in a
-			// "half executed" state, but allows the debugger to show the correct instruction address.
-			return;
-		}
+	RANDOM_REGISTER -= 1;
+	if ((int)RANDOM_REGISTER < (int)WIRED_REGISTER) {
+		RANDOM_REGISTER = 31;
 	}
+
+	((void(_fastcall*)()) R4300i_Opcode[Opcode.BRANCH.op])();
+	if (GPR[0].DW != 0) {
+#ifdef Interpreter_ZeroWrites
+		if (ShowDebugMessages)
+			DisplayError("GPR[0].DW has been written to");
+#endif
+		GPR[0].DW = 0;
+	}
+#ifdef Interpreter_StackTest
+	if (StackValue != GPR[29].UW[0]) {
+		DisplayError("Stack has Been changed");
+	}
+#endif
 
 	switch (NextInstruction) {
 	case NORMAL: 
@@ -749,8 +733,6 @@ void ExecuteInterpreterOpCode (void) {
 }
 
 void __cdecl StartInterpreterCPU (void ) { 
-	//DWORD Value, Value2, Addr = 0x80031000;
-
 	if (CoInitialize(NULL) != S_OK)
 		return;
 
@@ -758,7 +740,6 @@ void __cdecl StartInterpreterCPU (void ) {
 
 	if (GfxRomOpen != NULL) { GfxRomOpen(); }
 	if (ContRomOpen != NULL) { ContRomOpen(); }
-	//Add_R4300iBPoint(0x802000C8,FALSE);
 	__try {
 		for (;;) {
 			if (HaveDebugger) {
@@ -766,11 +747,6 @@ void __cdecl StartInterpreterCPU (void ) {
 					TriggerDebugger(FALSE);
 				}
 
-				//r4300i_LW_VAddr(Addr,&Value);
-				//if (Value2 != Value) {
-				//	DisplayError("%X changed",Addr);
-				//}
-				//Value2 = Value;
 				if (CPU_Action.Stepping) {
 					do {
 						if (CPU_Action.Skipping == TRUE) {
@@ -805,18 +781,13 @@ void TestInterpreterJump (DWORD PC, DWORD TargetPC, int Reg1, int Reg2) {
 	InPermLoop();
 }
 
-void TriggerDebugger(BOOL IsWatchPoint) {
-	WatchPointHit = IsWatchPoint;
+void TriggerDebugger(void) {
 	UpdateCurrentR4300iRegisterPanel();
 	Refresh_Memory();
 	if (InR4300iCommandsWindow) {
 		Enter_R4300i_Commands_Window();
 		SetR4300iCommandViewto(PROGRAM_COUNTER);
-		if (CPU_Action.Stepping) {
-			//	DisplayError ( "Encounted a R4300i Breakpoint" );
-		}
-		else {
-			//	DisplayError ( "Encounted a R4300i Breakpoint\n\nNow Stepping" );
+		if (!CPU_Action.Stepping) {
 			SetR4300iCommandToStepping();
 		}
 	}
