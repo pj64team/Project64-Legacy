@@ -23,7 +23,7 @@
  *
  */
 
-#include <afxtempl.h>
+#include <unordered_map>
 #include <windows.h>
 
 extern "C" {
@@ -33,10 +33,10 @@ extern "C" {
 	#include "cpu.h"
 }
 
-CMap<DWORD, DWORD, int, int> WatchPoints;
+std::unordered_map<DWORD, int> *WatchPoints = NULL;
 
 void InitWatchPoints(void) {
-	// Default size is 17.
+	// Default size is implementation-defined (may as well be unknown).
 	//
 	// Since we are using the hash table to quickly avoid false positives with a large
 	// keyspace (32-bit virtual addresses) the hash table size should be selected so that
@@ -44,54 +44,55 @@ void InitWatchPoints(void) {
 	//
 	// Assuming the average number of watchpoints enabled is 5 and we want a 1% hit-rate
 	// (everything else being equal) the optimal size should be 5 / 0.01 = 500.
-	//
-	// The size should also be a prime number, according to MSDN. The first prime
-	// following 500 is 503.
-	const UINT HASH_SIZE = 503;
+	const UINT HASH_SIZE = 500;
 
-	WatchPoints.InitHashTable(HASH_SIZE);
+	WatchPoints = new std::unordered_map<DWORD, int>({}, HASH_SIZE);
 }
 
 void AddWatchPoint(DWORD Location, WATCH_TYPE Type) {
-	WatchPoints[Location] = Type;
+	(*WatchPoints)[Location] = (int)Type;
 }
 
 void RemoveWatchPoint(DWORD Location) {
-	WatchPoints.RemoveKey(Location);
+	WatchPoints->erase(Location);
 }
 
 void RemoveAllWatchPoints(void) {
-	WatchPoints.RemoveAll();
+	WatchPoints->clear();
 }
 
 BOOL CheckForWatchPoint(DWORD Location, WATCH_TYPE Type) {
-	int Value;
-	if (HaveDebugger && !CPU_Action.Stepping && !WatchPoints.IsEmpty() && WatchPoints.Lookup(Location, Value)) {
-		if (Value & (int)Type) {
-			TriggerDebugger(TRUE);
-			return TRUE;
-		}
+	if (!HaveDebugger || CPU_Action.Stepping || WatchPoints->empty()) {
+		return FALSE;
+	}
+
+	auto search = WatchPoints->find(Location);
+	if (search == WatchPoints->end()) {
+		return FALSE;
+	}
+
+	int value = search->second;
+	if (value & (int)Type) {
+		TriggerDebugger(TRUE);
+		return TRUE;
 	}
 
 	return FALSE;
 }
 
 int CountWatchPoints(void) {
-	return WatchPoints.GetCount();
+	return WatchPoints->size();
 }
 
 void RefreshWatchPoints(HWND hList) {
-	char Message[100];
-	POSITION pos = WatchPoints.GetStartPosition();
-	DWORD key;
-	int value;
+	char message[100];
 
-	for (;;) {
-		if (pos == NULL) { break; }
-		WatchPoints.GetNextAssoc(pos, key, value);
+	for (auto iter : *WatchPoints) {
+		DWORD key = iter.first;
+		int value = iter.second;
 
-		sprintf(Message, " at 0x%08X (r4300i %s)", key, (value == READ ? "-r-" : (value == WRITE ? "--w" : "-rw")));
-		SendMessage(hList, LB_ADDSTRING, 0, (LPARAM)Message);
+		sprintf(message, " at 0x%08X (r4300i %s)", key, (value == READ ? "-r-" : (value == WRITE ? "--w" : "-rw")));
+		SendMessage(hList, LB_ADDSTRING, 0, (LPARAM)message);
 		int index = SendMessage(hList, LB_GETCOUNT, 0, 0) - 1;
 		SendMessage(hList, LB_SETITEMDATA, index, (LPARAM)key);
 	}
