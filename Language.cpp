@@ -202,7 +202,7 @@ LANG_STR DefaultString[] = {
 	{ ADVANCE_OVERWRITE,   "Always overwrite default settings with ones from ini?"},
 	{ ADVANCE_COMPRESS,    "Automatically compress instant saves"},
 	{ ADVANCE_CLEAR_MEMORY, "Clear Memory at Start of Emulation"},
-	{ ADVANCE_USEDEBUGGER, "Enable Debugger" },
+	{ ADVANCE_USEDEBUGGER, "Enable Debugger (forces CPU Interpreter)" },
 	{ ADVANCE_SHOREMORERRORS, "Show More Error Messages" },
 
 //Rom Options
