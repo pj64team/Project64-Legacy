@@ -211,7 +211,20 @@ LRESULT CALLBACK Memory_Window_Proc (HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM
 		case IDCANCEL:
 			EndDialog( hDlg, IDCANCEL );
 			break;
+		default:
+			break;
 		}
+		return FALSE;
+	case WM_NOTIFY:
+		switch (((LPNMHDR)lParam)->code) {
+		case HDN_BEGINTRACK:
+			// Disable column resize
+			SetWindowLong(hDlg, DWL_MSGRESULT, TRUE);
+			return TRUE;
+		default:
+			break;
+		}
+		return FALSE;
 	case WM_VSCROLL:
 		if ((HWND)lParam == hScrlBar) {
 			unsigned int location;
