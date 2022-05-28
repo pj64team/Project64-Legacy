@@ -1447,8 +1447,12 @@ void CE_SaveCheat(int item) {
 			if (code == NULL)
 				break;
 
-			if (strcmp(make_cheat.name, code->Name) == 0)
+			if (strcmp(make_cheat.name, code->Name) == 0) {
 				CS_RemoveCodeAt(&cheat_dev, count);
+
+				// Revalidate the iterator
+				count--;
+			}
 		}
 	}
 
