@@ -46,6 +46,7 @@ LRESULT CALLBACK Memory_Window_Proc (HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM
 static HWND Memory_Win_hDlg, hAddrEdit, hVAddr, hPAddr, hRefresh, hList, hScrlBar;
 static HANDLE hRefreshThread = NULL;
 static int InMemoryWindow = FALSE;
+static int wheel = 0;
 
 void __cdecl Create_Memory_Window ( int Child ) {
 	DWORD ThreadID;
@@ -284,6 +285,48 @@ LRESULT CALLBACK Memory_Window_Proc (HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM
 	return TRUE;
 }
 
+LRESULT CALLBACK Memory_ListView_Proc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam, UINT_PTR uIdSubclass, DWORD_PTR dwRefData) {
+	switch (uMsg) {
+	case WM_MOUSEWHEEL:
+	{
+		// Accumulate wheel deltas
+		wheel -= GET_WHEEL_DELTA_WPARAM(wParam);
+		if (abs(wheel) >= WHEEL_DELTA) {
+			int lines = wheel / WHEEL_DELTA;
+			wheel -= lines * WHEEL_DELTA;
+
+			char value[20];
+			GetWindowText(hAddrEdit, value, sizeof(value));
+			unsigned int location = AsciiToHex(value);
+
+			if (lines > 0) {
+				if (UINT_MAX - location >= lines * 256) {
+					location += lines * 16;
+				}
+				else {
+					location = UINT_MAX - 0x0100 + 1;
+				}
+			}
+			else {
+				if (location >= -lines * 16) {
+					location += lines * 16;
+				}
+				else {
+					location = 0;
+				}
+			}
+
+			sprintf(value, "%08X", location);
+			SetWindowText(hAddrEdit, value);
+		}
+
+		return FALSE;
+	}
+	default:
+		return DefSubclassProc(hDlg, uMsg, wParam, lParam);
+	}
+}
+
 void __cdecl Refresh_Memory ( void ) {
 	DWORD location;
 	char Value[20];
@@ -364,6 +407,7 @@ void Setup_Memory_Window (HWND hDlg) {
 		for (count = 0 ; count < 16;count ++ ){
 			Insert_MemoryLineDump (count,count);
 		}
+		SetWindowSubclass(hList, Memory_ListView_Proc, 0, 0);
 	}
 	
 	hAddrEdit = GetDlgItem(hDlg,IDC_ADDR_EDIT);
