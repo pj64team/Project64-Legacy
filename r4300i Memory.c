@@ -285,10 +285,9 @@ LRESULT CALLBACK Memory_Window_Proc (HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM
 	return TRUE;
 }
 
-LRESULT CALLBACK Memory_ListView_Proc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam, UINT_PTR uIdSubclass, DWORD_PTR dwRefData) {
+LRESULT CALLBACK Memory_ListViewScroll_Proc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam, UINT_PTR uIdSubclass, DWORD_PTR dwRefData) {
 	switch (uMsg) {
 	case WM_MOUSEWHEEL:
-	{
 		// Accumulate wheel deltas
 		wheel -= GET_WHEEL_DELTA_WPARAM(wParam);
 		if (abs(wheel) >= WHEEL_DELTA) {
@@ -321,7 +320,6 @@ LRESULT CALLBACK Memory_ListView_Proc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARA
 		}
 
 		return FALSE;
-	}
 	default:
 		return DefSubclassProc(hDlg, uMsg, wParam, lParam);
 	}
@@ -407,7 +405,7 @@ void Setup_Memory_Window (HWND hDlg) {
 		for (count = 0 ; count < 16;count ++ ){
 			Insert_MemoryLineDump (count,count);
 		}
-		SetWindowSubclass(hList, Memory_ListView_Proc, 0, 0);
+		SetWindowSubclass(hList, Memory_ListViewScroll_Proc, 0, 0);
 	}
 	
 	hAddrEdit = GetDlgItem(hDlg,IDC_ADDR_EDIT);
@@ -427,7 +425,8 @@ void Setup_Memory_Window (HWND hDlg) {
 		si.nMax   = 300;
 		si.nPos   = 145;
 		si.nPage  = 10;
-		SetScrollInfo(hScrlBar,SB_CTL,&si,TRUE);		
+		SetScrollInfo(hScrlBar,SB_CTL,&si,TRUE);
+		SetWindowSubclass(hScrlBar, Memory_ListViewScroll_Proc, 0, 0);
 	} 
 	
 	if ( !GetStoredWinPos( "Memory", &X, &Y ) ) {
