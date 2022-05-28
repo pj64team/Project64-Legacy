@@ -36,12 +36,15 @@
 #define IDC_PADDR			0x101
 #define IDC_LIST_VIEW		0x102
 #define IDC_SCRL_BAR		0x103
+#define IDC_REFRESH			0x104
 
 void Setup_Memory_Window (HWND hDlg);
+void Start_Auto_Refresh_Thread(void);
 
 LRESULT CALLBACK Memory_Window_Proc (HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam);
 
-static HWND Memory_Win_hDlg, hAddrEdit, hVAddr, hPAddr, hList, hScrlBar;
+static HWND Memory_Win_hDlg, hAddrEdit, hVAddr, hPAddr, hRefresh, hList, hScrlBar;
+static HANDLE hRefreshThread = NULL;
 static int InMemoryWindow = FALSE;
 
 void __cdecl Create_Memory_Window ( int Child ) {
@@ -208,6 +211,9 @@ LRESULT CALLBACK Memory_Window_Proc (HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM
 		case IDC_PADDR:
 			Refresh_Memory();
 			break;
+		case IDC_REFRESH:
+			Start_Auto_Refresh_Thread();
+			break;
 		case IDCANCEL:
 			EndDialog( hDlg, IDCANCEL );
 			break;
@@ -293,6 +299,25 @@ void __cdecl Refresh_Memory ( void ) {
 	}
 }
 
+void __cdecl Auto_Refresh(void) {
+	for (;;) {
+		Sleep(500);
+
+		if (InMemoryWindow == FALSE || SendMessage(hRefresh, BM_GETCHECK, 0, 0) != BST_CHECKED) {
+			hRefreshThread = NULL;
+			return;
+		}
+
+		Refresh_Memory();
+	}
+}
+
+void Start_Auto_Refresh_Thread(void) {
+	if (hRefreshThread == NULL && SendMessage(hRefresh, BM_GETCHECK, 0, 0) == BST_CHECKED) {
+		hRefreshThread = CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)Auto_Refresh, NULL, 0, NULL);
+	}
+}
+
 void Setup_Memory_Window (HWND hDlg) {
 #define WindowWidth  690
 #define WindowHeight 405
@@ -304,6 +329,11 @@ void Setup_Memory_Window (HWND hDlg) {
 	
 	hPAddr = CreateWindowEx(0,"BUTTON", "Physical Addressing", WS_CHILD | WS_VISIBLE | 
 		BS_AUTORADIOBUTTON, 375,13,155,21,hDlg,(HMENU)IDC_PADDR,hInst,NULL );
+
+	hRefresh = CreateWindowEx(0,"BUTTON", "Auto Refresh", WS_CHILD | WS_VISIBLE |
+		BS_AUTOCHECKBOX, 545,13,100,21,hDlg,(HMENU)IDC_REFRESH,hInst,NULL );
+	SendMessage(hRefresh, BM_SETCHECK, BST_CHECKED, 0);
+	Start_Auto_Refresh_Thread();
 
 	hList = CreateWindowEx(WS_EX_CLIENTEDGE,WC_LISTVIEW, "", WS_CHILD | WS_VISIBLE | 
 		/*LVS_OWNERDRAWFIXED | */ LVS_REPORT | LVS_NOSORTHEADER, 14,39,625,310,hDlg,
