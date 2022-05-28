@@ -208,7 +208,6 @@ LRESULT CALLBACK Memory_Window_Proc (HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM
 		case IDC_PADDR:
 			Refresh_Memory();
 			break;
-		case IDC_CLOSE_BUTTON:
 		case IDCANCEL:
 			EndDialog( hDlg, IDCANCEL );
 			break;
@@ -322,11 +321,7 @@ void Setup_Memory_Window (HWND hDlg) {
 		for (count = 0 ; count < 16;count ++ ){
 			Insert_MemoryLineDump (count,count);
 		}
-
-	}	
-	
-	SetWindowPos(GetDlgItem(hDlg,IDC_CLOSE_BUTTON),NULL, 560,13,90,21, SWP_NOZORDER | 
-		SWP_SHOWWINDOW);
+	}
 	
 	hAddrEdit = GetDlgItem(hDlg,IDC_ADDR_EDIT);
 	SetWindowText(hAddrEdit,"00000000");
