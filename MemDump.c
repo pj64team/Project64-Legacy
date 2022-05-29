@@ -207,7 +207,7 @@ void DumpHexData (HWND hDlg, DWORD startAddress, DWORD endAddress) {
 
 		buffer = (BYTE *)malloc(bufferSize);
 		for (count=0; count<bufferSize-4; count+=4) {
-			r4300i_LW_VAddr(startAddress+count, (DWORD *)&word);
+			r4300i_LW_VAddr_NonCPU(startAddress+count, (DWORD *)&word);
 			buffer[count]=word.UB[3];
 			buffer[count+1]=word.UB[2];
 			buffer[count+2]=word.UB[1];
@@ -267,7 +267,7 @@ void DumpPCAndDisassembled (HWND hDlg, DWORD startAddress, DWORD endAddress) {
 		while (location < endAddress) {
 			validOpCode = TRUE;
 			__try {
-				if (!r4300i_LW_VAddr(location, &OpCode)) {
+				if (!r4300i_LW_VAddr_NonCPU(location, &OpCode)) {
 					fprintf(pFile, " 0x%08X\tCould not resolve address\n", location);
 					validOpCode = FALSE;
 				}

@@ -1454,6 +1454,12 @@ BOOL r4300i_LB_VAddr ( DWORD VAddr, BYTE * Value ) {
 	return TRUE;
 }
 
+BOOL r4300i_LB_VAddr_NonCPU ( DWORD VAddr, BYTE * Value ) {
+	if (TLB_ReadMap[VAddr >> 12] == 0) { return FALSE; }
+	*Value = *(BYTE *)(TLB_ReadMap[VAddr >> 12] + (VAddr ^ 3));
+	return TRUE;
+}
+
 BOOL r4300i_LD_VAddr ( DWORD VAddr, unsigned _int64 * Value ) {
 	CheckForWatchPoint(VAddr, READ);
 
@@ -1483,6 +1489,12 @@ int r4300i_LH_NonMemory ( DWORD PAddr, DWORD * Value, int SignExtend ) {
 BOOL r4300i_LH_VAddr ( DWORD VAddr, WORD * Value ) {
 	CheckForWatchPoint(VAddr, READ);
 
+	if (TLB_ReadMap[VAddr >> 12] == 0) { return FALSE; }
+	*Value = *(WORD *)(TLB_ReadMap[VAddr >> 12] + (VAddr ^ 2));
+	return TRUE;
+}
+
+BOOL r4300i_LH_VAddr_NonCPU ( DWORD VAddr, WORD * Value ) {
 	if (TLB_ReadMap[VAddr >> 12] == 0) { return FALSE; }
 	*Value = *(WORD *)(TLB_ReadMap[VAddr >> 12] + (VAddr ^ 2));
 	return TRUE;
@@ -1751,6 +1763,12 @@ void r4300i_LW_PAddr ( DWORD PAddr, DWORD * Value ) {
 BOOL r4300i_LW_VAddr ( DWORD VAddr, DWORD * Value ) {
 	CheckForWatchPoint(VAddr, READ);
 
+	if (TLB_ReadMap[VAddr >> 12] == 0) { return FALSE; }
+	*Value = *(DWORD *)(TLB_ReadMap[VAddr >> 12] + VAddr);
+	return TRUE;
+}
+
+BOOL r4300i_LW_VAddr_NonCPU ( DWORD VAddr, DWORD * Value ) {
 	if (TLB_ReadMap[VAddr >> 12] == 0) { return FALSE; }
 	*Value = *(DWORD *)(TLB_ReadMap[VAddr >> 12] + VAddr);
 	return TRUE;

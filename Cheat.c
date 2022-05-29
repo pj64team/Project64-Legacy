@@ -316,13 +316,13 @@ int ApplyCheatEntry(GAMESHARK_CODE* Code, BOOL Execute) {
 		break;
 	case 0xD0000000:													// Added by Witten (witten@pj64cheats.net)
 		Address = 0x80000000 | (Code->Command & 0xFFFFFF);
-		r4300i_LB_VAddr(Address, (BYTE*)&Memory);
+		r4300i_LB_VAddr_NonCPU(Address, (BYTE*)&Memory);
 		Memory &= 0x00FF;
 		if (Memory != Code->Value) { Execute = FALSE; }
 		return ApplyCheatEntry(&Code[1], Execute) + 1;
 	case 0xD1000000:													// Added by Witten (witten@pj64cheats.net)
 		Address = 0x80000000 | (Code->Command & 0xFFFFFF);
-		r4300i_LH_VAddr(Address, (WORD*)&Memory);
+		r4300i_LB_VAddr_NonCPU(Address, (WORD*)&Memory);
 		if (Memory != Code->Value) { Execute = FALSE; }
 		return ApplyCheatEntry(&Code[1], Execute) + 1;
 	case 0xD2000000:													// Added by Witten (witten@pj64cheats.net)
@@ -333,7 +333,7 @@ int ApplyCheatEntry(GAMESHARK_CODE* Code, BOOL Execute) {
 		return ApplyCheatEntry(&Code[1], Execute) + 1;
 	case 0xD3000000:													// Added by Witten (witten@pj64cheats.net)
 		Address = 0x80000000 | (Code->Command & 0xFFFFFF);
-		r4300i_LH_VAddr(Address, (WORD*)&Memory);
+		r4300i_LB_VAddr_NonCPU(Address, (WORD*)&Memory);
 		if (Memory == Code->Value) { Execute = FALSE; }
 		return ApplyCheatEntry(&Code[1], Execute) + 1;
 
@@ -368,24 +368,24 @@ int ApplyCheatEntry(GAMESHARK_CODE* Code, BOOL Execute) {
 		break;
 	case 0xB8000000:
 		Address = 0x80000000 | (ConvertXP64Address(Code->Command) & 0xFFFFFF);
-		r4300i_LB_VAddr(Address, (BYTE*)&Memory);
+		r4300i_LB_VAddr_NonCPU(Address, (BYTE*)&Memory);
 		Memory &= 0x00FF;
 		if (Memory != ConvertXP64Value(Code->Value)) { Execute = FALSE; }
 		return ApplyCheatEntry(&Code[1], Execute) + 1;
 	case 0xB9000000:
 		Address = 0x80000000 | (ConvertXP64Address(Code->Command) & 0xFFFFFF);
-		r4300i_LH_VAddr(Address, (WORD*)&Memory);
+		r4300i_LH_VAddr_NonCPU(Address, (WORD*)&Memory);
 		if (Memory != ConvertXP64Value(Code->Value)) { Execute = FALSE; }
 		return ApplyCheatEntry(&Code[1], Execute) + 1;
 	case 0xBA000000:
 		Address = 0x80000000 | (ConvertXP64Address(Code->Command) & 0xFFFFFF);
-		r4300i_LB_VAddr(Address, (BYTE*)&Memory);
+		r4300i_LB_VAddr_NonCPU(Address, (BYTE*)&Memory);
 		Memory &= 0x00FF;
 		if (Memory == ConvertXP64Value(Code->Value)) { Execute = FALSE; }
 		return ApplyCheatEntry(&Code[1], Execute) + 1;
 	case 0xBB000000:
 		Address = 0x80000000 | (ConvertXP64Address(Code->Command) & 0xFFFFFF);
-		r4300i_LH_VAddr(Address, (WORD*)&Memory);
+		r4300i_LH_VAddr_NonCPU(Address, (WORD*)&Memory);
 		if (Memory == ConvertXP64Value(Code->Value)) { Execute = FALSE; }
 		return ApplyCheatEntry(&Code[1], Execute) + 1;
 	case 0: 
