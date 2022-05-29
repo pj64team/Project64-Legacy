@@ -61,6 +61,15 @@ void RemoveAllWatchPoints(void) {
 	WatchPoints->clear();
 }
 
+WATCH_TYPE HasWatchPoint(DWORD Location) {
+	auto search = WatchPoints->find(Location);
+	if (search == WatchPoints->end()) {
+		return NO_WATCH;
+	}
+
+	return (WATCH_TYPE)search->second;
+}
+
 BOOL CheckForWatchPoint(DWORD Location, WATCH_TYPE Type) {
 	if (!HaveDebugger || CPU_Action.Stepping || WatchPoints->empty()) {
 		return FALSE;
