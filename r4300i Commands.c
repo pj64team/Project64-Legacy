@@ -147,7 +147,7 @@ int DisplayR4300iCommand (DWORD location, int InsertPos) {
 
 	Redraw = FALSE;
 	__try {
-		if (!r4300i_LW_VAddr(location, &OpCode)) {
+		if (!r4300i_LW_VAddr_NonCPU(location, &OpCode)) {
 			r4300iCommandLine[InsertPos].Location = location;
 			r4300iCommandLine[InsertPos].status = 0;
 			sprintf(r4300iCommandLine[InsertPos].String," 0x%08X\tCould not resolve address",location);
