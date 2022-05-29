@@ -230,13 +230,13 @@ LRESULT CALLBACK Memory_Window_Proc (HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM
 		TextOut(ps.hdc,25,17,"Address:",8);
 		rcBox.left   = 5;
 		rcBox.top    = 5;
-		rcBox.right  = 731;
-		rcBox.bottom = 358;
+		rcBox.right  = 721;
+		rcBox.bottom = 348;
 		DrawEdge( ps.hdc, &rcBox, EDGE_RAISED, BF_RECT );
 		rcBox.left   = 8;
 		rcBox.top    = 8;
-		rcBox.right  = 728;
-		rcBox.bottom = 355;
+		rcBox.right  = 718;
+		rcBox.bottom = 345;
 		DrawEdge( ps.hdc, &rcBox, EDGE_ETCHED, BF_RECT );
 		EndPaint( hDlg, &ps );
 		return TRUE;
@@ -263,6 +263,10 @@ LRESULT CALLBACK Memory_Window_Proc (HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM
 		return FALSE;
 	case WM_NOTIFY:
 		switch (((LPNMHDR)lParam)->code) {
+		case HDN_BEGINTRACK:
+			// Disable column resize
+			SetWindowLong(hDlg, DWL_MSGRESULT, TRUE);
+			return TRUE;
 		case LVN_GETDISPINFO: {
 			LVITEM item = ((NMLVDISPINFO*)lParam)->item;
 			struct MEMORY_VIEW_ROW* row = &MemoryViewRows[item.iItem];
@@ -453,8 +457,8 @@ void Start_Auto_Refresh_Thread(void) {
 }
 
 void Setup_Memory_Window (HWND hDlg) {
-#define WindowWidth  755
-#define WindowHeight 375
+#define WindowWidth  742
+#define WindowHeight 392
 	DWORD X, Y;
 	
 	hVAddr = CreateWindowEx(0,"BUTTON", "Virtual Addressing", WS_CHILD | WS_VISIBLE | 
@@ -465,12 +469,12 @@ void Setup_Memory_Window (HWND hDlg) {
 		BS_AUTORADIOBUTTON, 375,13,155,21,hDlg,(HMENU)IDC_PADDR,hInst,NULL );
 
 	hRefresh = CreateWindowEx(0,"BUTTON", "Auto Refresh", WS_CHILD | WS_VISIBLE |
-		BS_AUTOCHECKBOX, 610,13,100,21,hDlg,(HMENU)IDC_REFRESH,hInst,NULL );
+		BS_AUTOCHECKBOX, 595,13,100,21,hDlg,(HMENU)IDC_REFRESH,hInst,NULL );
 	SendMessage(hRefresh, BM_SETCHECK, BST_CHECKED, 0);
 	Start_Auto_Refresh_Thread();
 
-	hList = CreateWindowEx(WS_EX_CLIENTEDGE,WC_LISTVIEW, "", WS_CHILD | WS_VISIBLE | 
-		LVS_OWNERDATA | LVS_REPORT | LVS_NOCOLUMNHEADER, 14,39,690,280,hDlg,
+	hList = CreateWindowEx(WS_EX_CLIENTEDGE, WC_LISTVIEW, "", WS_CHILD | WS_VISIBLE |
+		LVS_OWNERDATA | LVS_REPORT | LVS_NOSORTHEADER, 14,39,682,300,hDlg,
 		(HMENU)IDC_LIST_VIEW,hInst,NULL );
 	if (hList) {
 		ListView_SetExtendedListViewStyleEx(hList, LVS_EX_DOUBLEBUFFER, LVS_EX_DOUBLEBUFFER);
@@ -478,19 +482,24 @@ void Setup_Memory_Window (HWND hDlg) {
 		LV_COLUMN  col;
 		int count;
 
-		col.mask = LVCF_FMT | LVCF_WIDTH | LVCF_SUBITEM;
+		col.mask = LVCF_FMT | LVCF_WIDTH | LVCF_TEXT | LVCF_SUBITEM;
 		col.fmt  = LVCFMT_LEFT;
 
+		col.pszText  = "Address";
 		col.cx       = 90;
 		col.iSubItem = 0;
 		ListView_InsertColumn ( hList, 0, &col);
 
+		char ColumnName[3] = { 0 };
+		col.pszText  = ColumnName;
 		col.cx       = 28;
 		for (int i = 0; i < 16; i++) {
+			sprintf(ColumnName, " %X", i);
 			col.iSubItem = i + 1;
 			ListView_InsertColumn(hList, i + 1, &col);
 		}
 
+		col.pszText  = "Memory Ascii";
 		col.cx       = 140;
 		col.iSubItem = 17;
 		ListView_InsertColumn ( hList, 17, &col);
@@ -503,13 +512,13 @@ void Setup_Memory_Window (HWND hDlg) {
 	}
 	
 	hAddrEdit = GetDlgItem(hDlg,IDC_ADDR_EDIT);
-	SetWindowText(hAddrEdit,"00000000");
+	SetWindowText(hAddrEdit,"80000000");
 	SendMessage(hAddrEdit,EM_SETLIMITTEXT,(WPARAM)8,(LPARAM)0);
 	SetWindowPos(hAddrEdit,NULL, 100,13,100,21, SWP_NOZORDER | SWP_SHOWWINDOW);
 	SendMessage(hAddrEdit,WM_SETFONT, (WPARAM)GetStockObject(ANSI_FIXED_FONT),0);
 
-	hScrlBar = CreateWindowEx(WS_EX_STATICEDGE, "SCROLLBAR","", WS_CHILD | WS_VISIBLE | 
-		WS_TABSTOP | SBS_VERT, 700,39,20,280, hDlg, (HMENU)IDC_SCRL_BAR, hInst, NULL );
+	hScrlBar = CreateWindowEx(0, "SCROLLBAR", "", WS_CHILD | WS_VISIBLE |
+		WS_TABSTOP | SBS_VERT, 696,39,20,300, hDlg, (HMENU)IDC_SCRL_BAR, hInst, NULL );
 	if (hScrlBar) {
 		SCROLLINFO si;
 
