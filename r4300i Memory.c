@@ -43,16 +43,39 @@ void Start_Auto_Refresh_Thread(void);
 
 LRESULT CALLBACK Memory_Window_Proc (HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam);
 
+struct MEMORY_VIEW_ROW {
+	unsigned char OldData[16];
+	COLORREF TextColors[16];
+	HFONT Fonts[16];
+	char LocationStr[11];
+	char HexStr[16][3];
+	char AsciiStr[17];
+};
+
+const COLORREF TC_INC			= RGB(0, 180, 0); // Value increased
+const COLORREF TC_DEC			= RGB(180, 0, 0); // Value decreased
+const COLORREF TC_READ			= RGB(0, 0, 255); // Address has read watchpoint
+const COLORREF TC_WRITE			= RGB(255, 0, 255); // Address has write watchpoint
+const COLORREF TC_READ_WRITE	= RGB(128, 0, 255); // Address has read/write watchpoint
+const COLORREF TC_DEFAULT		= RGB(0, 0, 0); // Default text color
+
+const COLORREF BG_EVEN			= RGB(240, 240, 240);
+const COLORREF BG_ODD			= RGB(230, 230, 230);
+const COLORREF BG_DEFAULT		= RGB(255, 255, 255);
+
 static HWND Memory_Win_hDlg, hAddrEdit, hVAddr, hPAddr, hRefresh, hList, hScrlBar;
+static HFONT hWatchFont;
 static HANDLE hRefreshThread = NULL;
 static int InMemoryWindow = FALSE;
 static int wheel = 0;
+static struct MEMORY_VIEW_ROW MemoryViewRows[16];
 
 void __cdecl Create_Memory_Window ( int Child ) {
 	DWORD ThreadID;
 	if ( Child ) {
 		InMemoryWindow = TRUE;
 		DialogBox( hInst, "MEMORY", NULL,(DLGPROC) Memory_Window_Proc );
+		DeleteObject(hWatchFont);
 		InMemoryWindow = FALSE;
 	} else {
 		if (!InMemoryWindow) {
@@ -60,7 +83,7 @@ void __cdecl Create_Memory_Window ( int Child ) {
 				(LPVOID)TRUE,0, &ThreadID);	
 		} else {
 			SetForegroundWindow(Memory_Win_hDlg);
-		}	
+		}
 	}
 }
 
@@ -69,81 +92,115 @@ void __cdecl Enter_Memory_Window ( void ) {
     Create_Memory_Window ( FALSE );
 }
 
-void Insert_MemoryLineDump (unsigned int location, int InsertPos) {
-	char Output[20], Hex[60], Ascii[20], HexAddOn[15], AsciiAddOn[15], OldText[100];
-	LV_ITEM item, OldItem;
-	int count;
-	MIPS_WORD word;
+void Update_Data_Column(struct MEMORY_VIEW_ROW* row, MIPS_WORD word, int index, int i) {
+	sprintf(row->HexStr[index], "%02X", word.UB[3 - i]);
+	row->Fonts[index] = GetStockObject(ANSI_FIXED_FONT);
 
-	location       = location << 4;
-	item.mask      = LVIF_TEXT | LVIF_PARAM;
-	item.iItem     = InsertPos;
-	item.lParam	   = location;
-	sprintf(Output,"0x%08X",location);
-	item.pszText   = Output;
-	item.iSubItem  = 0;
-
-	OldItem.mask       = LVIF_TEXT | LVIF_PARAM;
-	OldItem.iItem      = InsertPos;
-	OldItem.pszText    = OldText;
-	OldItem.cchTextMax = sizeof( OldText )-1;
-	OldItem.iSubItem   = 0;
-	
-	if (ListView_GetItemCount(hList) <= InsertPos) {
-		ListView_InsertItem(hList,&item);
-	} else {
-		ListView_GetItem(hList,&OldItem);
-		if ( strcmp( item.pszText, OldItem.pszText ) != 0 ) {
-			ListView_SetItem(hList,&item);
-		}
+	if (word.UB[3 - i] > row->OldData[index]) {
+		row->TextColors[index] = TC_INC;
+	}
+	else if (word.UB[3 - i] < row->OldData[index]) {
+		row->TextColors[index] = TC_DEC;
+	}
+	else {
+		row->TextColors[index] = TC_DEFAULT;
 	}
 
-	sprintf(Hex,"\0"); sprintf(Ascii,"\0"); 
-	
+	row->OldData[index] = word.UB[3 - i];
+}
+
+void Update_Data_Column_With_WatchPoint(struct MEMORY_VIEW_ROW* row, DWORD location, MIPS_WORD word, int index, int i) {
+	sprintf(row->HexStr[index], "%02X", word.UB[3 - i]);
+
+	switch (HasWatchPoint(location + i)) {
+	case READ:
+		row->Fonts[index] = hWatchFont;
+		row->TextColors[index] = TC_READ;
+		break;
+	case WRITE:
+		row->Fonts[index] = hWatchFont;
+		row->TextColors[index] = TC_WRITE;
+		break;
+	case READ_WRITE:
+		row->Fonts[index] = hWatchFont;
+		row->TextColors[index] = TC_READ_WRITE;
+		break;
+	default:
+		row->Fonts[index] = GetStockObject(ANSI_FIXED_FONT);
+
+		if (word.UB[3 - i] > row->OldData[index]) {
+			row->TextColors[index] = TC_INC;
+		}
+		else if (word.UB[3 - i] < row->OldData[index]) {
+			row->TextColors[index] = TC_DEC;
+		}
+		else {
+			row->TextColors[index] = TC_DEFAULT;
+		}
+		break;
+	}
+
+	row->OldData[index] = word.UB[3 - i];
+}
+
+void Insert_MemoryLineDump (unsigned int location, int InsertPos) {
+	struct MEMORY_VIEW_ROW* row = &MemoryViewRows[InsertPos];
+	MIPS_WORD word;
+
+	location <<= 4;
+
+	sprintf(row->LocationStr, "0x%08X", location);
+
 	__try {
-		if ( (SendMessage(hVAddr,BM_GETSTATE,0,0) & BST_CHECKED) != 0 ) {
-			for (count = 0; count < 4; count ++) {
+		if (SendMessage(hVAddr, BM_GETSTATE, 0, 0) & BST_CHECKED) {
+			for (int count = 0; count < 4; count++) {
 				if (r4300i_LW_VAddr_NonCPU(location, &word.UW)) {
-					sprintf(HexAddOn,"%02X %02X %02X %02X",word.UB[3],
-						word.UB[2],word.UB[1],word.UB[0]);
-					sprintf(AsciiAddOn,"0x%08X",word.UW);
-					sprintf(AsciiAddOn,"%c%c%c%c",
-						word.UB[3]==0 ? ' ':word.UB[3],
-						word.UB[2]==0 ? ' ':word.UB[2],
-						word.UB[1]==0 ? ' ':word.UB[1],
-						word.UB[0]==0 ? ' ':word.UB[0]);
-				} else {
-					strcpy(HexAddOn,"** ** ** **");
-					strcpy(AsciiAddOn,"****");
+					for (int i = 0; i < 4; i++) {
+						Update_Data_Column_With_WatchPoint(row, location, word, count * 4 + i, i);
+					}
+					sprintf(&row->AsciiStr[count * 4], "%c%c%c%c",
+						word.UB[3] < ' ' || word.UB[3] > '~' ? '.' : word.UB[3],
+						word.UB[2] < ' ' || word.UB[2] > '~' ? '.' : word.UB[2],
+						word.UB[1] < ' ' || word.UB[1] > '~' ? '.' : word.UB[1],
+						word.UB[0] < ' ' || word.UB[0] > '~' ? '.' : word.UB[0]);
 				}
-				if (count != 3) {
-					strcat(HexAddOn,"-");
+				else {
+					for (int i = 0; i < 4; i++) {
+						int index = count * 4 + i;
+
+						strcpy(row->HexStr[index], "**");
+						row->OldData[index] = 0xff;
+						row->Fonts[index] = GetStockObject(ANSI_FIXED_FONT);
+						row->TextColors[index] = RGB(0, 0, 0);
+					}
+					strcpy(&row->AsciiStr[count * 4], "****");
 				}
-				strcat(Hex,HexAddOn);
-				strcat(Ascii,AsciiAddOn);
 				location += 4;
 			}
 		} else {
-			for (count = 0; count < 4; count ++) {
+			for (int count = 0; count < 4; count++) {
 				if (location < 0x1FFFFFFC) {
 					r4300i_LW_PAddr(location, &word.UW);
-					sprintf(HexAddOn,"%02X %02X %02X %02X",word.UB[3],
-						word.UB[2],word.UB[1],word.UB[0]);
-					sprintf(AsciiAddOn,"0x%08X",word.UW);
-					sprintf(AsciiAddOn,"%c%c%c%c",
-						word.UB[3]==0 ? ' ':word.UB[3],
-						word.UB[2]==0 ? ' ':word.UB[2],
-						word.UB[1]==0 ? ' ':word.UB[1],
-						word.UB[0]==0 ? ' ':word.UB[0]);
-				} else {
-					strcpy(HexAddOn,"** ** ** **");
-					strcpy(AsciiAddOn,"****");
+					for (int i = 0; i < 4; i++) {
+						Update_Data_Column(row, word, count * 4 + i, i);
+					}
+					sprintf(&row->AsciiStr[count * 4], "%c%c%c%c",
+						word.UB[3] < ' ' || word.UB[3] > '~' ? '.' : word.UB[3],
+						word.UB[2] < ' ' || word.UB[2] > '~' ? '.' : word.UB[2],
+						word.UB[1] < ' ' || word.UB[1] > '~' ? '.' : word.UB[1],
+						word.UB[0] < ' ' || word.UB[0] > '~' ? '.' : word.UB[0]);
 				}
-				if (count != 3) {
-					strcat(HexAddOn,"-");
+				else {
+					for (int i = 0; i < 4; i++) {
+						int index = count * 4 + i;
+
+						strcpy(row->HexStr[index], "**");
+						row->OldData[index] = 0xff;
+						row->Fonts[index] = GetStockObject(ANSI_FIXED_FONT);
+						row->TextColors[index] = RGB(0, 0, 0);
+					}
+					strcpy(&row->AsciiStr[count * 4], "****");
 				}
-				strcat(Hex,HexAddOn);
-				strcat(Ascii,AsciiAddOn);
 				location += 4;
 			}
 		}
@@ -151,24 +208,6 @@ void Insert_MemoryLineDump (unsigned int location, int InsertPos) {
 		DisplayError(GS(MSG_UNKNOWN_MEM_ACTION));
 		PostQuitMessage(0);
 	}
-
-	
-	item.mask      = LVIF_TEXT;
-	item.pszText   = Hex;
-	item.iSubItem  = 1;
-	OldItem.mask       = LVIF_TEXT;
-	OldItem.iSubItem   = 1;
-	ListView_GetItem(hList,&OldItem);
-	if ( strcmp( item.pszText, OldItem.pszText ) != 0 ) {
-		ListView_SetItem(hList,&item);
-	}	
-	item.pszText   = Ascii;
-	item.iSubItem  = 2;
-	OldItem.iSubItem   = 2;
-	ListView_GetItem(hList,&OldItem);
-	if ( strcmp( item.pszText, OldItem.pszText ) != 0 ) {
-		ListView_SetItem(hList,&item);
-	} 
 }
 
 LRESULT CALLBACK Memory_Window_Proc (HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam)  {	
@@ -191,12 +230,12 @@ LRESULT CALLBACK Memory_Window_Proc (HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM
 		TextOut(ps.hdc,25,17,"Address:",8);
 		rcBox.left   = 5;
 		rcBox.top    = 5;
-		rcBox.right  = 666;
+		rcBox.right  = 731;
 		rcBox.bottom = 358;
 		DrawEdge( ps.hdc, &rcBox, EDGE_RAISED, BF_RECT );
 		rcBox.left   = 8;
 		rcBox.top    = 8;
-		rcBox.right  = 663;
+		rcBox.right  = 728;
 		rcBox.bottom = 355;
 		DrawEdge( ps.hdc, &rcBox, EDGE_ETCHED, BF_RECT );
 		EndPaint( hDlg, &ps );
@@ -224,10 +263,63 @@ LRESULT CALLBACK Memory_Window_Proc (HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM
 		return FALSE;
 	case WM_NOTIFY:
 		switch (((LPNMHDR)lParam)->code) {
-		case HDN_BEGINTRACK:
-			// Disable column resize
-			SetWindowLong(hDlg, DWL_MSGRESULT, TRUE);
-			return TRUE;
+		case LVN_GETDISPINFO: {
+			LVITEM item = ((NMLVDISPINFO*)lParam)->item;
+			struct MEMORY_VIEW_ROW* row = &MemoryViewRows[item.iItem];
+
+			if (item.mask & LVIF_TEXT) {
+				switch (item.iSubItem) {
+				case 0:
+					strcpy_s(item.pszText, sizeof(row->LocationStr), row->LocationStr);
+					break;
+				case 17:
+					strcpy_s(item.pszText, sizeof(row->AsciiStr), row->AsciiStr);
+					break;
+				default: {
+					int index = item.iSubItem - 1;
+					strcpy_s(item.pszText, sizeof(row->HexStr[index]), row->HexStr[index]);
+					break;
+				}
+				}
+			}
+
+			break;
+		}
+		case NM_CUSTOMDRAW: {
+			LPNMLVCUSTOMDRAW lplvcd = (LPNMLVCUSTOMDRAW)lParam;
+			switch (lplvcd->nmcd.dwDrawStage) {
+			case CDDS_PREPAINT:
+				SetWindowLong(hDlg, DWL_MSGRESULT, CDRF_NOTIFYITEMDRAW);
+				return TRUE;
+			case CDDS_ITEMPREPAINT:
+				SetWindowLong(hDlg, DWL_MSGRESULT, CDRF_NOTIFYSUBITEMDRAW);
+				return TRUE;
+			case CDDS_ITEMPREPAINT | CDDS_SUBITEM:
+				if (lplvcd->iSubItem >= 1 && lplvcd->iSubItem < 17) {
+					int index = lplvcd->iSubItem - 1;
+					struct MEMORY_VIEW_ROW* row = &MemoryViewRows[lplvcd->nmcd.dwItemSpec];
+
+					SelectObject(lplvcd->nmcd.hdc, row->Fonts[index]);
+					lplvcd->clrText = row->TextColors[index];
+
+					if (index & 1) {
+						lplvcd->clrTextBk = BG_ODD;
+					} else {
+						lplvcd->clrTextBk = BG_EVEN;
+					}
+				} else {
+					SelectObject(lplvcd->nmcd.hdc, GetStockObject(ANSI_FIXED_FONT));
+					lplvcd->clrText = TC_DEFAULT;
+					lplvcd->clrTextBk = BG_DEFAULT;
+				}
+				SetWindowLong(hDlg, DWL_MSGRESULT, CDRF_NEWFONT);
+				return TRUE;
+			default:
+				SetWindowLong(hDlg, DWL_MSGRESULT, CDRF_DODEFAULT);
+				return TRUE;
+			}
+			break;
+		}
 		default:
 			break;
 		}
@@ -338,11 +430,12 @@ void __cdecl Refresh_Memory ( void ) {
 	for (count = 0 ; count < 16;count ++ ){
 		Insert_MemoryLineDump ( count + location , count );
 	}
+	InvalidateRect(hList, NULL, FALSE);
 }
 
 void __cdecl Auto_Refresh(void) {
 	for (;;) {
-		Sleep(500);
+		Sleep(150);
 
 		if (InMemoryWindow == FALSE || SendMessage(hRefresh, BM_GETCHECK, 0, 0) != BST_CHECKED) {
 			hRefreshThread = NULL;
@@ -360,8 +453,8 @@ void Start_Auto_Refresh_Thread(void) {
 }
 
 void Setup_Memory_Window (HWND hDlg) {
-#define WindowWidth  690
-#define WindowHeight 405
+#define WindowWidth  755
+#define WindowHeight 375
 	DWORD X, Y;
 	
 	hVAddr = CreateWindowEx(0,"BUTTON", "Virtual Addressing", WS_CHILD | WS_VISIBLE | 
@@ -372,34 +465,35 @@ void Setup_Memory_Window (HWND hDlg) {
 		BS_AUTORADIOBUTTON, 375,13,155,21,hDlg,(HMENU)IDC_PADDR,hInst,NULL );
 
 	hRefresh = CreateWindowEx(0,"BUTTON", "Auto Refresh", WS_CHILD | WS_VISIBLE |
-		BS_AUTOCHECKBOX, 545,13,100,21,hDlg,(HMENU)IDC_REFRESH,hInst,NULL );
+		BS_AUTOCHECKBOX, 610,13,100,21,hDlg,(HMENU)IDC_REFRESH,hInst,NULL );
 	SendMessage(hRefresh, BM_SETCHECK, BST_CHECKED, 0);
 	Start_Auto_Refresh_Thread();
 
 	hList = CreateWindowEx(WS_EX_CLIENTEDGE,WC_LISTVIEW, "", WS_CHILD | WS_VISIBLE | 
-		/*LVS_OWNERDRAWFIXED | */ LVS_REPORT | LVS_NOSORTHEADER, 14,39,625,310,hDlg,
+		LVS_OWNERDATA | LVS_REPORT | LVS_NOCOLUMNHEADER, 14,39,690,280,hDlg,
 		(HMENU)IDC_LIST_VIEW,hInst,NULL );
 	if (hList) {
+		ListView_SetExtendedListViewStyleEx(hList, LVS_EX_DOUBLEBUFFER, LVS_EX_DOUBLEBUFFER);
+
 		LV_COLUMN  col;
 		int count;
 
-		col.mask = LVCF_FMT | LVCF_WIDTH | LVCF_TEXT | LVCF_SUBITEM;
+		col.mask = LVCF_FMT | LVCF_WIDTH | LVCF_SUBITEM;
 		col.fmt  = LVCFMT_LEFT;
 
-		col.pszText  = "Address";
 		col.cx       = 90;
 		col.iSubItem = 0;
 		ListView_InsertColumn ( hList, 0, &col);
 
-		col.pszText  = "Memory Dump";
-		col.cx       = 390;
-		col.iSubItem = 1;
-		ListView_InsertColumn ( hList, 1, &col);
+		col.cx       = 28;
+		for (int i = 0; i < 16; i++) {
+			col.iSubItem = i + 1;
+			ListView_InsertColumn(hList, i + 1, &col);
+		}
 
 		col.cx       = 140;
-		col.pszText  = "Memory Ascii";
-		col.iSubItem = 2;
-		ListView_InsertColumn ( hList, 2, &col);
+		col.iSubItem = 17;
+		ListView_InsertColumn ( hList, 17, &col);
 		ListView_SetItemCount ( hList, 16);
 		SendMessage(hList,WM_SETFONT, (WPARAM)GetStockObject(ANSI_FIXED_FONT),0);
 		for (count = 0 ; count < 16;count ++ ){
@@ -415,7 +509,7 @@ void Setup_Memory_Window (HWND hDlg) {
 	SendMessage(hAddrEdit,WM_SETFONT, (WPARAM)GetStockObject(ANSI_FIXED_FONT),0);
 
 	hScrlBar = CreateWindowEx(WS_EX_STATICEDGE, "SCROLLBAR","", WS_CHILD | WS_VISIBLE | 
-		WS_TABSTOP | SBS_VERT, 635,39,20,310, hDlg, (HMENU)IDC_SCRL_BAR, hInst, NULL );
+		WS_TABSTOP | SBS_VERT, 700,39,20,280, hDlg, (HMENU)IDC_SCRL_BAR, hInst, NULL );
 	if (hScrlBar) {
 		SCROLLINFO si;
 
@@ -429,6 +523,11 @@ void Setup_Memory_Window (HWND hDlg) {
 		SetWindowSubclass(hScrlBar, Memory_ListViewScroll_Proc, 0, 0);
 	} 
 	
+	LOGFONT lf;
+	GetObject(GetStockObject(ANSI_FIXED_FONT), sizeof(lf), &lf);
+	lf.lfUnderline = TRUE;
+	hWatchFont = CreateFontIndirect(&lf);
+
 	if ( !GetStoredWinPos( "Memory", &X, &Y ) ) {
 		X = (GetSystemMetrics( SM_CXSCREEN ) - WindowWidth) / 2;
 		Y = (GetSystemMetrics( SM_CYSCREEN ) - WindowHeight) / 2;

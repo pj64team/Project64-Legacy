@@ -27,7 +27,8 @@
 #define __watchpoints_h
 
 typedef enum {
-	READ = 1,
+	NO_WATCH,
+	READ,
 	WRITE,
 	READ_WRITE,
 } WATCH_TYPE;
@@ -36,6 +37,7 @@ void InitWatchPoints(void);
 void AddWatchPoint(DWORD Location, WATCH_TYPE Type);
 void RemoveWatchPoint(DWORD Location);
 void RemoveAllWatchPoints(void);
+WATCH_TYPE HasWatchPoint(DWORD Location);
 BOOL CheckForWatchPoint(DWORD Location, WATCH_TYPE Type);
 int CountWatchPoints(void);
 void RefreshWatchPoints(HWND hList);
