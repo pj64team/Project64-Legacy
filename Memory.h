@@ -55,11 +55,14 @@ BOOL r4300i_LW_VAddr             ( DWORD VAddr, DWORD * Value );
 BOOL r4300i_LW_VAddr_NonCPU      ( DWORD VAddr, DWORD * Value );
 int  r4300i_SB_NonMemory         ( DWORD PAddr, BYTE Value );
 BOOL r4300i_SB_VAddr             ( DWORD VAddr, BYTE Value );
+BOOL r4300i_SB_VAddr_NonCPU      ( DWORD VAddr, BYTE Value );
 BOOL r4300i_SD_VAddr             ( DWORD VAddr, unsigned _int64 Value );
 int  r4300i_SH_NonMemory         ( DWORD PAddr, WORD Value );
 BOOL r4300i_SH_VAddr             ( DWORD VAddr, WORD Value );
+BOOL r4300i_SH_VAddr_NonCPU      ( DWORD VAddr, WORD Value );
 int  r4300i_SW_NonMemory         ( DWORD PAddr, DWORD Value );
 BOOL r4300i_SW_VAddr             ( DWORD VAddr, DWORD Value );
+BOOL r4300i_SW_VAddr_NonCPU      ( DWORD VAddr, DWORD Value );
 
 /* Recompiler Memory Functions */
 void Compile_LB                  ( int Reg, DWORD Addr, BOOL SignExtend );
