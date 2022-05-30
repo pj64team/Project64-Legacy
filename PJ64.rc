@@ -881,6 +881,7 @@ BEGIN
         MENUITEM SEPARATOR
         MENUITEM "Support &Forum",              ID_HELP_SUPPORTFORUM
         MENUITEM "&Homepage",                   ID_HELP_HOMEPAGE
+        MENUITEM "&Discord",                    ID_HELP_DISCORD
         MENUITEM SEPARATOR
         MENUITEM "About &INI Files",            ID_HELP_ABOUTSETTINGFILES
         MENUITEM "&About Project 64",           ID_HELP_ABOUT
