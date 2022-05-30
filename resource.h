@@ -335,6 +335,7 @@
 #define ID_SYSTEM_CHEATSEARCH           40166
 #define ID_POPUPMENU_GAMEINFORMATION    40169
 #define ID_FILE_GAMEINFORMATION         40170
+#define ID_HELP_DISCORD                 40171
 
 // Next default values for new objects
 // 

@@ -97,6 +97,7 @@ LANG_STR DefaultString[] = {
 		{ MENU_ABOUT_PJ64,  "&About Project 64"  },
 		{ MENU_FORUM,       "Support &Forum"  },
 		{ MENU_HOMEPAGE,    "&Homepage"  },
+		{ MENU_DISCORD,     "&Discord"   },
 
 //Pop up Menu
 	{ POPUP_PLAY,      "Play Game"  },

@@ -439,8 +439,9 @@ void FixMenuLang(HMENU hMenu) {
 	MenuSetText(hSubMenu, 1, GS(MENU_GAME_FAQ), NULL);
 	MenuSetText(hSubMenu, 3, GS(MENU_FORUM), NULL);
 	MenuSetText(hSubMenu, 4, GS(MENU_HOMEPAGE), NULL);
-	MenuSetText(hSubMenu, 6, GS(MENU_ABOUT_INI), NULL);
-	MenuSetText(hSubMenu, 7, GS(MENU_ABOUT_PJ64), NULL);
+	MenuSetText(hSubMenu, 5, GS(MENU_DISCORD), NULL);
+	MenuSetText(hSubMenu, 7, GS(MENU_ABOUT_INI), NULL);
+	MenuSetText(hSubMenu, 8, GS(MENU_ABOUT_PJ64), NULL);
 #endif
 
 	//Save Slot
@@ -1610,6 +1611,10 @@ LRESULT CALLBACK Main_Proc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
 
 				case ID_HELP_HOMEPAGE:
 					ShellExecute(NULL, "open", "http://project64.emulation64.com", NULL, NULL, SW_SHOWMAXIMIZED);
+					break;
+
+				case ID_HELP_DISCORD:
+					ShellExecute(NULL, "open", "https://discord.gg/ha7HWAFE8u", NULL, NULL, SW_SHOWMAXIMIZED);
 					break;
 
 				case ID_HELP_ABOUT:
