@@ -708,12 +708,12 @@ BOOL NeededCRLFChange(char** str) {
 	*str = grow;
 
 	// Scan for and add missing carriage returns before newlines
-	for (count = length + replaces - 1; replaces != 0; count--) {
-		(*str)[count + replaces] = (*str)[count];
+	for (count = length + replaces - 1; replaces != 0 && count > 0; count--) {
+		(*str)[count] = (*str)[count];
 		
-		if ((*str)[count + replaces] == '\n' && (*str)[count + replaces - 1] != '\r') {
+		if ((*str)[count] == '\n' && (*str)[count - 1] != '\r') {
 			replaces--;
-			(*str)[count + replaces] = '\r';
+			(*str)[count] = '\r';
 		}
 	}
 
