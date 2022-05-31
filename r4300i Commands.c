@@ -225,7 +225,7 @@ void DrawR4300iCommand ( LPARAM lParam ) {
 		
 	if (PROGRAM_COUNTER == r4300iCommandLine[ditem->itemID].Location) {
 		ResetColor = TRUE;
-		hBrush     = (HBRUSH)(COLOR_HIGHLIGHT + 1);
+		hBrush     = GetSysColorBrush(COLOR_HIGHLIGHT);
 		oldColor   = SetTextColor(ditem->hDC,RGB(255,255,255));
 	} else {
 		ResetColor = FALSE;
@@ -312,7 +312,7 @@ void Paint_R4300i_Commands (HWND hDlg) {
 	PAINTSTRUCT ps;
 	RECT rcBox;
 	HFONT hOldFont;
-	int OldBkMode;
+	COLORREF OldBkColor;
 
 	BeginPaint( hDlg, &ps );
 		
@@ -330,7 +330,6 @@ void Paint_R4300i_Commands (HWND hDlg) {
 		
 	rcBox.left   = 422; rcBox.top    = 2;
 	rcBox.right  = 470; rcBox.bottom = 15;
-	FillRect( ps.hdc, &rcBox,(HBRUSH)COLOR_WINDOW);
 		
 	if (NoOfMapEntries) {
 		rcBox.left   = 417; rcBox.top    = 49;
@@ -339,7 +338,6 @@ void Paint_R4300i_Commands (HWND hDlg) {
 		
 		rcBox.left   = 422; rcBox.top    = 44;
 		rcBox.right  = 460; rcBox.bottom = 57;
-		FillRect( ps.hdc, &rcBox,(HBRUSH)COLOR_WINDOW);
 	}
 
 	rcBox.left   = 14; rcBox.top    = 14;
@@ -355,7 +353,7 @@ void Paint_R4300i_Commands (HWND hDlg) {
 	DrawEdge( ps.hdc, &rcBox, EDGE_ETCHED , BF_RECT );
 
 	hOldFont = (HFONT)SelectObject( ps.hdc,GetStockObject(DEFAULT_GUI_FONT ) );
-	OldBkMode = SetBkMode( ps.hdc, TRANSPARENT );
+	OldBkColor = SetBkColor(ps.hdc, GetSysColor(COLOR_BTNFACE));
 		
 	TextOut( ps.hdc, 23,16,"Offset",6);
 	TextOut( ps.hdc, 119,16,"Instruction",11);
@@ -364,11 +362,11 @@ void Paint_R4300i_Commands (HWND hDlg) {
 	TextOut( ps.hdc, 424,19,"0x",2);
 	
 	if (NoOfMapEntries) {
-		TextOut( ps.hdc, 424,44," goto:",6);
+		TextOut( ps.hdc, 424,44," goto: ",7);
 	}
 
 	SelectObject( ps.hdc,hOldFont );
-	SetBkMode( ps.hdc, OldBkMode );
+	SetBkColor( ps.hdc, OldBkColor );
 		
 	EndPaint( hDlg, &ps );
 }

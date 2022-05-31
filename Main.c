@@ -1762,7 +1762,7 @@ int RegisterWinClass(void) {
 	if (RegisterClass(&wcl) == 0) return FALSE;
 
 	wcl.lpfnWndProc = (WNDPROC)Cheat_Proc;
-	wcl.hbrBackground = (HBRUSH)(COLOR_BTNFACE + 1);
+	wcl.hbrBackground = GetSysColorBrush(COLOR_BTNFACE);
 	wcl.lpszMenuName = NULL;
 	wcl.lpszClassName = "PJ64.Cheats";
 	if (RegisterClass(&wcl) == 0) return FALSE;
