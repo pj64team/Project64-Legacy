@@ -69,6 +69,7 @@ static HWND R4300i_Commands_hDlg, hList, hAddress, hFunctionlist, hGoButton, hBr
 	hMemory, hScrlBar;
 static R4300ICOMMANDLINE r4300iCommandLine[R4300i_MaxCommandLines];
 BOOL InR4300iCommandsWindow = FALSE;
+static int wheel = 0;
 
 void __cdecl Create_R4300i_Commands_Window ( int Child ) {
 	DWORD ThreadID;
@@ -498,6 +499,46 @@ LRESULT CALLBACK R4300i_Commands_Proc (HWND hDlg, UINT uMsg, WPARAM wParam, LPAR
 	return TRUE;
 }
 
+LRESULT CALLBACK R4300i_Commands_ListViewScroll_Proc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam, UINT_PTR uIdSubclass, DWORD_PTR dwRefData) {
+	switch (uMsg) {
+	case WM_MOUSEWHEEL:
+		// Accumulate wheel deltas
+		wheel -= GET_WHEEL_DELTA_WPARAM(wParam);
+		if (abs(wheel) >= WHEEL_DELTA) {
+			int lines = wheel / WHEEL_DELTA;
+			wheel -= lines * WHEEL_DELTA;
+
+			char value[20];
+			GetWindowText(hAddress, value, sizeof(value));
+			unsigned int location = AsciiToHex(value);
+
+			if (lines > 0) {
+				if (UINT_MAX - location >= R4300i_MaxCommandLines * 4) {
+					location += lines * 4;
+				}
+				else {
+					location = UINT_MAX - R4300i_MaxCommandLines * 4 + 1;
+				}
+			}
+			else {
+				if (location >= -lines * 4) {
+					location += lines * 4;
+				}
+				else {
+					location = 0;
+				}
+			}
+
+			sprintf(value, "%08X", location);
+			SetWindowText(hAddress, value);
+		}
+
+		return FALSE;
+	default:
+		return DefSubclassProc(hDlg, uMsg, wParam, lParam);
+	}
+}
+
 void R4300i_Commands_Setup ( HWND hDlg ) {
 #define WindowWidth  550
 #define WindowHeight 620
@@ -509,6 +550,7 @@ void R4300i_Commands_Setup ( HWND hDlg ) {
 	if ( hList) {
 		SendMessage(hList,WM_SETFONT, (WPARAM)GetStockObject(ANSI_FIXED_FONT),0);
 		SendMessage(hList,LB_SETITEMHEIGHT, (WPARAM)0,(LPARAM)MAKELPARAM(14, 0));
+		SetWindowSubclass(hList, R4300i_Commands_ListViewScroll_Proc, 0, 0);
 	}
 
 	hAddress = CreateWindowEx(0,"EDIT","", WS_CHILD | ES_UPPERCASE | WS_VISIBLE | 
@@ -590,6 +632,9 @@ void R4300i_Commands_Setup ( HWND hDlg ) {
 	
 	hScrlBar = CreateWindowEx(0, "SCROLLBAR","", WS_CHILD | WS_VISIBLE | 
 		WS_TABSTOP | SBS_VERT, 388,14,18,539, hDlg, (HMENU)IDC_SCRL_BAR, hInst, NULL );
+	if (hScrlBar) {
+		SetWindowSubclass(hScrlBar, R4300i_Commands_ListViewScroll_Proc, 0, 0);
+	}
 
 	if ( RomFileSize != 0 ) {
 		Enable_R4300i_Commands_Window();
