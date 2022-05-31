@@ -249,13 +249,19 @@ void DrawR4300iCommand ( LPARAM lParam ) {
 			ditem->rcItem.bottom);	
 		DrawText(ditem->hDC,Offset,strlen(Offset), &TextRect,DT_SINGLELINE | DT_VCENTER);
 		
-		SetRect(&TextRect,ditem->rcItem.left + 104,ditem->rcItem.top, ditem->rcItem.left + 190,
-			ditem->rcItem.bottom);	
-		DrawText(ditem->hDC,Instruction,strlen(Instruction), &TextRect,DT_SINGLELINE | DT_VCENTER);
+		if (strlen(Arguments) == 0) {
+			SetRect(&TextRect, ditem->rcItem.left + 104, ditem->rcItem.top, ditem->rcItem.right,
+				ditem->rcItem.bottom);
+			DrawText(ditem->hDC, Instruction, strlen(Instruction), &TextRect, DT_SINGLELINE | DT_VCENTER);
+		} else {
+			SetRect(&TextRect, ditem->rcItem.left + 104, ditem->rcItem.top, ditem->rcItem.left + 190,
+				ditem->rcItem.bottom);
+			DrawText(ditem->hDC, Instruction, strlen(Instruction), &TextRect, DT_SINGLELINE | DT_VCENTER);
 
-		SetRect(&TextRect,ditem->rcItem.left + 190,ditem->rcItem.top, ditem->rcItem.right,
-			ditem->rcItem.bottom);	
-		DrawText(ditem->hDC,Arguments,strlen(Arguments), &TextRect,DT_SINGLELINE | DT_VCENTER);
+			SetRect(&TextRect, ditem->rcItem.left + 190, ditem->rcItem.top, ditem->rcItem.right,
+				ditem->rcItem.bottom);
+			DrawText(ditem->hDC, Arguments, strlen(Arguments), &TextRect, DT_SINGLELINE | DT_VCENTER);
+		}
 	} else {
 		DrawText(ditem->hDC,Command,strlen(Command), &ditem->rcItem,DT_SINGLELINE | DT_VCENTER);
 	}
