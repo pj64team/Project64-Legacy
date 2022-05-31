@@ -40,6 +40,7 @@
 
 void Setup_Memory_Window (HWND hDlg);
 void Start_Auto_Refresh_Thread(void);
+void Scroll_Memory_View(int lines);
 
 LRESULT CALLBACK Memory_Window_Proc (HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam);
 
@@ -334,47 +335,18 @@ LRESULT CALLBACK Memory_Window_Proc (HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM
 		return FALSE;
 	case WM_VSCROLL:
 		if ((HWND)lParam == hScrlBar) {
-			unsigned int location;
-			char Value[20];
-
-			GetWindowText(hAddrEdit,Value,sizeof(Value));
-			location = AsciiToHex(Value);
-			switch (LOWORD(wParam))  {			
-			case SB_LINEDOWN:
-				if (location < 0xFFFFFFEF) {
-					sprintf(Value,"%08X",location + 0x10);
-					SetWindowText(hAddrEdit,Value);
-				} else {
-					sprintf(Value,"%08X",0xFFFFFFFF);
-					SetWindowText(hAddrEdit,Value);
-				}
-				break;
+			switch (LOWORD(wParam)) {
 			case SB_LINEUP:
-				if (location > 0x10 ) {
-					sprintf(Value,"%08X",location - 0x10);
-					SetWindowText(hAddrEdit,Value);
-				} else {
-					sprintf(Value,"%08X",0);
-					SetWindowText(hAddrEdit,Value);
-				}
+				Scroll_Memory_View(-1);
 				break;
-			case SB_PAGEDOWN:				
-				if (location < 0xFFFFFEFF) {
-					sprintf(Value,"%08X",location + 0x100);
-					SetWindowText(hAddrEdit,Value);
-				} else {
-					sprintf(Value,"%08X",0xFFFFFFFF);
-					SetWindowText(hAddrEdit,Value);
-				}
-				break;			
+			case SB_LINEDOWN:
+				Scroll_Memory_View(1);
+				break;
 			case SB_PAGEUP:
-				if (location > 0x100 ) {
-					sprintf(Value,"%08X",location - 0x100);
-					SetWindowText(hAddrEdit,Value);
-				} else {
-					sprintf(Value,"%08X",0);
-					SetWindowText(hAddrEdit,Value);
-				}
+				Scroll_Memory_View(-16);
+				break;
+			case SB_PAGEDOWN:
+				Scroll_Memory_View(16);
 				break;
 			}
 		}
@@ -385,7 +357,7 @@ LRESULT CALLBACK Memory_Window_Proc (HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM
 	return TRUE;
 }
 
-LRESULT CALLBACK Memory_ListViewScroll_Proc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam, UINT_PTR uIdSubclass, DWORD_PTR dwRefData) {
+LRESULT CALLBACK Memory_ListViewScroll_Proc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam, UINT_PTR uIdSubclass, DWORD_PTR dwRefData) {
 	switch (uMsg) {
 	case WM_MOUSEWHEEL:
 		// Accumulate wheel deltas
@@ -394,35 +366,65 @@ LRESULT CALLBACK Memory_ListViewScroll_Proc(HWND hDlg, UINT uMsg, WPARAM wParam,
 			int lines = wheel / WHEEL_DELTA;
 			wheel -= lines * WHEEL_DELTA;
 
-			char value[20];
-			GetWindowText(hAddrEdit, value, sizeof(value));
-			unsigned int location = AsciiToHex(value);
-
-			if (lines > 0) {
-				if (UINT_MAX - location >= 256) {
-					location += lines * 16;
-				}
-				else {
-					location = UINT_MAX - 256 + 1;
-				}
-			}
-			else {
-				if (location >= -lines * 16) {
-					location += lines * 16;
-				}
-				else {
-					location = 0;
-				}
-			}
-
-			sprintf(value, "%08X", location);
-			SetWindowText(hAddrEdit, value);
+			Scroll_Memory_View(lines);
 		}
 
 		return FALSE;
 	default:
-		return DefSubclassProc(hDlg, uMsg, wParam, lParam);
+		return DefSubclassProc(hWnd, uMsg, wParam, lParam);
 	}
+}
+
+LRESULT CALLBACK Memory_ListViewKeys_Proc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam, UINT_PTR uIdSubclass, DWORD_PTR dwRefData) {
+	switch (uMsg) {
+	case WM_KEYDOWN:
+		switch (wParam) {
+		case VK_UP:
+			Scroll_Memory_View(-1);
+			return FALSE;
+		case VK_DOWN:
+			Scroll_Memory_View(1);
+			return FALSE;
+		case VK_PRIOR:
+			Scroll_Memory_View(-16);
+			return FALSE;
+		case VK_NEXT:
+			Scroll_Memory_View(16);
+			return FALSE;
+		default:
+			break;
+		}
+	default:
+		break;
+	}
+
+	return DefSubclassProc(hWnd, uMsg, wParam, lParam);
+}
+
+void Scroll_Memory_View(int lines) {
+	char value[20];
+	GetWindowText(hAddrEdit, value, sizeof(value));
+	unsigned int location = AsciiToHex(value);
+
+	if (lines > 0) {
+		if (UINT_MAX - location >= 256) {
+			location += lines * 16;
+		}
+		else {
+			location = UINT_MAX - 256 + 1;
+		}
+	}
+	else {
+		if (location >= -lines * 16) {
+			location += lines * 16;
+		}
+		else {
+			location = 0;
+		}
+	}
+
+	sprintf(value, "%08X", location);
+	SetWindowText(hAddrEdit, value);
 }
 
 void __cdecl Refresh_Memory ( void ) {
@@ -513,6 +515,7 @@ void Setup_Memory_Window (HWND hDlg) {
 			Insert_MemoryLineDump (count,count);
 		}
 		SetWindowSubclass(hList, Memory_ListViewScroll_Proc, 0, 0);
+		SetWindowSubclass(hList, Memory_ListViewKeys_Proc, 0, 0);
 	}
 	
 	hAddrEdit = GetDlgItem(hDlg,IDC_ADDR_EDIT);
