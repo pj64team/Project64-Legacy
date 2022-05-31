@@ -130,23 +130,41 @@ void ApplyGSButton(void) {
 	int count, count2, count3;
 	DWORD Address;
 	WORD  Memory;
-	GAMESHARK_CODE PrevCode;
+	GAMESHARK_CODE Code;
 
 	for (count = 0; count < NoOfCodes; count++) {
-		PrevCode.Command = 0X00000000;
-		PrevCode.Value = 0x0000;
-
 		for (count2 = 0; count2 < MaxGSEntries; count2++) {
-			if ((PrevCode.Command & 0xFF000000) == 0x50000000) {
-				int numrepeats = (PrevCode.Command & 0x0000FF00) >> 8;
-				int offset = PrevCode.Command & 0x000000FF;
-				WORD incr = PrevCode.Value;
+			Code.Command = Codes[count].Code[count2].Command;
+			Code.Value = Codes[count].Code[count2].Value;
 
-				switch (Codes[count].Code[count2].Command & 0xFF000000) {
+			switch (Code.Command & 0xFF000000) {
+			case 0x00000000:
+				count2 = MaxGSEntries;
+				break;
+			case 0x40000000: {
+				int next = count2 + 1;
+				if (next < MaxGSEntries) {
+					int byte_count = Codes[count].Code[next].Value + 1;
+					count2 += (byte_count / 6) + (byte_count % 6 ? 1 : 0) + 1;
+				}
+				break;
+			}
+			case 0x50000000: {
+				int numrepeats = (Code.Command & 0x0000FF00) >> 8;
+				int offset = Code.Command & 0x000000FF;
+				WORD incr = Code.Value;
+
+				if (++count2 >= MaxGSEntries) {
+					break;
+				}
+				Code.Command = Codes[count].Code[count2].Command;
+				Code.Value = Codes[count].Code[count2].Value;
+
+				switch (Code.Command & 0xFF000000) {
 					// Gameshark / AR
 				case 0x88000000:
-					Address = 0x80000000 | (Codes[count].Code[count2].Command & 0xFFFFFF);
-					Memory = Codes[count].Code[count2].Value;
+					Address = 0x80000000 | (Code.Command & 0xFFFFFF);
+					Memory = Code.Value;
 					for (count3 = 0; count3 < numrepeats; count3++) {
 						r4300i_SB_VAddr_NonCPU(Address, (BYTE)Memory);
 						Address += offset;
@@ -154,8 +172,8 @@ void ApplyGSButton(void) {
 					}
 					break;
 				case 0x89000000:
-					Address = 0x80000000 | (Codes[count].Code[count2].Command & 0xFFFFFF);
-					Memory = Codes[count].Code[count2].Value;
+					Address = 0x80000000 | (Code.Command & 0xFFFFFF);
+					Memory = Code.Value;
 					for (count3 = 0; count3 < numrepeats; count3++) {
 						r4300i_SH_VAddr_NonCPU(Address, (WORD)Memory);
 						Address += offset;
@@ -165,8 +183,8 @@ void ApplyGSButton(void) {
 
 					// Xplorer64
 				case 0xA8000000:
-					Address = 0x80000000 | (ConvertXP64Address(Codes[count].Code[count2].Command) & 0xFFFFFF);
-					Memory = ConvertXP64Value(Codes[count].Code[count2].Value);
+					Address = 0x80000000 | (ConvertXP64Address(Code.Command) & 0xFFFFFF);
+					Memory = ConvertXP64Value(Code.Value);
 					for (count3 = 0; count3 < numrepeats; count3++) {
 						r4300i_SB_VAddr_NonCPU(Address, (BYTE)Memory);
 						Address += offset;
@@ -174,8 +192,8 @@ void ApplyGSButton(void) {
 					}
 					break;
 				case 0xA9000000:
-					Address = 0x80000000 | (ConvertXP64Address(Codes[count].Code[count2].Command) & 0xFFFFFF);
-					Memory = ConvertXP64Value(Codes[count].Code[count2].Value);
+					Address = 0x80000000 | (ConvertXP64Address(Code.Command) & 0xFFFFFF);
+					Memory = ConvertXP64Value(Code.Value);
 					for (count3 = 0; count3 < numrepeats; count3++) {
 						r4300i_SH_VAddr_NonCPU(Address, (WORD)Memory);
 						Address += offset;
@@ -183,35 +201,32 @@ void ApplyGSButton(void) {
 					}
 					break;
 				}
-
+				break;
 			}
-			else {
-				switch (Codes[count].Code[count2].Command & 0xFF000000) {
+			default:
+				switch (Code.Command & 0xFF000000) {
 					// Gameshark / AR
 				case 0x88000000:
-					Address = 0x80000000 | (Codes[count].Code[count2].Command & 0xFFFFFF);
-					r4300i_SB_VAddr_NonCPU(Address, (BYTE)Codes[count].Code[count2].Value);
+					Address = 0x80000000 | (Code.Command & 0xFFFFFF);
+					r4300i_SB_VAddr_NonCPU(Address, (BYTE)Code.Value);
 					break;
 				case 0x89000000:
-					Address = 0x80000000 | (Codes[count].Code[count2].Command & 0xFFFFFF);
-					r4300i_SH_VAddr_NonCPU(Address, Codes[count].Code[count2].Value);
+					Address = 0x80000000 | (Code.Command & 0xFFFFFF);
+					r4300i_SH_VAddr_NonCPU(Address, Code.Value);
 					break;
 					// Xplorer64
 				case 0xA8000000:
-					Address = 0x80000000 | (ConvertXP64Address(Codes[count].Code[count2].Command) & 0xFFFFFF);
-					r4300i_SB_VAddr_NonCPU(Address, (BYTE)ConvertXP64Value(Codes[count].Code[count2].Value));
+					Address = 0x80000000 | (ConvertXP64Address(Code.Command) & 0xFFFFFF);
+					r4300i_SB_VAddr_NonCPU(Address, (BYTE)ConvertXP64Value(Code.Value));
 					break;
 				case 0xA9000000:
-					Address = 0x80000000 | (ConvertXP64Address(Codes[count].Code[count2].Command) & 0xFFFFFF);
-					r4300i_SH_VAddr_NonCPU(Address, ConvertXP64Value(Codes[count].Code[count2].Value));
+					Address = 0x80000000 | (ConvertXP64Address(Code.Command) & 0xFFFFFF);
+					r4300i_SH_VAddr_NonCPU(Address, ConvertXP64Value(Code.Value));
 					break;
 				default:
 					break;
 				}
 			}
-
-			PrevCode.Command = Codes[count].Code[count2].Command;
-			PrevCode.Value = Codes[count].Code[count2].Value;
 		}
 	}
 }
