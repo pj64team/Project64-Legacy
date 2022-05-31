@@ -894,16 +894,16 @@ char * R4300iCop1Name ( DWORD OpCode, DWORD PC ) {
 	case R4300i_COP1_BC:
 		switch (command.FP.ft) {
 		case R4300i_COP1_BC_BCF:
-			sprintf(CommandName,"BC1F\t%s", LabelName(PC + ((short)command.BRANCH.offset << 2) + 4));
+			sprintf(CommandName,"bc1f\t%s", LabelName(PC + ((short)command.BRANCH.offset << 2) + 4));
 			break;
 		case R4300i_COP1_BC_BCT:
-			sprintf(CommandName,"BC1T\t%s", LabelName(PC + ((short)command.BRANCH.offset << 2) + 4));
+			sprintf(CommandName,"bc1t\t%s", LabelName(PC + ((short)command.BRANCH.offset << 2) + 4));
 			break;
 		case R4300i_COP1_BC_BCFL:
-			sprintf(CommandName,"BC1FL\t%s", LabelName(PC + ((short)command.BRANCH.offset << 2) + 4));
+			sprintf(CommandName,"bc1fl\t%s", LabelName(PC + ((short)command.BRANCH.offset << 2) + 4));
 			break;
 		case R4300i_COP1_BC_BCTL:
-			sprintf(CommandName,"BC1TL\t%s", LabelName(PC + ((short)command.BRANCH.offset << 2) + 4));
+			sprintf(CommandName,"bc1tl\t%s", LabelName(PC + ((short)command.BRANCH.offset << 2) + 4));
 			break;
 		default:
 			sprintf(CommandName,"Unknown Cop1\t%02X %02X %02X %02X",
@@ -916,151 +916,151 @@ char * R4300iCop1Name ( DWORD OpCode, DWORD PC ) {
 	case R4300i_COP1_L:
 		switch (command.REG.funct) {			
 		case R4300i_COP1_FUNCT_ADD:
-			sprintf(CommandName,"ADD.%s\t%s, %s, %s",FPR_Type(command.FP.fmt),  
+			sprintf(CommandName,"add.%s\t%s, %s, %s",FPR_Type(command.FP.fmt),  
 				FPR_Name[command.FP.fd], FPR_Name[command.FP.fs], 
 				FPR_Name[command.FP.ft]);
 			break;
 		case R4300i_COP1_FUNCT_SUB:
-			sprintf(CommandName,"SUB.%s\t%s, %s, %s",FPR_Type(command.FP.fmt),  
+			sprintf(CommandName,"sub.%s\t%s, %s, %s",FPR_Type(command.FP.fmt),  
 				FPR_Name[command.FP.fd], FPR_Name[command.FP.fs], 
 				FPR_Name[command.FP.ft]);
 			break;
 		case R4300i_COP1_FUNCT_MUL:
-			sprintf(CommandName,"MUL.%s\t%s, %s, %s",FPR_Type(command.FP.fmt),  
+			sprintf(CommandName,"mul.%s\t%s, %s, %s",FPR_Type(command.FP.fmt),  
 				FPR_Name[command.FP.fd], FPR_Name[command.FP.fs], 
 				FPR_Name[command.FP.ft]);
 			break;
 		case R4300i_COP1_FUNCT_DIV:
-			sprintf(CommandName,"DIV.%s\t%s, %s, %s",FPR_Type(command.FP.fmt),  
+			sprintf(CommandName,"div.%s\t%s, %s, %s",FPR_Type(command.FP.fmt),  
 				FPR_Name[command.FP.fd], FPR_Name[command.FP.fs], 
 				FPR_Name[command.FP.ft]);
 			break;
 		case R4300i_COP1_FUNCT_SQRT:
-			sprintf(CommandName,"SQRT.%s\t%s, %s",FPR_Type(command.FP.fmt),  
+			sprintf(CommandName,"sqrt.%s\t%s, %s",FPR_Type(command.FP.fmt),  
 				FPR_Name[command.FP.fd], FPR_Name[command.FP.fs]);
 			break;
 		case R4300i_COP1_FUNCT_ABS:
-			sprintf(CommandName,"ABS.%s\t%s, %s",FPR_Type(command.FP.fmt),  
+			sprintf(CommandName,"abs.%s\t%s, %s",FPR_Type(command.FP.fmt),  
 				FPR_Name[command.FP.fd], FPR_Name[command.FP.fs]);
 			break;
 		case R4300i_COP1_FUNCT_MOV:
-			sprintf(CommandName,"MOV.%s\t%s, %s",FPR_Type(command.FP.fmt),  
+			sprintf(CommandName,"mov.%s\t%s, %s",FPR_Type(command.FP.fmt),  
 				FPR_Name[command.FP.fd], FPR_Name[command.FP.fs]);
 			break;
 		case R4300i_COP1_FUNCT_NEG:
-			sprintf(CommandName,"NEG.%s\t%s, %s",FPR_Type(command.FP.fmt),  
+			sprintf(CommandName,"neg.%s\t%s, %s",FPR_Type(command.FP.fmt),  
 				FPR_Name[command.FP.fd], FPR_Name[command.FP.fs]);
 			break;
 		case R4300i_COP1_FUNCT_ROUND_L:
-			sprintf(CommandName,"ROUND.L.%s\t%s, %s",FPR_Type(command.FP.fmt),  
+			sprintf(CommandName,"round.l.%s\t%s, %s",FPR_Type(command.FP.fmt),  
 				FPR_Name[command.FP.fd], FPR_Name[command.FP.fs]);
 			break;
 		case R4300i_COP1_FUNCT_TRUNC_L:
-			sprintf(CommandName,"TRUNC.L.%s\t%s, %s",FPR_Type(command.FP.fmt),  
+			sprintf(CommandName,"trunc.l.%s\t%s, %s",FPR_Type(command.FP.fmt),  
 				FPR_Name[command.FP.fd], FPR_Name[command.FP.fs]);
 			break;
 		case R4300i_COP1_FUNCT_CEIL_L:
-			sprintf(CommandName,"CEIL.L.%s\t%s, %s",FPR_Type(command.FP.fmt),  
+			sprintf(CommandName,"ceil.l.%s\t%s, %s",FPR_Type(command.FP.fmt),  
 				FPR_Name[command.FP.fd], FPR_Name[command.FP.fs]);
 			break;
 		case R4300i_COP1_FUNCT_FLOOR_L:
-			sprintf(CommandName,"FLOOR.L.%s\t%s, %s",FPR_Type(command.FP.fmt),  
+			sprintf(CommandName,"floor.l.%s\t%s, %s",FPR_Type(command.FP.fmt),  
 				FPR_Name[command.FP.fd], FPR_Name[command.FP.fs]);
 			break;
 		case R4300i_COP1_FUNCT_ROUND_W:
-			sprintf(CommandName,"ROUND.W.%s\t%s, %s",FPR_Type(command.FP.fmt),  
+			sprintf(CommandName,"round.w.%s\t%s, %s",FPR_Type(command.FP.fmt),  
 				FPR_Name[command.FP.fd], FPR_Name[command.FP.fs]);
 			break;
 		case R4300i_COP1_FUNCT_TRUNC_W:
-			sprintf(CommandName,"TRUNC.W.%s\t%s, %s",FPR_Type(command.FP.fmt),  
+			sprintf(CommandName,"trunc.w.%s\t%s, %s",FPR_Type(command.FP.fmt),  
 				FPR_Name[command.FP.fd], FPR_Name[command.FP.fs]);
 			break;
 		case R4300i_COP1_FUNCT_CEIL_W:
-			sprintf(CommandName,"CEIL.W.%s\t%s, %s",FPR_Type(command.FP.fmt),  
+			sprintf(CommandName,"ceil.w.%s\t%s, %s",FPR_Type(command.FP.fmt),  
 				FPR_Name[command.FP.fd], FPR_Name[command.FP.fs]);
 			break;
 		case R4300i_COP1_FUNCT_FLOOR_W:
-			sprintf(CommandName,"FLOOR.W.%s\t%s, %s",FPR_Type(command.FP.fmt),  
+			sprintf(CommandName,"floor.w.%s\t%s, %s",FPR_Type(command.FP.fmt),  
 				FPR_Name[command.FP.fd], FPR_Name[command.FP.fs]);
 			break;
 		case R4300i_COP1_FUNCT_CVT_S:
-			sprintf(CommandName,"CVT.S.%s\t%s, %s",FPR_Type(command.FP.fmt),  
+			sprintf(CommandName,"cvt.s.%s\t%s, %s",FPR_Type(command.FP.fmt),  
 				FPR_Name[command.FP.fd], FPR_Name[command.FP.fs]);
 			break;
 		case R4300i_COP1_FUNCT_CVT_D:
-			sprintf(CommandName,"CVT.D.%s\t%s, %s",FPR_Type(command.FP.fmt),  
+			sprintf(CommandName,"cvt.d.%s\t%s, %s",FPR_Type(command.FP.fmt),  
 				FPR_Name[command.FP.fd], FPR_Name[command.FP.fs]);
 			break;
 		case R4300i_COP1_FUNCT_CVT_W:
-			sprintf(CommandName,"CVT.W.%s\t%s, %s",FPR_Type(command.FP.fmt),  
+			sprintf(CommandName,"cvt.w.%s\t%s, %s",FPR_Type(command.FP.fmt),  
 				FPR_Name[command.FP.fd], FPR_Name[command.FP.fs]);
 			break;
 		case R4300i_COP1_FUNCT_CVT_L:
-			sprintf(CommandName,"CVT.L.%s\t%s, %s",FPR_Type(command.FP.fmt),  
+			sprintf(CommandName,"cvt.l.%s\t%s, %s",FPR_Type(command.FP.fmt),  
 				FPR_Name[command.FP.fd], FPR_Name[command.FP.fs]);
 			break;
 		case R4300i_COP1_FUNCT_C_F:
-			sprintf(CommandName,"C.F.%s\t%s, %s",FPR_Type(command.FP.fmt),  
+			sprintf(CommandName,"c.f.%s\t%s, %s",FPR_Type(command.FP.fmt),  
 				FPR_Name[command.FP.fs], FPR_Name[command.FP.ft]);
 			break;
 		case R4300i_COP1_FUNCT_C_UN:
-			sprintf(CommandName,"C.UN.%s\t%s, %s",FPR_Type(command.FP.fmt),  
+			sprintf(CommandName,"c.un.%s\t%s, %s",FPR_Type(command.FP.fmt),  
 				FPR_Name[command.FP.fs], FPR_Name[command.FP.ft]);
 			break;
 		case R4300i_COP1_FUNCT_C_EQ:
-			sprintf(CommandName,"C.EQ.%s\t%s, %s",FPR_Type(command.FP.fmt),  
+			sprintf(CommandName,"c.eq.%s\t%s, %s",FPR_Type(command.FP.fmt),  
 				FPR_Name[command.FP.fs], FPR_Name[command.FP.ft]);
 			break;
 		case R4300i_COP1_FUNCT_C_UEQ:
-			sprintf(CommandName,"C.UEQ.%s\t%s, %s",FPR_Type(command.FP.fmt),  
+			sprintf(CommandName,"c.ueq.%s\t%s, %s",FPR_Type(command.FP.fmt),  
 				FPR_Name[command.FP.fs], FPR_Name[command.FP.ft]);
 			break;
 		case R4300i_COP1_FUNCT_C_OLT:
-			sprintf(CommandName,"C.OLT.%s\t%s, %s",FPR_Type(command.FP.fmt),  
+			sprintf(CommandName,"c.olt.%s\t%s, %s",FPR_Type(command.FP.fmt),  
 				FPR_Name[command.FP.fs], FPR_Name[command.FP.ft]);
 			break;
 		case R4300i_COP1_FUNCT_C_ULT:
-			sprintf(CommandName,"C.ULT.%s\t%s, %s",FPR_Type(command.FP.fmt),  
+			sprintf(CommandName,"c.ult.%s\t%s, %s",FPR_Type(command.FP.fmt),  
 				FPR_Name[command.FP.fs], FPR_Name[command.FP.ft]);
 			break;
 		case R4300i_COP1_FUNCT_C_OLE:
-			sprintf(CommandName,"C.OLE.%s\t%s, %s",FPR_Type(command.FP.fmt),  
+			sprintf(CommandName,"c.ole.%s\t%s, %s",FPR_Type(command.FP.fmt),  
 				FPR_Name[command.FP.fs], FPR_Name[command.FP.ft]);
 			break;
 		case R4300i_COP1_FUNCT_C_ULE:
-			sprintf(CommandName,"C.ULE.%s\t%s, %s",FPR_Type(command.FP.fmt),  
+			sprintf(CommandName,"c.ule.%s\t%s, %s",FPR_Type(command.FP.fmt),  
 				FPR_Name[command.FP.fs], FPR_Name[command.FP.ft]);
 			break;
 		case R4300i_COP1_FUNCT_C_SF:
-			sprintf(CommandName,"C.SF.%s\t%s, %s",FPR_Type(command.FP.fmt),  
+			sprintf(CommandName,"c.sf.%s\t%s, %s",FPR_Type(command.FP.fmt),  
 				FPR_Name[command.FP.fs], FPR_Name[command.FP.ft]);
 			break;
 		case R4300i_COP1_FUNCT_C_NGLE:
-			sprintf(CommandName,"C.NGLE.%s\t%s, %s",FPR_Type(command.FP.fmt),  
+			sprintf(CommandName,"c.ngle.%s\t%s, %s",FPR_Type(command.FP.fmt),  
 				FPR_Name[command.FP.fs], FPR_Name[command.FP.ft]);
 			break;
 		case R4300i_COP1_FUNCT_C_SEQ:
-			sprintf(CommandName,"C.SEQ.%s\t%s, %s",FPR_Type(command.FP.fmt),  
+			sprintf(CommandName,"c.seq.%s\t%s, %s",FPR_Type(command.FP.fmt),  
 				FPR_Name[command.FP.fs], FPR_Name[command.FP.ft]);
 			break;
 		case R4300i_COP1_FUNCT_C_NGL:
-			sprintf(CommandName,"C.NGL.%s\t%s, %s",FPR_Type(command.FP.fmt),  
+			sprintf(CommandName,"c.ngl.%s\t%s, %s",FPR_Type(command.FP.fmt),  
 				FPR_Name[command.FP.fs], FPR_Name[command.FP.ft]);
 			break;
 		case R4300i_COP1_FUNCT_C_LT:
-			sprintf(CommandName,"C.LT.%s\t%s, %s",FPR_Type(command.FP.fmt),  
+			sprintf(CommandName,"c.lt.%s\t%s, %s",FPR_Type(command.FP.fmt),  
 				FPR_Name[command.FP.fs], FPR_Name[command.FP.ft]);
 			break;
 		case R4300i_COP1_FUNCT_C_NGE:
-			sprintf(CommandName,"C.NGE.%s\t%s, %s",FPR_Type(command.FP.fmt),  
+			sprintf(CommandName,"c.nge.%s\t%s, %s",FPR_Type(command.FP.fmt),  
 				FPR_Name[command.FP.fs], FPR_Name[command.FP.ft]);
 			break;
 		case R4300i_COP1_FUNCT_C_LE:
-			sprintf(CommandName,"C.LE.%s\t%s, %s",FPR_Type(command.FP.fmt),  
+			sprintf(CommandName,"c.le.%s\t%s, %s",FPR_Type(command.FP.fmt),  
 				FPR_Name[command.FP.fs], FPR_Name[command.FP.ft]);
 			break;
 		case R4300i_COP1_FUNCT_C_NGT:
-			sprintf(CommandName,"C.NGT.%s\t%s, %s",FPR_Type(command.FP.fmt),  
+			sprintf(CommandName,"c.ngt.%s\t%s, %s",FPR_Type(command.FP.fmt),  
 				FPR_Name[command.FP.fs], FPR_Name[command.FP.ft]);
 			break;
 		default:
