@@ -344,7 +344,7 @@ int ApplyCheatEntry(GAMESHARK_CODE* Code, BOOL Execute) {
 		return ApplyCheatEntry(&Code[1], Execute) + 1;
 	case 0xD1000000:													// Added by Witten (witten@pj64cheats.net)
 		Address = 0x80000000 | (Code->Command & 0xFFFFFF);
-		r4300i_LB_VAddr_NonCPU(Address, (WORD*)&Memory);
+		r4300i_LH_VAddr_NonCPU(Address, (WORD*)&Memory);
 		if (Memory != Code->Value) { Execute = FALSE; }
 		return ApplyCheatEntry(&Code[1], Execute) + 1;
 	case 0xD2000000:													// Added by Witten (witten@pj64cheats.net)
@@ -355,7 +355,7 @@ int ApplyCheatEntry(GAMESHARK_CODE* Code, BOOL Execute) {
 		return ApplyCheatEntry(&Code[1], Execute) + 1;
 	case 0xD3000000:													// Added by Witten (witten@pj64cheats.net)
 		Address = 0x80000000 | (Code->Command & 0xFFFFFF);
-		r4300i_LB_VAddr_NonCPU(Address, (WORD*)&Memory);
+		r4300i_LH_VAddr_NonCPU(Address, (WORD*)&Memory);
 		if (Memory == Code->Value) { Execute = FALSE; }
 		return ApplyCheatEntry(&Code[1], Execute) + 1;
 
