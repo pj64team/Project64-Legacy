@@ -395,11 +395,11 @@ LRESULT CALLBACK Memory_ListViewScroll_Proc(HWND hDlg, UINT uMsg, WPARAM wParam,
 			unsigned int location = AsciiToHex(value);
 
 			if (lines > 0) {
-				if (UINT_MAX - location >= lines * 256) {
+				if (UINT_MAX - location >= 256) {
 					location += lines * 16;
 				}
 				else {
-					location = UINT_MAX - 0x0100 + 1;
+					location = UINT_MAX - 256 + 1;
 				}
 			}
 			else {
