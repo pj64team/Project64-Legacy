@@ -267,6 +267,10 @@ LRESULT CALLBACK Memory_Window_Proc (HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM
 			// Disable column resize
 			SetWindowLong(hDlg, DWL_MSGRESULT, TRUE);
 			return TRUE;
+		case LVN_ITEMCHANGED:
+			// Disable selections
+			ListView_SetItemState(hList, -1, 0, LVIS_FOCUSED | LVIS_SELECTED);
+			break;
 		case LVN_GETDISPINFO: {
 			LVITEM item = ((NMLVDISPINFO*)lParam)->item;
 			struct MEMORY_VIEW_ROW* row = &MemoryViewRows[item.iItem];
@@ -477,7 +481,7 @@ void Setup_Memory_Window (HWND hDlg) {
 		LVS_OWNERDATA | LVS_REPORT | LVS_NOSORTHEADER, 14,39,682,300,hDlg,
 		(HMENU)IDC_LIST_VIEW,hInst,NULL );
 	if (hList) {
-		ListView_SetExtendedListViewStyleEx(hList, LVS_EX_DOUBLEBUFFER, LVS_EX_DOUBLEBUFFER);
+		ListView_SetExtendedListViewStyle(hList, LVS_EX_DOUBLEBUFFER);
 
 		LV_COLUMN  col;
 		int count;
