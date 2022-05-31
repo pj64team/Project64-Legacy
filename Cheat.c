@@ -236,34 +236,37 @@ int ApplyCheatEntry(GAMESHARK_CODE* Code, BOOL Execute) {
 		Address = Code[1].Command;
 		int count = Code[1].Value + 1;
 		int i;
-		for (i = 0; i < count; i += 2) {
-			switch (i % 6) {
-			case 0:
-				Memory = Code[(i / 6) + 2].Command >> 16;
-				break;
-			case 2:
-				Memory = Code[(i / 6) + 2].Command;
-				break;
-			default:
-				Memory = Code[(i / 6) + 2].Value;
-				break;
+
+		if (Execute) {
+			for (i = 0; i < count; i += 2) {
+				switch (i % 6) {
+				case 0:
+					Memory = Code[(i / 6) + 2].Command >> 16;
+					break;
+				case 2:
+					Memory = Code[(i / 6) + 2].Command;
+					break;
+				default:
+					Memory = Code[(i / 6) + 2].Value;
+					break;
+				}
+				r4300i_SH_VAddr_NonCPU(Address, Memory);
+				Address += 2;
 			}
-			r4300i_SH_VAddr_NonCPU(Address, Memory);
-			Address += 2;
-		}
-		if (count % 2) {
-			switch (i % 6) {
-			case 0:
-				Memory = Code[(i / 6) + 2].Command >> 24;
-				break;
-			case 2:
-				Memory = Code[(i / 6) + 2].Command >> 8;
-				break;
-			default:
-				Memory = Code[(i / 6) + 2].Value >> 8;
-				break;
+			if (count % 2) {
+				switch (i % 6) {
+				case 0:
+					Memory = Code[(i / 6) + 2].Command >> 24;
+					break;
+				case 2:
+					Memory = Code[(i / 6) + 2].Command >> 8;
+					break;
+				default:
+					Memory = Code[(i / 6) + 2].Value >> 8;
+					break;
+				}
+				r4300i_SB_VAddr_NonCPU(Address, (BYTE)Memory);
 			}
-			r4300i_SB_VAddr_NonCPU(Address, (BYTE)Memory);
 		}
 
 		return (count / 6) + (count % 6 ? 1 : 0) + 2;
@@ -277,21 +280,25 @@ int ApplyCheatEntry(GAMESHARK_CODE* Code, BOOL Execute) {
 
 		switch (Code[1].Command & 0xFF000000) {
 		case 0x80000000:
-			Address = 0x80000000 | (Code[1].Command & 0xFFFFFF);
-			Memory = Code[1].Value;
-			for (count = 0; count < numrepeats; count++) {
-				r4300i_SB_VAddr_NonCPU(Address, (BYTE)Memory);
-				Address += offset;
-				Memory += incr;
+			if (Execute) {
+				Address = 0x80000000 | (Code[1].Command & 0xFFFFFF);
+				Memory = Code[1].Value;
+				for (count = 0; count < numrepeats; count++) {
+					r4300i_SB_VAddr_NonCPU(Address, (BYTE)Memory);
+					Address += offset;
+					Memory += incr;
+				}
 			}
 			return 2;
 		case 0x81000000:
-			Address = 0x80000000 | (Code[1].Command & 0xFFFFFF);
-			Memory = Code[1].Value;
-			for (count = 0; count < numrepeats; count++) {
-				r4300i_SH_VAddr_NonCPU(Address, (WORD)Memory);
-				Address += offset;
-				Memory += incr;
+			if (Execute) {
+				Address = 0x80000000 | (Code[1].Command & 0xFFFFFF);
+				Memory = Code[1].Value;
+				for (count = 0; count < numrepeats; count++) {
+					r4300i_SH_VAddr_NonCPU(Address, (WORD)Memory);
+					Address += offset;
+					Memory += incr;
+				}
 			}
 			return 2;
 		default: return 1;
