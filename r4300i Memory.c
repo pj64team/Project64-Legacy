@@ -41,6 +41,7 @@
 void Setup_Memory_Window (HWND hDlg);
 void Start_Auto_Refresh_Thread(void);
 void Scroll_Memory_View(int lines);
+void Refresh_Memory_With_Diff(BOOL ShowDiff);
 
 LRESULT CALLBACK Memory_Window_Proc (HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam);
 
@@ -67,6 +68,7 @@ const COLORREF BG_DEFAULT		= RGB(255, 255, 255);
 static HWND Memory_Win_hDlg, hAddrEdit, hVAddr, hPAddr, hRefresh, hList, hScrlBar;
 static HFONT hWatchFont;
 static HANDLE hRefreshThread = NULL;
+static HANDLE hRefreshMutex = NULL;
 static int InMemoryWindow = FALSE;
 static int wheel = 0;
 static struct MEMORY_VIEW_ROW MemoryViewRows[16];
@@ -93,24 +95,22 @@ void __cdecl Enter_Memory_Window ( void ) {
     Create_Memory_Window ( FALSE );
 }
 
-void Update_Data_Column(struct MEMORY_VIEW_ROW* row, MIPS_WORD word, int index, int i) {
+void Update_Data_Column(struct MEMORY_VIEW_ROW* row, MIPS_WORD word, int index, int i, BOOL ShowDiff) {
 	sprintf(row->HexStr[index], "%02X", word.UB[3 - i]);
 	row->Fonts[index] = GetStockObject(ANSI_FIXED_FONT);
 
-	if (word.UB[3 - i] > row->OldData[index]) {
+	if (ShowDiff && word.UB[3 - i] > row->OldData[index]) {
 		row->TextColors[index] = TC_INC;
-	}
-	else if (word.UB[3 - i] < row->OldData[index]) {
+	} else if (ShowDiff && word.UB[3 - i] < row->OldData[index]) {
 		row->TextColors[index] = TC_DEC;
-	}
-	else {
+	} else {
 		row->TextColors[index] = TC_DEFAULT;
 	}
 
 	row->OldData[index] = word.UB[3 - i];
 }
 
-void Update_Data_Column_With_WatchPoint(struct MEMORY_VIEW_ROW* row, DWORD location, MIPS_WORD word, int index, int i) {
+void Update_Data_Column_With_WatchPoint(struct MEMORY_VIEW_ROW* row, DWORD location, MIPS_WORD word, int index, int i, BOOL ShowDiff) {
 	sprintf(row->HexStr[index], "%02X", word.UB[3 - i]);
 
 	switch (HasWatchPoint(location + i)) {
@@ -129,13 +129,11 @@ void Update_Data_Column_With_WatchPoint(struct MEMORY_VIEW_ROW* row, DWORD locat
 	default:
 		row->Fonts[index] = GetStockObject(ANSI_FIXED_FONT);
 
-		if (word.UB[3 - i] > row->OldData[index]) {
+		if (ShowDiff && word.UB[3 - i] > row->OldData[index]) {
 			row->TextColors[index] = TC_INC;
-		}
-		else if (word.UB[3 - i] < row->OldData[index]) {
+		} else if (ShowDiff && word.UB[3 - i] < row->OldData[index]) {
 			row->TextColors[index] = TC_DEC;
-		}
-		else {
+		} else {
 			row->TextColors[index] = TC_DEFAULT;
 		}
 		break;
@@ -144,7 +142,7 @@ void Update_Data_Column_With_WatchPoint(struct MEMORY_VIEW_ROW* row, DWORD locat
 	row->OldData[index] = word.UB[3 - i];
 }
 
-void Insert_MemoryLineDump (unsigned int location, int InsertPos) {
+void Insert_MemoryLineDump (unsigned int location, int InsertPos, BOOL ShowDiff) {
 	struct MEMORY_VIEW_ROW* row = &MemoryViewRows[InsertPos];
 	MIPS_WORD word;
 
@@ -157,7 +155,7 @@ void Insert_MemoryLineDump (unsigned int location, int InsertPos) {
 			for (int count = 0; count < 4; count++) {
 				if (r4300i_LW_VAddr_NonCPU(location, &word.UW)) {
 					for (int i = 0; i < 4; i++) {
-						Update_Data_Column_With_WatchPoint(row, location, word, count * 4 + i, i);
+						Update_Data_Column_With_WatchPoint(row, location, word, count * 4 + i, i, ShowDiff);
 					}
 					sprintf(&row->AsciiStr[count * 4], "%c%c%c%c",
 						word.UB[3] < ' ' || word.UB[3] > '~' ? '.' : word.UB[3],
@@ -183,7 +181,7 @@ void Insert_MemoryLineDump (unsigned int location, int InsertPos) {
 				if (location < 0x1FFFFFFC) {
 					r4300i_LW_PAddr(location, &word.UW);
 					for (int i = 0; i < 4; i++) {
-						Update_Data_Column(row, word, count * 4 + i, i);
+						Update_Data_Column(row, word, count * 4 + i, i, ShowDiff);
 					}
 					sprintf(&row->AsciiStr[count * 4], "%c%c%c%c",
 						word.UB[3] < ' ' || word.UB[3] > '~' ? '.' : word.UB[3],
@@ -245,15 +243,16 @@ LRESULT CALLBACK Memory_Window_Proc (HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM
 		switch (LOWORD(wParam)) {
 		case IDC_ADDR_EDIT:
 			if (HIWORD(wParam) == EN_CHANGE ) {
-				Refresh_Memory();
+				Refresh_Memory_With_Diff(FALSE);
 			}
 			break;
 		case IDC_VADDR:
 		case IDC_PADDR:
-			Refresh_Memory();
+			Refresh_Memory_With_Diff(FALSE);
 			break;
 		case IDC_REFRESH:
 			Start_Auto_Refresh_Thread();
+			Refresh_Memory_With_Diff(FALSE);
 			break;
 		case IDCANCEL:
 			EndDialog( hDlg, IDCANCEL );
@@ -403,44 +402,63 @@ LRESULT CALLBACK Memory_ListViewKeys_Proc(HWND hWnd, UINT uMsg, WPARAM wParam, L
 
 void Scroll_Memory_View(int lines) {
 	char value[20];
+
+	if (hRefreshMutex == NULL) { return; }
+	DWORD wait_result = WaitForSingleObject(hRefreshMutex, 0);
+	if (wait_result != WAIT_OBJECT_0) {
+		return;
+	}
+
 	GetWindowText(hAddrEdit, value, sizeof(value));
 	unsigned int location = AsciiToHex(value);
 
 	if (lines > 0) {
 		if (UINT_MAX - location >= 256) {
 			location += lines * 16;
-		}
-		else {
+		} else {
 			location = UINT_MAX - 256 + 1;
 		}
-	}
-	else {
+	} else {
 		if (location >= -lines * 16) {
 			location += lines * 16;
-		}
-		else {
+		} else {
 			location = 0;
 		}
 	}
 
 	sprintf(value, "%08X", location);
 	SetWindowText(hAddrEdit, value);
+
+	ReleaseMutex(hRefreshMutex);
 }
 
-void __cdecl Refresh_Memory ( void ) {
+void __cdecl Refresh_Memory(void) {
+	Refresh_Memory_With_Diff(TRUE);
+}
+
+void Refresh_Memory_With_Diff(BOOL ShowDiff) {
 	DWORD location;
 	char Value[20];
 	int count;
 
 	if (InMemoryWindow == FALSE) { return; }
 
-	GetWindowText(hAddrEdit,Value,sizeof(Value));
+	if (hRefreshMutex == NULL) { return; }
+	DWORD wait_result = WaitForSingleObject(hRefreshMutex, 0);
+	if (wait_result != WAIT_OBJECT_0) {
+		return;
+	}
+
+	GetWindowText(hAddrEdit, Value, sizeof(Value));
 	location = (AsciiToHex(Value) >> 4);
 	if (location > 0x0FFFFFF0) { location = 0x0FFFFFF0; }
-	for (count = 0 ; count < 16;count ++ ){
-		Insert_MemoryLineDump ( count + location , count );
+
+	for (count = 0; count < 16; count ++) {
+		Insert_MemoryLineDump(location + count, count, ShowDiff);
 	}
 	InvalidateRect(hList, NULL, FALSE);
+
+	ReleaseMutex(hRefreshMutex);
 }
 
 void __cdecl Auto_Refresh(void) {
@@ -466,7 +484,12 @@ void Setup_Memory_Window (HWND hDlg) {
 #define WindowWidth  742
 #define WindowHeight 392
 	DWORD X, Y;
-	
+
+	if (hRefreshMutex == NULL) {
+		hRefreshMutex = CreateMutex(NULL, FALSE, NULL);
+		if (hRefreshMutex == NULL) { return; }
+	}
+
 	hVAddr = CreateWindowEx(0,"BUTTON", "Virtual Addressing", WS_CHILD | WS_VISIBLE | 
 		BS_AUTORADIOBUTTON, 215,13,150,21,hDlg,(HMENU)IDC_VADDR,hInst,NULL );
 	SendMessage(hVAddr,BM_SETCHECK, BST_CHECKED,0);
@@ -512,14 +535,20 @@ void Setup_Memory_Window (HWND hDlg) {
 		ListView_SetItemCount ( hList, 16);
 		SendMessage(hList,WM_SETFONT, (WPARAM)GetStockObject(ANSI_FIXED_FONT),0);
 		for (count = 0 ; count < 16;count ++ ){
-			Insert_MemoryLineDump (count,count);
+			Insert_MemoryLineDump(count, count, FALSE);
 		}
 		SetWindowSubclass(hList, Memory_ListViewScroll_Proc, 0, 0);
 		SetWindowSubclass(hList, Memory_ListViewKeys_Proc, 0, 0);
 	}
-	
-	hAddrEdit = GetDlgItem(hDlg,IDC_ADDR_EDIT);
-	SetWindowText(hAddrEdit,"80000000");
+
+	hAddrEdit = GetDlgItem(hDlg, IDC_ADDR_EDIT);
+
+	DWORD wait_result = WaitForSingleObject(hRefreshMutex, 0);
+	if (wait_result == WAIT_OBJECT_0) {
+		SetWindowText(hAddrEdit, "80000000");
+	}
+	ReleaseMutex(hRefreshMutex);
+
 	SendMessage(hAddrEdit,EM_SETLIMITTEXT,(WPARAM)8,(LPARAM)0);
 	SetWindowPos(hAddrEdit,NULL, 100,13,100,21, SWP_NOZORDER | SWP_SHOWWINDOW);
 	SendMessage(hAddrEdit,WM_SETFONT, (WPARAM)GetStockObject(ANSI_FIXED_FONT),0);
