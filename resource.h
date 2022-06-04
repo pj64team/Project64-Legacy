@@ -56,6 +56,8 @@
 #define IDC_INFO_CRC2                   1015
 #define IDC_LIST2                       1015
 #define GFX_LIST                        1016
+#define IDC_INFO_VERSION                1016
+#define IDC_INFO_SDK                    1017
 #define GFX_ABOUT                       1019
 #define IDC_ADDR_EDIT                   1024
 #define AUDIO_LIST                      1028
@@ -223,6 +225,8 @@
 #define IDC_CRC2                        1199
 #define IDC_CIC_CHIP                    1200
 #define IDC_NOTESFRAME                  1201
+#define IDC_VERSION                     1201
+#define IDC_SDK                         1202
 #define IDC_NOTE                        1205
 #define IDC_DIGITAL_TEXT                1206
 #define IDC_VALUE_TEXT                  1207
@@ -341,7 +345,7 @@
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        182
+#define _APS_NEXT_RESOURCE_VALUE        183
 #define _APS_NEXT_COMMAND_VALUE         40173
 #define _APS_NEXT_CONTROL_VALUE         1260
 #define _APS_NEXT_SYMED_VALUE           101
