@@ -320,7 +320,19 @@ LRESULT CALLBACK Memory_Window_Proc (HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM
 					lplvcd->clrText = TC_DEFAULT;
 					lplvcd->clrTextBk = BG_DEFAULT;
 				}
-				SetWindowLong(hDlg, DWL_MSGRESULT, CDRF_NEWFONT);
+				SetWindowLong(hDlg, DWL_MSGRESULT, CDRF_NEWFONT | CDRF_NOTIFYPOSTPAINT);
+				return TRUE;
+			case CDDS_ITEMPOSTPAINT | CDDS_SUBITEM:
+				if (lplvcd->iSubItem >= 1 && lplvcd->iSubItem < 13 && (lplvcd->iSubItem - 1) % 4 == 3) {
+					int x = (lplvcd->iSubItem - 1) * 28 + 117;
+					int y = lplvcd->nmcd.dwItemSpec * 17 + 24;
+
+					rcBox.left = x;
+					rcBox.top = y;
+					rcBox.right = x + 1;
+					rcBox.bottom = y + 17;
+					FillRect(lplvcd->nmcd.hdc, &rcBox, (HBRUSH)GetStockObject(GRAY_BRUSH));
+				}
 				return TRUE;
 			default:
 				SetWindowLong(hDlg, DWL_MSGRESULT, CDRF_DODEFAULT);
