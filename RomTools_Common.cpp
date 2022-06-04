@@ -156,8 +156,8 @@ void GetRomReleaseVersion(int* ReleaseVersion, BYTE* RomData) {
 }
 
 void GetRomSdkVersion(BYTE* SdkVersion, BYTE* RomData) {
-	SdkVersion[0] = RomData[0x0D];
-	SdkVersion[1] = RomData[0x0C];
+	SdkVersion[0] = RomData[0x0C];
+	SdkVersion[1] = RomData[0x0D];
 }
 
 void GetRomManufacturer(BYTE* Manufacturer, BYTE* RomData) {
