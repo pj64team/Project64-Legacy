@@ -55,18 +55,18 @@
 #define RB_PluginNotes		6
 #define RB_UserNotes		7
 #define RB_CartridgeID		8
-#define RB_Manufacturer		9
-#define RB_Country			10
-#define RB_Developer		11
-#define RB_Crc1				12
-#define RB_Crc2				13
-#define RB_CICChip			14
-#define RB_ReleaseDate		15
-#define RB_Genre			16
-#define RB_Players			17
-#define RB_ForceFeedback	18
-#define RB_ReleaseVer		19
-#define RB_SdkVer			20
+#define RB_ReleaseVer		9
+#define RB_SdkVer			10
+#define RB_Manufacturer		11
+#define RB_Country			12
+#define RB_Developer		13
+#define RB_Crc1				14
+#define RB_Crc2				15
+#define RB_CICChip			16
+#define RB_ReleaseDate		17
+#define RB_Genre			18
+#define RB_Players			19
+#define RB_ForceFeedback	20
 #define COLOR_TEXT			0
 #define COLOR_SELECTED_TEXT	1
 #define COLOR_HIGHLIGHTED   2
@@ -546,8 +546,10 @@ void RomList_ColumnSortList(LPNMLISTVIEW pnmv) {
 
 		for (count = NoOfSortKeys - 1; count > 0; count--) {
 			GetSortField(count - 1, String, sizeof(String));
-			SetSortField(String, count);
-			SetSortAscending(IsSortAscending(count - 1), count);
+			if (strlen(String) > 0) {
+				SetSortField(String, count);
+				SetSortAscending(IsSortAscending(count - 1), count);
+			}
 		}
 		SetSortField(RomBrowserFields[index].Name, 0);
 		SetSortAscending(TRUE, 0);
@@ -618,11 +620,21 @@ bool RomList_Compare(const ROM_INFO& a, const ROM_INFO& b) {
 				compare = lstrcmpi(pRomInfo1.Developer, pRomInfo2.Developer);
 				break;
 			case RB_Crc1:
-				compare = (int)pRomInfo1.CRC1 - (int)pRomInfo2.CRC1;
+			{
+				char crc_str1[9], crc_str2[9];
+				sprintf(crc_str1, "%08x", pRomInfo1.CRC1);
+				sprintf(crc_str2, "%08x", pRomInfo2.CRC1);
+				compare = lstrcmpi(crc_str1, crc_str2);
 				break;
+			}
 			case RB_Crc2:
-				compare = (int)pRomInfo1.CRC2 - (int)pRomInfo2.CRC2;
+			{
+				char crc_str1[9], crc_str2[9];
+				sprintf(crc_str1, "%08x", pRomInfo1.CRC2);
+				sprintf(crc_str2, "%08x", pRomInfo2.CRC2);
+				compare = lstrcmpi(crc_str1, crc_str2);
 				break;
+			}
 			case RB_CICChip:
 			{
 				char junk1[50], junk2[50];
@@ -648,16 +660,15 @@ bool RomList_Compare(const ROM_INFO& a, const ROM_INFO& b) {
 				break;
 		}
 
-		switch (compare) {
-			case 1:
-				// a > b (compare is returning 1, so a is greater than b)
-				return false;
-			case 0:
-				// Same, continue the compare by using the other sort keys
-				break;
-			default:
-				// a < b (compare is returning -1, so a is less than b)
-				return true;
+		if (compare > 0) {
+			// a > b (compare is returning 1, so a is greater than b)
+			return false;
+		} else if (compare == 0) {
+			// Same, continue the compare by using the other sort keys
+			break;
+		} else {
+			// a < b (compare is returning -1, so a is less than b)
+			return true;
 		}
 	}
 	return false;
@@ -700,7 +711,7 @@ void RomList_GetDispInfo(LPNMHDR pnmh) {
 			sprintf(lpdi->item.pszText, "v1.%d", pRomInfo->ReleaseVersion);
 			break;
 		case RB_SdkVer:
-			sprintf(lpdi->item.pszText, "v%d.%d%c", pRomInfo->SdkVersion[0] / 10, pRomInfo->SdkVersion[0] % 10, pRomInfo->SdkVersion[1]);
+			sprintf(lpdi->item.pszText, "v%d.%d%c", pRomInfo->SdkVersion[1] / 10, pRomInfo->SdkVersion[1] % 10, pRomInfo->SdkVersion[0]);
 			break;
 		case RB_Manufacturer:
 			switch (pRomInfo->Manufacturer) {

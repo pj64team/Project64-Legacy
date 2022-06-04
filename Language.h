@@ -167,18 +167,18 @@ char * GS               ( int StringID );
 #define RB_NOTES_PLUGIN			306
 #define RB_NOTES_USER			307
 #define RB_CART_ID				308
-#define RB_MANUFACTUER			309
-#define RB_COUNTRY				310
-#define RB_DEVELOPER			311
-#define RB_CRC1					312
-#define RB_CRC2					313
-#define RB_CICCHIP				314
-#define RB_RELEASE_DATE			315
-#define RB_GENRE				316
-#define RB_PLAYERS				317
-#define RB_FORCE_FEEDBACK		318
-#define RB_RELEASE_VER			319
-#define RB_SDK_VER				320
+#define RB_RELEASE_VER			309
+#define RB_SDK_VER				310
+#define RB_MANUFACTUER			311
+#define RB_COUNTRY				312
+#define RB_DEVELOPER			313
+#define RB_CRC1					314
+#define RB_CRC2					315
+#define RB_CICCHIP				316
+#define RB_RELEASE_DATE			317
+#define RB_GENRE				318
+#define RB_PLAYERS				319
+#define RB_FORCE_FEEDBACK		320
 
 //Select Rom
 #define SELECT_ROM_DIR			321
