@@ -684,6 +684,7 @@ void RomList_GetDispInfo(LPNMHDR pnmh) {
 			break;
 		case RB_Manufacturer:
 			switch (pRomInfo->Manufacturer) {
+				case 'C':
 				case 'N':
 					strncpy(lpdi->item.pszText, "Nintendo", lpdi->item.cchTextMax);
 					break;

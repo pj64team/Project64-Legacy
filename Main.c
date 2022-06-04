@@ -1826,6 +1826,7 @@ LRESULT CALLBACK RomInfoProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
 			SetDlgItemText(hDlg, IDC_INFO_CARTID, String);
 
 			switch (RomHeader[0x38]) {
+				case 'C':
 				case 'N':
 					SetDlgItemText(hDlg, IDC_INFO_MANUFACTURER, " Nintendo");
 					break;
