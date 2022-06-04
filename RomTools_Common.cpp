@@ -12,11 +12,12 @@ void CountryCodeToString(char string[], BYTE Country, int length) {
 	case '7': strncpy(string, "Beta", length); break;
 	case 'A': strncpy(string, "NTSC", length); break;
 	case 'B': strncpy(string, "Brazil", length); break;
+	case 'C': strncpy(string, "China", length); break;
 	case 'D': strncpy(string, "Germany", length); break;
 	case 'E': strncpy(string, "USA", length); break;
 	case 'F': strncpy(string, "France", length); break;
-	case 'J': strncpy(string, "Japan", length); break;
 	case 'I': strncpy(string, "Italy", length); break;
+	case 'J': strncpy(string, "Japan", length); break;
 	case 'P': strncpy(string, "Europe", length); break;
 	case 'S': strncpy(string, "Spain", length); break;
 	case 'U': strncpy(string, "Australia", length); break;
@@ -36,11 +37,12 @@ void CountryCodeToShortString(char string[], BYTE Country, int length) {
 	case '7': strncpy(string, "(Beta)", length); break;
 	case 'A': strncpy(string, "(NTSC)", length); break;
 	case 'B': strncpy(string, "(B)", length); break;
+	case 'C': strncpy(string, "(C)", length); break;
 	case 'D': strncpy(string, "(G)", length); break;
 	case 'E': strncpy(string, "(U)", length); break;
 	case 'F': strncpy(string, "(F)", length); break;
-	case 'J': strncpy(string, "(J)", length); break;
 	case 'I': strncpy(string, "(I)", length); break;
+	case 'J': strncpy(string, "(J)", length); break;
 	case 'P': strncpy(string, "(E)", length); break;
 	case 'S': strncpy(string, "(S)", length); break;
 	case 'U': strncpy(string, "(A)", length); break;
@@ -63,23 +65,24 @@ int GetRomRegion(BYTE* RomData) {
 
 int GetRomRegionByCode(BYTE CountryCode) {
 	switch (CountryCode) {
-	case 0x44: // Germany
-	case 0x46: // French
-	case 0x49: // Italian
-	case 0x50: // Europe
-	case 0x53: // Spanish
-	case 0x55: // Australia
-	case 0x58: // X (PAL)
-	case 0x59: // X (PAL)
+	case 'D': // Germany
+	case 'F': // French
+	case 'I': // Italian
+	case 'P': // Europe
+	case 'S': // Spanish
+	case 'U': // Australia
+	case 'X': // PAL
+	case 'Y': // PAL
 		return PAL_Region;
 
-	case 0x37:	// 7 (Beta)
-	case 0x41:	// NTSC (Only 1080 JU?)
-	case 0x42:	// Brazil
-	case 0x45:	// USA
-	case 0x4A:	// Japan
-	case 0x20:	// None (PD)
-	case 0x0:	// None (PD)
+	case '7':	// Beta
+	case 'A':	// NTSC (Only 1080 JU?)
+	case 'B':	// Brazil
+	case 'C':	// China
+	case 'E':	// USA
+	case 'J':	// Japan
+	case ' ':	// PD
+	case 0:		// PD
 		return NTSC_Region;
 
 	default:
