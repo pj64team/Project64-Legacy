@@ -15,6 +15,8 @@ extern "C" {
 	void GetRomName(char* Name, BYTE* RomData);
 	void GetRomFullName(char* FullName, BYTE* RomData, char* FullPath);
 	void GetRomCartID(char* ID, BYTE* RomData);
+	void GetRomReleaseVersion(int* ReleaseVersion, BYTE* RomData);
+	void GetRomSdkVersion(BYTE* SdkVersion, BYTE* RomData);
 	void GetRomManufacturer(BYTE* Manufacturer, BYTE* RomData);
 	void GetRomCountry(BYTE* Country, BYTE* RomData);
 	void GetRomCRC1(DWORD* Crc1, BYTE* RomData);

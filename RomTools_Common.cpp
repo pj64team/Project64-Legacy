@@ -148,6 +148,15 @@ void GetRomCartID(char* ID, BYTE* RomData) {
 	ID[2] = '\0';
 }
 
+void GetRomReleaseVersion(int* ReleaseVersion, BYTE* RomData) {
+	*ReleaseVersion = (int)RomData[0x3C];
+}
+
+void GetRomSdkVersion(BYTE* SdkVersion, BYTE* RomData) {
+	SdkVersion[0] = RomData[0x0D];
+	SdkVersion[1] = RomData[0x0C];
+}
+
 void GetRomManufacturer(BYTE* Manufacturer, BYTE* RomData) {
 	*Manufacturer = *(BYTE*)(RomData + 0x38);
 }

@@ -65,6 +65,8 @@
 #define RB_Genre			16
 #define RB_Players			17
 #define RB_ForceFeedback	18
+#define RB_ReleaseVer		19
+#define RB_SdkVer			20
 #define COLOR_TEXT			0
 #define COLOR_SELECTED_TEXT	1
 #define COLOR_HIGHLIGHTED   2
@@ -84,6 +86,8 @@ typedef struct {
 	char Genre[15];
 	int	Players;
 	int  RomSize;
+	int ReleaseVersion;
+	BYTE SdkVersion[2];
 	BYTE Manufacturer;
 	BYTE Country;
 	DWORD CRC1;
@@ -137,6 +141,8 @@ ROMBROWSER_FIELDS RomBrowserFields[] =
 	"Notes (default plugins)", 3, RB_PluginNotes,   188, RB_NOTES_PLUGIN,
 	"Notes (User)",           -1, RB_UserNotes,     100, RB_NOTES_USER,
 	"Cartridge ID",           -1, RB_CartridgeID,   100, RB_CART_ID,
+	"Release Version",        -1, RB_ReleaseVer,    100, RB_RELEASE_VER,
+	"SDK Version",            -1, RB_SdkVer,        100, RB_SDK_VER,
 	"Manufacturer",           -1, RB_Manufacturer,  100, RB_MANUFACTUER,
 	"Country",                -1, RB_Country,       100, RB_COUNTRY,
 	"Developer",              -1, RB_Developer,     100, RB_DEVELOPER,
@@ -420,6 +426,8 @@ BOOL FillRomInfo(ROM_INFO* pRomInfo) {
 
 	GetRomName(pRomInfo->InternalName, RomData);
 	GetRomCartID(pRomInfo->CartID, RomData);
+	GetRomReleaseVersion(&pRomInfo->ReleaseVersion, RomData);
+	GetRomSdkVersion(pRomInfo->SdkVersion, RomData);
 	GetRomManufacturer(&pRomInfo->Manufacturer, RomData);
 	GetRomCountry(&pRomInfo->Country, RomData);
 	GetRomCRC1(&pRomInfo->CRC1, RomData);
@@ -589,6 +597,12 @@ bool RomList_Compare(const ROM_INFO& a, const ROM_INFO& b) {
 			case RB_CartridgeID:
 				compare = lstrcmpi(pRomInfo1.CartID, pRomInfo2.CartID);
 				break;
+			case RB_ReleaseVer:
+				compare = (int)pRomInfo1.ReleaseVersion - (int)pRomInfo2.ReleaseVersion;
+				break;
+			case RB_SdkVer:
+				compare = (int)(*(SHORT*)pRomInfo1.SdkVersion) - (int)(*(SHORT*)pRomInfo2.SdkVersion);
+				break;
 			case RB_Manufacturer:
 				compare = (int)pRomInfo1.Manufacturer - (int)pRomInfo2.Manufacturer;
 				break;
@@ -681,6 +695,12 @@ void RomList_GetDispInfo(LPNMHDR pnmh) {
 			break;
 		case RB_CartridgeID:
 			strncpy(lpdi->item.pszText, pRomInfo->CartID, lpdi->item.cchTextMax);
+			break;
+		case RB_ReleaseVer:
+			sprintf(lpdi->item.pszText, "v1.%d", pRomInfo->ReleaseVersion);
+			break;
+		case RB_SdkVer:
+			sprintf(lpdi->item.pszText, "v%d.%d%c", pRomInfo->SdkVersion[0] / 10, pRomInfo->SdkVersion[0] % 10, pRomInfo->SdkVersion[1]);
 			break;
 		case RB_Manufacturer:
 			switch (pRomInfo->Manufacturer) {

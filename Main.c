@@ -1789,6 +1789,8 @@ LRESULT CALLBACK RomInfoProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
 			SetDlgItemText(hDlg, IDC_LOCATION, GS(INFO_LOCATION_TEXT));
 			SetDlgItemText(hDlg, IDC_ROM_SIZE, GS(INFO_SIZE_TEXT));
 			SetDlgItemText(hDlg, IDC_CART_ID, GS(INFO_CART_ID_TEXT));
+			SetDlgItemText(hDlg, IDC_VERSION, GS(INFO_RELEASE_VERSION));
+			SetDlgItemText(hDlg, IDC_SDK, GS(INFO_SDK_VERSION));
 			SetDlgItemText(hDlg, IDC_MANUFACTURER, GS(INFO_MANUFACTURER_TEXT));
 			SetDlgItemText(hDlg, IDC_COUNTRY, GS(INFO_COUNTRY_TEXT));
 			SetDlgItemText(hDlg, IDC_CRC1, GS(INFO_CRC1_TEXT));
@@ -1824,6 +1826,12 @@ LRESULT CALLBACK RomInfoProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
 			String[2] = RomHeader[0x3E];
 			String[3] = '\0';
 			SetDlgItemText(hDlg, IDC_INFO_CARTID, String);
+
+			sprintf(&String[1], "v1.%d", RomHeader[0x3C]);
+			SetDlgItemText(hDlg, IDC_INFO_VERSION, String);
+
+			sprintf(&String[1], "v%d.%d%c", RomHeader[0x0D] / 10, RomHeader[0x0D] % 10, RomHeader[0x0C]);
+			SetDlgItemText(hDlg, IDC_INFO_SDK, String);
 
 			switch (RomHeader[0x38]) {
 				case 'C':

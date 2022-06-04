@@ -177,9 +177,11 @@ char * GS               ( int StringID );
 #define RB_GENRE				316
 #define RB_PLAYERS				317
 #define RB_FORCE_FEEDBACK		318
+#define RB_RELEASE_VER			319
+#define RB_SDK_VER				320
 
 //Select Rom
-#define SELECT_ROM_DIR			320
+#define SELECT_ROM_DIR			321
 
 //Messages
 #define RB_NOT_GOOD_FILE		340
@@ -325,6 +327,8 @@ char * GS               ( int StringID );
 #define INFO_CRC1_TEXT			808
 #define INFO_CRC2_TEXT			809
 #define INFO_CIC_CHIP_TEXT		810
+#define INFO_RELEASE_VERSION	811
+#define INFO_SDK_VERSION		812
 
 /*********************************************************************************
 * Cheats                                                                         *
