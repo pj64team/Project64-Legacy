@@ -61,6 +61,7 @@ typedef struct {
 void Paint_R4300i_Commands ( HWND hDlg );
 void R4300i_Commands_Setup ( HWND hDlg );
 void RefreshR4300iCommands ( void );
+void Scroll_R4300i_Commands(int lines);
 
 LRESULT CALLBACK R4300i_Commands_Proc ( HWND, UINT, WPARAM, LPARAM );
 
@@ -448,51 +449,20 @@ LRESULT CALLBACK R4300i_Commands_Proc (HWND hDlg, UINT uMsg, WPARAM wParam, LPAR
 		break;
 	case WM_VSCROLL:
 		if ((HWND)lParam == hScrlBar) {
-			DWORD location;
-			char Value[20];
-			DWORD page_size = (R4300i_MaxCommandLines - 1) * 4;
-			DWORD max_location = UINT_MAX - page_size + 1;
+			int page_size = R4300i_MaxCommandLines - 1;
 
-			GetWindowText(hAddress,Value,sizeof(Value));
-			location = AsciiToHex(Value) & ~3;
-			
 			switch (LOWORD(wParam)) {
-			case SB_LINEDOWN:
-				if (location < 0xFFFFFFFC) {
-					sprintf(Value,"%08X",location + 0x4);
-					SetWindowText(hAddress,Value);
-				} else {
-					sprintf(Value,"%08X",0xFFFFFFFC);
-					SetWindowText(hAddress,Value);
-				}
-				break;
 			case SB_LINEUP:
-				if (location > 0x4 ) {
-					sprintf(Value,"%08X",location - 0x4);
-					SetWindowText(hAddress,Value);
-				} else {
-					sprintf(Value,"%08X",0);
-					SetWindowText(hAddress,Value);
-				}
+				Scroll_R4300i_Commands(-1);
 				break;
-			case SB_PAGEDOWN:
-				if (location < max_location) {
-					sprintf(Value, "%08X", location + page_size);
-					SetWindowText(hAddress, Value);
-				}
-				else {
-					sprintf(Value, "%08X", max_location);
-					SetWindowText(hAddress, Value);
-				}
+			case SB_LINEDOWN:
+				Scroll_R4300i_Commands(1);
 				break;
 			case SB_PAGEUP:
-				if (location > (R4300i_MaxCommandLines - 1) * 4) {
-					sprintf(Value,"%08X",location - page_size);
-					SetWindowText(hAddress,Value);
-				} else {
-					sprintf(Value,"%08X",0);
-					SetWindowText(hAddress,Value);
-				}
+				Scroll_R4300i_Commands(-page_size);
+				break;
+			case SB_PAGEDOWN:
+				Scroll_R4300i_Commands(page_size);
 				break;
 			}
 		}
@@ -512,35 +482,68 @@ LRESULT CALLBACK R4300i_Commands_ListViewScroll_Proc(HWND hDlg, UINT uMsg, WPARA
 			int lines = wheel / WHEEL_DELTA;
 			wheel -= lines * WHEEL_DELTA;
 
-			char value[20];
-			GetWindowText(hAddress, value, sizeof(value));
-			unsigned int location = AsciiToHex(value);
-
-			if (lines > 0) {
-				if (UINT_MAX - location >= R4300i_MaxCommandLines * 4) {
-					location += lines * 4;
-				}
-				else {
-					location = UINT_MAX - R4300i_MaxCommandLines * 4 + 1;
-				}
-			}
-			else {
-				if (location >= -lines * 4) {
-					location += lines * 4;
-				}
-				else {
-					location = 0;
-				}
-			}
-
-			sprintf(value, "%08X", location);
-			SetWindowText(hAddress, value);
+			Scroll_R4300i_Commands(lines);
 		}
 
 		return FALSE;
 	default:
 		return DefSubclassProc(hDlg, uMsg, wParam, lParam);
 	}
+}
+
+LRESULT CALLBACK R4300i_Commands_ListViewKeys_Proc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam, UINT_PTR uIdSubclass, DWORD_PTR dwRefData) {
+	switch (uMsg) {
+	case WM_KEYDOWN: {
+		int page_size = R4300i_MaxCommandLines - 1;
+
+		switch (wParam) {
+		case VK_UP:
+			Scroll_R4300i_Commands(-1);
+			return FALSE;
+		case VK_DOWN:
+			Scroll_R4300i_Commands(1);
+			return FALSE;
+		case VK_PRIOR:
+			Scroll_R4300i_Commands(-page_size);
+			return FALSE;
+		case VK_NEXT:
+			Scroll_R4300i_Commands(page_size);
+			return FALSE;
+		default:
+			break;
+		}
+	}
+	default:
+		break;
+	}
+
+	return DefSubclassProc(hWnd, uMsg, wParam, lParam);
+}
+
+void Scroll_R4300i_Commands(int lines) {
+	char value[20];
+	GetWindowText(hAddress, value, sizeof(value));
+	unsigned int location = AsciiToHex(value);
+
+	if (lines > 0) {
+		if (UINT_MAX - location >= R4300i_MaxCommandLines * 4) {
+			location += lines * 4;
+		}
+		else {
+			location = UINT_MAX - R4300i_MaxCommandLines * 4 + 1;
+		}
+	}
+	else {
+		if (location >= -lines * 4) {
+			location += lines * 4;
+		}
+		else {
+			location = 0;
+		}
+	}
+
+	sprintf(value, "%08X", location);
+	SetWindowText(hAddress, value);
 }
 
 void R4300i_Commands_Setup ( HWND hDlg ) {
@@ -555,6 +558,7 @@ void R4300i_Commands_Setup ( HWND hDlg ) {
 		SendMessage(hList,WM_SETFONT, (WPARAM)GetStockObject(ANSI_FIXED_FONT),0);
 		SendMessage(hList,LB_SETITEMHEIGHT, (WPARAM)0,(LPARAM)MAKELPARAM(14, 0));
 		SetWindowSubclass(hList, R4300i_Commands_ListViewScroll_Proc, 0, 0);
+		SetWindowSubclass(hList, R4300i_Commands_ListViewKeys_Proc, 0, 0);
 	}
 
 	hAddress = CreateWindowEx(0,"EDIT","", WS_CHILD | ES_UPPERCASE | WS_VISIBLE | 
