@@ -43,6 +43,7 @@ typedef struct {
 
 #define R4300i_Status_PC            1
 #define R4300i_Status_BP            2
+#define R4300i_Status_Selected      4
 
 #define IDC_LIST					1000
 #define IDC_ADDRESS					1001
@@ -65,7 +66,7 @@ void Scroll_R4300i_Commands(int lines);
 
 LRESULT CALLBACK R4300i_Commands_Proc ( HWND, UINT, WPARAM, LPARAM );
 
-static USHORT bCheckerBits[8] = { 0x55, 0xaa, 0x55, 0xaa, 0x55, 0xaa, 0x55, 0xaa }; // 1x1 checkerboard
+static USHORT bCheckerBits[8] = { 0x33, 0x33, 0xcc, 0xcc, 0x33, 0x33, 0xcc, 0xcc }; // 2x2 checkerboard
 static HBITMAP hBmChecker;
 static HBRUSH hBrushChecker;
 static HWND R4300i_Commands_hDlg, hList, hAddress, hFunctionlist, hGoButton, hBreakButton,
@@ -73,6 +74,10 @@ static HWND R4300i_Commands_hDlg, hList, hAddress, hFunctionlist, hGoButton, hBr
 	hMemory, hScrlBar;
 static R4300ICOMMANDLINE r4300iCommandLine[R4300i_MaxCommandLines];
 static int wheel = 0;
+static UINT DragListMsg;
+static BOOL has_selection = FALSE;
+static DWORD selection_anchor = 0;
+static DWORD selection_range[2] = { 0, 0 };
 
 BOOL InR4300iCommandsWindow = FALSE;
 
@@ -124,25 +129,25 @@ void Disable_R4300i_Commands_Window ( void ) {
 
 int DisplayR4300iCommand (DWORD location, int InsertPos) {
 	DWORD OpCode, count, LinesUsed = 1, status;
-	BOOL Redraw = FALSE;	
+	BOOL Redraw = FALSE;
 
 	for (count = 0; count < NoOfMapEntries; count ++ ) {
 		if (MapTable[count].VAddr == location) {
-			
-			if (strcmp(r4300iCommandLine[InsertPos].String, MapTable[count].Label) !=0 ) {
+
+			if (strcmp(r4300iCommandLine[InsertPos].String, MapTable[count].Label) != 0) {
 				Redraw = TRUE;
 			}
-			
+
 			if (Redraw) {
 				r4300iCommandLine[InsertPos].Location = -1;
 				r4300iCommandLine[InsertPos].status = 0;
-				sprintf(r4300iCommandLine[InsertPos].String," %s:",MapTable[count].Label);
-				if ( SendMessage(hList,LB_GETCOUNT,0,0) <= InsertPos) {
-					SendMessage(hList,LB_INSERTSTRING,(WPARAM)InsertPos, (LPARAM)location); 
+				sprintf(r4300iCommandLine[InsertPos].String, " %s:", MapTable[count].Label);
+				if (SendMessage(hList, LB_GETCOUNT, 0, 0) <= InsertPos) {
+					SendMessage(hList, LB_INSERTSTRING, (WPARAM)InsertPos, (LPARAM)location);
 				} else {
 					RECT ItemRC;
-					SendMessage(hList,LB_GETITEMRECT,(WPARAM)InsertPos, (LPARAM)&ItemRC); 
-					RedrawWindow(hList,&ItemRC,NULL, RDW_INVALIDATE );
+					SendMessage(hList, LB_GETITEMRECT, (WPARAM)InsertPos, (LPARAM)&ItemRC);
+					RedrawWindow(hList, &ItemRC, NULL, RDW_INVALIDATE);
 				}
 			}
 			InsertPos += 1;
@@ -153,7 +158,6 @@ int DisplayR4300iCommand (DWORD location, int InsertPos) {
 			count = NoOfMapEntries;
 		}
 	}
-	
 
 	Redraw = FALSE;
 	__try {
@@ -165,8 +169,8 @@ int DisplayR4300iCommand (DWORD location, int InsertPos) {
 				SendMessage(hList,LB_INSERTSTRING,(WPARAM)InsertPos, (LPARAM)location); 
 			} else {
 				RECT ItemRC;
-				SendMessage(hList,LB_GETITEMRECT,(WPARAM)InsertPos, (LPARAM)&ItemRC); 
-				RedrawWindow(hList,&ItemRC,NULL, RDW_INVALIDATE );
+				SendMessage(hList, LB_GETITEMRECT, (WPARAM)InsertPos, (LPARAM)&ItemRC);
+				RedrawWindow(hList, &ItemRC, NULL, RDW_INVALIDATE);
 			}
 			return LinesUsed;
 		}
@@ -181,30 +185,121 @@ int DisplayR4300iCommand (DWORD location, int InsertPos) {
 	}
 	
 	status = 0;
-	if (location == PROGRAM_COUNTER) {status = R4300i_Status_PC; }
+	if (location == PROGRAM_COUNTER) { status = R4300i_Status_PC; }
 	if (HasR4300iBPoint(location)) { status |= R4300i_Status_BP; }
+	if (has_selection && location >= selection_range[0] && location <= selection_range[1]) { status |= R4300i_Status_Selected; }
+
 	if (r4300iCommandLine[InsertPos].Location != location) { Redraw = TRUE; }
 	if (r4300iCommandLine[InsertPos].status != status) { Redraw = TRUE; }
+
 	if (Redraw) {
 		r4300iCommandLine[InsertPos].Location = location;
 		r4300iCommandLine[InsertPos].status = status;
-		sprintf(r4300iCommandLine[InsertPos].String," 0x%08X\t%08X\t%s", location, OpCode,
-			R4300iOpcodeName ( OpCode, location ));
-		if ( SendMessage(hList,LB_GETCOUNT,0,0) <= InsertPos) {
-			SendMessage(hList,LB_INSERTSTRING,(WPARAM)InsertPos, (LPARAM)location); 
+		sprintf(r4300iCommandLine[InsertPos].String, " 0x%08X\t%08X\t%s", location, OpCode, R4300iOpcodeName(OpCode, location));
+		if (SendMessage(hList, LB_GETCOUNT, 0, 0) <= InsertPos) {
+			SendMessage(hList, LB_INSERTSTRING, (WPARAM)InsertPos, (LPARAM)location);
 		} else {
 			RECT ItemRC;
-			SendMessage(hList,LB_GETITEMRECT,(WPARAM)InsertPos, (LPARAM)&ItemRC); 
-			RedrawWindow(hList,&ItemRC,NULL, RDW_INVALIDATE );
+			SendMessage(hList, LB_GETITEMRECT, (WPARAM)InsertPos, (LPARAM)&ItemRC);
+			RedrawWindow(hList, &ItemRC, NULL, RDW_INVALIDATE);
 		}
 	}
 	return LinesUsed;
 }
 
+int WriteR4300iCommand(char *commands, DWORD location) {
+	DWORD OpCode;
+	int res = 0;
+
+	for (int count = 0; count < NoOfMapEntries; count++) {
+		if (MapTable[count].VAddr == location) {
+			res = sprintf(commands, "%s:\r\n", MapTable[count].Label);
+			commands += res;
+
+			count = NoOfMapEntries;
+		}
+	}
+
+	__try {
+		if (!r4300i_LW_VAddr_NonCPU(location, &OpCode)) {
+			res += sprintf(commands, "0x%08X  Could not resolve address\r\n", location);
+			return res;
+		}
+	}
+	__except (r4300i_Command_MemoryFilter(GetExceptionCode(), GetExceptionInformation())) {
+		DisplayError(GS(MSG_UNKNOWN_MEM_ACTION));
+		ExitThread(0);
+	}
+	if (SelfModCheck == ModCode_ChangeMemory) {
+		if ((OpCode >> 16) == 0x7C7C) {
+			OpCode = OrigMem[(OpCode & 0xFFFF)].OriginalValue;
+		}
+	}
+
+	res += sprintf(commands, "0x%08X  %08X  ", location, OpCode);
+
+	char inst[150];
+	strcpy(inst, R4300iOpcodeName(OpCode, location));
+
+	// Replace tabs with spaces
+	char* p = strtok(inst, "\t");
+	int tok_len = 0;
+	while (p) {
+		if (tok_len) {
+			int len = strlen(commands);
+			int indent = 8 - (tok_len % 8);
+			memset(commands + len, ' ', indent);
+			commands[len + indent] = '\0';
+			res += indent;
+		}
+		tok_len = strlen(p);
+
+		strcat(commands, p);
+		res += tok_len;
+
+		p = strtok(NULL, "\t");
+	}
+
+	strcat(commands, "\r\n");
+	res += 2;
+
+	return res;
+}
+
+void R4300i_Copy_Commands(void) {
+	if (!has_selection || !OpenClipboard(NULL)) {
+		return;
+	}
+	EmptyClipboard();
+
+	int lines = (selection_range[1] - selection_range[0]) / 4 + 1;
+
+	// Assume each line is up to 150 bytes.
+	HGLOBAL hCommands = GlobalAlloc(GMEM_MOVEABLE, lines * 150);
+	if (!hCommands) {
+		CloseClipboard();
+		return;
+	}
+
+	char* commands = GlobalLock(hCommands);
+
+	char* output = commands;
+	DWORD location = selection_range[0];
+	for (int i = 0; i < lines; i++) {
+		output += WriteR4300iCommand(output, location);
+		location += 4;
+	}
+
+	GlobalUnlock(hCommands);
+	SetClipboardData(CF_TEXT, commands);
+	CloseClipboard();
+}
+
 void DrawR4300iCommand ( LPARAM lParam ) {	
 	char Command[150], *Offset, *OpCode, *Instruction, *Arguments;
 	LPDRAWITEMSTRUCT ditem;
-	COLORREF oldColor, oldBkColor;
+	COLORREF oldColor, oldBkColor, textColor;
+	int bkColorIndex;
 	int oldBkMode;
 	RECT TextRect;
 
@@ -216,14 +311,22 @@ void DrawR4300iCommand ( LPARAM lParam ) {
 	Instruction = strtok(NULL, "\t");
 	Arguments = strtok(NULL, "\t");
 
-	if (r4300iCommandLine[ditem->itemID].status & R4300i_Status_BP) {
-		oldColor = SetTextColor(ditem->hDC, RGB(255, 0, 0));
+	DWORD Location = r4300iCommandLine[ditem->itemID].Location;
+	if (r4300iCommandLine[ditem->itemID].status & R4300i_Status_Selected) {
+		textColor = GetSysColor(COLOR_HIGHLIGHTTEXT);
+		bkColorIndex = COLOR_HIGHLIGHT;
 	} else {
-		oldColor = SetTextColor(ditem->hDC, GetSysColor(COLOR_WINDOWTEXT));
+		textColor = GetSysColor(COLOR_WINDOWTEXT);
+		bkColorIndex = COLOR_WINDOW;
 	}
 
-	oldBkColor = SetBkColor(ditem->hDC, GetSysColor(COLOR_WINDOW));
-	FillRect(ditem->hDC, &ditem->rcItem, GetSysColorBrush(COLOR_WINDOW));
+	if (r4300iCommandLine[ditem->itemID].status & R4300i_Status_BP) {
+		textColor = RGB(255, 0, 0);
+	}
+
+	oldColor = SetTextColor(ditem->hDC, textColor);
+	oldBkColor = SetBkColor(ditem->hDC, GetSysColor(bkColorIndex));
+	FillRect(ditem->hDC, &ditem->rcItem, GetSysColorBrush(bkColorIndex));
 
 	if (r4300iCommandLine[ditem->itemID].status & R4300i_Status_PC) {
 		FrameRect(ditem->hDC, &ditem->rcItem, hBrushChecker);
@@ -366,103 +469,151 @@ void Paint_R4300i_Commands (HWND hDlg) {
 	EndPaint( hDlg, &ps );
 }
 
-LRESULT CALLBACK R4300i_Commands_Proc (HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam) {	
-	switch (uMsg) {
-	case WM_INITDIALOG:
-		R4300i_Commands_hDlg = hDlg;
-		R4300i_Commands_Setup( hDlg );
-		break;
-	case WM_MOVE:
-		StoreCurrentWinPos("R4300i Commands",hDlg);
-		break;
-	case WM_DRAWITEM:
-		if (wParam == IDC_LIST) {
-			DrawR4300iCommand (lParam);
-		}
-		break;
-	case WM_PAINT:
-		Paint_R4300i_Commands( hDlg );
-		RedrawWindow(hScrlBar,NULL,NULL, RDW_INVALIDATE |RDW_ERASE);
-		return TRUE;
-	case WM_COMMAND:
-		switch (LOWORD(wParam)) {
-		case IDCfunctION_COMBO:
-			if (HIWORD(wParam) == CBN_SELENDOK ) {
-				DWORD Selected, Location;
-				char Value[20];
-		
-				Selected = SendMessage(hFunctionlist,CB_GETCURSEL,0,0);
-				if ((int)Selected >= 0) { 
-					Location = SendMessage(hFunctionlist,CB_GETITEMDATA,(WPARAM)Selected,0);
-					sprintf(Value,"%08X",Location);
-					SetWindowText(hAddress,Value);
+LRESULT CALLBACK R4300i_Commands_Proc (HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam) {
+	if (uMsg == DragListMsg) {
+		LPDRAGLISTINFO pDragInfo = (LPDRAGLISTINFO)lParam;
+		switch (pDragInfo->uNotification) {
+		case DL_BEGINDRAG: {
+			if ((GetKeyState(VK_SHIFT) & 0x8000) == 0) {
+				int Selected = LBItemFromPt(hList, pDragInfo->ptCursor, FALSE);
+				if (Selected > -1) {
+					DWORD Location = r4300iCommandLine[Selected].Location;
+					if (Location != (DWORD)-1) {
+						has_selection = TRUE;
+						selection_anchor = Location;
+						selection_range[0] = Location;
+						selection_range[1] = Location;
+						RefreshR4300iCommands();
+					}
 				}
+				SetWindowLong(hDlg, DWL_MSGRESULT, TRUE);
 			}
 			break;
-		case IDC_LIST:
-			if (HIWORD(wParam) == LBN_DBLCLK ) {
-				DWORD Location, Selected;
-				Selected = SendMessage(hList,LB_GETCURSEL,(WPARAM)0, (LPARAM)0); 
-				Location = r4300iCommandLine[Selected].Location; 
+		}
+		case DL_DRAGGING:
+		case DL_DROPPED: {
+			int Selected = LBItemFromPt(hList, pDragInfo->ptCursor, FALSE);
+			if (Selected > -1) {
+				DWORD Location = r4300iCommandLine[Selected].Location;
 				if (Location != (DWORD)-1) {
-					if (HasR4300iBPoint(Location)) {
-						RemoveR4300iBreakPoint(Location);
-					} else {
-						Add_R4300iBPoint(Location);
-					}
+					selection_range[0] = min(Location, selection_anchor);
+					selection_range[1] = max(Location, selection_anchor);
 					RefreshR4300iCommands();
 				}
+			} else {
+				// TODO: Scroll + select
 			}
-			break;
-		case IDC_ADDRESS:
-			if (HIWORD(wParam) == EN_CHANGE ) {
-				RefreshR4300iCommands();
-			}
-			break;
-		case IDC_GO_BUTTON:
-			SetR4300iCommandToRunning();
-			break;
-		case IDC_BREAK_BUTTON:	
-			SetR4300iCommandToStepping();
-			break;
-		case IDC_STEP_BUTTON:			
-			StepOpcode();
-			break;
-		case IDC_SKIP_BUTTON:
-			SetCoreToSkipping();
-			//SkipNextR4300iOpCode = TRUE;
-			//WaitingForrsPStep   = FALSE;
-			break;
-		case IDC_BP_BUTTON:	Enter_BPoint_Window(); break;
-		case IDC_R4300I_REGISTERS_BUTTON: Enter_R4300i_Register_Window(); break;
-		case IDC_MEMORY_BUTTON: Enter_Memory_Window(); break;
-		case IDCANCEL:			
-			EndDialog( hDlg, IDCANCEL );
 			break;
 		}
-		break;
-	case WM_VSCROLL:
-		if ((HWND)lParam == hScrlBar) {
-			int page_size = R4300i_MaxCommandLines - 1;
-
+		case DL_CANCELDRAG:
+			has_selection = FALSE;
+			selection_anchor = 0;
+			selection_range[0] = 0;
+			selection_range[1] = 0;
+			RefreshR4300iCommands();
+			break;
+		default:
+			return FALSE;
+		}
+	} else {
+		switch (uMsg) {
+		case WM_INITDIALOG:
+			R4300i_Commands_hDlg = hDlg;
+			R4300i_Commands_Setup(hDlg);
+			break;
+		case WM_MOVE:
+			StoreCurrentWinPos("R4300i Commands", hDlg);
+			break;
+		case WM_DRAWITEM:
+			if (wParam == IDC_LIST) {
+				DrawR4300iCommand(lParam);
+			}
+			break;
+		case WM_PAINT:
+			Paint_R4300i_Commands(hDlg);
+			RedrawWindow(hScrlBar, NULL, NULL, RDW_INVALIDATE | RDW_ERASE);
+			return TRUE;
+		case WM_COMMAND:
 			switch (LOWORD(wParam)) {
-			case SB_LINEUP:
-				Scroll_R4300i_Commands(-1);
+			case IDCfunctION_COMBO:
+				if (HIWORD(wParam) == CBN_SELENDOK) {
+					DWORD Selected, Location;
+					char Value[20];
+
+					Selected = SendMessage(hFunctionlist, CB_GETCURSEL, 0, 0);
+					if ((int)Selected >= 0) {
+						Location = SendMessage(hFunctionlist, CB_GETITEMDATA, (WPARAM)Selected, 0);
+						sprintf(Value, "%08X", Location);
+						SetWindowText(hAddress, Value);
+					}
+				}
 				break;
-			case SB_LINEDOWN:
-				Scroll_R4300i_Commands(1);
+			case IDC_LIST:
+				if (HIWORD(wParam) == LBN_DBLCLK) {
+					DWORD Location, Selected;
+					Selected = SendMessage(hList, LB_GETCURSEL, (WPARAM)0, (LPARAM)0);
+					Location = r4300iCommandLine[Selected].Location;
+					if (Location != (DWORD)-1) {
+						if (HasR4300iBPoint(Location)) {
+							RemoveR4300iBreakPoint(Location);
+						}
+						else {
+							Add_R4300iBPoint(Location);
+						}
+						RefreshR4300iCommands();
+					}
+				}
 				break;
-			case SB_PAGEUP:
-				Scroll_R4300i_Commands(-page_size);
+			case IDC_ADDRESS:
+				if (HIWORD(wParam) == EN_CHANGE) {
+					RefreshR4300iCommands();
+				}
 				break;
-			case SB_PAGEDOWN:
-				Scroll_R4300i_Commands(page_size);
+			case IDC_GO_BUTTON:
+				SetR4300iCommandToRunning();
+				break;
+			case IDC_BREAK_BUTTON:
+				SetR4300iCommandToStepping();
+				break;
+			case IDC_STEP_BUTTON:
+				StepOpcode();
+				break;
+			case IDC_SKIP_BUTTON:
+				SetCoreToSkipping();
+				//SkipNextR4300iOpCode = TRUE;
+				//WaitingForrsPStep   = FALSE;
+				break;
+			case IDC_BP_BUTTON:	Enter_BPoint_Window(); break;
+			case IDC_R4300I_REGISTERS_BUTTON: Enter_R4300i_Register_Window(); break;
+			case IDC_MEMORY_BUTTON: Enter_Memory_Window(); break;
+			case IDCANCEL:
+				EndDialog(hDlg, IDCANCEL);
 				break;
 			}
+			break;
+		case WM_VSCROLL:
+			if ((HWND)lParam == hScrlBar) {
+				int page_size = R4300i_MaxCommandLines - 1;
+
+				switch (LOWORD(wParam)) {
+				case SB_LINEUP:
+					Scroll_R4300i_Commands(-1);
+					break;
+				case SB_LINEDOWN:
+					Scroll_R4300i_Commands(1);
+					break;
+				case SB_PAGEUP:
+					Scroll_R4300i_Commands(-page_size);
+					break;
+				case SB_PAGEDOWN:
+					Scroll_R4300i_Commands(page_size);
+					break;
+				}
+			}
+			break;
+		default:
+			return FALSE;
 		}
-		break;
-	default:
-		return FALSE;
 	}
 	return TRUE;
 }
@@ -503,10 +654,26 @@ LRESULT CALLBACK R4300i_Commands_ListViewKeys_Proc(HWND hWnd, UINT uMsg, WPARAM 
 		case VK_NEXT:
 			Scroll_R4300i_Commands(page_size);
 			return FALSE;
+
+		case 'C':
+			if (GetKeyState(VK_CONTROL) & 0x8000) {
+				R4300i_Copy_Commands();
+			}
+			return FALSE;
 		default:
 			break;
 		}
+		break;
 	}
+	case WM_RBUTTONDOWN:
+		R4300i_Copy_Commands();
+
+		has_selection = FALSE;
+		selection_anchor = 0;
+		selection_range[0] = 0;
+		selection_range[1] = 0;
+		RefreshR4300iCommands();
+		break;
 	default:
 		break;
 	}
@@ -522,16 +689,13 @@ void Scroll_R4300i_Commands(int lines) {
 	if (lines > 0) {
 		if (UINT_MAX - location >= R4300i_MaxCommandLines * 4) {
 			location += lines * 4;
-		}
-		else {
+		} else {
 			location = UINT_MAX - R4300i_MaxCommandLines * 4 + 1;
 		}
-	}
-	else {
+	} else {
 		if (location >= -lines * 4) {
 			location += lines * 4;
-		}
-		else {
+		} else {
 			location = 0;
 		}
 	}
@@ -551,6 +715,8 @@ void R4300i_Commands_Setup ( HWND hDlg ) {
 	if ( hList) {
 		SendMessage(hList,WM_SETFONT, (WPARAM)GetStockObject(ANSI_FIXED_FONT),0);
 		SendMessage(hList,LB_SETITEMHEIGHT, (WPARAM)0,(LPARAM)MAKELPARAM(14, 0));
+		MakeDragList(hList);
+		DragListMsg = RegisterWindowMessage(DRAGLISTMSGSTRING);
 		SetWindowSubclass(hList, R4300i_Commands_ListViewScroll_Proc, 0, 0);
 		SetWindowSubclass(hList, R4300i_Commands_ListViewKeys_Proc, 0, 0);
 	}
@@ -1346,10 +1512,10 @@ void RefreshR4300iCommands ( void ) {
 	GetWindowText(hAddress,AsciiAddress,sizeof(AsciiAddress));
 	location = AsciiToHex(AsciiAddress) & ~3;
 
-	max_location = 0xFFFFFFFF - R4300i_MaxCommandLines * 4 + 1;
+	max_location = UINT_MAX - R4300i_MaxCommandLines * 4 + 1;
 	if (location > max_location) { location = max_location; }
 	for (count = 0 ; count < R4300i_MaxCommandLines; count += LinesUsed ){
-		LinesUsed = DisplayR4300iCommand ( location, count );
+		LinesUsed = DisplayR4300iCommand(location, count);
 		location += 4;
 	}
 }
