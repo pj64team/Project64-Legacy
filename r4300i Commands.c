@@ -576,6 +576,7 @@ LRESULT CALLBACK R4300i_Commands_Proc (HWND hDlg, UINT uMsg, WPARAM wParam, LPAR
 				break;
 			case IDC_GO_BUTTON:
 				SetR4300iCommandToRunning();
+				RefreshR4300iCommands();
 				break;
 			case IDC_BREAK_BUTTON:
 				SetR4300iCommandToStepping();
