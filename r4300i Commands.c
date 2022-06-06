@@ -320,11 +320,13 @@ void DrawR4300iCommand ( LPARAM lParam ) {
 		bkColorIndex = COLOR_WINDOW;
 	}
 
-	if (r4300iCommandLine[ditem->itemID].status & R4300i_Status_BP) {
-		textColor = RGB(255, 0, 0);
-	}
-	if (r4300iCommandLine[ditem->itemID].status & R4300i_Status_PC) {
+	int mask = R4300i_Status_PC | R4300i_Status_BP;
+	if ((r4300iCommandLine[ditem->itemID].status & mask) == mask) {
+		textColor = RGB(255, 128, 0);
+	} else if (r4300iCommandLine[ditem->itemID].status & R4300i_Status_PC) {
 		textColor = RGB(0, 255, 0);
+	} else if (r4300iCommandLine[ditem->itemID].status & R4300i_Status_BP) {
+		textColor = RGB(255, 0, 0);
 	}
 
 	oldColor = SetTextColor(ditem->hDC, textColor);
