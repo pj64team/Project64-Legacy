@@ -66,6 +66,10 @@ void Scroll_R4300i_Commands(int lines);
 
 LRESULT CALLBACK R4300i_Commands_Proc ( HWND, UINT, WPARAM, LPARAM );
 
+const COLORREF TEXT_COLOR_PC = RGB(0, 255, 0); // Currently executing instruction
+const COLORREF TEXT_COLOR_BP = RGB(255, 0, 0); // Breakpoint enabled
+const COLORREF TEXT_COLOR_PC_BP = RGB(255, 128, 0); // Currently executing instruction + breakpoint enabled
+
 static USHORT bCheckerBits[8] = { 0x33, 0x33, 0xcc, 0xcc, 0x33, 0x33, 0xcc, 0xcc }; // 2x2 checkerboard
 static HBITMAP hBmChecker;
 static HBRUSH hBrushChecker;
@@ -322,11 +326,11 @@ void DrawR4300iCommand ( LPARAM lParam ) {
 
 	int mask = R4300i_Status_PC | R4300i_Status_BP;
 	if ((r4300iCommandLine[ditem->itemID].status & mask) == mask) {
-		textColor = RGB(255, 128, 0);
+		textColor = TEXT_COLOR_PC_BP;
 	} else if (r4300iCommandLine[ditem->itemID].status & R4300i_Status_PC) {
-		textColor = RGB(0, 255, 0);
+		textColor = TEXT_COLOR_PC;
 	} else if (r4300iCommandLine[ditem->itemID].status & R4300i_Status_BP) {
-		textColor = RGB(255, 0, 0);
+		textColor = TEXT_COLOR_BP;
 	}
 
 	oldColor = SetTextColor(ditem->hDC, textColor);
