@@ -65,19 +65,27 @@ void Scroll_R4300i_Commands(int lines);
 
 LRESULT CALLBACK R4300i_Commands_Proc ( HWND, UINT, WPARAM, LPARAM );
 
+static USHORT bCheckerBits[8] = { 0x55, 0xaa, 0x55, 0xaa, 0x55, 0xaa, 0x55, 0xaa }; // 1x1 checkerboard
+static HBITMAP hBmChecker;
+static HBRUSH hBrushChecker;
 static HWND R4300i_Commands_hDlg, hList, hAddress, hFunctionlist, hGoButton, hBreakButton,
 	hStepButton, hSkipButton, hBPButton, hR4300iRegisters, hRSPDebugger, hRSPRegisters,
 	hMemory, hScrlBar;
 static R4300ICOMMANDLINE r4300iCommandLine[R4300i_MaxCommandLines];
-BOOL InR4300iCommandsWindow = FALSE;
 static int wheel = 0;
+
+BOOL InR4300iCommandsWindow = FALSE;
 
 void __cdecl Create_R4300i_Commands_Window ( int Child ) {
 	DWORD ThreadID;
 	if ( Child ) {
+		hBmChecker = CreateBitmap(8, 8, 1, 1, bCheckerBits);
+		hBrushChecker = CreatePatternBrush(hBmChecker);
 		InR4300iCommandsWindow = TRUE;
 		DialogBox( hInst, "BLANK", NULL,(DLGPROC) R4300i_Commands_Proc );
 		InR4300iCommandsWindow = FALSE;
+		DeleteObject(hBrushChecker);
+		DeleteObject(hBmChecker);
 		memset(r4300iCommandLine,0,sizeof(r4300iCommandLine));
 		SetR4300iCommandToRunning();
 	} else {
@@ -196,9 +204,8 @@ int DisplayR4300iCommand (DWORD location, int InsertPos) {
 void DrawR4300iCommand ( LPARAM lParam ) {	
 	char Command[150], *Offset, *OpCode, *Instruction, *Arguments;
 	LPDRAWITEMSTRUCT ditem;
-	COLORREF oldColor;
-	int ResetColor;
-	HBRUSH hBrush;
+	COLORREF oldColor, oldBkColor;
+	int oldBkMode;
 	RECT TextRect;
 
 	ditem  = (LPDRAWITEMSTRUCT)lParam;
@@ -209,26 +216,20 @@ void DrawR4300iCommand ( LPARAM lParam ) {
 	Instruction = strtok(NULL, "\t");
 	Arguments = strtok(NULL, "\t");
 
-	if (PROGRAM_COUNTER == r4300iCommandLine[ditem->itemID].Location) {
-		ResetColor = TRUE;
-		hBrush     = GetSysColorBrush(COLOR_HIGHLIGHT);
-		oldColor   = SetTextColor(ditem->hDC,RGB(255,255,255));
+	if (r4300iCommandLine[ditem->itemID].status & R4300i_Status_BP) {
+		oldColor = SetTextColor(ditem->hDC, RGB(255, 0, 0));
 	} else {
-		ResetColor = FALSE;
-		hBrush     = (HBRUSH)GetStockObject(WHITE_BRUSH);
+		oldColor = SetTextColor(ditem->hDC, GetSysColor(COLOR_WINDOWTEXT));
 	}
 
-	if (HasR4300iBPoint( r4300iCommandLine[ditem->itemID].Location )) {
-		ResetColor = TRUE;
-		if (PROGRAM_COUNTER == r4300iCommandLine[ditem->itemID].Location) {
-			SetTextColor(ditem->hDC,RGB(255,0,0));
-		} else {
-			oldColor = SetTextColor(ditem->hDC,RGB(255,0,0));
-		}
+	oldBkColor = SetBkColor(ditem->hDC, GetSysColor(COLOR_WINDOW));
+	FillRect(ditem->hDC, &ditem->rcItem, GetSysColorBrush(COLOR_WINDOW));
+
+	if (r4300iCommandLine[ditem->itemID].status & R4300i_Status_PC) {
+		FrameRect(ditem->hDC, &ditem->rcItem, hBrushChecker);
 	}
 
-	FillRect( ditem->hDC, &ditem->rcItem,hBrush);	
-	SetBkMode( ditem->hDC, TRANSPARENT );
+	oldBkMode = SetBkMode(ditem->hDC, TRANSPARENT);
 
 	if (OpCode == NULL) {
 		DrawText(ditem->hDC, Offset, strlen(Offset), &ditem->rcItem, DT_SINGLELINE | DT_VCENTER);
@@ -256,9 +257,9 @@ void DrawR4300iCommand ( LPARAM lParam ) {
 		}
 	}
 
-	if (ResetColor == TRUE) {
-		SetTextColor( ditem->hDC, oldColor );
-	}
+	SetBkMode(ditem->hDC, oldBkMode);
+	SetBkColor(ditem->hDC, oldBkColor);
+	SetTextColor(ditem->hDC, oldColor);
 }
 
 void Enable_R4300i_Commands_Window ( void ) {
