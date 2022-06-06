@@ -323,6 +323,9 @@ void DrawR4300iCommand ( LPARAM lParam ) {
 	if (r4300iCommandLine[ditem->itemID].status & R4300i_Status_BP) {
 		textColor = RGB(255, 0, 0);
 	}
+	if (r4300iCommandLine[ditem->itemID].status & R4300i_Status_PC) {
+		textColor = RGB(0, 255, 0);
+	}
 
 	oldColor = SetTextColor(ditem->hDC, textColor);
 	oldBkColor = SetBkColor(ditem->hDC, GetSysColor(bkColorIndex));
