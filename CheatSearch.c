@@ -757,12 +757,12 @@ void Search(HWND hDlg) {
 
 		// Search performed using previous (or the initial) search result list
 		else {
-			struct CS_RESULTS tmp;
+			struct CS_RESULTS tmp = { 0 };
 			WORD mem_value;
 			CS_HITS* hit;
 			BOOL matched;
 
-			CS_InitResults(&tmp);
+			CS_ReserveSpace(&tmp, dwendAddress - dwstartAddress);
 
 			// Subsequent searches of Hex/Dec values
 			for (count = 0; count < results.num_stored; count++) {
