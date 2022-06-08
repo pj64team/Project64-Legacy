@@ -78,6 +78,7 @@ static HWND R4300i_Commands_hDlg, hList, hAddress, hFunctionlist, hGoButton, hBr
 	hMemory, hScrlBar;
 static R4300ICOMMANDLINE r4300iCommandLine[R4300i_MaxCommandLines];
 static int wheel = 0;
+static int thumb = -1;
 static UINT DragListMsg;
 static BOOL has_selection = FALSE;
 static DWORD selection_anchor = 0;
@@ -617,6 +618,17 @@ LRESULT CALLBACK R4300i_Commands_Proc (HWND hDlg, UINT uMsg, WPARAM wParam, LPAR
 					break;
 				case SB_PAGEDOWN:
 					Scroll_R4300i_Commands(page_size);
+					break;
+				case SB_THUMBTRACK: {
+					int position = HIWORD(wParam);
+					if (thumb >= 0) {
+						Scroll_R4300i_Commands(position - thumb);
+					}
+					thumb = position;
+					break;
+				}
+				case SB_ENDSCROLL:
+					thumb = -1;
 					break;
 				}
 			}
