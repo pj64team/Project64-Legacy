@@ -758,7 +758,7 @@ void R4300i_Commands_Setup ( HWND hDlg ) {
 	} 
 
 	hGoButton = CreateWindowEx(WS_EX_STATICEDGE, "BUTTON","&Go", WS_CHILD |
-		BS_DEFPUSHBUTTON | WS_VISIBLE | WS_TABSTOP, 417,56,100,24, hDlg,(HMENU)IDC_GO_BUTTON,
+		BS_DEFPUSHBUTTON | WS_VISIBLE | WS_TABSTOP, 505,56,100,24, hDlg,(HMENU)IDC_GO_BUTTON,
 		hInst,NULL );
 	if (hGoButton) {
 		SendMessage(hGoButton,WM_SETFONT, (WPARAM)GetStockObject(DEFAULT_GUI_FONT),0);
