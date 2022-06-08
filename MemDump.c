@@ -39,12 +39,14 @@ void Show_MemDumpDlg (HWND hParent);
 BOOL CALLBACK MemDumpDlgProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam);
 
 FILE *OpenFileForSaving(HWND hParent);
+void DumpRawBinary(HWND hDlg, DWORD startAddress, DWORD endAddress);
 void DumpHexData (HWND hDlg, DWORD startAddress, DWORD endAddress);
 void DumpPCAndDisassembled (HWND hDlg, DWORD startAddress, DWORD endAddress);
 
 const char *ADDRESSRANGE[] = {"RDRAM",
 							  "Custom"};
-const char *FORMAT[] = {"Hex data",
+const char *FORMAT[] = {"Raw binary",
+	                    "Hex data",
 	                    "PC + disassembled"};
 
 void Show_MemDumpDlg (HWND hParent) {
@@ -79,10 +81,10 @@ BOOL CALLBACK MemDumpDlgProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
 				SendDlgItemMessage(hDlg, IDC_MD_RANGEEND, WM_SETTEXT, 0, (LPARAM)(LPCTSTR)"0x807FFFFF");
 			}
 
-			for (Count = 0; Count < 2; Count++) {
+			for (Count = 0; Count < 3; Count++) {
 				SendDlgItemMessage(hDlg, IDC_MD_FORMAT, CB_ADDSTRING, 0, (LPARAM)(LPCTSTR) FORMAT[Count]);
 			}
-			SendDlgItemMessage(hDlg, IDC_MD_FORMAT, CB_SETCURSEL, (WPARAM) 0, 0); //default selection is HEX DATA
+			SendDlgItemMessage(hDlg, IDC_MD_FORMAT, CB_SETCURSEL, (WPARAM) 0, 0); //default selection is RAW BINARY
 			return TRUE; 
 
         case WM_COMMAND: 
@@ -141,11 +143,15 @@ BOOL CALLBACK MemDumpDlgProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
 						break;
 					}
 					switch (SendDlgItemMessage(hDlg, IDC_MD_FORMAT, CB_GETCURSEL, (WPARAM) 0, 0)) {
-						case 0: //Hex data
+						case 0: //Raw binary
+							DumpRawBinary(hDlg, startAddress, endAddress);
+							break;
+
+						case 1: //Hex data
 							DumpHexData (hDlg, startAddress, endAddress);
 							break;
 
-						case 1: // pc + disassembled
+						case 2: // pc + disassembled
 							DumpPCAndDisassembled (hDlg, startAddress, endAddress);
 							break;
 					}
@@ -192,6 +198,66 @@ FILE *OpenFileForSaving(HWND hParent) {
 	return pFile;
 }
 
+FILE *OpenBinaryFileForSaving(HWND hParent) {
+	char path_buffer[_MAX_PATH], drive[_MAX_DRIVE], dir[_MAX_DIR], fname[_MAX_FNAME], ext[_MAX_EXT];
+	char Directory[255], SaveFile[255];
+	OPENFILENAME openfilename;
+	FILE * pFile = NULL;
+
+	memset(&SaveFile, 0, sizeof(SaveFile));
+	memset(&openfilename, 0, sizeof(openfilename));
+
+	GetModuleFileName(NULL,path_buffer,sizeof(path_buffer));
+	_splitpath( path_buffer, drive, dir, fname, ext );
+	sprintf(Directory,"%s%s",drive,dir);
+
+	openfilename.lStructSize  = sizeof(openfilename);
+	openfilename.hwndOwner    = hParent;
+	openfilename.lpstrFilter  = "Binary files (*.bin)\0*.bin\0";
+	openfilename.lpstrFile    = SaveFile;
+	openfilename.lpstrInitialDir    = Directory;
+	openfilename.nMaxFile     = MAX_PATH;
+	openfilename.Flags        = OFN_HIDEREADONLY;
+
+	if (GetSaveFileName (&openfilename)) {
+		_splitpath( SaveFile, drive, dir, fname, ext );
+		if (strcmp(ext, ".bin") == -1) {
+			_makepath( SaveFile, drive, dir, fname, "bin" );
+		}
+
+		pFile = fopen (SaveFile, "wb");
+	}
+
+	return pFile;
+}
+
+void DumpRawBinary(HWND hDlg, DWORD startAddress, DWORD endAddress) {
+	FILE* pFile = OpenBinaryFileForSaving(hDlg);
+
+	if (pFile != NULL) {
+		long bufferSize = (endAddress - startAddress + 4) & ~3;
+		BYTE* buffer = (BYTE*)malloc(bufferSize);
+		if (buffer == NULL) {
+			return;
+		}
+
+		for (int count = 0; count < bufferSize; count += 4) {
+			MIPS_WORD word;
+			r4300i_LW_VAddr_NonCPU(startAddress + count, (DWORD*)&word);
+			buffer[count] = word.UB[3];
+			buffer[count + 1] = word.UB[2];
+			buffer[count + 2] = word.UB[1];
+			buffer[count + 3] = word.UB[0];
+		}
+
+		fwrite(buffer, 1, bufferSize, pFile);
+
+		// terminate
+		fclose(pFile);
+		free(buffer);
+	}
+}
+
 void DumpHexData (HWND hDlg, DWORD startAddress, DWORD endAddress) {
 	BYTE *buffer;
 	long bufferSize, count;
@@ -203,10 +269,13 @@ void DumpHexData (HWND hDlg, DWORD startAddress, DWORD endAddress) {
 	pFile = OpenFileForSaving(hDlg);
 
 	if (pFile != NULL) {
-		bufferSize = endAddress - startAddress;
-
+		bufferSize = (endAddress - startAddress + 16) & ~15;
 		buffer = (BYTE *)malloc(bufferSize);
-		for (count=0; count<bufferSize-4; count+=4) {
+		if (buffer == NULL) {
+			return;
+		}
+
+		for (count=0; count<bufferSize; count+=4) {
 			r4300i_LW_VAddr_NonCPU(startAddress+count, (DWORD *)&word);
 			buffer[count]=word.UB[3];
 			buffer[count+1]=word.UB[2];
@@ -215,7 +284,7 @@ void DumpHexData (HWND hDlg, DWORD startAddress, DWORD endAddress) {
 		}
 
 		count = 0;
-		while (count <= bufferSize) {
+		while (count < bufferSize) {
 			for (i=0; i<16; i++) {
 				if ((buffer[count+i] >= 0x20) && (buffer[count+i] <= 0x7F)) { //Printable characters
 					substring[i] = buffer[count+i];
@@ -228,7 +297,7 @@ void DumpHexData (HWND hDlg, DWORD startAddress, DWORD endAddress) {
 			fprintf(pFile,
 				"%08X-%08X   %02X %02X %02X %02X %02X %02X %02X %02X - %02X %02X %02X %02X %02X %02X %02X %02X   %s\n",
 				startAddress+count,
-				startAddress+count+8,
+				startAddress+count+15,
 				buffer[count],
 				buffer[count+1],
 				buffer[count+2],
