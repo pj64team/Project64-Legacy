@@ -269,10 +269,13 @@ void DumpHexData (HWND hDlg, DWORD startAddress, DWORD endAddress) {
 	pFile = OpenFileForSaving(hDlg);
 
 	if (pFile != NULL) {
-		bufferSize = endAddress - startAddress;
-
+		bufferSize = (endAddress - startAddress + 16) & ~15;
 		buffer = (BYTE *)malloc(bufferSize);
-		for (count=0; count<bufferSize-4; count+=4) {
+		if (buffer == NULL) {
+			return;
+		}
+
+		for (count=0; count<bufferSize; count+=4) {
 			r4300i_LW_VAddr_NonCPU(startAddress+count, (DWORD *)&word);
 			buffer[count]=word.UB[3];
 			buffer[count+1]=word.UB[2];
@@ -281,7 +284,7 @@ void DumpHexData (HWND hDlg, DWORD startAddress, DWORD endAddress) {
 		}
 
 		count = 0;
-		while (count <= bufferSize) {
+		while (count < bufferSize) {
 			for (i=0; i<16; i++) {
 				if ((buffer[count+i] >= 0x20) && (buffer[count+i] <= 0x7F)) { //Printable characters
 					substring[i] = buffer[count+i];
@@ -294,7 +297,7 @@ void DumpHexData (HWND hDlg, DWORD startAddress, DWORD endAddress) {
 			fprintf(pFile,
 				"%08X-%08X   %02X %02X %02X %02X %02X %02X %02X %02X - %02X %02X %02X %02X %02X %02X %02X %02X   %s\n",
 				startAddress+count,
-				startAddress+count+8,
+				startAddress+count+15,
 				buffer[count],
 				buffer[count+1],
 				buffer[count+2],
