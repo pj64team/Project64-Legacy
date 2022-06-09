@@ -114,15 +114,15 @@ void Update_Data_Column_With_WatchPoint(struct MEMORY_VIEW_ROW* row, DWORD locat
 	sprintf(row->HexStr[index], "%02X", word.UB[3 - i]);
 
 	switch (HasWatchPoint(location + i)) {
-	case READ:
+	case WP_READ:
 		row->Fonts[index] = hWatchFont;
 		row->TextColors[index] = TC_READ;
 		break;
-	case WRITE:
+	case WP_WRITE:
 		row->Fonts[index] = hWatchFont;
 		row->TextColors[index] = TC_WRITE;
 		break;
-	case READ_WRITE:
+	case WP_READ_WRITE:
 		row->Fonts[index] = hWatchFont;
 		row->TextColors[index] = TC_READ_WRITE;
 		break;
