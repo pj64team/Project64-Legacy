@@ -172,7 +172,7 @@ int DisplayR4300iCommand (DWORD location, int InsertPos) {
 	
 	status = 0;
 	if (location == PROGRAM_COUNTER) {status = R4300i_Status_PC; }
-	if (CheckForR4300iBPoint(location)) { status |= R4300i_Status_BP; }
+	if (HasR4300iBPoint(location)) { status |= R4300i_Status_BP; }
 	if (r4300iCommandLine[InsertPos].Location != location) { Redraw = TRUE; }
 	if (r4300iCommandLine[InsertPos].status != status) { Redraw = TRUE; }
 	if (Redraw) {
@@ -231,7 +231,7 @@ void DrawR4300iCommand ( LPARAM lParam ) {
 		hBrush     = (HBRUSH)GetStockObject(WHITE_BRUSH);
 	}
 
-	if (CheckForR4300iBPoint( r4300iCommandLine[ditem->itemID].Location )) {
+	if (HasR4300iBPoint( r4300iCommandLine[ditem->itemID].Location )) {
 		ResetColor = TRUE;
 		if (PROGRAM_COUNTER == r4300iCommandLine[ditem->itemID].Location) {
 			SetTextColor(ditem->hDC,RGB(255,0,0));
@@ -405,7 +405,7 @@ LRESULT CALLBACK R4300i_Commands_Proc (HWND hDlg, UINT uMsg, WPARAM wParam, LPAR
 				Selected = SendMessage(hList,LB_GETCURSEL,(WPARAM)0, (LPARAM)0); 
 				Location = r4300iCommandLine[Selected].Location; 
 				if (Location != (DWORD)-1) {
-					if (CheckForR4300iBPoint(Location)) {
+					if (HasR4300iBPoint(Location)) {
 						RemoveR4300iBreakPoint(Location);
 					} else {
 						Add_R4300iBPoint(Location);
@@ -1304,7 +1304,7 @@ void RefreshR4300iCommands ( void ) {
 }
 
 void SetR4300iCommandToRunning ( void ) { 
-	//if (CheckForR4300iBPoint(PROGRAM_COUNTER)) {
+	//if (HasR4300iBPoint(PROGRAM_COUNTER)) {
 		StepOpcode();
 	//}
 	SetCoreToRunning();
