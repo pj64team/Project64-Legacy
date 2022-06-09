@@ -77,6 +77,7 @@ int Add_R4300iBPoint( DWORD Location ) {
 		}
 	}
 
+	BPoint[NoOfBpoints].enabled = TRUE;
 	BPoint[NoOfBpoints].Location = Location;
 	NoOfBpoints += 1;
 	RefreshBreakPoints();
@@ -203,6 +204,22 @@ LRESULT CALLBACK BPoint_Proc (HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam
 			CurrentPanel = R4300i_BP;
 			EndDialog( hDlg, IDCANCEL );
 			break;
+		case IDC_LIST:
+			if (HIWORD(wParam) == LBN_DBLCLK) {
+				selected = SendMessage(hList, LB_GETCURSEL, 0, 0);
+				DWORD location = SendMessage(hList, LB_GETITEMDATA, selected, 0);
+				if (selected < NoOfBpoints) {
+					ToggleR4300iBPoint(location);
+				} else if (selected - NoOfBpoints < CountWatchPoints()) {
+					ToggleWatchPoint(location);
+				} else {
+					// TODO: Support toggling RSP breakpoints
+					DisplayError("what is this BP");
+				}
+				RefreshBreakPoints();
+				SendMessage(hList, LB_SETCURSEL, selected, 0);
+			}
+			break;
 		}
 		break;
 	default:
@@ -215,11 +232,29 @@ int CheckForR4300iBPoint ( DWORD Location ) {
 	int count;
 
 	for (count = 0; count < NoOfBpoints; count ++){
+		if (BPoint[count].enabled && BPoint[count].Location == Location) {
+			return TRUE;
+		}
+	}
+	return FALSE;
+}
+
+int HasR4300iBPoint(DWORD Location) {
+	for (int count = 0; count < NoOfBpoints; count++) {
 		if (BPoint[count].Location == Location) {
 			return TRUE;
 		}
 	}
 	return FALSE;
+}
+
+void ToggleR4300iBPoint(DWORD Location) {
+	for (int count = 0; count < NoOfBpoints; count++) {
+		if (BPoint[count].Location == Location) {
+			BPoint[count].enabled = !BPoint[count].enabled;
+			return;
+		}
+	}
 }
 
 void __cdecl Create_BPoint_Window (int Child) {
@@ -288,7 +323,12 @@ void __cdecl RefreshBreakPoints (void) {
 
 	SendMessage(hList,LB_RESETCONTENT,0,0);
 	for (count = 0; count < NoOfBpoints; count ++ ) {
-		sprintf(Message," at 0x%08X (r4300i x--)", BPoint[count].Location);
+		char flags[5] = "-x--";
+		if (BPoint[count].enabled) {
+			flags[0] = 'e';
+		}
+
+		sprintf(Message," at 0x%08X (r4300i %s)", BPoint[count].Location, flags);
 		SendMessage(hList,LB_ADDSTRING,0,(LPARAM)Message);
 		SendMessage(hList,LB_SETITEMDATA,count,(LPARAM)BPoint[count].Location);
 	}
@@ -471,7 +511,7 @@ void Setup_BPoint_Win (HWND hDlg) {
 		SendMessage(hFunctionlist,CB_SETCURSEL,(WPARAM)1,(LPARAM)0);
 	}
 
-	hList = CreateWindowEx(WS_EX_STATICEDGE, "LISTBOX","", WS_CHILD | WS_VISIBLE | LBS_DISABLENOSCROLL |WS_VSCROLL,
+	hList = CreateWindowEx(WS_EX_STATICEDGE, "LISTBOX","", WS_CHILD | WS_VISIBLE | LBS_DISABLENOSCROLL | LBS_NOTIFY | WS_VSCROLL,
 		16,187,228,112, hDlg, (HMENU)IDC_LIST, hInst,NULL );
 	if ( hList) {
 		SendMessage(hList,WM_SETFONT, (WPARAM)GetStockObject(DEFAULT_GUI_FONT),0);

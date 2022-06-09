@@ -27,15 +27,17 @@
 #define __watchpoints_h
 
 typedef enum {
-	NO_WATCH,
-	READ,
-	WRITE,
-	READ_WRITE,
+	WP_NONE,
+	WP_READ,
+	WP_WRITE,
+	WP_READ_WRITE,
+	WP_ENABLED,
 } WATCH_TYPE;
 
 void InitWatchPoints(void);
 void AddWatchPoint(DWORD Location, WATCH_TYPE Type);
 void RemoveWatchPoint(DWORD Location);
+void ToggleWatchPoint(DWORD Location);
 void RemoveAllWatchPoints(void);
 WATCH_TYPE HasWatchPoint(DWORD Location);
 BOOL CheckForWatchPoint(DWORD Location, WATCH_TYPE Type);

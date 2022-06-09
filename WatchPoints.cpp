@@ -50,7 +50,7 @@ void InitWatchPoints(void) {
 }
 
 void AddWatchPoint(DWORD Location, WATCH_TYPE Type) {
-	(*WatchPoints)[Location] = (int)Type;
+	(*WatchPoints)[Location] = (int)Type | WP_ENABLED;
 }
 
 void RemoveWatchPoint(DWORD Location) {
@@ -61,10 +61,17 @@ void RemoveAllWatchPoints(void) {
 	WatchPoints->clear();
 }
 
+void ToggleWatchPoint(DWORD Location) {
+	WATCH_TYPE Type = HasWatchPoint(Location);
+	if (Type != WP_NONE) {
+		(*WatchPoints)[Location] = (int)Type ^ WP_ENABLED;
+	}
+}
+
 WATCH_TYPE HasWatchPoint(DWORD Location) {
 	auto search = WatchPoints->find(Location);
 	if (search == WatchPoints->end()) {
-		return NO_WATCH;
+		return WP_NONE;
 	}
 
 	return (WATCH_TYPE)search->second;
@@ -81,7 +88,7 @@ BOOL CheckForWatchPoint(DWORD Location, WATCH_TYPE Type) {
 	}
 
 	int value = search->second;
-	if (value & (int)Type) {
+	if ((value & WP_ENABLED) && (value & (int)Type)) {
 		TriggerDebugger();
 
 		// Block the CPU thread until resumed by the debugger
@@ -104,7 +111,18 @@ void RefreshWatchPoints(HWND hList) {
 		DWORD key = iter.first;
 		int value = iter.second;
 
-		sprintf(message, " at 0x%08X (r4300i %s)", key, (value == READ ? "-r-" : (value == WRITE ? "--w" : "-rw")));
+		char flags[5] = "----";
+		if (value & WP_ENABLED) {
+			flags[0] = 'e';
+		}
+		if (value & WP_READ) {
+			flags[2] = 'r';
+		}
+		if (value & WP_WRITE) {
+			flags[3] = 'w';
+		}
+
+		sprintf(message, " at 0x%08X (r4300i %s)", key, flags);
 		SendMessage(hList, LB_ADDSTRING, 0, (LPARAM)message);
 		int index = SendMessage(hList, LB_GETCOUNT, 0, 0) - 1;
 		SendMessage(hList, LB_SETITEMDATA, index, (LPARAM)key);
