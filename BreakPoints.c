@@ -400,6 +400,7 @@ void RemoveR4300iBreakPoint (DWORD Location) {
 
 	if (location >= 0) {
 		for (count = location; count < NoOfBpoints - 1; count ++ ){
+			BPoint[count].enabled = BPoint[count + 1].enabled;
 			BPoint[count].Location = BPoint[count + 1].Location;
 		}
 		NoOfBpoints -= 1;
