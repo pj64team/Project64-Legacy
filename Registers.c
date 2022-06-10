@@ -72,10 +72,10 @@ char *FPR_Ctrl_Name[32] = {"Revision","Unknown","Unknown","Unknown","Unknown",
 					"Unknown","Unknown","Unknown","Unknown","Unknown","Unknown",
 					"Unknown","Unknown","FCSR"};
 
-char *Cop0_Name[32] = {"Index","Random","EntryLo0","EntryLo1","Context","PageMask","Wired","",
+char *Cop0_Name[32] = {"Index","Random","EntryLo0","EntryLo1","Context","PageMask","Wired","7",
                     "BadVAddr","Count","EntryHi","Compare","Status","Cause","EPC","PRId",
-                    "Config","LLAddr","WatchLo","WatchHi","XContext","","","",
-                    "","","ECC","CacheErr","TagLo","TagHi","ErrEPC",""};
+                    "Config","LLAddr","WatchLo","WatchHi","XContext","21","22","23",
+                    "24","25","ECC","CacheErr","TagLo","TagHi","ErrEPC","31"};
 
 DWORD PROGRAM_COUNTER, * CP0,*FPCR,*RegRDRAM,*RegSP,*RegDPC,*RegMI,*RegVI,*RegAI,*RegPI,
 	*RegRI,*RegSI, HalfLine, RegModValue, ViFieldSerration, LLBit, LLAddr;
