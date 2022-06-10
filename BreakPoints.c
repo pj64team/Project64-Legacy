@@ -405,6 +405,7 @@ void RemoveR4300iBreakPoint (DWORD Location) {
 		}
 		NoOfBpoints -= 1;
 		RefreshBreakPoints ();
+		RefreshR4300iCommands();
 	}
 
 	/*if (CPU_Action.Stepping || hMipsCPU == NULL) {
