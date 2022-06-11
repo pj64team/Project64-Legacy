@@ -52,7 +52,7 @@ IgnoreMove, Recursion, ShowPifRamErrors, LimitFPS, ShowCPUPer, AutoZip,
 AutoFullScreen, SystemABL, AlwaysOnTop, BasicMode, DelaySI, RememberCheats, AudioSignal, EmulateAI;
 unsigned int CurrentFrame;
 int CPU_Type, SystemCPU_Type, SelfModCheck, SystemSelfModCheck, RomsToRemember, RomDirsToRemember;
-HWND hMainWindow, hHiddenWin, hStatusWnd, hCheatSearchDlg;
+HWND hMainWindow, hHiddenWin, hStatusWnd, hCheatSearchDlg, hHiddenFullscr;
 char CurrentSave[256];
 HMENU hMainMenu;
 HINSTANCE hInst;
@@ -2310,7 +2310,6 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 		WS_CLIPSIBLINGS | WS_SYSMENU | WS_MINIMIZEBOX, X, Y, WindowWidth, WindowHeight,
 		NULL, NULL, hInst, NULL
 	);
-
 	if (!hHiddenWin) { return FALSE; }
 
 	hMainWindow = CreateWindow(AppName, AppName, WS_OVERLAPPED | WS_CLIPCHILDREN |
