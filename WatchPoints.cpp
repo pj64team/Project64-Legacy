@@ -33,7 +33,7 @@ extern "C" {
 	#include "cpu.h"
 }
 
-std::unordered_map<DWORD, int> *WatchPoints = NULL;
+std::unordered_map<DWORD, int[8]>* WatchPoints = NULL;
 
 void InitWatchPoints(void) {
 	// Default size is implementation-defined (may as well be unknown).
@@ -46,15 +46,37 @@ void InitWatchPoints(void) {
 	// (everything else being equal) the optimal size should be 5 / 0.01 = 500.
 	const UINT HASH_SIZE = 500;
 
-	WatchPoints = new std::unordered_map<DWORD, int>({}, HASH_SIZE);
+	WatchPoints = new std::unordered_map<DWORD, int[8]>({}, HASH_SIZE);
 }
 
 void AddWatchPoint(DWORD Location, WATCH_TYPE Type) {
-	(*WatchPoints)[Location] = (int)Type | WP_ENABLED;
+	auto search = WatchPoints->find(Location & ~7);
+	if (search == WatchPoints->end()) {
+		int* wp = (*WatchPoints)[Location & ~7];
+		for (int i = 0; i < 8; i++) {
+			wp[i] = WP_NONE;
+		}
+	}
+
+	(*WatchPoints)[Location & ~7][Location & 7] = (int)Type | WP_ENABLED;
 }
 
 void RemoveWatchPoint(DWORD Location) {
-	WatchPoints->erase(Location);
+	auto search = WatchPoints->find(Location & ~7);
+	if (search != WatchPoints->end()) {
+		int *wp = search->second;
+		wp[Location & 7] = WP_NONE;
+
+		int i;
+		for (i = 0; i < 8; i++) {
+			if (wp[i] != WP_NONE) {
+				break;
+			}
+		}
+		if (i == 8) {
+			WatchPoints->erase(Location & ~7);
+		}
+	}
 }
 
 void RemoveAllWatchPoints(void) {
@@ -64,67 +86,89 @@ void RemoveAllWatchPoints(void) {
 void ToggleWatchPoint(DWORD Location) {
 	WATCH_TYPE Type = HasWatchPoint(Location);
 	if (Type != WP_NONE) {
-		(*WatchPoints)[Location] = (int)Type ^ WP_ENABLED;
+		(*WatchPoints)[Location & ~7][Location & 7] = (int)Type ^ WP_ENABLED;
 	}
 }
 
 WATCH_TYPE HasWatchPoint(DWORD Location) {
-	auto search = WatchPoints->find(Location);
+	auto search = WatchPoints->find(Location & ~7);
 	if (search == WatchPoints->end()) {
 		return WP_NONE;
 	}
 
-	return (WATCH_TYPE)search->second;
+	return (WATCH_TYPE)search->second[Location & 7];
 }
 
-BOOL CheckForWatchPoint(DWORD Location, WATCH_TYPE Type) {
+BOOL CheckForWatchPoint(DWORD Location, WATCH_TYPE Type, int Size) {
 	if (!HaveDebugger || CPU_Action.Stepping || WatchPoints->empty()) {
 		return FALSE;
 	}
 
-	auto search = WatchPoints->find(Location);
+	auto search = WatchPoints->find(Location & ~7);
 	if (search == WatchPoints->end()) {
 		return FALSE;
 	}
 
-	int value = search->second;
-	if ((value & WP_ENABLED) && (value & (int)Type)) {
-		TriggerDebugger();
+	int *wp = search->second;
+	int start = Location & 7;
+	for (int i = start; i < start + Size; i++) {
+		int value = wp[i];
+		if ((value & WP_ENABLED) && (value & (int)Type)) {
+			TriggerDebugger();
 
-		// Block the CPU thread until resumed by the debugger
-		WaitForSingleObject(CPU_Action.hStepping, INFINITE);
+			// Block the CPU thread until resumed by the debugger
+			WaitForSingleObject(CPU_Action.hStepping, INFINITE);
 
-		return TRUE;
+			return TRUE;
+		}
 	}
 
 	return FALSE;
 }
 
 int CountWatchPoints(void) {
-	return WatchPoints->size();
+	int count = 0;
+
+	for (auto &iter : *WatchPoints) {
+		int* wp = iter.second;
+		for (int i = 0; i < 8; i++) {
+			if (wp[i] != WP_NONE) {
+				count++;
+			}
+		}
+	}
+
+	return count;
 }
 
 void RefreshWatchPoints(HWND hList) {
 	char message[100];
 
-	for (auto iter : *WatchPoints) {
-		DWORD key = iter.first;
-		int value = iter.second;
+	for (auto &iter : *WatchPoints) {
+		int key = iter.first;
+		int *wp = iter.second;
+		for (int i = 0; i < 8; i++) {
+			int value = wp[i];
+			if (value == WP_NONE) {
+				continue;
+			}
 
-		char flags[5] = "----";
-		if (value & WP_ENABLED) {
-			flags[0] = 'e';
-		}
-		if (value & WP_READ) {
-			flags[2] = 'r';
-		}
-		if (value & WP_WRITE) {
-			flags[3] = 'w';
-		}
+			char flags[5] = "----";
+			if (value & WP_ENABLED) {
+				flags[0] = 'e';
+			}
+			if (value & WP_READ) {
+				flags[2] = 'r';
+			}
+			if (value & WP_WRITE) {
+				flags[3] = 'w';
+			}
 
-		sprintf(message, " at 0x%08X (r4300i %s)", key, flags);
-		SendMessage(hList, LB_ADDSTRING, 0, (LPARAM)message);
-		int index = SendMessage(hList, LB_GETCOUNT, 0, 0) - 1;
-		SendMessage(hList, LB_SETITEMDATA, index, (LPARAM)key);
+			int location = key | i;
+			sprintf(message, " at 0x%08X (r4300i %s)", location, flags);
+			SendMessage(hList, LB_ADDSTRING, 0, (LPARAM)message);
+			int index = SendMessage(hList, LB_GETCOUNT, 0, 0) - 1;
+			SendMessage(hList, LB_SETITEMDATA, index, (LPARAM)location);
+		}
 	}
 }

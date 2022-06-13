@@ -40,7 +40,7 @@ void RemoveWatchPoint(DWORD Location);
 void ToggleWatchPoint(DWORD Location);
 void RemoveAllWatchPoints(void);
 WATCH_TYPE HasWatchPoint(DWORD Location);
-BOOL CheckForWatchPoint(DWORD Location, WATCH_TYPE Type);
+BOOL CheckForWatchPoint(DWORD Location, WATCH_TYPE Type, int Size);
 int CountWatchPoints(void);
 void RefreshWatchPoints(HWND hList);
 

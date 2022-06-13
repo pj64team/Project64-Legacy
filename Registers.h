@@ -322,8 +322,8 @@
 #define	FPCSR_RM_RP				0x00000002	/* round to positive infinity */
 #define	FPCSR_RM_RM				0x00000003	/* round to negative infinity */
 
-#define FPR_Type(Reg)	(Reg) == R4300i_COP1_S ? "S" : (Reg) == R4300i_COP1_D ? "D" :\
-						(Reg) == R4300i_COP1_W ? "W" : "L"
+#define FPR_Type(Reg)	(Reg) == R4300i_COP1_S ? "s" : (Reg) == R4300i_COP1_D ? "d" :\
+						(Reg) == R4300i_COP1_W ? "w" : "l"
 
 typedef struct {
 	DWORD      PROGRAM_COUNTER;
