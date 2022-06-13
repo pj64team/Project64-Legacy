@@ -71,6 +71,7 @@ static HANDLE hRefreshThread = NULL;
 static HANDLE hRefreshMutex = NULL;
 static int InMemoryWindow = FALSE;
 static int wheel = 0;
+static int thumb = -1;
 static struct MEMORY_VIEW_ROW MemoryViewRows[16];
 
 void __cdecl Create_Memory_Window ( int Child ) {
@@ -358,6 +359,17 @@ LRESULT CALLBACK Memory_Window_Proc (HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM
 				break;
 			case SB_PAGEDOWN:
 				Scroll_Memory_View(16);
+				break;
+			case SB_THUMBTRACK: {
+				int position = HIWORD(wParam);
+				if (thumb >= 0) {
+					Scroll_Memory_View(position - thumb);
+				}
+				thumb = position;
+				break;
+			}
+			case SB_ENDSCROLL:
+				thumb = -1;
 				break;
 			}
 		}

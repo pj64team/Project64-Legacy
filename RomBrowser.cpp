@@ -875,7 +875,7 @@ void RomListDrawItem(LPDRAWITEMSTRUCT ditem) {
 		SetTextColor(ditem->hDC, GetColor(pRomInfo->Status, COLOR_SELECTED_TEXT));
 	}
 	else {
-		hBrush = (HBRUSH)(COLOR_WINDOW + 1);
+		hBrush = GetSysColorBrush(COLOR_WINDOW);
 		SetTextColor(ditem->hDC, GetColor(pRomInfo->Status, COLOR_TEXT));
 	}
 	FillRect(ditem->hDC, &ditem->rcItem, hBrush);

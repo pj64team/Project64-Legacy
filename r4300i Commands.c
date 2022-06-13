@@ -33,7 +33,7 @@
 
 char CommandName[100];
 
-#define R4300i_MaxCommandLines		30
+#define R4300i_MaxCommandLines		37
 
 typedef struct {
 	DWORD Location;
@@ -43,6 +43,7 @@ typedef struct {
 
 #define R4300i_Status_PC            1
 #define R4300i_Status_BP            2
+#define R4300i_Status_Selected      4
 
 #define IDC_LIST					1000
 #define IDC_ADDRESS					1001
@@ -61,21 +62,40 @@ typedef struct {
 void Paint_R4300i_Commands ( HWND hDlg );
 void R4300i_Commands_Setup ( HWND hDlg );
 void RefreshR4300iCommands ( void );
+void Scroll_R4300i_Commands(int lines);
 
 LRESULT CALLBACK R4300i_Commands_Proc ( HWND, UINT, WPARAM, LPARAM );
 
+const COLORREF TEXT_COLOR_PC = RGB(0, 255, 0); // Currently executing instruction
+const COLORREF TEXT_COLOR_BP = RGB(255, 0, 0); // Breakpoint enabled
+const COLORREF TEXT_COLOR_PC_BP = RGB(255, 128, 0); // Currently executing instruction + breakpoint enabled
+
+static USHORT bCheckerBits[8] = { 0x33, 0x33, 0xcc, 0xcc, 0x33, 0x33, 0xcc, 0xcc }; // 2x2 checkerboard
+static HBITMAP hBmChecker;
+static HBRUSH hBrushChecker;
 static HWND R4300i_Commands_hDlg, hList, hAddress, hFunctionlist, hGoButton, hBreakButton,
 	hStepButton, hSkipButton, hBPButton, hR4300iRegisters, hRSPDebugger, hRSPRegisters,
 	hMemory, hScrlBar;
-static R4300ICOMMANDLINE r4300iCommandLine[30];
+static R4300ICOMMANDLINE r4300iCommandLine[R4300i_MaxCommandLines];
+static int wheel = 0;
+static int thumb = -1;
+static UINT DragListMsg;
+static BOOL has_selection = FALSE;
+static DWORD selection_anchor = 0;
+static DWORD selection_range[2] = { 0, 0 };
+
 BOOL InR4300iCommandsWindow = FALSE;
 
 void __cdecl Create_R4300i_Commands_Window ( int Child ) {
 	DWORD ThreadID;
 	if ( Child ) {
+		hBmChecker = CreateBitmap(8, 8, 1, 1, bCheckerBits);
+		hBrushChecker = CreatePatternBrush(hBmChecker);
 		InR4300iCommandsWindow = TRUE;
 		DialogBox( hInst, "BLANK", NULL,(DLGPROC) R4300i_Commands_Proc );
 		InR4300iCommandsWindow = FALSE;
+		DeleteObject(hBrushChecker);
+		DeleteObject(hBmChecker);
 		memset(r4300iCommandLine,0,sizeof(r4300iCommandLine));
 		SetR4300iCommandToRunning();
 	} else {
@@ -114,25 +134,25 @@ void Disable_R4300i_Commands_Window ( void ) {
 
 int DisplayR4300iCommand (DWORD location, int InsertPos) {
 	DWORD OpCode, count, LinesUsed = 1, status;
-	BOOL Redraw = FALSE;	
+	BOOL Redraw = FALSE;
 
 	for (count = 0; count < NoOfMapEntries; count ++ ) {
 		if (MapTable[count].VAddr == location) {
-			
-			if (strcmp(r4300iCommandLine[InsertPos].String, MapTable[count].Label) !=0 ) {
+
+			if (strcmp(r4300iCommandLine[InsertPos].String, MapTable[count].Label) != 0) {
 				Redraw = TRUE;
 			}
-			
+
 			if (Redraw) {
 				r4300iCommandLine[InsertPos].Location = -1;
 				r4300iCommandLine[InsertPos].status = 0;
-				sprintf(r4300iCommandLine[InsertPos].String," %s:",MapTable[count].Label);
-				if ( SendMessage(hList,LB_GETCOUNT,0,0) <= InsertPos) {
-					SendMessage(hList,LB_INSERTSTRING,(WPARAM)InsertPos, (LPARAM)location); 
+				sprintf(r4300iCommandLine[InsertPos].String, " %s:", MapTable[count].Label);
+				if (SendMessage(hList, LB_GETCOUNT, 0, 0) <= InsertPos) {
+					SendMessage(hList, LB_INSERTSTRING, (WPARAM)InsertPos, (LPARAM)location);
 				} else {
 					RECT ItemRC;
-					SendMessage(hList,LB_GETITEMRECT,(WPARAM)InsertPos, (LPARAM)&ItemRC); 
-					RedrawWindow(hList,&ItemRC,NULL, RDW_INVALIDATE );
+					SendMessage(hList, LB_GETITEMRECT, (WPARAM)InsertPos, (LPARAM)&ItemRC);
+					RedrawWindow(hList, &ItemRC, NULL, RDW_INVALIDATE);
 				}
 			}
 			InsertPos += 1;
@@ -143,7 +163,6 @@ int DisplayR4300iCommand (DWORD location, int InsertPos) {
 			count = NoOfMapEntries;
 		}
 	}
-	
 
 	Redraw = FALSE;
 	__try {
@@ -155,8 +174,8 @@ int DisplayR4300iCommand (DWORD location, int InsertPos) {
 				SendMessage(hList,LB_INSERTSTRING,(WPARAM)InsertPos, (LPARAM)location); 
 			} else {
 				RECT ItemRC;
-				SendMessage(hList,LB_GETITEMRECT,(WPARAM)InsertPos, (LPARAM)&ItemRC); 
-				RedrawWindow(hList,&ItemRC,NULL, RDW_INVALIDATE );
+				SendMessage(hList, LB_GETITEMRECT, (WPARAM)InsertPos, (LPARAM)&ItemRC);
+				RedrawWindow(hList, &ItemRC, NULL, RDW_INVALIDATE);
 			}
 			return LinesUsed;
 		}
@@ -171,98 +190,189 @@ int DisplayR4300iCommand (DWORD location, int InsertPos) {
 	}
 	
 	status = 0;
-	if (location == PROGRAM_COUNTER) {status = R4300i_Status_PC; }
+	if (location == PROGRAM_COUNTER) { status = R4300i_Status_PC; }
 	if (HasR4300iBPoint(location)) { status |= R4300i_Status_BP; }
+	if (has_selection && location >= selection_range[0] && location <= selection_range[1]) { status |= R4300i_Status_Selected; }
+
 	if (r4300iCommandLine[InsertPos].Location != location) { Redraw = TRUE; }
 	if (r4300iCommandLine[InsertPos].status != status) { Redraw = TRUE; }
+
 	if (Redraw) {
 		r4300iCommandLine[InsertPos].Location = location;
 		r4300iCommandLine[InsertPos].status = status;
-		sprintf(r4300iCommandLine[InsertPos].String," 0x%08X\t%s",location, 
-			R4300iOpcodeName ( OpCode, location ));
-		if ( SendMessage(hList,LB_GETCOUNT,0,0) <= InsertPos) {
-			SendMessage(hList,LB_INSERTSTRING,(WPARAM)InsertPos, (LPARAM)location); 
+		sprintf(r4300iCommandLine[InsertPos].String, " 0x%08X\t%08X\t%s", location, OpCode, R4300iOpcodeName(OpCode, location));
+		if (SendMessage(hList, LB_GETCOUNT, 0, 0) <= InsertPos) {
+			SendMessage(hList, LB_INSERTSTRING, (WPARAM)InsertPos, (LPARAM)location);
 		} else {
 			RECT ItemRC;
-			SendMessage(hList,LB_GETITEMRECT,(WPARAM)InsertPos, (LPARAM)&ItemRC); 
-			RedrawWindow(hList,&ItemRC,NULL, RDW_INVALIDATE );
+			SendMessage(hList, LB_GETITEMRECT, (WPARAM)InsertPos, (LPARAM)&ItemRC);
+			RedrawWindow(hList, &ItemRC, NULL, RDW_INVALIDATE);
 		}
 	}
 	return LinesUsed;
 }
 
+int WriteR4300iCommand(char *commands, DWORD location) {
+	DWORD OpCode;
+	int res = 0;
+
+	for (int count = 0; count < NoOfMapEntries; count++) {
+		if (MapTable[count].VAddr == location) {
+			res = sprintf(commands, "%s:\r\n", MapTable[count].Label);
+			commands += res;
+
+			count = NoOfMapEntries;
+		}
+	}
+
+	__try {
+		if (!r4300i_LW_VAddr_NonCPU(location, &OpCode)) {
+			res += sprintf(commands, "0x%08X  Could not resolve address\r\n", location);
+			return res;
+		}
+	}
+	__except (r4300i_Command_MemoryFilter(GetExceptionCode(), GetExceptionInformation())) {
+		DisplayError(GS(MSG_UNKNOWN_MEM_ACTION));
+		ExitThread(0);
+	}
+	if (SelfModCheck == ModCode_ChangeMemory) {
+		if ((OpCode >> 16) == 0x7C7C) {
+			OpCode = OrigMem[(OpCode & 0xFFFF)].OriginalValue;
+		}
+	}
+
+	res += sprintf(commands, "0x%08X  %08X  ", location, OpCode);
+
+	char inst[150];
+	strcpy(inst, R4300iOpcodeName(OpCode, location));
+
+	// Replace tabs with spaces
+	char* p = strtok(inst, "\t");
+	int tok_len = 0;
+	while (p) {
+		if (tok_len) {
+			int len = strlen(commands);
+			int indent = 8 - (tok_len % 8);
+			memset(commands + len, ' ', indent);
+			commands[len + indent] = '\0';
+			res += indent;
+		}
+		tok_len = strlen(p);
+
+		strcat(commands, p);
+		res += tok_len;
+
+		p = strtok(NULL, "\t");
+	}
+
+	strcat(commands, "\r\n");
+	res += 2;
+
+	return res;
+}
+
+void R4300i_Copy_Commands(void) {
+	if (!has_selection || !OpenClipboard(NULL)) {
+		return;
+	}
+	EmptyClipboard();
+
+	int lines = (selection_range[1] - selection_range[0]) / 4 + 1;
+
+	// Assume each line is up to 150 bytes.
+	HGLOBAL hCommands = GlobalAlloc(GMEM_MOVEABLE, lines * 150);
+	if (!hCommands) {
+		CloseClipboard();
+		return;
+	}
+
+	char* commands = GlobalLock(hCommands);
+
+	char* output = commands;
+	DWORD location = selection_range[0];
+	for (int i = 0; i < lines; i++) {
+		output += WriteR4300iCommand(output, location);
+		location += 4;
+	}
+
+	GlobalUnlock(hCommands);
+	SetClipboardData(CF_TEXT, commands);
+	CloseClipboard();
+}
+
 void DrawR4300iCommand ( LPARAM lParam ) {	
-	char Command[150], Offset[30], Instruction[30], Arguments[40];
+	char Command[150], *Offset, *OpCode, *Instruction, *Arguments;
 	LPDRAWITEMSTRUCT ditem;
-	COLORREF oldColor;
-	int ResetColor;
-	HBRUSH hBrush;
+	COLORREF oldColor, oldBkColor, textColor;
+	int bkColorIndex;
+	int oldBkMode;
 	RECT TextRect;
-	char *p1, *p2;
 
 	ditem  = (LPDRAWITEMSTRUCT)lParam;
 	strcpy(Command, r4300iCommandLine[ditem->itemID].String);
 	
-	if (strchr(Command,'\t')) {
-		p1 = strchr(Command,'\t');
-		sprintf(Offset,"%.*s",p1 - Command, Command);
-		p1++;
-		if (strchr(p1,'\t')) {
-			p2 = strchr(p1,'\t');
-			sprintf(Instruction,"%.*s",p2 - p1, p1);
-			sprintf(Arguments,"%s",p2 + 1);
+	Offset = strtok(Command, "\t");
+	OpCode = strtok(NULL, "\t");
+	Instruction = strtok(NULL, "\t");
+	Arguments = strtok(NULL, "\t");
+
+	DWORD Location = r4300iCommandLine[ditem->itemID].Location;
+	if (r4300iCommandLine[ditem->itemID].status & R4300i_Status_Selected) {
+		textColor = GetSysColor(COLOR_HIGHLIGHTTEXT);
+		bkColorIndex = COLOR_HIGHLIGHT;
+	} else {
+		textColor = GetSysColor(COLOR_WINDOWTEXT);
+		bkColorIndex = COLOR_WINDOW;
+	}
+
+	int mask = R4300i_Status_PC | R4300i_Status_BP;
+	if ((r4300iCommandLine[ditem->itemID].status & mask) == mask) {
+		textColor = TEXT_COLOR_PC_BP;
+	} else if (r4300iCommandLine[ditem->itemID].status & R4300i_Status_PC) {
+		textColor = TEXT_COLOR_PC;
+	} else if (r4300iCommandLine[ditem->itemID].status & R4300i_Status_BP) {
+		textColor = TEXT_COLOR_BP;
+	}
+
+	oldColor = SetTextColor(ditem->hDC, textColor);
+	oldBkColor = SetBkColor(ditem->hDC, GetSysColor(bkColorIndex));
+	FillRect(ditem->hDC, &ditem->rcItem, GetSysColorBrush(bkColorIndex));
+
+	if (r4300iCommandLine[ditem->itemID].status & R4300i_Status_PC) {
+		FrameRect(ditem->hDC, &ditem->rcItem, hBrushChecker);
+	}
+
+	oldBkMode = SetBkMode(ditem->hDC, TRANSPARENT);
+
+	if (OpCode == NULL) {
+		DrawText(ditem->hDC, Offset, strlen(Offset), &ditem->rcItem, DT_SINGLELINE | DT_VCENTER);
+	} else {
+		SetRect(&TextRect, ditem->rcItem.left, ditem->rcItem.top, ditem->rcItem.left + 104, ditem->rcItem.bottom);
+		DrawText(ditem->hDC, Offset, strlen(Offset), &TextRect, DT_SINGLELINE | DT_VCENTER);
+
+		if (Instruction == NULL) {
+			SetRect(&TextRect, ditem->rcItem.left + 104, ditem->rcItem.top, ditem->rcItem.right, ditem->rcItem.bottom);
+			DrawText(ditem->hDC, OpCode, strlen(OpCode), &TextRect, DT_SINGLELINE | DT_VCENTER);
 		} else {
-			sprintf(Instruction,"%s",p1);
-			sprintf(Arguments,"\0");
-		}
-		sprintf(Command,"\0");
-	} else {
-		sprintf(Offset,"\0");
-		sprintf(Instruction,"\0");
-		sprintf(Arguments,"\0");
-	}
-		
-	if (PROGRAM_COUNTER == r4300iCommandLine[ditem->itemID].Location) {
-		ResetColor = TRUE;
-		hBrush     = (HBRUSH)(COLOR_HIGHLIGHT + 1);
-		oldColor   = SetTextColor(ditem->hDC,RGB(255,255,255));
-	} else {
-		ResetColor = FALSE;
-		hBrush     = (HBRUSH)GetStockObject(WHITE_BRUSH);
-	}
+			SetRect(&TextRect, ditem->rcItem.left + 104, ditem->rcItem.top, ditem->rcItem.left + 192, ditem->rcItem.bottom);
+			DrawText(ditem->hDC, OpCode, strlen(OpCode), &TextRect, DT_SINGLELINE | DT_VCENTER);
 
-	if (HasR4300iBPoint( r4300iCommandLine[ditem->itemID].Location )) {
-		ResetColor = TRUE;
-		if (PROGRAM_COUNTER == r4300iCommandLine[ditem->itemID].Location) {
-			SetTextColor(ditem->hDC,RGB(255,0,0));
-		} else {
-			oldColor = SetTextColor(ditem->hDC,RGB(255,0,0));
+			if (Arguments == NULL) {
+				SetRect(&TextRect, ditem->rcItem.left + 192, ditem->rcItem.top, ditem->rcItem.right, ditem->rcItem.bottom);
+				DrawText(ditem->hDC, Instruction, strlen(Instruction), &TextRect, DT_SINGLELINE | DT_VCENTER);
+			} else {
+				SetRect(&TextRect, ditem->rcItem.left + 192, ditem->rcItem.top, ditem->rcItem.left + 278, ditem->rcItem.bottom);
+				DrawText(ditem->hDC, Instruction, strlen(Instruction), &TextRect, DT_SINGLELINE | DT_VCENTER);
+
+				SetRect(&TextRect, ditem->rcItem.left + 278, ditem->rcItem.top, ditem->rcItem.right, ditem->rcItem.bottom);
+				DrawText(ditem->hDC, Arguments, strlen(Arguments), &TextRect, DT_SINGLELINE | DT_VCENTER);
+			}
 		}
 	}
 
-	FillRect( ditem->hDC, &ditem->rcItem,hBrush);	
-	SetBkMode( ditem->hDC, TRANSPARENT );
-
-	if (strlen (Command) == 0 ) {
-		SetRect(&TextRect,ditem->rcItem.left,ditem->rcItem.top, ditem->rcItem.left + 83,
-			ditem->rcItem.bottom);	
-		DrawText(ditem->hDC,Offset,strlen(Offset), &TextRect,DT_SINGLELINE | DT_VCENTER);
-		
-		SetRect(&TextRect,ditem->rcItem.left + 83,ditem->rcItem.top, ditem->rcItem.left + 165,
-			ditem->rcItem.bottom);	
-		DrawText(ditem->hDC,Instruction,strlen(Instruction), &TextRect,DT_SINGLELINE | DT_VCENTER);
-
-		SetRect(&TextRect,ditem->rcItem.left + 165,ditem->rcItem.top, ditem->rcItem.right,
-			ditem->rcItem.bottom);	
-		DrawText(ditem->hDC,Arguments,strlen(Arguments), &TextRect,DT_SINGLELINE | DT_VCENTER);
-	} else {
-		DrawText(ditem->hDC,Command,strlen(Command), &ditem->rcItem,DT_SINGLELINE | DT_VCENTER);
-	}
-
-	if (ResetColor == TRUE) {
-		SetTextColor( ditem->hDC, oldColor );
-	}
-
+	SetBkMode(ditem->hDC, oldBkMode);
+	SetBkColor(ditem->hDC, oldBkColor);
+	SetTextColor(ditem->hDC, oldColor);
 }
 
 void Enable_R4300i_Commands_Window ( void ) {
@@ -305,288 +415,416 @@ void Paint_R4300i_Commands (HWND hDlg) {
 	PAINTSTRUCT ps;
 	RECT rcBox;
 	HFONT hOldFont;
-	int OldBkMode;
+	COLORREF OldBkColor;
 
 	BeginPaint( hDlg, &ps );
 		
 	rcBox.left   = 5;   rcBox.top    = 5;
-	rcBox.right  = 343; rcBox.bottom = 463;
+	rcBox.right  = 501; rcBox.bottom = 563;
 	DrawEdge( ps.hdc, &rcBox, EDGE_RAISED, BF_RECT );
 		
 	rcBox.left   = 8;   rcBox.top    = 8;
-	rcBox.right  = 340; rcBox.bottom = 460;
+	rcBox.right  = 498; rcBox.bottom = 560;
 	DrawEdge( ps.hdc, &rcBox, EDGE_ETCHED, BF_RECT );
 		
-	rcBox.left   = 347; rcBox.top    = 7;
-	rcBox.right  = 446; rcBox.bottom = 42;
+	rcBox.left   = 505; rcBox.top    = 7;
+	rcBox.right  = 604; rcBox.bottom = 42;
 	DrawEdge( ps.hdc, &rcBox, EDGE_ETCHED, BF_RECT );
 		
-	rcBox.left   = 352; rcBox.top    = 2;
-	rcBox.right  = 400; rcBox.bottom = 15;
-	FillRect( ps.hdc, &rcBox,(HBRUSH)COLOR_WINDOW);
+	rcBox.left   = 510; rcBox.top    = 2;
+	rcBox.right  = 558; rcBox.bottom = 15;
 		
 	if (NoOfMapEntries) {
-		rcBox.left   = 347; rcBox.top    = 49;
-		rcBox.right  = 446; rcBox.bottom = 84;
+		rcBox.left   = 505; rcBox.top    = 49;
+		rcBox.right  = 604; rcBox.bottom = 84;
 		DrawEdge( ps.hdc, &rcBox, EDGE_ETCHED, BF_RECT );
 		
-		rcBox.left   = 352; rcBox.top    = 44;
-		rcBox.right  = 390; rcBox.bottom = 57;
-		FillRect( ps.hdc, &rcBox,(HBRUSH)COLOR_WINDOW);
+		rcBox.left   = 510; rcBox.top    = 44;
+		rcBox.right  = 548; rcBox.bottom = 57;
 	}
 
 	rcBox.left   = 14; rcBox.top    = 14;
-	rcBox.right  = 88; rcBox.bottom = 32;
+	rcBox.right  = 112; rcBox.bottom = 32;
 	DrawEdge( ps.hdc, &rcBox, EDGE_ETCHED , BF_RECT );
 
-	rcBox.left   = 86; rcBox.top    = 14;
-	rcBox.right  = 173; rcBox.bottom = 32;
+	rcBox.left   = 110; rcBox.top    = 14;
+	rcBox.right  = 200; rcBox.bottom = 32;
 	DrawEdge( ps.hdc, &rcBox, EDGE_ETCHED , BF_RECT );
 
-	rcBox.left   = 171; rcBox.top    = 14;
-	rcBox.right  = 320; rcBox.bottom = 32;
+	rcBox.left   = 198; rcBox.top    = 14;
+	rcBox.right  = 286; rcBox.bottom = 32;
+	DrawEdge( ps.hdc, &rcBox, EDGE_ETCHED , BF_RECT );
+
+	rcBox.left   = 284; rcBox.top    = 14;
+	rcBox.right  = 478; rcBox.bottom = 32;
 	DrawEdge( ps.hdc, &rcBox, EDGE_ETCHED , BF_RECT );
 
 	hOldFont = (HFONT)SelectObject( ps.hdc,GetStockObject(DEFAULT_GUI_FONT ) );
-	OldBkMode = SetBkMode( ps.hdc, TRANSPARENT );
+	OldBkColor = SetBkColor(ps.hdc, GetSysColor(COLOR_BTNFACE));
 		
 	TextOut( ps.hdc, 23,16,"Offset",6);
-	TextOut( ps.hdc, 97,16,"Instruction",11);
-	TextOut( ps.hdc, 180,16,"Arguments",9);
-	TextOut( ps.hdc, 354,2," Address ",9);
-	TextOut( ps.hdc, 354,19,"0x",2);
+	TextOut( ps.hdc, 119,16,"Opcode",6);
+	TextOut( ps.hdc, 207,16,"Instruction",11);
+	TextOut( ps.hdc, 293,16,"Arguments",9);
+	TextOut( ps.hdc, 512,2," Address ",9);
+	TextOut( ps.hdc, 512,19,"0x",2);
 	
 	if (NoOfMapEntries) {
-		TextOut( ps.hdc, 354,44," goto:",6);
+		TextOut( ps.hdc, 512,44," goto: ",7);
 	}
 
 	SelectObject( ps.hdc,hOldFont );
-	SetBkMode( ps.hdc, OldBkMode );
+	SetBkColor( ps.hdc, OldBkColor );
 		
 	EndPaint( hDlg, &ps );
 }
 
-LRESULT CALLBACK R4300i_Commands_Proc (HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam) {	
-	switch (uMsg) {
-	case WM_INITDIALOG:
-		R4300i_Commands_hDlg = hDlg;
-		R4300i_Commands_Setup( hDlg );
-		break;
-	case WM_MOVE:
-		StoreCurrentWinPos("R4300i Commands",hDlg);
-		break;
-	case WM_DRAWITEM:
-		if (wParam == IDC_LIST) {
-			DrawR4300iCommand (lParam);
-		}
-		break;
-	case WM_PAINT:
-		Paint_R4300i_Commands( hDlg );
-		RedrawWindow(hScrlBar,NULL,NULL, RDW_INVALIDATE |RDW_ERASE);
-		return TRUE;
-	case WM_COMMAND:
-		switch (LOWORD(wParam)) {
-		case IDCfunctION_COMBO:
-			if (HIWORD(wParam) == CBN_SELENDOK ) {
-				DWORD Selected, Location;
-				char Value[20];
-		
-				Selected = SendMessage(hFunctionlist,CB_GETCURSEL,0,0);
-				if ((int)Selected >= 0) { 
-					Location = SendMessage(hFunctionlist,CB_GETITEMDATA,(WPARAM)Selected,0);
-					sprintf(Value,"%08X",Location);
-					SetWindowText(hAddress,Value);
+LRESULT CALLBACK R4300i_Commands_Proc (HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam) {
+	if (uMsg == DragListMsg) {
+		LPDRAGLISTINFO pDragInfo = (LPDRAGLISTINFO)lParam;
+		switch (pDragInfo->uNotification) {
+		case DL_BEGINDRAG: {
+			if ((GetKeyState(VK_SHIFT) & 0x8000) == 0) {
+				int Selected = LBItemFromPt(hList, pDragInfo->ptCursor, FALSE);
+				if (Selected > -1) {
+					DWORD Location = r4300iCommandLine[Selected].Location;
+					if (Location != (DWORD)-1) {
+						has_selection = TRUE;
+						selection_anchor = Location;
+						selection_range[0] = Location;
+						selection_range[1] = Location;
+						RefreshR4300iCommands();
+					}
 				}
+				SetWindowLong(hDlg, DWL_MSGRESULT, TRUE);
 			}
 			break;
-		case IDC_LIST:
-			if (HIWORD(wParam) == LBN_DBLCLK ) {
-				DWORD Location, Selected;
-				Selected = SendMessage(hList,LB_GETCURSEL,(WPARAM)0, (LPARAM)0); 
-				Location = r4300iCommandLine[Selected].Location; 
+		}
+		case DL_DRAGGING:
+		case DL_DROPPED: {
+			int Selected = LBItemFromPt(hList, pDragInfo->ptCursor, FALSE);
+			if (Selected > -1) {
+				DWORD Location = r4300iCommandLine[Selected].Location;
 				if (Location != (DWORD)-1) {
-					if (HasR4300iBPoint(Location)) {
-						RemoveR4300iBreakPoint(Location);
-					} else {
-						Add_R4300iBPoint(Location);
-					}
+					selection_range[0] = min(Location, selection_anchor);
+					selection_range[1] = max(Location, selection_anchor);
 					RefreshR4300iCommands();
 				}
+			} else {
+				// TODO: Scroll + select
 			}
-			break;
-		case IDC_ADDRESS:
-			if (HIWORD(wParam) == EN_CHANGE ) {
-				RefreshR4300iCommands();
-			}
-			break;
-		case IDC_GO_BUTTON:
-			SetR4300iCommandToRunning();
-			break;
-		case IDC_BREAK_BUTTON:	
-			SetR4300iCommandToStepping();
-			break;
-		case IDC_STEP_BUTTON:			
-			StepOpcode();
-			break;
-		case IDC_SKIP_BUTTON:
-			SetCoreToSkipping();
-			//SkipNextR4300iOpCode = TRUE;
-			//WaitingForrsPStep   = FALSE;
-			break;
-		case IDC_BP_BUTTON:	Enter_BPoint_Window(); break;
-		case IDC_R4300I_REGISTERS_BUTTON: Enter_R4300i_Register_Window(); break;
-		case IDC_MEMORY_BUTTON: Enter_Memory_Window(); break;
-		case IDCANCEL:			
-			EndDialog( hDlg, IDCANCEL );
 			break;
 		}
-		break;
-	case WM_VSCROLL:
-		if ((HWND)lParam == hScrlBar) {
-			DWORD location;
-			char Value[20];
+		case DL_CANCELDRAG:
+			has_selection = FALSE;
+			selection_anchor = 0;
+			selection_range[0] = 0;
+			selection_range[1] = 0;
+			RefreshR4300iCommands();
+			break;
+		default:
+			return FALSE;
+		}
+	} else {
+		switch (uMsg) {
+		case WM_INITDIALOG:
+			R4300i_Commands_hDlg = hDlg;
+			R4300i_Commands_Setup(hDlg);
+			break;
+		case WM_MOVE:
+			StoreCurrentWinPos("R4300i Commands", hDlg);
+			break;
+		case WM_DRAWITEM:
+			if (wParam == IDC_LIST) {
+				DrawR4300iCommand(lParam);
+			}
+			break;
+		case WM_PAINT:
+			Paint_R4300i_Commands(hDlg);
+			RedrawWindow(hScrlBar, NULL, NULL, RDW_INVALIDATE | RDW_ERASE);
+			return TRUE;
+		case WM_COMMAND:
+			switch (LOWORD(wParam)) {
+			case IDCfunctION_COMBO:
+				if (HIWORD(wParam) == CBN_SELENDOK) {
+					DWORD Selected, Location;
+					char Value[20];
 
-			GetWindowText(hAddress,Value,sizeof(Value));
-			location = AsciiToHex(Value) & ~3;
-			
-			switch (LOWORD(wParam))  {			
-			case SB_LINEDOWN:
-				if (location < 0xFFFFFFFC) {
-					sprintf(Value,"%08X",location + 0x4);
-					SetWindowText(hAddress,Value);
-				} else {
-					sprintf(Value,"%08X",0xFFFFFFFC);
-					SetWindowText(hAddress,Value);
+					Selected = SendMessage(hFunctionlist, CB_GETCURSEL, 0, 0);
+					if ((int)Selected >= 0) {
+						Location = SendMessage(hFunctionlist, CB_GETITEMDATA, (WPARAM)Selected, 0);
+						sprintf(Value, "%08X", Location);
+						SetWindowText(hAddress, Value);
+					}
 				}
 				break;
-			case SB_LINEUP:
-				if (location > 0x4 ) {
-					sprintf(Value,"%08X",location - 0x4);
-					SetWindowText(hAddress,Value);
-				} else {
-					sprintf(Value,"%08X",0);
-					SetWindowText(hAddress,Value);
+			case IDC_LIST:
+				if (HIWORD(wParam) == LBN_DBLCLK) {
+					DWORD Location, Selected;
+					Selected = SendMessage(hList, LB_GETCURSEL, (WPARAM)0, (LPARAM)0);
+					Location = r4300iCommandLine[Selected].Location;
+					if (Location != (DWORD)-1) {
+						if (HasR4300iBPoint(Location)) {
+							RemoveR4300iBreakPoint(Location);
+						}
+						else {
+							Add_R4300iBPoint(Location);
+						}
+						RefreshR4300iCommands();
+					}
 				}
 				break;
-			case SB_PAGEDOWN:				
-				if (location < 0xFFFFFF8C) {
-					sprintf(Value,"%08X",location + 0x74);
-					SetWindowText(hAddress,Value);
-				} else {
-					sprintf(Value,"%08X",0xFFFFFF8F);
-					SetWindowText(hAddress,Value);
+			case IDC_ADDRESS:
+				if (HIWORD(wParam) == EN_CHANGE) {
+					RefreshR4300iCommands();
 				}
-				break;			
-			case SB_PAGEUP:
-				if (location > 0x74 ) {
-					sprintf(Value,"%08X",location - 0x74);
-					SetWindowText(hAddress,Value);
-				} else {
-					sprintf(Value,"%08X",0);
-					SetWindowText(hAddress,Value);
-				}
+				break;
+			case IDC_GO_BUTTON:
+				SetR4300iCommandToRunning();
+				RefreshR4300iCommands();
+				break;
+			case IDC_BREAK_BUTTON:
+				SetR4300iCommandToStepping();
+				break;
+			case IDC_STEP_BUTTON:
+				StepOpcode();
+				break;
+			case IDC_SKIP_BUTTON:
+				SetCoreToSkipping();
+				//SkipNextR4300iOpCode = TRUE;
+				//WaitingForrsPStep   = FALSE;
+				break;
+			case IDC_BP_BUTTON:	Enter_BPoint_Window(); break;
+			case IDC_R4300I_REGISTERS_BUTTON: Enter_R4300i_Register_Window(); break;
+			case IDC_MEMORY_BUTTON: Enter_Memory_Window(); break;
+			case IDCANCEL:
+				EndDialog(hDlg, IDCANCEL);
 				break;
 			}
+			break;
+		case WM_VSCROLL:
+			if ((HWND)lParam == hScrlBar) {
+				int page_size = R4300i_MaxCommandLines - 1;
+
+				switch (LOWORD(wParam)) {
+				case SB_LINEUP:
+					Scroll_R4300i_Commands(-1);
+					break;
+				case SB_LINEDOWN:
+					Scroll_R4300i_Commands(1);
+					break;
+				case SB_PAGEUP:
+					Scroll_R4300i_Commands(-page_size);
+					break;
+				case SB_PAGEDOWN:
+					Scroll_R4300i_Commands(page_size);
+					break;
+				case SB_THUMBTRACK: {
+					int position = HIWORD(wParam);
+					if (thumb >= 0) {
+						Scroll_R4300i_Commands(position - thumb);
+					}
+					thumb = position;
+					break;
+				}
+				case SB_ENDSCROLL:
+					thumb = -1;
+					break;
+				}
+			}
+			break;
+		default:
+			return FALSE;
 		}
-		break;
-	default:
-		return FALSE;
 	}
 	return TRUE;
 }
 
+LRESULT CALLBACK R4300i_Commands_ListViewScroll_Proc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam, UINT_PTR uIdSubclass, DWORD_PTR dwRefData) {
+	switch (uMsg) {
+	case WM_MOUSEWHEEL:
+		// Accumulate wheel deltas
+		wheel -= GET_WHEEL_DELTA_WPARAM(wParam);
+		if (abs(wheel) >= WHEEL_DELTA) {
+			int lines = wheel / WHEEL_DELTA;
+			wheel -= lines * WHEEL_DELTA;
+
+			Scroll_R4300i_Commands(lines);
+		}
+
+		return FALSE;
+	default:
+		return DefSubclassProc(hDlg, uMsg, wParam, lParam);
+	}
+}
+
+LRESULT CALLBACK R4300i_Commands_ListViewKeys_Proc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam, UINT_PTR uIdSubclass, DWORD_PTR dwRefData) {
+	switch (uMsg) {
+	case WM_KEYDOWN: {
+		int page_size = R4300i_MaxCommandLines - 1;
+
+		switch (wParam) {
+		case VK_UP:
+			Scroll_R4300i_Commands(-1);
+			return FALSE;
+		case VK_DOWN:
+			Scroll_R4300i_Commands(1);
+			return FALSE;
+		case VK_PRIOR:
+			Scroll_R4300i_Commands(-page_size);
+			return FALSE;
+		case VK_NEXT:
+			Scroll_R4300i_Commands(page_size);
+			return FALSE;
+
+		case 'C':
+			if (GetKeyState(VK_CONTROL) & 0x8000) {
+				R4300i_Copy_Commands();
+			}
+			return FALSE;
+		default:
+			break;
+		}
+		break;
+	}
+	case WM_RBUTTONDOWN:
+		R4300i_Copy_Commands();
+
+		has_selection = FALSE;
+		selection_anchor = 0;
+		selection_range[0] = 0;
+		selection_range[1] = 0;
+		RefreshR4300iCommands();
+		break;
+	default:
+		break;
+	}
+
+	return DefSubclassProc(hWnd, uMsg, wParam, lParam);
+}
+
+void Scroll_R4300i_Commands(int lines) {
+	char value[20];
+	GetWindowText(hAddress, value, sizeof(value));
+	unsigned int location = AsciiToHex(value);
+
+	if (lines > 0) {
+		if (UINT_MAX - location >= R4300i_MaxCommandLines * 4) {
+			location += lines * 4;
+		} else {
+			location = UINT_MAX - R4300i_MaxCommandLines * 4 + 1;
+		}
+	} else {
+		if (location >= -lines * 4) {
+			location += lines * 4;
+		} else {
+			location = 0;
+		}
+	}
+
+	sprintf(value, "%08X", location);
+	SetWindowText(hAddress, value);
+}
+
 void R4300i_Commands_Setup ( HWND hDlg ) {
-#define WindowWidth  480
-#define WindowHeight 520
+#define WindowWidth  638
+#define WindowHeight 620
 	DWORD X, Y;
 	
 	hList = CreateWindowEx(WS_EX_STATICEDGE, "LISTBOX","", WS_CHILD | WS_VISIBLE | 
-		LBS_OWNERDRAWFIXED | LBS_NOTIFY,14,30,303,445, hDlg, 
+		LBS_OWNERDRAWFIXED | LBS_NOTIFY,14,30,461,545, hDlg,
 		(HMENU)IDC_LIST, hInst,NULL );
 	if ( hList) {
-		SendMessage(hList,WM_SETFONT, (WPARAM)GetStockObject(DEFAULT_GUI_FONT),0);
+		SendMessage(hList,WM_SETFONT, (WPARAM)GetStockObject(ANSI_FIXED_FONT),0);
 		SendMessage(hList,LB_SETITEMHEIGHT, (WPARAM)0,(LPARAM)MAKELPARAM(14, 0));
+		MakeDragList(hList);
+		DragListMsg = RegisterWindowMessage(DRAGLISTMSGSTRING);
+		SetWindowSubclass(hList, R4300i_Commands_ListViewScroll_Proc, 0, 0);
+		SetWindowSubclass(hList, R4300i_Commands_ListViewKeys_Proc, 0, 0);
 	}
 
 	hAddress = CreateWindowEx(0,"EDIT","", WS_CHILD | ES_UPPERCASE | WS_VISIBLE | 
-		WS_BORDER | WS_TABSTOP,372,17,65,18, hDlg,(HMENU)IDC_ADDRESS,hInst, NULL );
+		WS_BORDER | WS_TABSTOP,530,17,65,18, hDlg,(HMENU)IDC_ADDRESS,hInst, NULL );
 	if (hAddress) {
 		SendMessage(hAddress,WM_SETFONT, (WPARAM)GetStockObject(DEFAULT_GUI_FONT),0);
 		SendMessage(hAddress,EM_SETLIMITTEXT, (WPARAM)8,(LPARAM)0);
 	} 
 
 	hFunctionlist = CreateWindowEx(0,"COMBOBOX","", WS_CHILD | WS_VSCROLL |
-		CBS_DROPDOWNLIST | CBS_SORT | WS_TABSTOP,352,56,89,150,hDlg,
+		CBS_DROPDOWNLIST | CBS_SORT | WS_TABSTOP,510,56,89,150,hDlg,
 		(HMENU)IDCfunctION_COMBO,hInst,NULL);		
 	if (hFunctionlist) {
 		SendMessage(hFunctionlist,WM_SETFONT, (WPARAM)GetStockObject(DEFAULT_GUI_FONT),0);
 	} 
 
-	hGoButton = CreateWindowEx(WS_EX_STATICEDGE, "BUTTON","&Go", WS_CHILD | 
-		BS_DEFPUSHBUTTON | WS_VISIBLE | WS_TABSTOP, 347,56,100,24, hDlg,(HMENU)IDC_GO_BUTTON,
+	hGoButton = CreateWindowEx(WS_EX_STATICEDGE, "BUTTON","&Go", WS_CHILD |
+		BS_DEFPUSHBUTTON | WS_VISIBLE | WS_TABSTOP, 505,56,100,24, hDlg,(HMENU)IDC_GO_BUTTON,
 		hInst,NULL );
 	if (hGoButton) {
 		SendMessage(hGoButton,WM_SETFONT, (WPARAM)GetStockObject(DEFAULT_GUI_FONT),0);
 	} 
 	
-	hBreakButton = CreateWindowEx(WS_EX_STATICEDGE, "BUTTON","&Break", WS_DISABLED | 
-		WS_CHILD | BS_PUSHBUTTON | WS_VISIBLE | WS_TABSTOP | BS_TEXT, 347,85,100,24,hDlg,
+	hBreakButton = CreateWindowEx(WS_EX_STATICEDGE, "BUTTON","&Break", WS_DISABLED |
+		WS_CHILD | BS_PUSHBUTTON | WS_VISIBLE | WS_TABSTOP | BS_TEXT, 505,85,100,24,hDlg,
 		(HMENU)IDC_BREAK_BUTTON,hInst,NULL );
 	if (hBreakButton) {
 		SendMessage(hBreakButton,WM_SETFONT,(WPARAM)GetStockObject(DEFAULT_GUI_FONT),0);
 	}
 
-	hStepButton = CreateWindowEx(WS_EX_STATICEDGE, "BUTTON","&Step", WS_CHILD | 
-		BS_PUSHBUTTON | WS_VISIBLE | WS_TABSTOP | BS_TEXT, 347,114,100,24,hDlg,
+	hStepButton = CreateWindowEx(WS_EX_STATICEDGE, "BUTTON","&Step", WS_CHILD |
+		BS_PUSHBUTTON | WS_VISIBLE | WS_TABSTOP | BS_TEXT, 505,114,100,24,hDlg,
 		(HMENU)IDC_STEP_BUTTON,hInst,NULL );
 	if (hStepButton) {
 		SendMessage(hStepButton,WM_SETFONT,(WPARAM)GetStockObject(DEFAULT_GUI_FONT),0);
 	}
 
-	hSkipButton = CreateWindowEx(WS_EX_STATICEDGE, "BUTTON","&Skip", WS_CHILD | 
-		BS_PUSHBUTTON | WS_VISIBLE | WS_TABSTOP | BS_TEXT, 347,143,100,24,hDlg,
+	hSkipButton = CreateWindowEx(WS_EX_STATICEDGE, "BUTTON","&Skip", WS_CHILD |
+		BS_PUSHBUTTON | WS_VISIBLE | WS_TABSTOP | BS_TEXT, 505,143,100,24,hDlg,
 		(HMENU)IDC_SKIP_BUTTON,hInst,NULL );
 	if (hSkipButton) {
 		SendMessage(hSkipButton,WM_SETFONT,(WPARAM)GetStockObject(DEFAULT_GUI_FONT),0);
 	}
 
-	hBPButton = CreateWindowEx(WS_EX_STATICEDGE, "BUTTON","&Break Points", WS_CHILD | 
-		BS_PUSHBUTTON | WS_VISIBLE | WS_TABSTOP | BS_TEXT, 347,324,100,24,hDlg,
+	hBPButton = CreateWindowEx(WS_EX_STATICEDGE, "BUTTON","&Break Points", WS_CHILD |
+		BS_PUSHBUTTON | WS_VISIBLE | WS_TABSTOP | BS_TEXT, 505,424,100,24,hDlg,
 		(HMENU)IDC_BP_BUTTON,hInst,NULL );
 	if (hBPButton) {
 		SendMessage(hBPButton,WM_SETFONT,(WPARAM)GetStockObject(DEFAULT_GUI_FONT),0);
 	}
 		
 	hR4300iRegisters = CreateWindowEx(WS_EX_STATICEDGE,"BUTTON","R4300i &Registers...",
-		WS_CHILD | BS_PUSHBUTTON | WS_VISIBLE | WS_TABSTOP | BS_TEXT, 347,353,100,24,hDlg,
+		WS_CHILD | BS_PUSHBUTTON | WS_VISIBLE | WS_TABSTOP | BS_TEXT, 505,453,100,24,hDlg,
 		(HMENU)IDC_R4300I_REGISTERS_BUTTON,hInst,NULL );
 	if (hR4300iRegisters) {
 		SendMessage(hR4300iRegisters,WM_SETFONT, (WPARAM)GetStockObject(DEFAULT_GUI_FONT),0);
 	}
 
-	hRSPDebugger = CreateWindowEx(WS_EX_STATICEDGE,"BUTTON", "RSP &Debugger...", 
-		WS_CHILD | BS_PUSHBUTTON | WS_VISIBLE | WS_TABSTOP | BS_TEXT, 347,382,100,24,hDlg,
+	hRSPDebugger = CreateWindowEx(WS_EX_STATICEDGE,"BUTTON", "RSP &Debugger...",
+		WS_CHILD | BS_PUSHBUTTON | WS_VISIBLE | WS_TABSTOP | BS_TEXT, 505,482,100,24,hDlg,
 		(HMENU)IDCrsP_DEBUGGER_BUTTON,hInst,NULL );
 	if (hRSPDebugger) {
 		SendMessage(hRSPDebugger,WM_SETFONT,(WPARAM)GetStockObject(DEFAULT_GUI_FONT),0);
 	}
 
 	hRSPRegisters = CreateWindowEx(WS_EX_STATICEDGE,"BUTTON", "RSP R&egisters...",
-		WS_CHILD | BS_PUSHBUTTON | WS_VISIBLE | WS_TABSTOP | BS_TEXT, 347,411,100,24,hDlg,
+		WS_CHILD | BS_PUSHBUTTON | WS_VISIBLE | WS_TABSTOP | BS_TEXT, 505,511,100,24,hDlg,
 		(HMENU)IDCrsP_REGISTERS_BUTTON,hInst,NULL );
 	if (hRSPRegisters) {
 		SendMessage(hRSPRegisters,WM_SETFONT,(WPARAM)GetStockObject(DEFAULT_GUI_FONT),0);
 	} 
 
-	hMemory = CreateWindowEx(WS_EX_STATICEDGE,"BUTTON", "&Memory...", WS_CHILD | 
-		BS_PUSHBUTTON | WS_VISIBLE | WS_TABSTOP | BS_TEXT, 347,440,100,24,hDlg,
+	hMemory = CreateWindowEx(WS_EX_STATICEDGE,"BUTTON", "&Memory...", WS_CHILD |
+		BS_PUSHBUTTON | WS_VISIBLE | WS_TABSTOP | BS_TEXT, 505,540,100,24,hDlg,
 		(HMENU)IDC_MEMORY_BUTTON,hInst,NULL );
 	if (hMemory) {
 		SendMessage(hMemory,WM_SETFONT,(WPARAM)GetStockObject(DEFAULT_GUI_FONT),0);
 	}
 	
-	hScrlBar = CreateWindowEx(WS_EX_STATICEDGE, "SCROLLBAR","", WS_CHILD | WS_VISIBLE | 
-		WS_TABSTOP | SBS_VERT, 318,14,18,439, hDlg, (HMENU)IDC_SCRL_BAR, hInst, NULL );
+	hScrlBar = CreateWindowEx(0, "SCROLLBAR","", WS_CHILD | WS_VISIBLE |
+		WS_TABSTOP | SBS_VERT, 476,14,18,539, hDlg, (HMENU)IDC_SCRL_BAR, hInst, NULL );
+	if (hScrlBar) {
+		SetWindowSubclass(hScrlBar, R4300i_Commands_ListViewScroll_Proc, 0, 0);
+	}
 
 	if ( RomFileSize != 0 ) {
 		Enable_R4300i_Commands_Window();
@@ -891,16 +1129,16 @@ char * R4300iCop1Name ( DWORD OpCode, DWORD PC ) {
 	case R4300i_COP1_BC:
 		switch (command.FP.ft) {
 		case R4300i_COP1_BC_BCF:
-			sprintf(CommandName,"BC1F\t%s", LabelName(PC + ((short)command.BRANCH.offset << 2) + 4));
+			sprintf(CommandName,"bc1f\t%s", LabelName(PC + ((short)command.BRANCH.offset << 2) + 4));
 			break;
 		case R4300i_COP1_BC_BCT:
-			sprintf(CommandName,"BC1T\t%s", LabelName(PC + ((short)command.BRANCH.offset << 2) + 4));
+			sprintf(CommandName,"bc1t\t%s", LabelName(PC + ((short)command.BRANCH.offset << 2) + 4));
 			break;
 		case R4300i_COP1_BC_BCFL:
-			sprintf(CommandName,"BC1FL\t%s", LabelName(PC + ((short)command.BRANCH.offset << 2) + 4));
+			sprintf(CommandName,"bc1fl\t%s", LabelName(PC + ((short)command.BRANCH.offset << 2) + 4));
 			break;
 		case R4300i_COP1_BC_BCTL:
-			sprintf(CommandName,"BC1TL\t%s", LabelName(PC + ((short)command.BRANCH.offset << 2) + 4));
+			sprintf(CommandName,"bc1tl\t%s", LabelName(PC + ((short)command.BRANCH.offset << 2) + 4));
 			break;
 		default:
 			sprintf(CommandName,"Unknown Cop1\t%02X %02X %02X %02X",
@@ -913,151 +1151,151 @@ char * R4300iCop1Name ( DWORD OpCode, DWORD PC ) {
 	case R4300i_COP1_L:
 		switch (command.REG.funct) {			
 		case R4300i_COP1_FUNCT_ADD:
-			sprintf(CommandName,"ADD.%s\t%s, %s, %s",FPR_Type(command.FP.fmt),  
+			sprintf(CommandName,"add.%s\t%s, %s, %s",FPR_Type(command.FP.fmt),  
 				FPR_Name[command.FP.fd], FPR_Name[command.FP.fs], 
 				FPR_Name[command.FP.ft]);
 			break;
 		case R4300i_COP1_FUNCT_SUB:
-			sprintf(CommandName,"SUB.%s\t%s, %s, %s",FPR_Type(command.FP.fmt),  
+			sprintf(CommandName,"sub.%s\t%s, %s, %s",FPR_Type(command.FP.fmt),  
 				FPR_Name[command.FP.fd], FPR_Name[command.FP.fs], 
 				FPR_Name[command.FP.ft]);
 			break;
 		case R4300i_COP1_FUNCT_MUL:
-			sprintf(CommandName,"MUL.%s\t%s, %s, %s",FPR_Type(command.FP.fmt),  
+			sprintf(CommandName,"mul.%s\t%s, %s, %s",FPR_Type(command.FP.fmt),  
 				FPR_Name[command.FP.fd], FPR_Name[command.FP.fs], 
 				FPR_Name[command.FP.ft]);
 			break;
 		case R4300i_COP1_FUNCT_DIV:
-			sprintf(CommandName,"DIV.%s\t%s, %s, %s",FPR_Type(command.FP.fmt),  
+			sprintf(CommandName,"div.%s\t%s, %s, %s",FPR_Type(command.FP.fmt),  
 				FPR_Name[command.FP.fd], FPR_Name[command.FP.fs], 
 				FPR_Name[command.FP.ft]);
 			break;
 		case R4300i_COP1_FUNCT_SQRT:
-			sprintf(CommandName,"SQRT.%s\t%s, %s",FPR_Type(command.FP.fmt),  
+			sprintf(CommandName,"sqrt.%s\t%s, %s",FPR_Type(command.FP.fmt),  
 				FPR_Name[command.FP.fd], FPR_Name[command.FP.fs]);
 			break;
 		case R4300i_COP1_FUNCT_ABS:
-			sprintf(CommandName,"ABS.%s\t%s, %s",FPR_Type(command.FP.fmt),  
+			sprintf(CommandName,"abs.%s\t%s, %s",FPR_Type(command.FP.fmt),  
 				FPR_Name[command.FP.fd], FPR_Name[command.FP.fs]);
 			break;
 		case R4300i_COP1_FUNCT_MOV:
-			sprintf(CommandName,"MOV.%s\t%s, %s",FPR_Type(command.FP.fmt),  
+			sprintf(CommandName,"mov.%s\t%s, %s",FPR_Type(command.FP.fmt),  
 				FPR_Name[command.FP.fd], FPR_Name[command.FP.fs]);
 			break;
 		case R4300i_COP1_FUNCT_NEG:
-			sprintf(CommandName,"NEG.%s\t%s, %s",FPR_Type(command.FP.fmt),  
+			sprintf(CommandName,"neg.%s\t%s, %s",FPR_Type(command.FP.fmt),  
 				FPR_Name[command.FP.fd], FPR_Name[command.FP.fs]);
 			break;
 		case R4300i_COP1_FUNCT_ROUND_L:
-			sprintf(CommandName,"ROUND.L.%s\t%s, %s",FPR_Type(command.FP.fmt),  
+			sprintf(CommandName,"round.l.%s\t%s, %s",FPR_Type(command.FP.fmt),  
 				FPR_Name[command.FP.fd], FPR_Name[command.FP.fs]);
 			break;
 		case R4300i_COP1_FUNCT_TRUNC_L:
-			sprintf(CommandName,"TRUNC.L.%s\t%s, %s",FPR_Type(command.FP.fmt),  
+			sprintf(CommandName,"trunc.l.%s\t%s, %s",FPR_Type(command.FP.fmt),  
 				FPR_Name[command.FP.fd], FPR_Name[command.FP.fs]);
 			break;
 		case R4300i_COP1_FUNCT_CEIL_L:
-			sprintf(CommandName,"CEIL.L.%s\t%s, %s",FPR_Type(command.FP.fmt),  
+			sprintf(CommandName,"ceil.l.%s\t%s, %s",FPR_Type(command.FP.fmt),  
 				FPR_Name[command.FP.fd], FPR_Name[command.FP.fs]);
 			break;
 		case R4300i_COP1_FUNCT_FLOOR_L:
-			sprintf(CommandName,"FLOOR.L.%s\t%s, %s",FPR_Type(command.FP.fmt),  
+			sprintf(CommandName,"floor.l.%s\t%s, %s",FPR_Type(command.FP.fmt),  
 				FPR_Name[command.FP.fd], FPR_Name[command.FP.fs]);
 			break;
 		case R4300i_COP1_FUNCT_ROUND_W:
-			sprintf(CommandName,"ROUND.W.%s\t%s, %s",FPR_Type(command.FP.fmt),  
+			sprintf(CommandName,"round.w.%s\t%s, %s",FPR_Type(command.FP.fmt),  
 				FPR_Name[command.FP.fd], FPR_Name[command.FP.fs]);
 			break;
 		case R4300i_COP1_FUNCT_TRUNC_W:
-			sprintf(CommandName,"TRUNC.W.%s\t%s, %s",FPR_Type(command.FP.fmt),  
+			sprintf(CommandName,"trunc.w.%s\t%s, %s",FPR_Type(command.FP.fmt),  
 				FPR_Name[command.FP.fd], FPR_Name[command.FP.fs]);
 			break;
 		case R4300i_COP1_FUNCT_CEIL_W:
-			sprintf(CommandName,"CEIL.W.%s\t%s, %s",FPR_Type(command.FP.fmt),  
+			sprintf(CommandName,"ceil.w.%s\t%s, %s",FPR_Type(command.FP.fmt),  
 				FPR_Name[command.FP.fd], FPR_Name[command.FP.fs]);
 			break;
 		case R4300i_COP1_FUNCT_FLOOR_W:
-			sprintf(CommandName,"FLOOR.W.%s\t%s, %s",FPR_Type(command.FP.fmt),  
+			sprintf(CommandName,"floor.w.%s\t%s, %s",FPR_Type(command.FP.fmt),  
 				FPR_Name[command.FP.fd], FPR_Name[command.FP.fs]);
 			break;
 		case R4300i_COP1_FUNCT_CVT_S:
-			sprintf(CommandName,"CVT.S.%s\t%s, %s",FPR_Type(command.FP.fmt),  
+			sprintf(CommandName,"cvt.s.%s\t%s, %s",FPR_Type(command.FP.fmt),  
 				FPR_Name[command.FP.fd], FPR_Name[command.FP.fs]);
 			break;
 		case R4300i_COP1_FUNCT_CVT_D:
-			sprintf(CommandName,"CVT.D.%s\t%s, %s",FPR_Type(command.FP.fmt),  
+			sprintf(CommandName,"cvt.d.%s\t%s, %s",FPR_Type(command.FP.fmt),  
 				FPR_Name[command.FP.fd], FPR_Name[command.FP.fs]);
 			break;
 		case R4300i_COP1_FUNCT_CVT_W:
-			sprintf(CommandName,"CVT.W.%s\t%s, %s",FPR_Type(command.FP.fmt),  
+			sprintf(CommandName,"cvt.w.%s\t%s, %s",FPR_Type(command.FP.fmt),  
 				FPR_Name[command.FP.fd], FPR_Name[command.FP.fs]);
 			break;
 		case R4300i_COP1_FUNCT_CVT_L:
-			sprintf(CommandName,"CVT.L.%s\t%s, %s",FPR_Type(command.FP.fmt),  
+			sprintf(CommandName,"cvt.l.%s\t%s, %s",FPR_Type(command.FP.fmt),  
 				FPR_Name[command.FP.fd], FPR_Name[command.FP.fs]);
 			break;
 		case R4300i_COP1_FUNCT_C_F:
-			sprintf(CommandName,"C.F.%s\t%s, %s",FPR_Type(command.FP.fmt),  
+			sprintf(CommandName,"c.f.%s\t%s, %s",FPR_Type(command.FP.fmt),  
 				FPR_Name[command.FP.fs], FPR_Name[command.FP.ft]);
 			break;
 		case R4300i_COP1_FUNCT_C_UN:
-			sprintf(CommandName,"C.UN.%s\t%s, %s",FPR_Type(command.FP.fmt),  
+			sprintf(CommandName,"c.un.%s\t%s, %s",FPR_Type(command.FP.fmt),  
 				FPR_Name[command.FP.fs], FPR_Name[command.FP.ft]);
 			break;
 		case R4300i_COP1_FUNCT_C_EQ:
-			sprintf(CommandName,"C.EQ.%s\t%s, %s",FPR_Type(command.FP.fmt),  
+			sprintf(CommandName,"c.eq.%s\t%s, %s",FPR_Type(command.FP.fmt),  
 				FPR_Name[command.FP.fs], FPR_Name[command.FP.ft]);
 			break;
 		case R4300i_COP1_FUNCT_C_UEQ:
-			sprintf(CommandName,"C.UEQ.%s\t%s, %s",FPR_Type(command.FP.fmt),  
+			sprintf(CommandName,"c.ueq.%s\t%s, %s",FPR_Type(command.FP.fmt),  
 				FPR_Name[command.FP.fs], FPR_Name[command.FP.ft]);
 			break;
 		case R4300i_COP1_FUNCT_C_OLT:
-			sprintf(CommandName,"C.OLT.%s\t%s, %s",FPR_Type(command.FP.fmt),  
+			sprintf(CommandName,"c.olt.%s\t%s, %s",FPR_Type(command.FP.fmt),  
 				FPR_Name[command.FP.fs], FPR_Name[command.FP.ft]);
 			break;
 		case R4300i_COP1_FUNCT_C_ULT:
-			sprintf(CommandName,"C.ULT.%s\t%s, %s",FPR_Type(command.FP.fmt),  
+			sprintf(CommandName,"c.ult.%s\t%s, %s",FPR_Type(command.FP.fmt),  
 				FPR_Name[command.FP.fs], FPR_Name[command.FP.ft]);
 			break;
 		case R4300i_COP1_FUNCT_C_OLE:
-			sprintf(CommandName,"C.OLE.%s\t%s, %s",FPR_Type(command.FP.fmt),  
+			sprintf(CommandName,"c.ole.%s\t%s, %s",FPR_Type(command.FP.fmt),  
 				FPR_Name[command.FP.fs], FPR_Name[command.FP.ft]);
 			break;
 		case R4300i_COP1_FUNCT_C_ULE:
-			sprintf(CommandName,"C.ULE.%s\t%s, %s",FPR_Type(command.FP.fmt),  
+			sprintf(CommandName,"c.ule.%s\t%s, %s",FPR_Type(command.FP.fmt),  
 				FPR_Name[command.FP.fs], FPR_Name[command.FP.ft]);
 			break;
 		case R4300i_COP1_FUNCT_C_SF:
-			sprintf(CommandName,"C.SF.%s\t%s, %s",FPR_Type(command.FP.fmt),  
+			sprintf(CommandName,"c.sf.%s\t%s, %s",FPR_Type(command.FP.fmt),  
 				FPR_Name[command.FP.fs], FPR_Name[command.FP.ft]);
 			break;
 		case R4300i_COP1_FUNCT_C_NGLE:
-			sprintf(CommandName,"C.NGLE.%s\t%s, %s",FPR_Type(command.FP.fmt),  
+			sprintf(CommandName,"c.ngle.%s\t%s, %s",FPR_Type(command.FP.fmt),  
 				FPR_Name[command.FP.fs], FPR_Name[command.FP.ft]);
 			break;
 		case R4300i_COP1_FUNCT_C_SEQ:
-			sprintf(CommandName,"C.SEQ.%s\t%s, %s",FPR_Type(command.FP.fmt),  
+			sprintf(CommandName,"c.seq.%s\t%s, %s",FPR_Type(command.FP.fmt),  
 				FPR_Name[command.FP.fs], FPR_Name[command.FP.ft]);
 			break;
 		case R4300i_COP1_FUNCT_C_NGL:
-			sprintf(CommandName,"C.NGL.%s\t%s, %s",FPR_Type(command.FP.fmt),  
+			sprintf(CommandName,"c.ngl.%s\t%s, %s",FPR_Type(command.FP.fmt),  
 				FPR_Name[command.FP.fs], FPR_Name[command.FP.ft]);
 			break;
 		case R4300i_COP1_FUNCT_C_LT:
-			sprintf(CommandName,"C.LT.%s\t%s, %s",FPR_Type(command.FP.fmt),  
+			sprintf(CommandName,"c.lt.%s\t%s, %s",FPR_Type(command.FP.fmt),  
 				FPR_Name[command.FP.fs], FPR_Name[command.FP.ft]);
 			break;
 		case R4300i_COP1_FUNCT_C_NGE:
-			sprintf(CommandName,"C.NGE.%s\t%s, %s",FPR_Type(command.FP.fmt),  
+			sprintf(CommandName,"c.nge.%s\t%s, %s",FPR_Type(command.FP.fmt),  
 				FPR_Name[command.FP.fs], FPR_Name[command.FP.ft]);
 			break;
 		case R4300i_COP1_FUNCT_C_LE:
-			sprintf(CommandName,"C.LE.%s\t%s, %s",FPR_Type(command.FP.fmt),  
+			sprintf(CommandName,"c.le.%s\t%s, %s",FPR_Type(command.FP.fmt),  
 				FPR_Name[command.FP.fs], FPR_Name[command.FP.ft]);
 			break;
 		case R4300i_COP1_FUNCT_C_NGT:
-			sprintf(CommandName,"C.NGT.%s\t%s, %s",FPR_Type(command.FP.fmt),  
+			sprintf(CommandName,"c.ngt.%s\t%s, %s",FPR_Type(command.FP.fmt),  
 				FPR_Name[command.FP.fs], FPR_Name[command.FP.ft]);
 			break;
 		default:
@@ -1287,7 +1525,7 @@ char * R4300iOpcodeName ( DWORD OpCode, DWORD PC ) {
 }
 
 void RefreshR4300iCommands ( void ) {
-	DWORD location, LinesUsed;
+	DWORD location, max_location, LinesUsed = 1;
 	char AsciiAddress[20];
 	int count;
 
@@ -1296,9 +1534,10 @@ void RefreshR4300iCommands ( void ) {
 	GetWindowText(hAddress,AsciiAddress,sizeof(AsciiAddress));
 	location = AsciiToHex(AsciiAddress) & ~3;
 
-	if (location > 0xFFFFFF88) { location = 0xFFFFFF88; }
+	max_location = UINT_MAX - R4300i_MaxCommandLines * 4 + 1;
+	if (location > max_location) { location = max_location; }
 	for (count = 0 ; count < R4300i_MaxCommandLines; count += LinesUsed ){
-		LinesUsed = DisplayR4300iCommand ( location, count );
+		LinesUsed = DisplayR4300iCommand(location, count);
 		location += 4;
 	}
 }
@@ -1338,7 +1577,7 @@ void SetR4300iCommandViewto ( UINT NewLocation ) {
 	GetWindowText(hAddress,Value,sizeof(Value));
 	location = AsciiToHex(Value) & ~3;
 
-	if ( NewLocation < location || NewLocation >= location + 120 ) {
+	if ( NewLocation < location || NewLocation >= location + R4300i_MaxCommandLines * 4 ) {
 		sprintf(Value,"%08X",NewLocation);
 		SetWindowText(hAddress,Value);
 	} else {
@@ -1351,18 +1590,18 @@ void Update_r4300iCommandList (void) {
 	
 	if (NoOfMapEntries == 0) {
 		ShowWindow(hFunctionlist, FALSE);
-		SetWindowPos(hGoButton,0,347,56,0,0, SWP_NOZORDER | SWP_NOSIZE| SWP_SHOWWINDOW);
-		SetWindowPos(hBreakButton,0,347,85,0,0, SWP_NOZORDER | SWP_NOSIZE| SWP_SHOWWINDOW);
-		SetWindowPos(hStepButton,0,347,114,0,0, SWP_NOZORDER | SWP_NOSIZE| SWP_SHOWWINDOW);
-		SetWindowPos(hSkipButton,0,347,143,0,0, SWP_NOZORDER | SWP_NOSIZE| SWP_SHOWWINDOW);
+		SetWindowPos(hGoButton,0,505,56,0,0, SWP_NOZORDER | SWP_NOSIZE| SWP_SHOWWINDOW);
+		SetWindowPos(hBreakButton,0,505,85,0,0, SWP_NOZORDER | SWP_NOSIZE| SWP_SHOWWINDOW);
+		SetWindowPos(hStepButton,0,505,114,0,0, SWP_NOZORDER | SWP_NOSIZE| SWP_SHOWWINDOW);
+		SetWindowPos(hSkipButton,0,505,143,0,0, SWP_NOZORDER | SWP_NOSIZE| SWP_SHOWWINDOW);
 	} else {	
 		DWORD count, pos;
 
 		ShowWindow(hFunctionlist, TRUE);
-		SetWindowPos(hGoButton,0,347,86,0,0, SWP_NOZORDER | SWP_NOSIZE| SWP_SHOWWINDOW);
-		SetWindowPos(hBreakButton,0,347,115,0,0, SWP_NOZORDER | SWP_NOSIZE| SWP_SHOWWINDOW);
-		SetWindowPos(hStepButton,0,347,144,0,0, SWP_NOZORDER | SWP_NOSIZE| SWP_SHOWWINDOW);
-		SetWindowPos(hSkipButton,0,347,173,0,0, SWP_NOZORDER | SWP_NOSIZE| SWP_SHOWWINDOW);
+		SetWindowPos(hGoButton,0,505,86,0,0, SWP_NOZORDER | SWP_NOSIZE| SWP_SHOWWINDOW);
+		SetWindowPos(hBreakButton,0,505,115,0,0, SWP_NOZORDER | SWP_NOSIZE| SWP_SHOWWINDOW);
+		SetWindowPos(hStepButton,0,505,144,0,0, SWP_NOZORDER | SWP_NOSIZE| SWP_SHOWWINDOW);
+		SetWindowPos(hSkipButton,0,505,173,0,0, SWP_NOZORDER | SWP_NOSIZE| SWP_SHOWWINDOW);
 		
 		SendMessage(hFunctionlist,CB_RESETCONTENT,(WPARAM)0,(LPARAM)0);		
 		for (count = 0; count < NoOfMapEntries; count ++ ) {

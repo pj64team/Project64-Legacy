@@ -744,7 +744,7 @@ void __cdecl StartInterpreterCPU (void ) {
 		for (;;) {
 			if (HaveDebugger) {
 				if (NoOfBpoints != 0 && CheckForR4300iBPoint(PROGRAM_COUNTER)) {
-					TriggerDebugger(FALSE);
+					TriggerDebugger();
 				}
 
 				if (CPU_Action.Stepping) {
