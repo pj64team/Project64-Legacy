@@ -70,6 +70,7 @@ char * GS               ( int StringID );
 	#define MENU_CHEAT			130
 	#define MENU_GS_BUTTON		131
 	#define MENU_RESUME			132
+	#define MENU_CHEATSEARCH	133
 
 #define MENU_OPTIONS			140
 	#define MENU_FULL_SCREEN	141
