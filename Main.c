@@ -413,7 +413,7 @@ void FixMenuLang(HMENU hMenu) {
 	MenuSetText(hSubMenu, 9, GS(MENU_LOAD), "Ctrl+L");
 	MenuSetText(hSubMenu, 11, GS(MENU_CURRENT_SAVE), NULL);
 	MenuSetText(hSubMenu, 13, GS(MENU_CHEAT), "Ctrl+C");
-	// TODO Witten: Translate Cheat Search
+	MenuSetText(hSubMenu, 14, GS(MENU_CHEATSEARCH), "Ctrl+R");
 	MenuSetText(hSubMenu, 15, GS(MENU_GS_BUTTON), "F9");
 
 	//Options
