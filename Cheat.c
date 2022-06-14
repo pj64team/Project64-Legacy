@@ -1618,6 +1618,7 @@ void ManageCheats(HWND hParent) {
 	if (hManageWindow != NULL) {
 		SetForegroundWindow(hManageWindow);
 		RefreshCheatManager();
+		ShowWindow(hManageWindow, SW_RESTORE);
 		return;
 	}
 	/*if (hParent) {
@@ -1638,6 +1639,16 @@ void ManageCheats(HWND hParent) {
 	hManageWindow = CreateWindowEx(NULL, "PJ64.Cheats", GS(CHEAT_TITLE), Style, X, Y, WindowWidth, WindowHeight, hParent, NULL, hInst, NULL);
 	RefreshCheatManager();
 	ShowWindow(hManageWindow, SW_SHOW);
+	SetWindowPos(hManageWindow,       // handle to window
+		HWND_TOPMOST,  // placement-order handle
+		X,     // horizontal position
+		Y,      // vertical position
+		WindowWidth,  // width
+		WindowHeight, // height
+		SWP_SHOWWINDOW // window-positioning options
+	);
+
+	while (ShowCursor(TRUE) < 0);
 	if (hParent) {
 		MSG msg;
 		EnableWindow(hParent, FALSE);
@@ -1653,6 +1664,7 @@ void ManageCheats(HWND hParent) {
 			DispatchMessage(&msg);
 		}
 		EnableWindow(hParent, TRUE);
+		ShowCursor(!inFullScreen);
 		SetFocus(hParent);
 	}
 }
