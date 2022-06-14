@@ -1635,7 +1635,7 @@ void ManageCheats(HWND hParent) {
 		X = (GetSystemMetrics(SM_CXSCREEN) - WindowWidth) / 2;
 		Y = (GetSystemMetrics(SM_CYSCREEN) - WindowHeight) / 2;
 	}
-	Style = hParent ? WS_SIZEBOX | WS_SYSMENU : WS_SIZEBOX | WS_SYSMENU | WS_MINIMIZEBOX;
+	Style = hParent ? WS_SIZEBOX | WS_SYSMENU | WS_MINIMIZEBOX : WS_SIZEBOX | WS_SYSMENU | WS_MINIMIZEBOX;
 	hManageWindow = CreateWindowEx(NULL, "PJ64.Cheats", GS(CHEAT_TITLE), Style, X, Y, WindowWidth, WindowHeight, hParent, NULL, hInst, NULL);
 	RefreshCheatManager();
 	ShowWindow(hManageWindow, SW_SHOW);

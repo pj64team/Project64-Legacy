@@ -1346,7 +1346,7 @@ LRESULT CALLBACK Main_Proc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
 					break;
 
 				case ID_OPTIONS_CHEATS:
-					ManageCheats(hWnd);
+					ManageCheats(NULL);
 					break;
 
 				case ID_OPTIONS_SHOWCPUUSAGE:
