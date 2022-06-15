@@ -59,13 +59,12 @@ const COLORREF TC_DEC			= RGB(180, 0, 0); // Value decreased
 const COLORREF TC_READ			= RGB(0, 0, 255); // Address has read watchpoint
 const COLORREF TC_WRITE			= RGB(255, 0, 255); // Address has write watchpoint
 const COLORREF TC_READ_WRITE	= RGB(128, 0, 255); // Address has read/write watchpoint
-const COLORREF TC_DEFAULT		= RGB(0, 0, 0); // Default text color
 
 const COLORREF BG_EVEN			= RGB(240, 240, 240);
 const COLORREF BG_ODD			= RGB(230, 230, 230);
-const COLORREF BG_DEFAULT		= RGB(255, 255, 255);
 
 static HWND Memory_Win_hDlg, hAddrEdit, hVAddr, hPAddr, hRefresh, hList, hScrlBar;
+static HBRUSH hBkEven, hBkOdd;
 static HFONT hWatchFont;
 static HANDLE hRefreshThread = NULL;
 static HANDLE hRefreshMutex = NULL;
@@ -77,10 +76,21 @@ static struct MEMORY_VIEW_ROW MemoryViewRows[16];
 void __cdecl Create_Memory_Window ( int Child ) {
 	DWORD ThreadID;
 	if ( Child ) {
+		hBkEven = CreateSolidBrush(BG_EVEN);
+		hBkOdd = CreateSolidBrush(BG_ODD);
+
+		LOGFONT lf;
+		GetObject(GetStockObject(ANSI_FIXED_FONT), sizeof(lf), &lf);
+		lf.lfUnderline = TRUE;
+		hWatchFont = CreateFontIndirect(&lf);
+
 		InMemoryWindow = TRUE;
 		DialogBox( hInst, "MEMORY", NULL,(DLGPROC) Memory_Window_Proc );
-		DeleteObject(hWatchFont);
 		InMemoryWindow = FALSE;
+
+		DeleteObject(hWatchFont);
+		DeleteObject(hBkOdd);
+		DeleteObject(hBkEven);
 	} else {
 		if (!InMemoryWindow) {
 			CreateThread(NULL,0,(LPTHREAD_START_ROUTINE)Create_Memory_Window,
@@ -105,7 +115,7 @@ void Update_Data_Column(struct MEMORY_VIEW_ROW* row, MIPS_WORD word, int index, 
 	} else if (ShowDiff && word.UB[3 - i] < row->OldData[index]) {
 		row->TextColors[index] = TC_DEC;
 	} else {
-		row->TextColors[index] = TC_DEFAULT;
+		row->TextColors[index] = GetSysColor(COLOR_WINDOWTEXT);
 	}
 
 	row->OldData[index] = word.UB[3 - i];
@@ -135,7 +145,7 @@ void Update_Data_Column_With_WatchPoint(struct MEMORY_VIEW_ROW* row, DWORD locat
 		} else if (ShowDiff && word.UB[3 - i] < row->OldData[index]) {
 			row->TextColors[index] = TC_DEC;
 		} else {
-			row->TextColors[index] = TC_DEFAULT;
+			row->TextColors[index] = GetSysColor(COLOR_WINDOWTEXT);
 		}
 		break;
 	}
@@ -296,6 +306,7 @@ LRESULT CALLBACK Memory_Window_Proc (HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM
 		}
 		case NM_CUSTOMDRAW: {
 			LPNMLVCUSTOMDRAW lplvcd = (LPNMLVCUSTOMDRAW)lParam;
+
 			switch (lplvcd->nmcd.dwDrawStage) {
 			case CDDS_PREPAINT:
 				SetWindowLong(hDlg, DWL_MSGRESULT, CDRF_NOTIFYITEMDRAW);
@@ -303,38 +314,55 @@ LRESULT CALLBACK Memory_Window_Proc (HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM
 			case CDDS_ITEMPREPAINT:
 				SetWindowLong(hDlg, DWL_MSGRESULT, CDRF_NOTIFYSUBITEMDRAW);
 				return TRUE;
-			case CDDS_ITEMPREPAINT | CDDS_SUBITEM:
-				if (lplvcd->iSubItem >= 1 && lplvcd->iSubItem < 17) {
+			case CDDS_ITEMPREPAINT | CDDS_SUBITEM: {
+				struct MEMORY_VIEW_ROW* row = &MemoryViewRows[lplvcd->nmcd.dwItemSpec];
+
+				switch (lplvcd->iSubItem) {
+				case 0:
+					// Address column
+					SetWindowLong(hDlg, DWL_MSGRESULT, CDRF_DODEFAULT);
+					break;
+				case 17:
+					// ASCII column
+					SetTextColor(lplvcd->nmcd.hdc, GetSysColor(COLOR_WINDOWTEXT));
+					SetBkColor(lplvcd->nmcd.hdc, GetSysColor(COLOR_WINDOW));
+
+					DrawText(lplvcd->nmcd.hdc, row->AsciiStr, strlen(row->AsciiStr), &lplvcd->nmcd.rc, DT_SINGLELINE | DT_CENTER | DT_VCENTER);
+
+					SetWindowLong(hDlg, DWL_MSGRESULT, CDRF_SKIPDEFAULT);
+					break;
+				default: {
+					// Hex columns
 					int index = lplvcd->iSubItem - 1;
-					struct MEMORY_VIEW_ROW* row = &MemoryViewRows[lplvcd->nmcd.dwItemSpec];
 
 					SelectObject(lplvcd->nmcd.hdc, row->Fonts[index]);
-					lplvcd->clrText = row->TextColors[index];
+					SetTextColor(lplvcd->nmcd.hdc, row->TextColors[index]);
 
 					if (index & 1) {
-						lplvcd->clrTextBk = BG_ODD;
+						SetBkColor(lplvcd->nmcd.hdc, BG_ODD);
+						FillRect(lplvcd->nmcd.hdc, &lplvcd->nmcd.rc, hBkOdd);
 					} else {
-						lplvcd->clrTextBk = BG_EVEN;
+						SetBkColor(lplvcd->nmcd.hdc, BG_EVEN);
+						FillRect(lplvcd->nmcd.hdc, &lplvcd->nmcd.rc, hBkEven);
 					}
-				} else {
-					SelectObject(lplvcd->nmcd.hdc, GetStockObject(ANSI_FIXED_FONT));
-					lplvcd->clrText = TC_DEFAULT;
-					lplvcd->clrTextBk = BG_DEFAULT;
-				}
-				SetWindowLong(hDlg, DWL_MSGRESULT, CDRF_NEWFONT | CDRF_NOTIFYPOSTPAINT);
-				return TRUE;
-			case CDDS_ITEMPOSTPAINT | CDDS_SUBITEM:
-				if (lplvcd->iSubItem >= 1 && lplvcd->iSubItem < 13 && (lplvcd->iSubItem - 1) % 4 == 3) {
-					int x = (lplvcd->iSubItem - 1) * 28 + 117;
-					int y = lplvcd->nmcd.dwItemSpec * 17 + 24;
 
-					rcBox.left = x;
-					rcBox.top = y;
-					rcBox.right = x + 1;
-					rcBox.bottom = y + 17;
-					FillRect(lplvcd->nmcd.hdc, &rcBox, (HBRUSH)GetStockObject(GRAY_BRUSH));
+					char* str = row->HexStr[index];
+					DrawText(lplvcd->nmcd.hdc, str, strlen(str), &lplvcd->nmcd.rc, DT_SINGLELINE | DT_CENTER | DT_VCENTER);
+
+					if (index % 4 == 3 && index < 15) {
+						// Draw vertical separators on word boundaries
+						rcBox.left = lplvcd->nmcd.rc.right - 1;
+						rcBox.top = lplvcd->nmcd.rc.top;
+						rcBox.right = lplvcd->nmcd.rc.right;
+						rcBox.bottom = lplvcd->nmcd.rc.bottom;
+						FillRect(lplvcd->nmcd.hdc, &rcBox, (HBRUSH)GetStockObject(GRAY_BRUSH));
+					}
+					SetWindowLong(hDlg, DWL_MSGRESULT, CDRF_SKIPDEFAULT);
+					break;
+				}
 				}
 				return TRUE;
+			}
 			default:
 				SetWindowLong(hDlg, DWL_MSGRESULT, CDRF_DODEFAULT);
 				return TRUE;
@@ -591,11 +619,6 @@ void Setup_Memory_Window (HWND hDlg) {
 		SetScrollInfo(hScrlBar,SB_CTL,&si,TRUE);
 		SetWindowSubclass(hScrlBar, Memory_ListViewScroll_Proc, 0, 0);
 	} 
-	
-	LOGFONT lf;
-	GetObject(GetStockObject(ANSI_FIXED_FONT), sizeof(lf), &lf);
-	lf.lfUnderline = TRUE;
-	hWatchFont = CreateFontIndirect(&lf);
 
 	if ( !GetStoredWinPos( "Memory", &X, &Y ) ) {
 		X = (GetSystemMetrics( SM_CXSCREEN ) - WindowWidth) / 2;
