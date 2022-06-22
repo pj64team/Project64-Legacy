@@ -25,6 +25,7 @@
  */
 
 #include <windows.h>
+#include <windowsx.h>
 #include <commctrl.h>
 #include <stdio.h>
 #include "main.h"
@@ -42,6 +43,7 @@ void Setup_Memory_Window (HWND hDlg);
 void Start_Auto_Refresh_Thread(void);
 void Scroll_Memory_View(int lines);
 void Refresh_Memory_With_Diff(BOOL ShowDiff);
+void Clear_Selection(void);
 
 LRESULT CALLBACK Memory_Window_Proc (HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam);
 
@@ -49,9 +51,19 @@ struct MEMORY_VIEW_ROW {
 	unsigned char OldData[16];
 	COLORREF TextColors[16];
 	HFONT Fonts[16];
+	DWORD Location;
 	char LocationStr[11];
 	char HexStr[16][3];
 	char AsciiStr[17];
+};
+
+struct SELECTION {
+	BOOL enabled;
+	BOOL dragging;
+	BOOL column_hex;
+	DWORD anchor;
+	DWORD range[2];
+	DWORD range_cmp[2];
 };
 
 const COLORREF TC_INC			= RGB(0, 180, 0); // Value increased
@@ -72,6 +84,7 @@ static int InMemoryWindow = FALSE;
 static int wheel = 0;
 static int thumb = -1;
 static struct MEMORY_VIEW_ROW MemoryViewRows[16];
+static struct SELECTION selection = { 0 };
 
 void __cdecl Create_Memory_Window ( int Child ) {
 	DWORD ThreadID;
@@ -159,6 +172,7 @@ void Insert_MemoryLineDump (unsigned int location, int InsertPos, BOOL ShowDiff)
 
 	location <<= 4;
 
+	row->Location = location;
 	sprintf(row->LocationStr, "0x%08X", location);
 
 	__try {
@@ -266,12 +280,18 @@ LRESULT CALLBACK Memory_Window_Proc (HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM
 			Refresh_Memory_With_Diff(FALSE);
 			break;
 		case IDCANCEL:
-			EndDialog( hDlg, IDCANCEL );
+			Clear_Selection();
 			break;
 		default:
 			break;
 		}
 		return FALSE;
+	case WM_SYSCOMMAND:
+		if (wParam == SC_CLOSE) {
+			EndDialog(hDlg, TRUE);
+			return TRUE;
+		}
+		break;
 	case WM_NOTIFY:
 		switch (((LPNMHDR)lParam)->code) {
 		case HDN_BEGINTRACK:
@@ -324,6 +344,7 @@ LRESULT CALLBACK Memory_Window_Proc (HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM
 					break;
 				case 17:
 					// ASCII column
+					// TODO: Selection colors
 					SetTextColor(lplvcd->nmcd.hdc, GetSysColor(COLOR_WINDOWTEXT));
 					SetBkColor(lplvcd->nmcd.hdc, GetSysColor(COLOR_WINDOW));
 
@@ -334,23 +355,27 @@ LRESULT CALLBACK Memory_Window_Proc (HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM
 				default: {
 					// Hex columns
 					int index = lplvcd->iSubItem - 1;
+					DWORD location = row->Location + index;
 
 					SelectObject(lplvcd->nmcd.hdc, row->Fonts[index]);
-					SetTextColor(lplvcd->nmcd.hdc, row->TextColors[index]);
-
-					if (index & 1) {
-						SetBkColor(lplvcd->nmcd.hdc, BG_ODD);
-						FillRect(lplvcd->nmcd.hdc, &lplvcd->nmcd.rc, hBkOdd);
+					if (selection.enabled && (location >= selection.range[0] && location <= selection.range[1])) {
+						SetTextColor(lplvcd->nmcd.hdc, GetSysColor(COLOR_HIGHLIGHTTEXT));
+						FillRect(lplvcd->nmcd.hdc, &lplvcd->nmcd.rc, GetSysColorBrush(COLOR_HIGHLIGHT));
 					} else {
-						SetBkColor(lplvcd->nmcd.hdc, BG_EVEN);
-						FillRect(lplvcd->nmcd.hdc, &lplvcd->nmcd.rc, hBkEven);
+						SetTextColor(lplvcd->nmcd.hdc, row->TextColors[index]);
+
+						if (index & 1) {
+							FillRect(lplvcd->nmcd.hdc, &lplvcd->nmcd.rc, hBkOdd);
+						} else {
+							FillRect(lplvcd->nmcd.hdc, &lplvcd->nmcd.rc, hBkEven);
+						}
 					}
 
 					char* str = row->HexStr[index];
 					DrawText(lplvcd->nmcd.hdc, str, strlen(str), &lplvcd->nmcd.rc, DT_SINGLELINE | DT_CENTER | DT_VCENTER);
 
-					if (index % 4 == 3 && index < 15) {
-						// Draw vertical separators on word boundaries
+					if (index % 4 == 3 && index < 15 && (!selection.enabled || location < selection.range[0] || location > selection.range[1])) {
+						// Draw vertical separators on word boundaries only when the byte is not selected
 						rcBox.left = lplvcd->nmcd.rc.right - 1;
 						rcBox.top = lplvcd->nmcd.rc.top;
 						rcBox.right = lplvcd->nmcd.rc.right;
@@ -445,11 +470,116 @@ LRESULT CALLBACK Memory_ListViewKeys_Proc(HWND hWnd, UINT uMsg, WPARAM wParam, L
 		default:
 			break;
 		}
+		break;
 	default:
 		break;
 	}
 
 	return DefSubclassProc(hWnd, uMsg, wParam, lParam);
+}
+
+LRESULT CALLBACK Memory_ListViewDrag_Proc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam, UINT_PTR uIdSubclass, DWORD_PTR dwRefData) {
+	switch (uMsg) {
+	case WM_LBUTTONDOWN: {
+		SetFocus(hWnd);
+
+		POINT pt = { LOWORD(lParam), HIWORD(lParam) };
+		LVHITTESTINFO hit_test;
+		hit_test.pt = pt;
+		ListView_SubItemHitTest(hWnd, &hit_test);
+
+		struct MEMORY_VIEW_ROW* row = &MemoryViewRows[hit_test.iItem];
+
+		if (hit_test.iSubItem == 17) {
+			// Clicking in ASCII column
+			// TODO
+			return FALSE;
+		} else if (hit_test.iSubItem > 0) {
+			// Clicking in hex columns
+			int index = hit_test.iSubItem - 1;
+			DWORD location = row->Location + index;
+
+			selection.enabled = TRUE;
+			selection.dragging = TRUE;
+			selection.column_hex = TRUE;
+
+			if (wParam & MK_SHIFT) {
+				// Shift-Click
+				selection.range[0] = min(location, selection.anchor);
+				selection.range[1] = max(location, selection.anchor);
+				memcpy(selection.range_cmp, selection.range, sizeof(selection.range_cmp));
+			} else {
+				// Click without Shift
+				selection.anchor = location;
+				selection.range[0] = location;
+				selection.range[1] = location;
+				selection.range_cmp[0] = location;
+				selection.range_cmp[1] = location;
+			}
+			return FALSE;
+		}
+		break;
+	}
+	case WM_LBUTTONUP:
+		selection.dragging = FALSE;
+		break;
+	case WM_MOUSEMOVE:
+		if (selection.dragging) {
+			POINT pt = { GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam) };
+			LVHITTESTINFO hit_test;
+			hit_test.pt = pt;
+			ListView_SubItemHitTest(hWnd, &hit_test);
+			struct MEMORY_VIEW_ROW* row = &MemoryViewRows[hit_test.iItem];
+
+			if (hit_test.iSubItem == 17 && selection.column_hex == FALSE) {
+				// Dragging in ASCII column
+				// TODO
+			} else if (hit_test.iSubItem > 0 && selection.column_hex == TRUE) {
+				// Dragging in hex columns
+				int index = hit_test.iSubItem - 1;
+				DWORD location = row->Location + index;
+
+				selection.range[0] = min(location, selection.anchor);
+				selection.range[1] = max(location, selection.anchor);
+
+				if (memcmp(selection.range, selection.range_cmp, sizeof(selection.range)) != 0) {
+					// TODO: Invalidate only the changed rect
+					InvalidateRect(hWnd, NULL, FALSE);
+
+					memcpy(selection.range_cmp, selection.range, sizeof(selection.range_cmp));
+					return FALSE;
+				}
+			}
+		}
+		break;
+	case WM_ACTIVATE:
+		if (selection.dragging && wParam == WA_INACTIVE) {
+			Clear_Selection();
+			return FALSE;
+		}
+		break;
+	case WM_KILLFOCUS:
+	case WM_RBUTTONDOWN:
+		if (selection.dragging) {
+			Clear_Selection();
+			return FALSE;
+		}
+	default:
+		break;
+	}
+
+	return DefSubclassProc(hWnd, uMsg, wParam, lParam);
+}
+
+void Clear_Selection(void) {
+	selection.enabled = FALSE;
+	selection.dragging = FALSE;
+	selection.column_hex = FALSE;
+	selection.anchor = 0;
+	selection.range[0] = 0;
+	selection.range[1] = 0;
+	selection.range_cmp[0] = 0;
+	selection.range_cmp[1] = 0;
 }
 
 void Scroll_Memory_View(int lines) {
@@ -555,7 +685,7 @@ void Setup_Memory_Window (HWND hDlg) {
 	Start_Auto_Refresh_Thread();
 
 	hList = CreateWindowEx(WS_EX_CLIENTEDGE, WC_LISTVIEW, "", WS_CHILD | WS_VISIBLE |
-		LVS_OWNERDATA | LVS_REPORT | LVS_NOSORTHEADER, 14,39,682,300,hDlg,
+		LVS_OWNERDATA | LVS_REPORT | LVS_NOSORTHEADER | LVS_SINGLESEL, 14,39,682,300,hDlg,
 		(HMENU)IDC_LIST_VIEW,hInst,NULL );
 	if (hList) {
 		ListView_SetExtendedListViewStyle(hList, LVS_EX_DOUBLEBUFFER);
@@ -591,6 +721,8 @@ void Setup_Memory_Window (HWND hDlg) {
 		}
 		SetWindowSubclass(hList, Memory_ListViewScroll_Proc, 0, 0);
 		SetWindowSubclass(hList, Memory_ListViewKeys_Proc, 0, 0);
+		SetWindowSubclass(hList, Memory_ListViewDrag_Proc, 0, 0);
+		Clear_Selection();
 	}
 
 	hAddrEdit = GetDlgItem(hDlg, IDC_ADDR_EDIT);
@@ -625,6 +757,6 @@ void Setup_Memory_Window (HWND hDlg) {
 		Y = (GetSystemMetrics( SM_CYSCREEN ) - WindowHeight) / 2;
 	}
 	
-	SetWindowPos(hDlg,NULL,X,Y,WindowWidth,WindowHeight, SWP_NOZORDER | SWP_SHOWWINDOW);		 
+	SetWindowPos(hDlg,NULL,X,Y,WindowWidth,WindowHeight, SWP_NOZORDER | SWP_SHOWWINDOW);
 	
 }
