@@ -1534,45 +1534,18 @@ void StopLiveUpdate() {
 
 // Value search
 BYTE Value_ReadByte(DWORD addr) {
-	switch (addr & 0x3) {
-		case 3:
-		case 2:
-			// Covers 2 3 6 7 A B E F
-			return *(BYTE*)(N64MEM + addr - 2);
-		default:
-			// Covers 0 1 4 5 8 9 C D
-			return *(BYTE*)(N64MEM + addr + 2);
-	}
+	return *(BYTE*)(N64MEM + (addr ^ 3));
 }
 
 // If memory contains DWORD W X Y Z we want to read WORD Z Y first and WORD X W second
 WORD Value_ReadWord(DWORD addr) {
-	// Covers 2 3 6 7 A B E F
-	if (addr & 0x3 || addr & 0x2) {
-		return ((WORD)(*(BYTE*)(N64MEM + addr - 1)) << 8) + *(BYTE*)(N64MEM + addr - 2);
-	}
-	// Covers 0 1 4 5 8 9 C D
-	else {
-		return ((WORD)(*(BYTE*)(N64MEM + addr + 3)) << 8) + *(BYTE*)(N64MEM + addr + 2);
-	}
+	addr ^= 3;
+	return ((WORD)(*(BYTE*)(N64MEM + addr)) << 8) + *(BYTE*)(N64MEM + addr - 1);
 }
 
 // Text search
 BYTE Text_ReadByte(DWORD addr) {
-	switch (addr & 0x3) {
-		case 3:
-			// Covers 3 6 B F
-			return *(BYTE*)(N64MEM + addr - 3);
-		case 2:
-			// Covers 2 5 A E
-			return *(BYTE*)(N64MEM + addr - 1);
-		case 1:
-			// Covers 1 5 9 D
-			return *(BYTE*)(N64MEM + addr + 1);
-		default:
-			// Covers 0 4 8 C
-			return *(BYTE*)(N64MEM + addr + 3);
-	}
+	return *(BYTE*)(N64MEM + (addr ^ 3));
 }
 
 LRESULT CheatSearchResults_FindItem(NMHDR* lParam) {
