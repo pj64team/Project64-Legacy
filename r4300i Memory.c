@@ -39,11 +39,16 @@
 #define IDC_SCRL_BAR		0x103
 #define IDC_REFRESH			0x104
 
+// TODO: Figure out if these can be queried instead of hardcoded
+#define PADDING 6
+#define CHAR_WIDTH 8
+
 void Setup_Memory_Window (HWND hDlg);
 void Start_Auto_Refresh_Thread(void);
 void Scroll_Memory_View(int lines);
 void Refresh_Memory_With_Diff(BOOL ShowDiff);
 void Clear_Selection(void);
+int Get_Ascii_Index(POINTS pt);
 
 LRESULT CALLBACK Memory_Window_Proc (HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam);
 
@@ -342,23 +347,100 @@ LRESULT CALLBACK Memory_Window_Proc (HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM
 					// Address column
 					SetWindowLong(hDlg, DWL_MSGRESULT, CDRF_DODEFAULT);
 					break;
-				case 17:
+				case 17: {
 					// ASCII column
-					// TODO: Selection colors
 					SetTextColor(lplvcd->nmcd.hdc, GetSysColor(COLOR_WINDOWTEXT));
-					SetBkColor(lplvcd->nmcd.hdc, GetSysColor(COLOR_WINDOW));
 
-					DrawText(lplvcd->nmcd.hdc, row->AsciiStr, strlen(row->AsciiStr), &lplvcd->nmcd.rc, DT_SINGLELINE | DT_CENTER | DT_VCENTER);
+					DWORD location_start = row->Location;
+					DWORD location_end = row->Location + 15;
+					if (selection.enabled && location_start <= selection.range[1] && location_end >= selection.range[0]) {
+						RECT rc = lplvcd->nmcd.rc;
+						rc.left += PADDING;
+						rc.right -= PADDING;
+
+						// Text has selection
+						//
+						// There are four possible configurations:
+						// 1. The entire line is selected (one DrawText call)
+						// 2. Only the beginning of the line is selected (two DrawText calls)
+						// 3. Only the end of the line is selected (two DrawText calls)
+						// 4. Only the middle of the line is selected (three DrawText calls)
+						if (location_start >= selection.range[0] && location_end <= selection.range[1]) {
+							// Entire line selected
+							SetTextColor(lplvcd->nmcd.hdc, GetSysColor(COLOR_HIGHLIGHTTEXT));
+							FillRect(lplvcd->nmcd.hdc, &rc, GetSysColorBrush(COLOR_HIGHLIGHT));
+							DrawText(lplvcd->nmcd.hdc, row->AsciiStr, strlen(row->AsciiStr), &lplvcd->nmcd.rc, DT_SINGLELINE | DT_CENTER | DT_VCENTER);
+						} else if (location_start >= selection.range[0]) {
+							// Only the beginning selected
+							int unselected_count = location_end - selection.range[1];
+							int selected_count = 16 - unselected_count;
+
+							// Draw right side (unselected)
+							RECT right_rc = rc;
+							right_rc.left += selected_count * CHAR_WIDTH;
+							DrawText(lplvcd->nmcd.hdc, &row->AsciiStr[selected_count], unselected_count, &right_rc, DT_SINGLELINE | DT_CENTER | DT_VCENTER);
+
+							// Draw left side (selected)
+							RECT left_rc = rc;
+							left_rc.right = right_rc.left;
+							SetTextColor(lplvcd->nmcd.hdc, GetSysColor(COLOR_HIGHLIGHTTEXT));
+							FillRect(lplvcd->nmcd.hdc, &left_rc, GetSysColorBrush(COLOR_HIGHLIGHT));
+							DrawText(lplvcd->nmcd.hdc, row->AsciiStr, selected_count, &left_rc, DT_SINGLELINE | DT_CENTER | DT_VCENTER);
+						} else if (location_end <= selection.range[1]) {
+							// Only the end selected
+							int selected_count = location_end - selection.range[0] + 1;
+							int unselected_count = 16 - selected_count;
+
+							// Draw left side (unselected)
+							RECT left_rc = rc;
+							left_rc.right = left_rc.left + unselected_count * CHAR_WIDTH;
+							DrawText(lplvcd->nmcd.hdc, row->AsciiStr, unselected_count, &left_rc, DT_SINGLELINE | DT_CENTER | DT_VCENTER);
+
+							// Draw right side (selected)
+							RECT right_rc = rc;
+							right_rc.left = left_rc.right;
+							SetTextColor(lplvcd->nmcd.hdc, GetSysColor(COLOR_HIGHLIGHTTEXT));
+							FillRect(lplvcd->nmcd.hdc, &right_rc, GetSysColorBrush(COLOR_HIGHLIGHT));
+							DrawText(lplvcd->nmcd.hdc, &row->AsciiStr[unselected_count], selected_count, &right_rc, DT_SINGLELINE | DT_CENTER | DT_VCENTER);
+						} else {
+							// Only the middle selected
+							int left_count = selection.range[0] - location_start;
+							int right_count = location_end - selection.range[1];
+							int selected_count = 16 - (left_count + right_count);
+
+							// Draw left side (unselected)
+							RECT left_rc = rc;
+							left_rc.right = left_rc.left + left_count * CHAR_WIDTH;
+							DrawText(lplvcd->nmcd.hdc, row->AsciiStr, left_count, &left_rc, DT_SINGLELINE | DT_CENTER | DT_VCENTER);
+
+							// Draw right side (unselected)
+							RECT right_rc = rc;
+							right_rc.left += (left_count + selected_count) * CHAR_WIDTH;
+							DrawText(lplvcd->nmcd.hdc, &row->AsciiStr[left_count + selected_count], right_count, &right_rc, DT_SINGLELINE | DT_CENTER | DT_VCENTER);
+
+							// Draw middle (selected)
+							RECT mid_rc = rc;
+							mid_rc.left = left_rc.right;
+							mid_rc.right = right_rc.left;
+							SetTextColor(lplvcd->nmcd.hdc, GetSysColor(COLOR_HIGHLIGHTTEXT));
+							FillRect(lplvcd->nmcd.hdc, &mid_rc, GetSysColorBrush(COLOR_HIGHLIGHT));
+							DrawText(lplvcd->nmcd.hdc, &row->AsciiStr[left_count], selected_count, &mid_rc, DT_SINGLELINE | DT_CENTER | DT_VCENTER);
+						}
+					} else {
+						// Unselected text
+						DrawText(lplvcd->nmcd.hdc, row->AsciiStr, strlen(row->AsciiStr), &lplvcd->nmcd.rc, DT_SINGLELINE | DT_CENTER | DT_VCENTER);
+					}
 
 					SetWindowLong(hDlg, DWL_MSGRESULT, CDRF_SKIPDEFAULT);
 					break;
+				}
 				default: {
 					// Hex columns
 					int index = lplvcd->iSubItem - 1;
 					DWORD location = row->Location + index;
 
 					SelectObject(lplvcd->nmcd.hdc, row->Fonts[index]);
-					if (selection.enabled && (location >= selection.range[0] && location <= selection.range[1])) {
+					if (selection.enabled && location >= selection.range[0] && location <= selection.range[1]) {
 						SetTextColor(lplvcd->nmcd.hdc, GetSysColor(COLOR_HIGHLIGHTTEXT));
 						FillRect(lplvcd->nmcd.hdc, &lplvcd->nmcd.rc, GetSysColorBrush(COLOR_HIGHLIGHT));
 					} else {
@@ -488,37 +570,42 @@ LRESULT CALLBACK Memory_ListViewDrag_Proc(HWND hWnd, UINT uMsg, WPARAM wParam, L
 		hit_test.pt = pt;
 		ListView_SubItemHitTest(hWnd, &hit_test);
 
+		if (hit_test.iSubItem == 0) {
+			// Clicking in address column
+			break;
+		}
+
 		struct MEMORY_VIEW_ROW* row = &MemoryViewRows[hit_test.iItem];
 
+		selection.enabled = TRUE;
+		selection.dragging = TRUE;
+
+		int index;
 		if (hit_test.iSubItem == 17) {
 			// Clicking in ASCII column
-			// TODO
-			return FALSE;
-		} else if (hit_test.iSubItem > 0) {
+			selection.column_hex = FALSE;
+			index = Get_Ascii_Index(MAKEPOINTS(lParam));
+		} else {
 			// Clicking in hex columns
-			int index = hit_test.iSubItem - 1;
-			DWORD location = row->Location + index;
-
-			selection.enabled = TRUE;
-			selection.dragging = TRUE;
 			selection.column_hex = TRUE;
-
-			if (wParam & MK_SHIFT) {
-				// Shift-Click
-				selection.range[0] = min(location, selection.anchor);
-				selection.range[1] = max(location, selection.anchor);
-				memcpy(selection.range_cmp, selection.range, sizeof(selection.range_cmp));
-			} else {
-				// Click without Shift
-				selection.anchor = location;
-				selection.range[0] = location;
-				selection.range[1] = location;
-				selection.range_cmp[0] = location;
-				selection.range_cmp[1] = location;
-			}
-			return FALSE;
+			index = hit_test.iSubItem - 1;
 		}
-		break;
+
+		DWORD location = row->Location + index;
+		if (wParam & MK_SHIFT) {
+			// Shift-Click
+			selection.range[0] = min(location, selection.anchor);
+			selection.range[1] = max(location, selection.anchor);
+			memcpy(selection.range_cmp, selection.range, sizeof(selection.range_cmp));
+		}
+		else {
+			selection.anchor = location;
+			selection.range[0] = location;
+			selection.range[1] = location;
+			selection.range_cmp[0] = location;
+			selection.range_cmp[1] = location;
+		}
+		return FALSE;
 	}
 	case WM_LBUTTONUP:
 		selection.dragging = FALSE;
@@ -531,24 +618,29 @@ LRESULT CALLBACK Memory_ListViewDrag_Proc(HWND hWnd, UINT uMsg, WPARAM wParam, L
 			ListView_SubItemHitTest(hWnd, &hit_test);
 			struct MEMORY_VIEW_ROW* row = &MemoryViewRows[hit_test.iItem];
 
+			int index;
 			if (hit_test.iSubItem == 17 && selection.column_hex == FALSE) {
 				// Dragging in ASCII column
-				// TODO
+				index = Get_Ascii_Index(MAKEPOINTS(lParam));
 			} else if (hit_test.iSubItem > 0 && selection.column_hex == TRUE) {
 				// Dragging in hex columns
-				int index = hit_test.iSubItem - 1;
-				DWORD location = row->Location + index;
+				index = hit_test.iSubItem - 1;
+			} else {
+				// Dragging in address column or drag started in a different column
+				break;
+			}
 
-				selection.range[0] = min(location, selection.anchor);
-				selection.range[1] = max(location, selection.anchor);
+			DWORD location = row->Location + index;
 
-				if (memcmp(selection.range, selection.range_cmp, sizeof(selection.range)) != 0) {
-					// TODO: Invalidate only the changed rect
-					InvalidateRect(hWnd, NULL, FALSE);
+			selection.range[0] = min(location, selection.anchor);
+			selection.range[1] = max(location, selection.anchor);
 
-					memcpy(selection.range_cmp, selection.range, sizeof(selection.range_cmp));
-					return FALSE;
-				}
+			if (memcmp(selection.range, selection.range_cmp, sizeof(selection.range)) != 0) {
+				// TODO: Invalidate only the changed rect
+				InvalidateRect(hWnd, NULL, FALSE);
+
+				memcpy(selection.range_cmp, selection.range, sizeof(selection.range_cmp));
+				return FALSE;
 			}
 		}
 		break;
@@ -580,6 +672,18 @@ void Clear_Selection(void) {
 	selection.range[1] = 0;
 	selection.range_cmp[0] = 0;
 	selection.range_cmp[1] = 0;
+}
+
+int Get_Ascii_Index(POINTS pt) {
+	RECT rc;
+	// The row doesn't matter because we ignore the Y coordinate
+	ListView_GetSubItemRect(hList, 0, 17, LVIR_BOUNDS, &rc);
+
+	// Compute the character index
+	int x = pt.x - rc.left;
+	int index = (x - PADDING) / CHAR_WIDTH;
+
+	return min(max(index, 0), 15);
 }
 
 void Scroll_Memory_View(int lines) {
