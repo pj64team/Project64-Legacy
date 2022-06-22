@@ -367,7 +367,13 @@ BOOL CALLBACK CheatSearchDlgProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lPa
 				}
 
 				case IDB_CS_CHEAT_REMOVE: {
-					CS_RemoveCodeAt(&cheat_dev, ListView_GetNextItem(GetDlgItem(hDlg, IDL_CS_CHEAT_CREATE), -1, LVNI_SELECTED));
+					HANDLE hWnd = GetDlgItem(hDlg, IDL_CS_CHEAT_CREATE);
+					int count = ListView_GetSelectedCount(hWnd);
+					DWORD next = -1;
+					for (int i = 0; i < count; i++) {
+						next = ListView_GetNextItem(hWnd, next, LVNI_SELECTED);
+						CS_RemoveCodeAt(&cheat_dev, next - i);
+					}
 					UpdateCheatCreateList(hDlg);
 					CE_UpdateControls(hDlg, -1);
 					break;
