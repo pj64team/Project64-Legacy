@@ -48,6 +48,7 @@ void Start_Auto_Refresh_Thread(void);
 void Scroll_Memory_View(int lines);
 void Refresh_Memory_With_Diff(BOOL ShowDiff);
 void Clear_Selection(void);
+void Copy_Selection(void);
 int Get_Ascii_Index(POINTS pt);
 
 LRESULT CALLBACK Memory_Window_Proc (HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam);
@@ -192,8 +193,7 @@ void Insert_MemoryLineDump (unsigned int location, int InsertPos, BOOL ShowDiff)
 						word.UB[2] < ' ' || word.UB[2] > '~' ? '.' : word.UB[2],
 						word.UB[1] < ' ' || word.UB[1] > '~' ? '.' : word.UB[1],
 						word.UB[0] < ' ' || word.UB[0] > '~' ? '.' : word.UB[0]);
-				}
-				else {
+				} else {
 					for (int i = 0; i < 4; i++) {
 						int index = count * 4 + i;
 
@@ -218,8 +218,7 @@ void Insert_MemoryLineDump (unsigned int location, int InsertPos, BOOL ShowDiff)
 						word.UB[2] < ' ' || word.UB[2] > '~' ? '.' : word.UB[2],
 						word.UB[1] < ' ' || word.UB[1] > '~' ? '.' : word.UB[1],
 						word.UB[0] < ' ' || word.UB[0] > '~' ? '.' : word.UB[0]);
-				}
-				else {
+				} else {
 					for (int i = 0; i < 4; i++) {
 						int index = count * 4 + i;
 
@@ -237,6 +236,85 @@ void Insert_MemoryLineDump (unsigned int location, int InsertPos, BOOL ShowDiff)
 		DisplayError(GS(MSG_UNKNOWN_MEM_ACTION));
 		PostQuitMessage(0);
 	}
+}
+
+void Write_MemoryLineDump(char *output, unsigned int location) {
+	MIPS_WORD word;
+
+	sprintf(output, "0x%08X  ", location);
+	output += 12;
+
+	char bytes[49] = { 0 };
+	char ascii[17] = { 0 };
+	char *b = bytes;
+	char *a = ascii;
+	__try {
+		if (SendMessage(hVAddr, BM_GETSTATE, 0, 0) & BST_CHECKED) {
+			for (int count = 0; count < 4; count++) {
+				if (r4300i_LW_VAddr_NonCPU(location, &word.UW)) {
+					for (int i = 0; i < 4; i++) {
+						if (selection.enabled && (selection.range[0] > location + i || selection.range[1] < location + i)) {
+							strcpy(b, "   ");
+							strcpy(a, " ");
+						} else {
+							sprintf(b, "%02X ", word.UB[3 - i]);
+							sprintf(a, "%c", (word.UB[3 - i] < ' ' || word.UB[3 - i] > '~') ? '.' : word.UB[3 - i]);
+						}
+						b += 3;
+						a++;
+					}
+				} else {
+					for (int i = 0; i < 4; i++) {
+						if (selection.enabled && (selection.range[0] > location + i || selection.range[1] < location + i)) {
+							strcpy(b, "   ");
+							strcpy(a, " ");
+						} else {
+							strcpy(b, "** ");
+							strcpy(a, "*");
+						}
+						b += 3;
+						a++;
+					}
+				}
+				location += 4;
+			}
+		} else {
+			for (int count = 0; count < 4; count++) {
+				if (location < 0x1FFFFFFC) {
+					r4300i_LW_PAddr(location, &word.UW);
+					for (int i = 0; i < 4; i++) {
+						if (selection.enabled && (selection.range[0] > location + i || selection.range[1] < location + i)) {
+							strcpy(b, "   ");
+							strcpy(a, " ");
+						} else {
+							sprintf(b, "%02X ", word.UB[3 - i]);
+							sprintf(a, "%c", (word.UB[3 - i] < ' ' || word.UB[3 - i] > '~') ? '.' : word.UB[3 - i]);
+						}
+						b += 3;
+						a++;
+					}
+				} else {
+					for (int i = 0; i < 4; i++) {
+						if (selection.enabled && (selection.range[0] > location + i || selection.range[1] < location + i)) {
+							strcpy(b, "   ");
+							strcpy(a, " ");
+						} else {
+							strcpy(b, "** ");
+							strcpy(a, "*");
+						}
+						b += 3;
+						a++;
+					}
+				}
+				location += 4;
+			}
+		}
+	} __except( r4300i_Command_MemoryFilter( GetExceptionCode(), GetExceptionInformation()) ) {
+		DisplayError(GS(MSG_UNKNOWN_MEM_ACTION));
+		PostQuitMessage(0);
+	}
+
+	sprintf(output, "%s %s\r\n", bytes, ascii);
 }
 
 LRESULT CALLBACK Memory_Window_Proc (HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam)  {	
@@ -549,6 +627,11 @@ LRESULT CALLBACK Memory_ListViewKeys_Proc(HWND hWnd, UINT uMsg, WPARAM wParam, L
 		case VK_NEXT:
 			Scroll_Memory_View(16);
 			return FALSE;
+		case 'C':
+			if (GetKeyState(VK_CONTROL) & 0x8000) {
+				Copy_Selection();
+			}
+			return FALSE;
 		default:
 			break;
 		}
@@ -672,6 +755,37 @@ void Clear_Selection(void) {
 	selection.range[1] = 0;
 	selection.range_cmp[0] = 0;
 	selection.range_cmp[1] = 0;
+}
+
+void Copy_Selection(void) {
+	if (!selection.enabled || !OpenClipboard(NULL)) {
+		return;
+	}
+	EmptyClipboard();
+
+	int lines = (selection.range[1] - selection.range[0]) / 16 + 1;
+
+	// Each line is exactly 79 bytes, plus the null terminator.
+	HGLOBAL hMemory = GlobalAlloc(GMEM_MOVEABLE, lines * 79 + 1);
+	if (!hMemory) {
+		CloseClipboard();
+		return;
+	}
+
+	char *memory = GlobalLock(hMemory);
+
+	char *output = memory;
+	DWORD location = selection.range[0] & ~15;
+	for (int i = 0; i < lines; i++) {
+		Write_MemoryLineDump(output, location);
+		output += 79;
+		location += 16;
+	}
+
+	GlobalUnlock(hMemory);
+	// TODO: Also copy the binary data
+	SetClipboardData(CF_TEXT, memory);
+	CloseClipboard();
 }
 
 int Get_Ascii_Index(POINTS pt) {
