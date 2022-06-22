@@ -374,7 +374,7 @@ LRESULT CALLBACK Memory_Window_Proc (HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM
 			EndDialog(hDlg, TRUE);
 			return TRUE;
 		}
-		break;
+		return FALSE;
 	case WM_NOTIFY:
 		switch (((LPNMHDR)lParam)->code) {
 		case HDN_BEGINTRACK:
