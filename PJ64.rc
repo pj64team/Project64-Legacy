@@ -844,6 +844,7 @@ BEGIN
             MENUITEM "R4300i &Registers...",        ID_DEBUGGER_R4300IREGISTERS, GRAYED
         END
         MENUITEM "Memory...",                   ID_DEBUGGER_MEMORY, GRAYED
+        MENUITEM "Console...",                  ID_DEBUGGER_CONSOLE
         MENUITEM "TLB Entries...",              ID_DEBUGGER_TLBENTRIES, GRAYED
         MENUITEM SEPARATOR
         MENUITEM "Call Stack....",              ID_DEBUGGER_CALLSTACK

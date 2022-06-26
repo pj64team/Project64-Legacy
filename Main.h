@@ -68,6 +68,7 @@ extern "C" {
 #define Default_RememberCheats		TRUE
 #define Default_RomsToRemember		4
 #define Default_RomsDirsToRemember	4
+#define Default_ShowConsoleWindow	FALSE
 #define LinkBlocks
 #define TLB_HACK
 

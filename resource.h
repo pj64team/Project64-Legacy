@@ -341,13 +341,14 @@
 #define ID_POPUPMENU_GAMEINFORMATION    40169
 #define ID_FILE_GAMEINFORMATION         40170
 #define ID_HELP_DISCORD                 40171
+#define ID_DEBUGGER_CONSOLE             40175
 
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        183
-#define _APS_NEXT_COMMAND_VALUE         40175
+#define _APS_NEXT_COMMAND_VALUE         40176
 #define _APS_NEXT_CONTROL_VALUE         1260
 #define _APS_NEXT_SYMED_VALUE           101
 #endif

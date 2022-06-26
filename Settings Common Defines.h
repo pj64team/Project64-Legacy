@@ -94,6 +94,7 @@
 #define STR_PIFERRORS "Show Pif Ram Errors"
 #define STR_HAVEDEBUGGER "Have Debugger"
 #define STR_SHOWMOREMESSAGES "Show More Errors"
+#define STR_SHOWCONSOLEWINDOW "Show Console Window"
 
 // The Strings used for the about info on the files
 #define STR_META "Meta"

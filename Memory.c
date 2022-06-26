@@ -30,6 +30,7 @@
 #include "x86.h"
 #include "plugin.h"
 #include "debugger.h"
+#include "IsViewer64.h"
 
 
 DWORD *TLB_ReadMap, *TLB_WriteMap, RdramSize, SystemRdramSize;
@@ -1548,6 +1549,11 @@ int r4300i_LW_NonMemory ( DWORD PAddr, DWORD * Value ) {
 	}
 
 	if (PAddr >= 0x10000000 && PAddr < 0x16000000) {
+		if (PAddr >= ISVIEWER64_ADDR && PAddr < (ISVIEWER64_ADDR + ISVIEWER64_SIZE)) {
+			*Value = IsViewer64_Read(PAddr);
+			return TRUE;
+		}
+
 		if (WrittenToRom) { 
 			*Value = WroteToRom;
 			//LogMessage("%X: Read crap from Rom %X from %X",PROGRAM_COUNTER,*Value,PAddr);
@@ -1901,6 +1907,11 @@ BOOL r4300i_SH_VAddr_NonCPU ( DWORD VAddr, WORD Value ) {
 
 int r4300i_SW_NonMemory ( DWORD PAddr, DWORD Value ) {
 	if (PAddr >= 0x10000000 && PAddr < 0x16000000) {
+		if (PAddr >= ISVIEWER64_ADDR && PAddr < (ISVIEWER64_ADDR + ISVIEWER64_SIZE)) {
+			IsViewer64_Write(PAddr, Value);
+			return TRUE;
+		}
+
 		if ((PAddr - 0x10000000) < RomFileSize) {
 			WrittenToRom = TRUE;
 			WroteToRom = Value;
