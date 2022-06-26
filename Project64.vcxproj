@@ -273,8 +273,10 @@
     <ClCompile Include="Compression\unzip.c" />
     <ClCompile Include="Compression\zip.c" />
     <ClCompile Include="Compression\zutil.c" />
+    <ClCompile Include="Console.c" />
     <ClCompile Include="CPU Log.c" />
     <ClCompile Include="EmulateAI.c" />
+    <ClCompile Include="IsViewer64.c" />
     <ClCompile Include="Logging.c" />
     <ClCompile Include="mapping.c" />
     <ClCompile Include="MemDump.c" />
@@ -340,9 +342,11 @@
     <ClInclude Include="Compression\zip.h" />
     <ClInclude Include="Compression\zlib.h" />
     <ClInclude Include="Compression\zutil.h" />
+    <ClInclude Include="Console.h" />
     <ClInclude Include="CPU Log.h" />
     <ClInclude Include="Debugger.h" />
     <ClInclude Include="EmulateAI.h" />
+    <ClInclude Include="IsViewer64.h" />
     <ClInclude Include="Logging.h" />
     <ClInclude Include="Mapping.h" />
     <ClInclude Include="MemDump.h" />
