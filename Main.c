@@ -35,6 +35,7 @@
 #include "main.h"
 #include "cheats.h"
 #include "cheatsearch.h"
+#include "console.h"
 #include "cpu.h"
 #include "plugin.h"
 #include "debugger.h"
@@ -606,6 +607,7 @@ int InitalizeApplication(HINSTANCE hInstance) {
 	LoadRomBrowserColumnInfo();
 	InitilizeInitialCompilerVariable();
 	InitWatchPoints();
+	InitConsole();
 	return TRUE;
 }
 
@@ -1468,6 +1470,14 @@ LRESULT CALLBACK Main_Proc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
 					Enter_Memory_Window();
 					break;
 
+				case ID_DEBUGGER_CONSOLE:
+					if (ToggleConsole()) {
+						CheckMenuItem(hMainMenu, ID_DEBUGGER_CONSOLE, MF_BYCOMMAND | MFS_CHECKED);
+					} else {
+						CheckMenuItem(hMainMenu, ID_DEBUGGER_CONSOLE, MF_BYCOMMAND | MFS_UNCHECKED);
+					}
+					break;
+
 				case ID_DEBUGGER_TLBENTRIES:
 					Enter_TLB_Window();
 					break;
@@ -2046,6 +2056,10 @@ void SetupMenu(HWND hWnd) {
 			CheckMenuItem(hMenu, ID_OPTIONS_PROFILING_ON, MF_BYCOMMAND | MFS_CHECKED);
 		else
 			CheckMenuItem(hMenu, ID_OPTIONS_PROFILING_OFF, MF_BYCOMMAND | MFS_CHECKED);
+
+		if (Settings_ReadBool(APPS_NAME, STR_SETTINGS, STR_SHOWCONSOLEWINDOW, Default_ShowConsoleWindow)) {
+			CheckMenuItem(hMenu, ID_DEBUGGER_CONSOLE, MF_BYCOMMAND | MFS_CHECKED);
+		}
 	}
 
 #ifdef BETA_VERSION
