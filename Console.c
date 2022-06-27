@@ -79,12 +79,14 @@ BOOL ToggleConsole(void) {
 
 void ConfigureConsole(void) {
 	// Enable ANSI color codes
-	SetConsoleMode(STDOUT, ENABLE_PROCESSED_OUTPUT | ENABLE_VIRTUAL_TERMINAL_PROCESSING);
+	char *mode_error = "";
+	if (SetConsoleMode(STDOUT, ENABLE_PROCESSED_OUTPUT | ENABLE_WRAP_AT_EOL_OUTPUT | ENABLE_VIRTUAL_TERMINAL_PROCESSING) == 0) {
+		SetConsoleMode(STDOUT, ENABLE_PROCESSED_OUTPUT | ENABLE_WRAP_AT_EOL_OUTPUT);
+		mode_error = "ERROR: Your console does not support VT100 output. Colors will not work and text may appear garbled.\n";
+	}
 
 	// Check for EUC-JP support. Required for most commercial games written in Japan.
 	if (IsValidCodePage(CODEPAGE_EUC_JP) == TRUE) {
-		ConsolePrintf("%s\n\n", AppName);
-
 		// Set the font to one which can render Japanese
 		CONSOLE_FONT_INFOEX font = { 0 };
 		font.cbSize = sizeof(CONSOLE_FONT_INFOEX);
@@ -94,8 +96,10 @@ void ConfigureConsole(void) {
 		font.FontWeight = 400;
 		wcscpy_s(font.FaceName, LF_FACESIZE, L"MS Gothic");
 		SetCurrentConsoleFontEx(STDOUT, FALSE, &font);
+
+		ConsolePrintf("%s\n%s\n", AppName, mode_error);
 	} else {
-		ConsolePrintf("%s\n\x1b[31mERROR:\x1b[0m EUC-JP CodePage is not avaialble!\n\n", AppName);
+		ConsolePrintf("%s\n%s\x1b[31mERROR:\x1b[0m EUC-JP CodePage is not avaialble!\n\n", AppName, mode_error);
 	}
 }
 
