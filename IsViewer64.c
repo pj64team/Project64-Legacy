@@ -33,7 +33,8 @@
 #define ISVIEWER64_BUFFER		0x20
 #define ISVIEWER64_BUFFER_SIZE	ISVIEWER64_SIZE - ISVIEWER64_BUFFER
 
-static BYTE buffer[ISVIEWER64_SIZE] = {0};
+static BYTE buffer[ISVIEWER64_SIZE] = { 0 };
+static BYTE copy_buffer[ISVIEWER64_SIZE] = { 0 };
 
 inline DWORD byte_swap(DWORD value) {
 	_asm {
@@ -60,10 +61,15 @@ void IsViewer64_Write(DWORD location, DWORD value) {
 		if (read_head > value) {
 			// Ring buffer has wrapped
 			DWORD length = ISVIEWER64_BUFFER_SIZE - read_head;
-			if (memchr(&buffer[ISVIEWER64_BUFFER + read_head], '\n', length) != NULL ||
-				memchr(&buffer[ISVIEWER64_BUFFER], '\n', value) != NULL) {
-				ConsolePrintf("%.*s", length, &buffer[ISVIEWER64_BUFFER + read_head]);
-				ConsolePrintf("%.*s", value, &buffer[ISVIEWER64_BUFFER]);
+
+			// Make the buffer sequential to avoid decoding errors
+			memcpy(copy_buffer, &buffer[ISVIEWER64_BUFFER + read_head], length);
+			memcpy(&copy_buffer[length], &buffer[ISVIEWER64_BUFFER], value);
+
+			length += value;
+
+			if (memchr(copy_buffer, '\n', length) != NULL) {
+				ConsolePrintf("%.*s", length, copy_buffer);
 				consumed = TRUE;
 			}
 		} else {
