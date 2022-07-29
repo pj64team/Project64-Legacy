@@ -1587,7 +1587,7 @@ LRESULT CALLBACK Main_Proc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
 				break;*/
 
 				case ID_HELP_GAMEFAQ:
-					ShellExecute(NULL, "open", "https://project64.emulation64.com/index.php?id=gamefaq", NULL, NULL, SW_SHOWMAXIMIZED); // Changed chm to online version for better user experience
+					ShellExecute(NULL, "open", "https://www.project64-legacy.com/index.php?id=gamefaq", NULL, NULL, SW_SHOWMAXIMIZED); // Changed chm to online version for better user experience
 					break;
 
 					/*case ID_HELP_GAMEFAQ: {
@@ -1606,11 +1606,11 @@ LRESULT CALLBACK Main_Proc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
 				break;}*/
 
 				case ID_HELP_SUPPORTFORUM:
-					ShellExecute(NULL, "open", "https://project64.emulation64.com/dev", NULL, NULL, SW_SHOWMAXIMIZED);
+					ShellExecute(NULL, "open", "https://www.project64-legacy.com/dev", NULL, NULL, SW_SHOWMAXIMIZED);
 					break;
 
 				case ID_HELP_HOMEPAGE:
-					ShellExecute(NULL, "open", "http://project64.emulation64.com", NULL, NULL, SW_SHOWMAXIMIZED);
+					ShellExecute(NULL, "open", "http://www.project64-legacy.com", NULL, NULL, SW_SHOWMAXIMIZED);
 					break;
 
 				case ID_HELP_DISCORD:
@@ -1919,7 +1919,7 @@ void GameInfo(void) {
 		MessageBox(NULL, GS(MSG_NO_GAME_INFORMATION), GS(MSG_MSGBOX_TITLE), MB_OK | MB_ICONINFORMATION | MB_SETFOREGROUND);
 	}
 	else {
-		sprintf(String, "https://www.project64.emulation64.com/index.php?id=%s", read);
+		sprintf(String, "https://www.project64-legacy.com/index.php?id=%s", read);
 		if (read) free(read);
 		ShellExecute(NULL, "open", String, NULL, NULL, SW_SHOWNORMAL);
 	}

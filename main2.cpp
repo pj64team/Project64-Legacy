@@ -200,7 +200,7 @@ LRESULT CALLBACK AboutBoxProc (HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
 			// GetWindowRect(GetDlgItem(hDlg, IDB_PJ64LOGO), &image);
 
 			// if (PtInRect(&image, mouse_click))
-			// ShellExecute(NULL, "open", "http://project64.emulation64.com", NULL, NULL, SW_SHOWMAXIMIZED);
+			// ShellExecute(NULL, "open", "http://www.project64-legacy.com", NULL, NULL, SW_SHOWMAXIMIZED);
 
 			break;
 		}
