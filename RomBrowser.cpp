@@ -1175,7 +1175,7 @@ void ShowRomList(HWND hParent) {
 	InvalidateRect(hParent, NULL, TRUE);
 	Style = GetWindowLong(hMainWindow, GWL_STYLE) | WS_SIZEBOX | WS_MAXIMIZEBOX;
 	SetWindowLong(hMainWindow, GWL_STYLE, Style);
-	if (!GetStoredWinPos("Main.RomList", &X, &Y)) {
+	if (!GetStoredWinPos("Main", &X, &Y)) {
 		X = (GetSystemMetrics(SM_CXSCREEN) - Width) / 2;
 		Y = (GetSystemMetrics(SM_CYSCREEN) - Height) / 2;
 	}
