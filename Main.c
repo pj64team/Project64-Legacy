@@ -783,6 +783,10 @@ LRESULT CALLBACK Main_Proc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
 					break;
 
 				case ID_POPUPMENU_ROMINFORMATION:
+					SendMessage(hStatusWnd, SB_SETTEXT, 0, (LPARAM)GS(MENUDES_ROM_INFO));
+					break;
+
+				case ID_POPUPMENU_GAMEINFORMATION:
 					SendMessage(hStatusWnd, SB_SETTEXT, 0, (LPARAM)GS(MENUDES_GAME_INFO));
 					break;
 
@@ -792,6 +796,10 @@ LRESULT CALLBACK Main_Proc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
 
 				case ID_EDITCHEATS:
 					SendMessage(hStatusWnd, SB_SETTEXT, 0, (LPARAM)GS(MENUDES_GAME_CHEATS));
+					break;
+
+				case ID_SYSTEM_CHEATSEARCH:
+					SendMessage(hStatusWnd, SB_SETTEXT, 0, (LPARAM)GS(MENUDES_SYSTEM_CHEATSEARCH));
 					break;
 
 				case ID_FILE_OPEN_ROM:
@@ -804,6 +812,18 @@ LRESULT CALLBACK Main_Proc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
 
 				case ID_FILE_GAMEINFORMATION:
 					SendMessage(hStatusWnd, SB_SETTEXT, 0, (LPARAM)GS(MENUDES_GAMEINFORMATION));
+					break;
+
+				case ID_HELP_SUPPORTFORUM:
+					SendMessage(hStatusWnd, SB_SETTEXT, 0, (LPARAM)GS(MENUDES_SUPPORTFORUM));
+					break;
+
+				case ID_HELP_HOMEPAGE:
+					SendMessage(hStatusWnd, SB_SETTEXT, 0, (LPARAM)GS(MENUDES_HOMEPAGE));
+					break;
+
+				case ID_HELP_DISCORD:
+					SendMessage(hStatusWnd, SB_SETTEXT, 0, (LPARAM)GS(MENUDES_DISCORD));
 					break;
 
 				case ID_FILE_STARTEMULATION:

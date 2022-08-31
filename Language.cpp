@@ -136,7 +136,7 @@ LANG_STR DefaultString[] = {
 	{ SELECT_ROM_DIR,  "Select current Rom Directory" },
 
 //Messages
-	{ RB_NOT_GOOD_FILE,"Bad ROM? Use GoodN64 & check for updated INI" },
+	{ RB_NOT_GOOD_FILE,"Unknown Rom? Check for good rom or add new entry to the RDS" },
 
 /*********************************************************************************
 * Options                                                                        *
