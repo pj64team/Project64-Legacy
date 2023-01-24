@@ -52,10 +52,10 @@ void FirstDMA (void) {
 void PI_DMA_READ (void) {
 //	PI_STATUS_REG |= PI_STATUS_DMA_BUSY;
 
-	PI_RD_LEN_REG = (PI_RD_LEN_REG & 1) ? PI_RD_LEN_REG : PI_RD_LEN_REG + 1;	// Fix for Ai Shogi 3
+	PI_WR_LEN_REG = (PI_WR_LEN_REG & 1 || PI_WR_LEN_REG < 0x4) ? PI_WR_LEN_REG : PI_WR_LEN_REG + 1;	// Fix for Ai Shogi 3
 	PI_CART_ADDR_REG &= ~1;	// Taz Express fix
 	PI_DRAM_ADDR_REG &= ~7;	// Tax Express fix
-
+	//PI_DRAM_ADDR_REG = PI_DRAM_ADDR_REG & 0x07FFFFF;
 	if ( PI_DRAM_ADDR_REG + PI_RD_LEN_REG + 1 > RdramSize) {
 		if (ShowDebugMessages)
 			DisplayError("PI_DMA_READ not in Memory");
@@ -117,12 +117,12 @@ void PI_DMA_READ (void) {
 void PI_DMA_WRITE (void) {
 	DWORD i;	
 
-	PI_WR_LEN_REG = (PI_WR_LEN_REG & 1) ? PI_WR_LEN_REG : PI_WR_LEN_REG + 1;	// Fix for Ai Shogi 3
+	PI_WR_LEN_REG = (PI_WR_LEN_REG & 1 || PI_WR_LEN_REG < 0x4) ? PI_WR_LEN_REG : PI_WR_LEN_REG + 1;	// Fix for Ai Shogi 3
 	PI_CART_ADDR_REG &= ~1;	// Taz Express fix
 	PI_DRAM_ADDR_REG &= ~7;	// Taz Express fix
 
 	PI_STATUS_REG |= PI_STATUS_DMA_BUSY;
-	if ( PI_DRAM_ADDR_REG + PI_WR_LEN_REG + 1 > RdramSize) {
+	if ((0x03FFFFFF & PI_DRAM_ADDR_REG) + PI_WR_LEN_REG + 1 > RdramSize) {
 		if (ShowDebugMessages)
 			DisplayError("PI_DMA_WRITE not in Memory");
 		PI_STATUS_REG &= ~PI_STATUS_DMA_BUSY;
@@ -192,11 +192,15 @@ void PI_DMA_WRITE (void) {
 			DMAUsed = TRUE;
 			FirstDMA(); 
 		}
+//#define _FAST_DMA_INT
+#ifdef FAST_DMA_INT
 		PI_STATUS_REG &= ~PI_STATUS_DMA_BUSY;
 		MI_INTR_REG |= MI_INTR_PI;
 		CheckInterrupts();
-		//ChangeTimer(PiTimer,(int)(PI_WR_LEN_REG * 8.9) + 50);
+#else
+		ChangeTimer(PiTimer,(int)(PI_WR_LEN_REG * 8.9) + 50);
 		//ChangeTimer(PiTimer,(int)(PI_WR_LEN_REG * 8.9));
+#endif
 		CheckTimer();
 		return;
 	}
@@ -210,8 +214,9 @@ void PI_DMA_WRITE (void) {
 #endif
 		PI_CART_ADDR_REG -= 0x10000000;
 		if (PI_CART_ADDR_REG + PI_WR_LEN_REG + 1 < RomFileSize) {
+//			PI_WR_LEN_REG |= 0x03;
 			for (i = 0; i < PI_WR_LEN_REG + 1; i ++) {
-				*(N64MEM+((PI_DRAM_ADDR_REG + i) ^ 3)) =  *(ROM+((PI_CART_ADDR_REG + i) ^ 3));
+				*(N64MEM+(((0x03FFFFFF & PI_DRAM_ADDR_REG) + i) ^ 3)) =  *(ROM+((PI_CART_ADDR_REG + i) ^ 3));
 			}
 		} else if (RomFileSize > PI_CART_ADDR_REG) {
 			DWORD Len;
@@ -260,6 +265,7 @@ void SI_DMA_READ (void) {
 		int count, RdramPos;
 
 		RdramPos = (int)SI_DRAM_ADDR_REG;
+		RdramPos &= 0x7FFFF;
 		for (count = 0; count < 0x40; count++, RdramPos++) {
 			if (RdramPos < 0) { continue; }
 			N64MEM[RdramPos ^3] = PIF_Ram[count];
@@ -344,6 +350,7 @@ void SI_DMA_WRITE (void) {
 		int count, RdramPos;
 
 		RdramPos = (int)SI_DRAM_ADDR_REG;
+		RdramPos &= 0x7FFFF;
 		for (count = 0; count < 0x40; count++, RdramPos++) {
 			if (RdramPos < 0) { PIF_Ram[count] = 0; continue; }
 			PIF_Ram[count] = N64MEM[RdramPos ^3];
