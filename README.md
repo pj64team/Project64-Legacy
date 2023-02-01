@@ -4,7 +4,7 @@
 
 # Project64 Legacy
 
-Project64 Legacy is a free and open-source emulator for the Nintendo 64 and is a continuation from the  based off of the original Project 64 1.6 source. Legacy is written in C/C++ currently only for Windows (possible planned support for other platforms in the future).
+Project64 Legacy is a free and open-source emulator for the Nintendo 64 and is a continuation of the original Project 64 1.6 source. Legacy is written in C/C++ currently only for Windows (possible planned support for other platforms in the future).
 
 ## Features
 
