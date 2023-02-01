@@ -166,13 +166,13 @@ LANG_STR DefaultString[] = {
 	{ DIR_ROM,           " Rom Directory: "},
 	{ DIR_AUTO_SAVE,     " N64 Auto saves: "},
 	{ DIR_INSTANT_SAVE,  " Instant saves: "},
-	{ DIR_SCREEN_SHOT,   " Screen Shots: "},
+	{ DIR_SCREEN_SHOT,   " Screenshots: "},
 	{ DIR_ROM_DEFAULT,   "Last folder that a rom was open from."},
 	{ DIR_SELECT_PLUGIN, "Select Plugin Directory"},
 	{ DIR_SELECT_ROM,    "Select Rom Directory"},
 	{ DIR_SELECT_AUTO,   "Select Automatic save Directory"},
 	{ DIR_SELECT_INSTANT,"Select Instant save Directory"},
-	{ DIR_SELECT_SCREEN, "Select snap shot Directory"},
+	{ DIR_SELECT_SCREEN, "Select Screenshot Directory"},
 
 //Options (general) Tab
 	{ OPTION_AUTO_SLEEP,      "Pause emulation when window is not active?"},
