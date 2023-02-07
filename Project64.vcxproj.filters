@@ -521,9 +521,6 @@
     <None Include="PJ64.BMP">
       <Filter>Resource Files</Filter>
     </None>
-    <None Include="About.txt">
-      <Filter>Resource Files</Filter>
-    </None>
   </ItemGroup>
   <ItemGroup>
     <Library Include="Compression\zlibstat.lib" />
@@ -535,5 +532,8 @@
     <Image Include="PJ64_3.bmp">
       <Filter>Resource Files</Filter>
     </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="About.txt" />
   </ItemGroup>
 </Project>
