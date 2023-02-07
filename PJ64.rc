@@ -802,7 +802,7 @@ BEGIN
         MENUITEM SEPARATOR
         POPUP "Current Save S&tate", GRAYED
         BEGIN
-            MENUITEM "Default\t~",                  ID_CURRENTSAVE_DEFAULT
+            MENUITEM "Default\t0",                  ID_CURRENTSAVE_DEFAULT
             MENUITEM SEPARATOR
             MENUITEM "Slot 1\t1",                   ID_CURRENTSAVE_1
             MENUITEM "Slot 2\t2",                   ID_CURRENTSAVE_2
@@ -813,7 +813,8 @@ BEGIN
             MENUITEM "Slot 7\t7",                   ID_CURRENTSAVE_7
             MENUITEM "Slot 8\t8",                   ID_CURRENTSAVE_8
             MENUITEM "Slot 9\t9",                   ID_CURRENTSAVE_9
-            MENUITEM "Slot 10\t0",                  ID_CURRENTSAVE_0
+            // Removed this as we now have 0 to 9 - Gent
+           // MENUITEM "Slot 10\t0",                  ID_CURRENTSAVE_0
         END
         MENUITEM SEPARATOR
         MENUITEM "Cheats...\tCtrl+C",           ID_OPTIONS_CHEATS, GRAYED
@@ -980,7 +981,8 @@ BEGIN
     VK_F1,          ID_CPU_RESET,           VIRTKEY, NOINVERT
     VK_F7,          ID_CPU_RESTORE,         VIRTKEY, NOINVERT
     VK_F5,          ID_CPU_SAVE,            VIRTKEY, NOINVERT
-    "0",            ID_CURRENTSAVE_0,       VIRTKEY, NOINVERT
+            // Removed this as we now have 0 to 9 - Gent
+  // "0",            ID_CURRENTSAVE_0,       VIRTKEY, NOINVERT
     "1",            ID_CURRENTSAVE_1,       VIRTKEY, NOINVERT
     "2",            ID_CURRENTSAVE_2,       VIRTKEY, NOINVERT
     "3",            ID_CURRENTSAVE_3,       VIRTKEY, NOINVERT
@@ -990,7 +992,7 @@ BEGIN
     "7",            ID_CURRENTSAVE_7,       VIRTKEY, NOINVERT
     "8",            ID_CURRENTSAVE_8,       VIRTKEY, NOINVERT
     "9",            ID_CURRENTSAVE_9,       VIRTKEY, NOINVERT
-    "`",            ID_CURRENTSAVE_DEFAULT, ASCII,  NOINVERT
+    "0",            ID_CURRENTSAVE_DEFAULT, ASCII,  NOINVERT
     VK_F12,         ID_FILE_ENDEMULATION,   VIRTKEY, NOINVERT
     "C",            ID_OPTIONS_CHEATS,      VIRTKEY, CONTROL, NOINVERT
     VK_ESCAPE,      ID_OPTIONS_FULLSCREEN,  VIRTKEY, NOINVERT

@@ -297,7 +297,8 @@
 #define ID_CPU_SAVE                     40109
 #define ID_CPU_RESTORE                  40110
 #define ID_CURRENTSAVE_DEFAULT          40112
-#define ID_CURRENTSAVE_0                40113
+// Removed this as we now have 0 to 9 - Gent
+//#define ID_CURRENTSAVE_0                40113
 #define ID_CURRENTSAVE_1                40114
 #define ID_CURRENTSAVE_2                40115
 #define ID_CURRENTSAVE_3                40116
