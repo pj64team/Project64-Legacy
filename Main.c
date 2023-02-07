@@ -311,9 +311,17 @@ DWORD AsciiToHex(char* HexValue) {
 void ChangeWinSize(HWND hWnd, long width, long height, HWND hStatusBar) {
 	WINDOWPLACEMENT wndpl;
 	RECT rc1, swrect;
+	RECT WinRect;
+	char String[200], Value[20];
+	LONG X, Y;
+
+	GetWindowRect(hWnd, &WinRect);
 
 	wndpl.length = sizeof(wndpl);
 	GetWindowPlacement(hWnd, &wndpl);
+
+	X = WinRect.left + WinRect.left - wndpl.rcNormalPosition.left;
+	Y = WinRect.top + WinRect.top - wndpl.rcNormalPosition.top;
 
 	if (hStatusBar != NULL) {
 		GetClientRect(hStatusBar, &swrect);
@@ -325,7 +333,8 @@ void ChangeWinSize(HWND hWnd, long width, long height, HWND hStatusBar) {
 
 	AdjustWindowRectEx(&rc1, GetWindowLong(hWnd, GWL_STYLE), GetMenu(hWnd) != NULL, GetWindowLong(hWnd, GWL_EXSTYLE));
 
-	MoveWindow(hWnd, wndpl.rcNormalPosition.left, wndpl.rcNormalPosition.top, rc1.right - rc1.left, rc1.bottom - rc1.top, TRUE);
+	//MoveWindow(hWnd, wndpl.rcNormalPosition.left, wndpl.rcNormalPosition.top, rc1.right - rc1.left, rc1.bottom - rc1.top, TRUE);
+	MoveWindow(hWnd, WinRect.left, WinRect.top, rc1.right - rc1.left, rc1.bottom - rc1.top, TRUE);
 }
 
 void __cdecl DisplayError(char* Message, ...) {
@@ -709,7 +718,7 @@ LRESULT CALLBACK Main_Proc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
 
 			/* Move to WM_DESTROY to not save repeatedly on WM_MOVE */
 			if (!RomListVisible() || (RomListVisible() && !IsRomBrowserMaximized())) {
-				StoreCurrentWinPos(RomListVisible() ? "Main.RomList" : "Main", hWnd);
+				StoreCurrentWinPos(RomListVisible() ? "Main" : "Main", hWnd);
 			}
 			break;
 
@@ -1652,7 +1661,7 @@ LRESULT CALLBACK Main_Proc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
 
 		case WM_DESTROY:
 			if (!RomListVisible() || (RomListVisible() && !IsRomBrowserMaximized())) {
-				StoreCurrentWinPos(RomListVisible() ? "Main.RomList" : "Main", hWnd);
+				StoreCurrentWinPos(RomListVisible() ? "Main" : "Main", hWnd);
 			}
 			RomList_StopScanning();
 			SaveRomBrowserColumnInfo();
@@ -2253,16 +2262,26 @@ void ShutdownApplication(void) {
 
 void StoreCurrentWinPos(char* WinName, HWND hWnd) {
 	RECT WinRect;
+	WINDOWPLACEMENT wndpl;
+	WINDOWPLACEMENT* lpwndpl = &wndpl;
 	char String[200], Value[20];
+	wndpl.length = sizeof(WINDOWPLACEMENT);
+	LONG X, Y;
 
 	GetWindowRect(hWnd, &WinRect);
+	GetWindowPlacement(hWnd, lpwndpl);
+
+	X = WinRect.left;// +WinRect.left - wndpl.rcNormalPosition.left;
+	Y = WinRect.top;// +WinRect.top - wndpl.rcNormalPosition.top;
 
 	sprintf(String, STR_TOP, WinName);
-	sprintf(Value, "%d", WinRect.top);
+	//sprintf(Value, "%d", WinRect.top);
+	sprintf(Value, "%d", Y);
 	Settings_Write(APPS_NAME, STR_WINDOW, String, Value);
 
 	sprintf(String, STR_LEFT, WinName);
-	sprintf(Value, "%d", WinRect.left);
+	//sprintf(Value, "%d", WinRect.left);
+	sprintf(Value, "%d", X);
 	Settings_Write(APPS_NAME, STR_WINDOW, String, Value);
 }
 
