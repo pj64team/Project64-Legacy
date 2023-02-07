@@ -29,7 +29,8 @@
 #define DefaultGFXDll				"Jabo_Direct3D8.dll"
 #define DefaultRSPDll				"RSP.dll"
 #define DefaultAudioDll				"AziAudio_Legacy.dll"
-#define DefaultControllerDll		"Jabo_DInput.dll"
+// Added NRage inout as defualt
+#define DefaultControllerDll		"NRage_Legacy_Input.dll"
 
 #define PLUGIN_TYPE_RSP				1
 #define PLUGIN_TYPE_GFX				2

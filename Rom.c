@@ -316,7 +316,10 @@ void CreateRecentDirList(HMENU hMenu) {
 	for (count = 0; count < RomDirsToRemember; count++) {
 		if (strlen(LastDirs[count]) == 0) { break; }
 		menuinfo.wID = ID_FILE_RECENT_DIR + count;
-		sprintf(String, "&%d %s", (count + 1) % 10, LastDirs[count]);
+
+		// Changed  (count + 1) % 10, to  (count + 1), So it no longer forces Rom 10 to Rom 0 position in Recent List, because that makes more sense right? - Icepir8
+		
+		sprintf(String, "&%d %s", (count + 1), LastDirs[count]);
 		InsertMenuItem(hSubMenu, count, TRUE, &menuinfo);
 	}
 	ModifyMenu(GetSubMenu(hMenu, 0), MenuLocOfUsedDirs, MF_POPUP | MF_BYPOSITION, (DWORD)hSubMenu, GS(MENU_RECENT_DIR));
@@ -359,7 +362,10 @@ void CreateRecentFileList(HMENU hMenu) {
 		for (count = 0; count < RomsToRemember; count++) {
 			if (strlen(LastRoms[count]) == 0) { break; }
 			menuinfo.wID = ID_FILE_RECENT_FILE + count;
-			sprintf(String, "&%d %s", (count + 1) % 10, LastRoms[count]);
+
+			// Changed  (count + 1) % 10, to  (count + 1), So it no longer forces Rom 10 to Rom 0 position in Recent List, because that makes more sense right? - Icepir8
+
+			sprintf(String, "&%d %s", (count + 1), LastRoms[count]);
 			InsertMenuItem(hSubMenu, MenuLocOfUsedFiles + count, TRUE, &menuinfo);
 		}
 	}
@@ -390,7 +396,10 @@ void CreateRecentFileList(HMENU hMenu) {
 		for (count = 0; count < RomsToRemember; count++) {
 			if (strlen(LastRoms[count]) == 0) { break; }
 			menuinfo.wID = ID_FILE_RECENT_FILE + count;
-			sprintf(String, "&%d %s", (count + 1) % 10, LastRoms[count]);
+
+			// Changed  (count + 1) % 10, to  (count + 1), So it no longer forces Rom 10 to Rom 0 position in Recent List, because that makes more sense right? - Icepir8
+
+			sprintf(String, "&%d %s", (count + 1), LastRoms[count]);
 			InsertMenuItem(hSubMenu, count, TRUE, &menuinfo);
 		}
 		ModifyMenu(GetSubMenu(hMenu, 0), MenuLocOfUsedFiles, MF_POPUP | MF_BYPOSITION, (DWORD)hSubMenu, GS(MENU_RECENT_ROM));
