@@ -456,7 +456,7 @@ void FixMenuLang(HMENU hMenu) {
 	//Save Slot
 	hSubMenu = GetSubMenu(hMenu, 1);
 	hSubMenu = GetSubMenu(hSubMenu, 11);
-	MenuSetText(hSubMenu, 0, GS(MENU_SLOT_DEFAULT), "~");
+	MenuSetText(hSubMenu, 0, GS(MENU_SLOT_DEFAULT), "0");
 	MenuSetText(hSubMenu, 2, GS(MENU_SLOT_1), "1");
 	MenuSetText(hSubMenu, 3, GS(MENU_SLOT_2), "2");
 	MenuSetText(hSubMenu, 4, GS(MENU_SLOT_3), "3");
@@ -466,7 +466,7 @@ void FixMenuLang(HMENU hMenu) {
 	MenuSetText(hSubMenu, 8, GS(MENU_SLOT_7), "7");
 	MenuSetText(hSubMenu, 9, GS(MENU_SLOT_8), "8");
 	MenuSetText(hSubMenu, 10, GS(MENU_SLOT_9), "9");
-	MenuSetText(hSubMenu, 11, GS(MENU_SLOT_10), "0");
+	//MenuSetText(hSubMenu, 11, GS(MENU_SLOT_10), "0");
 }
 
 int GetStoredWinPos(char* WinName, DWORD* X, DWORD* Y) {
@@ -963,9 +963,11 @@ LRESULT CALLBACK Main_Proc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
 					SendMessage(hStatusWnd, SB_SETTEXT, 0, (LPARAM)GS(MENUDES_GAME_SLOT));
 					break;
 
-				case ID_CURRENTSAVE_0:
+					// Removed this as we now have 0 to 9 - Gent
+
+				/*case ID_CURRENTSAVE_0:
 					SendMessage(hStatusWnd, SB_SETTEXT, 0, (LPARAM)GS(MENUDES_GAME_SLOT));
-					break;
+					break;*/
 
 				default:
 					if (LOWORD(wParam) >= ID_FILE_RECENT_FILE && LOWORD(wParam) <= (ID_FILE_RECENT_FILE + RomsToRemember)) {
@@ -1246,9 +1248,11 @@ LRESULT CALLBACK Main_Proc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
 					SetCurrentSaveState(hWnd, LOWORD(wParam));
 					break;
 
-				case ID_CURRENTSAVE_0:
+					// Removed this as we now have 0 to 9 - Gent
+
+				/*case ID_CURRENTSAVE_0:
 					SetCurrentSaveState(hWnd, LOWORD(wParam));
-					break;
+					break;*/
 
 				case ID_CURRENTSAVE_1:
 					SetCurrentSaveState(hWnd, LOWORD(wParam));
@@ -1566,7 +1570,11 @@ LRESULT CALLBACK Main_Proc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
 					}
 					break;
 
-				case ID_HELP_CONTENTS: {
+				case ID_HELP_CONTENTS:
+					ShellExecute(NULL, "open", "https://www.project64-legacy.com/manual/manual.html", NULL, NULL, SW_SHOWMAXIMIZED); // Changed chm to online version for better user experience
+					break;
+
+				/*case ID_HELP_CONTENTS: {
 					char path_buffer[_MAX_PATH], drive[_MAX_DRIVE], dir[_MAX_DIR];
 					char fname[_MAX_FNAME], ext[_MAX_EXT], HelpFileName[_MAX_PATH];
 
@@ -1579,7 +1587,8 @@ LRESULT CALLBACK Main_Proc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
 						ShellExecute(hWnd, "open", HelpFileName, NULL, NULL, SW_SHOW);
 					}
 				}
-				break;
+				break;*/
+
 
 				/*case ID_HELPMNU_INDEX: {
 					char path_buffer[_MAX_PATH], drive[_MAX_DRIVE] ,dir[_MAX_DIR];
@@ -1982,7 +1991,7 @@ void DeleteAdvanceMenuOptions(HMENU hMenu) {
 	DeleteMenu(hMenu, ID_CPU_SAVEAS, MF_BYCOMMAND);
 	DeleteMenu(hMenu, ID_CPU_LOAD, MF_BYCOMMAND);
 	DeleteMenu(hMenu, ID_OPTIONS_ALWAYSONTOP, MF_BYCOMMAND);
-	DeleteMenu(hMenu, ID_OPTIONS_SHOWCPUUSAGE, MF_BYCOMMAND);
+		//DeleteMenu(hMenu, ID_OPTIONS_SHOWCPUUSAGE, MF_BYCOMMAND);
 	    // DeleteMenu(hMenu, ID_HELP_ABOUTSETTINGFILES, MF_BYCOMMAND);
 	DeleteMenu(hMenu, ID_SYSTEM_LIMITFPS, MF_BYCOMMAND);
 	    // DeleteMenu(hMenu, ID_OPTIONS_CONFIG_RSP, MF_BYCOMMAND);
@@ -2176,7 +2185,8 @@ void SetCurrentSaveState(HWND hWnd, int State) {
 		State = ID_CURRENTSAVE_DEFAULT;
 
 	CheckMenuItem(hMenu, ID_CURRENTSAVE_DEFAULT, MF_BYCOMMAND | MFS_UNCHECKED);
-	CheckMenuItem(hMenu, ID_CURRENTSAVE_0, MF_BYCOMMAND | MFS_UNCHECKED);
+	// Removed this as we now have 0 to 9 - Gent
+	//CheckMenuItem(hMenu, ID_CURRENTSAVE_0, MF_BYCOMMAND | MFS_UNCHECKED);
 	CheckMenuItem(hMenu, ID_CURRENTSAVE_1, MF_BYCOMMAND | MFS_UNCHECKED);
 	CheckMenuItem(hMenu, ID_CURRENTSAVE_2, MF_BYCOMMAND | MFS_UNCHECKED);
 	CheckMenuItem(hMenu, ID_CURRENTSAVE_3, MF_BYCOMMAND | MFS_UNCHECKED);
@@ -2195,12 +2205,14 @@ void SetCurrentSaveState(HWND hWnd, int State) {
 
 	switch (State) {
 		case ID_CURRENTSAVE_DEFAULT:
-			strcat(CurrentSave, ".pj");
-			break;
-
-		case ID_CURRENTSAVE_0:
 			strcat(CurrentSave, ".pj0");
 			break;
+
+			// Removed this as we now have 0 to 9 - Gent
+
+		/*case ID_CURRENTSAVE_0:
+			strcat(CurrentSave, ".pj0");
+			break;*/
 
 		case ID_CURRENTSAVE_1:
 			strcat(CurrentSave, ".pj1");
