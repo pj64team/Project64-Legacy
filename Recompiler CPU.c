@@ -2892,6 +2892,7 @@ void __cdecl StartRecompilerCPU (void ) {
 
 	if (GfxRomOpen != NULL) { GfxRomOpen(); }
 	if (ContRomOpen != NULL) { ContRomOpen(); }
+	if (RSPRomOpen != NULL) { RSPRomOpen(); }
 	ResetRecompCode();
 	memset(&N64_Blocks,0,sizeof(N64_Blocks));
 	NextInstruction = NORMAL;	
