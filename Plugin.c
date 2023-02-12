@@ -247,9 +247,15 @@ BOOL LoadRSPDll(char * RspDll) {
 		if (InitiateRSP_1_0 == NULL) { return FALSE; }
 	}
 	if (RSPVersion == 0x101) {
-		InitiateRSP_1_1 = (void (__cdecl *)(RSP_INFO_1_1,DWORD *))GetProcAddress( hRspDll, "InitiateRSP" );
+		InitiateRSP_1_1 = (void(__cdecl*)(RSP_INFO_1_1, DWORD*))GetProcAddress(hRspDll, "InitiateRSP");
 		if (InitiateRSP_1_1 == NULL) { return FALSE; }
 	}
+	if (RSPVersion == 0x102) {
+		InitiateRSP_1_2 = (void(__cdecl*)(RSP_INFO_1_2, DWORD*))GetProcAddress(hRspDll, "InitiateRSP");
+		if (InitiateRSP_1_2 == NULL) { return FALSE; }
+	}
+	RSPRomOpen = (void(__cdecl*)(void))GetProcAddress(hRspDll, "RomOpen");
+	//if (RSPRomOpen == NULL) { return FALSE; }
 	RSPRomClosed = (void (__cdecl *)(void))GetProcAddress( hRspDll, "RomClosed" );
 	if (RSPRomClosed == NULL) { return FALSE; }
 	RSPCloseDLL = (void (__cdecl *)(void))GetProcAddress( hRspDll, "CloseDLL" );
@@ -421,72 +427,141 @@ void SetupPlugins (HWND hWnd) {
 	if (!LoadRSPDll(RspDLL)) { 
 		DisplayError(GS(MSG_FAIL_INIT_RSP));
 		PluginsInitilized = FALSE;
-	} else { 
+	}
+	else {
 		RSP_INFO_1_0 RspInfo10;
 		RSP_INFO_1_1 RspInfo11;
+		RSP_INFO_1_2 RspInfo12;
 
 		RspInfo10.CheckInterrupts = CheckInterrupts;
 		RspInfo11.CheckInterrupts = CheckInterrupts;
+		RspInfo12.CheckInterrupts = CheckInterrupts;
+
 		RspInfo10.ProcessDlist = ProcessDList;
 		RspInfo11.ProcessDlist = ProcessDList;
+		RspInfo12.ProcessDlist = ProcessDList;
+
 		RspInfo10.ProcessAlist = ProcessAList;
 		RspInfo11.ProcessAlist = ProcessAList;
+		RspInfo12.ProcessAlist = ProcessAList;
+
 		RspInfo10.ProcessRdpList = ProcessRDPList;
 		RspInfo11.ProcessRdpList = ProcessRDPList;
+		RspInfo12.ProcessRdpList = ProcessRDPList;
+
 		RspInfo11.ShowCFB = ShowCFB;
+		RspInfo12.ShowCFB = ShowCFB;
+
+		RspInfo12.HEADER = (BYTE*)RomHeader;
+		RspInfo12.Version = 0x102;
 
 		RspInfo10.hInst = hInst;
 		RspInfo11.hInst = hInst;
+		RspInfo12.hInst = hInst;
+
 		RspInfo10.RDRAM = N64MEM;
 		RspInfo11.RDRAM = N64MEM;
+		RspInfo12.RDRAM = N64MEM;
+
 		RspInfo10.DMEM = DMEM;
 		RspInfo11.DMEM = DMEM;
+		RspInfo12.DMEM = DMEM;
+
 		RspInfo10.IMEM = IMEM;
 		RspInfo11.IMEM = IMEM;
+		RspInfo12.IMEM = IMEM;
+
 		RspInfo10.MemoryBswaped = FALSE;
 		RspInfo11.MemoryBswaped = FALSE;
+		RspInfo12.MemoryBswaped = FALSE;
 
 		RspInfo10.MI__INTR_REG = &MI_INTR_REG;
 		RspInfo11.MI__INTR_REG = &MI_INTR_REG;
-			
+		RspInfo12.MI__INTR_REG = &MI_INTR_REG;
+
 		RspInfo10.SP__MEM_ADDR_REG = &SP_MEM_ADDR_REG;
 		RspInfo11.SP__MEM_ADDR_REG = &SP_MEM_ADDR_REG;
+		RspInfo12.SP__MEM_ADDR_REG = &SP_MEM_ADDR_REG;
+
 		RspInfo10.SP__DRAM_ADDR_REG = &SP_DRAM_ADDR_REG;
 		RspInfo11.SP__DRAM_ADDR_REG = &SP_DRAM_ADDR_REG;
+		RspInfo12.SP__DRAM_ADDR_REG = &SP_DRAM_ADDR_REG;
+
 		RspInfo10.SP__RD_LEN_REG = &SP_RD_LEN_REG;
 		RspInfo11.SP__RD_LEN_REG = &SP_RD_LEN_REG;
+		RspInfo12.SP__RD_LEN_REG = &SP_RD_LEN_REG;
+
 		RspInfo10.SP__WR_LEN_REG = &SP_WR_LEN_REG;
 		RspInfo11.SP__WR_LEN_REG = &SP_WR_LEN_REG;
+		RspInfo12.SP__WR_LEN_REG = &SP_WR_LEN_REG;
+
 		RspInfo10.SP__STATUS_REG = &SP_STATUS_REG;
 		RspInfo11.SP__STATUS_REG = &SP_STATUS_REG;
+		RspInfo12.SP__STATUS_REG = &SP_STATUS_REG;
+
 		RspInfo10.SP__DMA_FULL_REG = &SP_DMA_FULL_REG;
 		RspInfo11.SP__DMA_FULL_REG = &SP_DMA_FULL_REG;
+		RspInfo12.SP__DMA_FULL_REG = &SP_DMA_FULL_REG;
+
 		RspInfo10.SP__DMA_BUSY_REG = &SP_DMA_BUSY_REG;
 		RspInfo11.SP__DMA_BUSY_REG = &SP_DMA_BUSY_REG;
+		RspInfo12.SP__DMA_BUSY_REG = &SP_DMA_BUSY_REG;
+
 		RspInfo10.SP__PC_REG = &SP_PC_REG;
 		RspInfo11.SP__PC_REG = &SP_PC_REG;
+		RspInfo12.SP__PC_REG = &SP_PC_REG;
+
 		RspInfo10.SP__SEMAPHORE_REG = &SP_SEMAPHORE_REG;
 		RspInfo11.SP__SEMAPHORE_REG = &SP_SEMAPHORE_REG;
-			
+		RspInfo12.SP__SEMAPHORE_REG = &SP_SEMAPHORE_REG;
+
 		RspInfo10.DPC__START_REG = &DPC_START_REG;
 		RspInfo11.DPC__START_REG = &DPC_START_REG;
+		RspInfo12.DPC__START_REG = &DPC_START_REG;
+
 		RspInfo10.DPC__END_REG = &DPC_END_REG;
 		RspInfo11.DPC__END_REG = &DPC_END_REG;
+		RspInfo12.DPC__END_REG = &DPC_END_REG;
+
 		RspInfo10.DPC__CURRENT_REG = &DPC_CURRENT_REG;
 		RspInfo11.DPC__CURRENT_REG = &DPC_CURRENT_REG;
+		RspInfo12.DPC__CURRENT_REG = &DPC_CURRENT_REG;
+
 		RspInfo10.DPC__STATUS_REG = &DPC_STATUS_REG;
 		RspInfo11.DPC__STATUS_REG = &DPC_STATUS_REG;
+		RspInfo12.DPC__STATUS_REG = &DPC_STATUS_REG;
+
 		RspInfo10.DPC__CLOCK_REG = &DPC_CLOCK_REG;
 		RspInfo11.DPC__CLOCK_REG = &DPC_CLOCK_REG;
+		RspInfo12.DPC__CLOCK_REG = &DPC_CLOCK_REG;
+
 		RspInfo10.DPC__BUFBUSY_REG = &DPC_BUFBUSY_REG;
 		RspInfo11.DPC__BUFBUSY_REG = &DPC_BUFBUSY_REG;
+		RspInfo12.DPC__BUFBUSY_REG = &DPC_BUFBUSY_REG;
+
 		RspInfo10.DPC__PIPEBUSY_REG = &DPC_PIPEBUSY_REG;
 		RspInfo11.DPC__PIPEBUSY_REG = &DPC_PIPEBUSY_REG;
+		RspInfo12.DPC__PIPEBUSY_REG = &DPC_PIPEBUSY_REG;
+
 		RspInfo10.DPC__TMEM_REG = &DPC_TMEM_REG;
 		RspInfo11.DPC__TMEM_REG = &DPC_TMEM_REG;
+		RspInfo12.DPC__TMEM_REG = &DPC_TMEM_REG;
 
-		if (RSPVersion == 0x0100) { InitiateRSP_1_0(RspInfo10, &RspTaskValue); }
-		if (RSPVersion == 0x0101) { InitiateRSP_1_1(RspInfo11, &RspTaskValue); }
+		switch (RSPVersion)
+		{
+		case 0x0100:
+			InitiateRSP_1_0(RspInfo10, &RspTaskValue);
+			break;
+		case 0x0101:
+			InitiateRSP_1_1(RspInfo11, &RspTaskValue);
+			break;
+		case 0x0102:
+			InitiateRSP_1_2(RspInfo12, &RspTaskValue);
+			break;
+		default:
+			InitiateRSP_1_0(RspInfo10, &RspTaskValue);
+			break;
+		}
 	}
 	
 	if (HaveDebugger) {
@@ -682,6 +757,7 @@ BOOL ValidPluginVersion ( PLUGIN_INFO * PluginInfo ) {
 		if (PluginInfo->Version == 0x0001) { return TRUE; }
 		if (PluginInfo->Version == 0x0100) { return TRUE; }
 		if (PluginInfo->Version == 0x0101) { return TRUE; }
+		if (PluginInfo->Version == 0x0102) { return TRUE; }
 		break;
 	case PLUGIN_TYPE_GFX:
 		if (PluginInfo->Version == 0x0102) { return TRUE; }

@@ -241,6 +241,7 @@ void __cdecl StartSyncCPU (void ) {
 
 	if (GfxRomOpen != NULL) { GfxRomOpen(); }
 	if (ContRomOpen != NULL) { ContRomOpen(); }
+	if (RSPRomOpen != NULL) { RSPRomOpen(); }
 	ResetRecompCode();
 	AllocateSyncMemory();
 	Registers.PROGRAM_COUNTER = PROGRAM_COUNTER;

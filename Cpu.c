@@ -803,7 +803,8 @@ BOOL Machine_LoadState(void) {
 	if (ContRomClosed != NULL) { ContRomClosed(); }
 	if (RSPRomClosed) { RSPRomClosed(); }
 	if (GfxRomOpen != NULL) { GfxRomOpen(); }
-	if (ContRomOpen != NULL) { ContRomOpen(); }	
+	if (ContRomOpen != NULL) { ContRomOpen(); }
+	if (RSPRomOpen != NULL) { RSPRomOpen(); }
 	DlistCount = 0;
 	AlistCount = 0;
 	AI_STATUS_REG = 0;

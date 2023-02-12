@@ -188,6 +188,45 @@ typedef struct {
 } RSP_INFO_1_1;
 
 typedef struct {
+	HINSTANCE hInst;
+	BOOL MemoryBswaped;    /* If this is set to TRUE, then the memory has been pre
+							  bswap on a dword (32 bits) boundry */
+	BYTE* RDRAM;
+	BYTE* DMEM;
+	BYTE* IMEM;
+
+	DWORD* MI__INTR_REG;
+
+	DWORD* SP__MEM_ADDR_REG;
+	DWORD* SP__DRAM_ADDR_REG;
+	DWORD* SP__RD_LEN_REG;
+	DWORD* SP__WR_LEN_REG;
+	DWORD* SP__STATUS_REG;
+	DWORD* SP__DMA_FULL_REG;
+	DWORD* SP__DMA_BUSY_REG;
+	DWORD* SP__PC_REG;
+	DWORD* SP__SEMAPHORE_REG;
+
+	DWORD* DPC__START_REG;
+	DWORD* DPC__END_REG;
+	DWORD* DPC__CURRENT_REG;
+	DWORD* DPC__STATUS_REG;
+	DWORD* DPC__CLOCK_REG;
+	DWORD* DPC__BUFBUSY_REG;
+	DWORD* DPC__PIPEBUSY_REG;
+	DWORD* DPC__TMEM_REG;
+
+	void(__cdecl* CheckInterrupts)(void);
+	void(__cdecl* ProcessDlist)(void);
+	void(__cdecl* ProcessAlist)(void);
+	void(__cdecl* ProcessRdpList)(void);
+	void(__cdecl* ShowCFB)(void);
+	DWORD Version;
+	BYTE* HEADER;	// This is the rom header (first 40h bytes of the rom
+					// This will be in the same memory format as the rest of the memory.
+} RSP_INFO_1_2;
+
+typedef struct {
 	/* Menu */
 	/* Items should have an ID between 5001 and 5100 */
 	HMENU hRSPMenu;
@@ -307,15 +346,17 @@ typedef union {
 void (__cdecl *GetDllInfo)             ( PLUGIN_INFO * PluginInfo );
 
 /********** RSP DLL: Functions *********************/
-void (__cdecl *GetRspDebugInfo)    ( RSPDEBUG_INFO * DebugInfo );
-void (__cdecl *RSPCloseDLL)        ( void );
-void (__cdecl *RSPDllAbout)        ( HWND hWnd );
-void (__cdecl *RSPDllConfig)       ( HWND hWnd );
-void (__cdecl *RSPRomClosed)       ( void );
-DWORD (__cdecl *DoRspCycles)       ( DWORD );
-void (__cdecl *InitiateRSP_1_0)    ( RSP_INFO_1_0 Rsp_Info, DWORD * Cycles);
-void (__cdecl *InitiateRSP_1_1)    ( RSP_INFO_1_1 Rsp_Info, DWORD * Cycles);
-void (__cdecl *InitiateRSPDebugger)( DEBUG_INFO DebugInfo);
+void (__cdecl *GetRspDebugInfo)		( RSPDEBUG_INFO * DebugInfo );
+void (__cdecl *RSPCloseDLL)			( void );
+void (__cdecl *RSPDllAbout)			( HWND hWnd );
+void (__cdecl *RSPDllConfig)		( HWND hWnd );
+void(__cdecl* RSPRomOpen)			(void);
+void(__cdecl* RSPRomClosed)			(void);
+DWORD (__cdecl *DoRspCycles)		( DWORD );
+void (__cdecl *InitiateRSP_1_0)		( RSP_INFO_1_0 Rsp_Info, DWORD * Cycles);
+void(__cdecl* InitiateRSP_1_1)		(RSP_INFO_1_1 Rsp_Info, DWORD* Cycles);
+void(__cdecl* InitiateRSP_1_2)		(RSP_INFO_1_2 Rsp_Info, DWORD* Cycles);
+void (__cdecl *InitiateRSPDebugger)	( DEBUG_INFO DebugInfo);
 
 /********** GFX DLL: Functions *********************/
 void (__cdecl *CaptureScreen)      ( char * );
