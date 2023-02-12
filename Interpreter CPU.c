@@ -740,6 +740,7 @@ void __cdecl StartInterpreterCPU (void ) {
 
 	if (GfxRomOpen != NULL) { GfxRomOpen(); }
 	if (ContRomOpen != NULL) { ContRomOpen(); }
+	if (RSPRomOpen != NULL) { RSPRomOpen(); }
 	__try {
 		for (;;) {
 			if (HaveDebugger) {
