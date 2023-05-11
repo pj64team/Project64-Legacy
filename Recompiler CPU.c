@@ -2164,6 +2164,7 @@ BOOL GenerateX86Code (BLOCK_SECTION * Section, DWORD Test) {
 			case R4300i_SPECIAL_DSRL32: Compile_R4300i_SPECIAL_DSRL32(Section); break;
 			case R4300i_SPECIAL_DSRA32: Compile_R4300i_SPECIAL_DSRA32(Section); break;
 			case R4300i_SPECIAL_BREAK: R4300i_SPECIAL_BREAK; break;
+			case R4300i_SPECIAL_TEQ: R4300i_SPECIAL_BREAK; break;
 			default:
 				Compile_R4300i_UnknownOpcode(Section); break;
 			}

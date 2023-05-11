@@ -51,6 +51,9 @@ void FirstDMA (void) {
 
 void PI_DMA_READ (void) {
 //	PI_STATUS_REG |= PI_STATUS_DMA_BUSY;
+	PI_DRAM_ADDR_REG &= 0x7FFFFFF8;
+	if (PI_RD_LEN_REG <= 4) 
+		PI_RD_LEN_REG--;
 
 	PI_RD_LEN_REG = (PI_RD_LEN_REG & 1) ? PI_RD_LEN_REG : PI_RD_LEN_REG + 1;	// Fix for Ai Shogi 3
 	PI_CART_ADDR_REG &= ~1;	// Taz Express fix
@@ -116,10 +119,14 @@ void PI_DMA_READ (void) {
 
 void PI_DMA_WRITE (void) {
 	DWORD i;	
+	PI_DRAM_ADDR_REG &= 0x7FFFFFF8;
 
-	PI_WR_LEN_REG = (PI_WR_LEN_REG & 1) ? PI_WR_LEN_REG : PI_WR_LEN_REG + 1;	// Fix for Ai Shogi 3
+	PI_WR_LEN_REG = ((PI_WR_LEN_REG & 1)) ? PI_WR_LEN_REG : PI_WR_LEN_REG + 1;	// Fix for Ai Shogi 3
 	PI_CART_ADDR_REG &= ~1;	// Taz Express fix
 	PI_DRAM_ADDR_REG &= ~7;	// Taz Express fix
+
+	if (PI_WR_LEN_REG <= 4)
+		PI_WR_LEN_REG--;
 
 	PI_STATUS_REG |= PI_STATUS_DMA_BUSY;
 	if ( PI_DRAM_ADDR_REG + PI_WR_LEN_REG + 1 > RdramSize) {
@@ -247,7 +254,8 @@ void PI_DMA_WRITE (void) {
 
 void SI_DMA_READ (void) {
 	BYTE * PifRamPos = &PIF_Ram[0];
-	
+	SI_DRAM_ADDR_REG &= 0x7FFFFFF8;
+
 	if ((int)SI_DRAM_ADDR_REG > (int)RdramSize) {
 		if (ShowDebugMessages)
 			DisplayError("SI DMA\nSI_DRAM_ADDR_REG not in RDRam space");
@@ -332,7 +340,8 @@ void SI_DMA_READ (void) {
 
 void SI_DMA_WRITE (void) {
 	BYTE * PifRamPos = &PIF_Ram[0];
-	
+	SI_DRAM_ADDR_REG &= 0x7FFFFFF8;
+
 	if ((int)SI_DRAM_ADDR_REG > (int)RdramSize) {
 		if (ShowDebugMessages)
 			DisplayError("SI DMA\nSI_DRAM_ADDR_REG not in RDRam space");
@@ -453,6 +462,8 @@ void SP_DMA_READ (void) {
 }
 
 void SP_DMA_WRITE (void) { 
+	SP_DRAM_ADDR_REG &= 0x7FFFFFF8;
+
 	if (SP_DRAM_ADDR_REG > RdramSize) {
 		if (ShowDebugMessages)
 			DisplayError("SP DMA WRITE\nSP_DRAM_ADDR_REG not in RDRam space");
