@@ -9,6 +9,7 @@
 #define LNG_NAME "Project64.lng"
 #define ROC_NAME "Project64.roc"
 #define APPS_NAME "Project64.apps"
+#define INI_NAME "Jabo.ini" // Jabo Video Specific
 
 #define LINEFEED "\r\n"
 

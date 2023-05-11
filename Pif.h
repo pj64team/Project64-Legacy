@@ -39,7 +39,8 @@ typedef enum CIC_CHIP
 	CIC_NUS_5167,	// N64DD IPL
 	CIC_NUS_8303,	// N64DD IPL TOOL
 	CIC_NUS_DDUS,	// N64DD IPL US (alternative)
-	CIC_NUS_8401	// Aleck64
+	CIC_NUS_8401,	// Aleck64
+	CIC_NUS_XENO	// Xeno Crisis
 } CIC_CHIP;
 
 #ifdef __cplusplus
