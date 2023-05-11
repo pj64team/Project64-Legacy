@@ -75,6 +75,8 @@ enum CIC_CHIP GetCicChipID(BYTE* RomData) {
 
 		case 0x000000D2E53E5DDA:	// Includes the 64DD hacked roms
 			return CIC_NUS_DDUS;
+		case 0x000000ec932a00ed:
+			return CIC_NUS_XENO;
 	}
 	
 	// Aleck64, they all seem to start with A7 or A8 past 32 bits
