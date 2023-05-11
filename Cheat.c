@@ -1575,6 +1575,25 @@ void LoadPermCheats() {
 	}
 }
 
+void LoadJaboCheats() {   // Jabo Video PermCheat Specific (Gent)
+	char Identifier[100], CheatName[300];
+	int count;
+	CHEAT cheat = { 0 };
+
+	RomID(Identifier, RomHeader);
+
+	for (count = 0; count < MaxCheats; count++) {
+		sprintf(CheatName, CHT_ENT, count);
+		Settings_Read(INI_NAME, Identifier, CheatName, STR_EMPTY, &cheat.codestring);
+
+		if (strcmp(cheat.codestring, STR_EMPTY) != 0)
+			LoadCode(&cheat);
+		else
+			count = MaxCheats;
+
+		Cheats_ClearCheat(&cheat);
+	}
+}
 
 /********************************************************************************************
   LoadCheats
@@ -1591,6 +1610,25 @@ void LoadCheats(void) {
 	NoOfCodes = 0;
 
 	LoadPermCheats();
+
+	for (count = 0; count < MaxCheats; count++) {
+
+		// A return of FALSE means the cheat entry at count does not exist, keep scanning
+		if (!Cheats_Read(&cheat, count))
+			continue;
+
+		// If the cheat is not active keep scanning
+		// Also clean up memory usage
+		if (!CheatActive(cheat.name)) {
+			Cheats_ClearCheat(&cheat);
+			continue;
+		}
+
+		LoadCode(&cheat);
+		Cheats_ClearCheat(&cheat);
+	}
+
+	LoadJaboCheats();  // Jabo Video PermCheat Specific (Gent)
 
 	for (count = 0; count < MaxCheats; count++) {
 

@@ -42,6 +42,7 @@ void FirstDMA (void) {
 	case CIC_NUS_8303: *(DWORD *)&N64MEM[0x318] = RdramSize; break;
 	case CIC_NUS_8401: *(DWORD *)&N64MEM[0x318] = RdramSize; break;
 	case CIC_NUS_DDUS: *(DWORD *)&N64MEM[0x318] = RdramSize; break;
+	case CIC_NUS_XENO: *(DWORD *)&N64MEM[0x318] = RdramSize; break;
 	default: 
 		*(DWORD *)&N64MEM[0x318] = RdramSize;
 		if (ShowDebugMessages)
