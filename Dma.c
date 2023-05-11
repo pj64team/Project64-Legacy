@@ -51,13 +51,14 @@ void FirstDMA (void) {
 
 void PI_DMA_READ (void) {
 //	PI_STATUS_REG |= PI_STATUS_DMA_BUSY;
-	PI_DRAM_ADDR_REG &= 0x7FFFFFF8;
-	if (PI_RD_LEN_REG <= 4) 
-		PI_RD_LEN_REG--;
+	PI_DRAM_ADDR_REG &= 0x7FFFFFF;
 
 	PI_RD_LEN_REG = (PI_RD_LEN_REG & 1) ? PI_RD_LEN_REG : PI_RD_LEN_REG + 1;	// Fix for Ai Shogi 3
 	PI_CART_ADDR_REG &= ~1;	// Taz Express fix
 	PI_DRAM_ADDR_REG &= ~7;	// Tax Express fix
+
+	if (PI_RD_LEN_REG <= 4)
+		PI_RD_LEN_REG--;
 
 	if ( PI_DRAM_ADDR_REG + PI_RD_LEN_REG + 1 > RdramSize) {
 		if (ShowDebugMessages)
@@ -119,7 +120,7 @@ void PI_DMA_READ (void) {
 
 void PI_DMA_WRITE (void) {
 	DWORD i;	
-	PI_DRAM_ADDR_REG &= 0x7FFFFFF8;
+	PI_DRAM_ADDR_REG &= 0x7FFFFFF;
 
 	PI_WR_LEN_REG = ((PI_WR_LEN_REG & 1)) ? PI_WR_LEN_REG : PI_WR_LEN_REG + 1;	// Fix for Ai Shogi 3
 	PI_CART_ADDR_REG &= ~1;	// Taz Express fix
