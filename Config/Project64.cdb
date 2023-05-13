@@ -17,7 +17,7 @@
 // Note that Project64 automatically prefixes "http://"
 
 Author=PJ64LegacyTeam
-Date=12th May 2023 Version: 1
+Date=13th May 2023 Version: 1
 Homepage=www.project64-legacy.com
 Version=Project64 1.6.2 (Legacy)
 
@@ -10971,7 +10971,7 @@ Cheat0="Infinite\Boost\Player 1",81137C9C 0000,81137C9E 0000,8113AB7C 0000,8113A
 Cheat1="Have All Medals",50000802 0000,8116E6E0 7777
 Cheat1_N=[StarFox]Medals Note
 Cheat2="Infinite\Lasers\Player 1",8015791B 00??
-Cheat2_O=Lasers
+Cheat2_O=[StarFox]Lasers
 Cheat3="Loads O' Hits",8015790B 00FF
 Cheat4="Infinite\Armor\Slippy",8016D72B 00FF
 Cheat5="Infinite\Energy\Player 1",8013AB27 00FF,80137C47 00FF
@@ -10989,11 +10989,11 @@ Cheat14="Infinite\Smart Bombs\Player 2",80176297 0004
 Cheat15="Infinite\Smart Bombs\Player 3",8017629B 0004
 Cheat16="Infinite\Smart Bombs\Player 4",8017629F 0004
 Cheat17="Infinite\Lasers\Player 2",8015FF9F 00??
-Cheat17_O=Lasers
+Cheat17_O=[StarFox]Lasers
 Cheat18="Infinite\Lasers\Player 3",8015FFA3 00??
-Cheat18_O=Lasers
+Cheat18_O=[StarFox]Lasers
 Cheat19="Infinite\Lasers\Player 4",8015FFA7 00??
-Cheat19_O=Lasers
+Cheat19_O=[StarFox]Lasers
 Cheat20="Infinite\Boost\Player 2",8113B05C 0000,8113B05E 0000,8113DF3C 0000,8113DF3E 0000
 Cheat21="Infinite\Boost\Player 3",8113B53C 0000,8113B53E 0000,8113E41C 0000,8113E41E 0000
 Cheat22="Infinite\Boost\Player 4",8113BA1C 0000,8113BA1E 0000,8113E8FC 0000,8113E8FE 0000
@@ -11006,7 +11006,7 @@ Cheat0="Infinite\Boost\Player 1",8113C68C 0000,8113C68E 0000,8113F56C 0000,8113F
 Cheat1="Have All Medals",50000802 0000,81178870 7777
 Cheat1_N=[StarFox]Medals Note
 Cheat2="Infinite\Lasers\Player 1",80161AAB 00??
-Cheat2_O=Lasers
+Cheat2_O=[StarFox]Lasers
 Cheat3="Loads O' Hits",80161A9B 00FF
 Cheat4="Infinite\Armor\Slippy",801778BB 00FF
 Cheat5="Infinite\Energy\Player 1",8013C637 00FF,8013F517 00FF
@@ -11024,11 +11024,11 @@ Cheat14="Infinite\Smart Bombs\Player 2",80177DA7 0004
 Cheat15="Infinite\Smart Bombs\Player 3",80177DAB 0004
 Cheat16="Infinite\Smart Bombs\Player 4",80177DAF 0004
 Cheat17="Infinite\Lasers\Player 2",80161AAF 00??
-Cheat17_O=Lasers
+Cheat17_O=[StarFox]Lasers
 Cheat18="Infinite\Lasers\Player 3",80161AB3 00??
-Cheat18_O=Lasers
+Cheat18_O=[StarFox]Lasers
 Cheat19="Infinite\Lasers\Player 4",80161AB7 00??
-Cheat19_O=Lasers
+Cheat19_O=[StarFox]Lasers
 Cheat20="Infinite\Boost\Player 2",8113CB6C 0000,8113CB6E 0000,8113FA4C 0000,8113FA4E 0000
 Cheat21="Infinite\Boost\Player 3",8113D04C 0000,8113D04E 0000,8113FF2C 0000,8113FF2E 0000
 Cheat22="Infinite\Boost\Player 4",8113D52C 0000,8113D52E 0000,8114040C 0000,8114040E 0000
@@ -26247,9 +26247,6 @@ Levitate Note=Press L to levitate & Let go to land
 Marios Cap=$10 Normal,$12 Invisible Mario,$15 Metal Mario,$16 Invisible Metal Mario,$19 Flying Mario
 Slot Note=Once the Code is activated, you will see it as a new option in the chosen Save Slot.This will have the Cannon open already to get upto Yoshi on the Roof. but make sure to save the game after collecting Red Coins and turn this code off before saving. you will now have it all saved to mempak
 
-
-//End Of File---------->Anything under here was put in by you<--------------------------------
-
 [904626B3-4A2E48D5-C:45]
 Name=Return To Yoshi's Island 64 (U) Demo (Hack)
 Cheat0="Press GS For 255 Coins",8921F9E8 00FF
@@ -27140,12 +27137,13 @@ Cheat1="Have All Medals",50000802 0000,8117D920 7777
 Cheat1_N=[StarFox]Medals Note
 Cheat2="Infinite\Lasers\Player 1",80166BDB 00??
 Cheat2_O=[StarFox]Lasers
-Cheat3="Loads O' Hits",80166BCB 00FF
+Cheat3="Loads O' Hits",80166BC7 00FF
 Cheat4="Infinite\Armor\Slippy",8017C9EB 00FF
-Cheat5="Infinite\Energy\Player 1",801426B7 00FF,8013F7D7 00FF
+Cheat5="Infinite\Energy\Player 1",800B7A68 00??
+Cheat5_O=$24 On,$AC Off
 Cheat5_N=[StarFox]Energy Note
 Cheat6="Infinite\Lives",80166BD1 0009
-Cheat7="Infinite\Smart Bombs\Player 1",8017CED3 0004
+Cheat7="Infinite\Smart Bombs\Player 1",8017CED3 0009
 Cheat8="Infinite\Armor\Falco",8017C9E7 00FF
 Cheat9="Infinite\Armor\Peppy",8017C9EF 00FF
 Cheat10="Level Select",D017D367 0000,8017D367 00??
@@ -27163,11 +27161,17 @@ Cheat4="Infinite Max Credits (Tags)",80157E15 0063
 Cheat5="Max Ammo Limit",8015789B 0007
 Cheat6="Max Grenade Power",8015789D 0002
 Cheat7="Have Gas Mask",80157E16 0001
-Cheat8="Aerea Select",801577C8 00??
-Cheat8_N=Just enable this before the start of the aerea and go to that location. Make sure you disable before the end of the aerea or it will stay on the same one.
+Cheat8="Area Select",801577C8 00??
+Cheat8_N=Just enable this before the start of the area and go to that location. Make sure you disable before the end of the area or it will stay on the same one.
 Cheat8_O=$00 The Perimeter,$01 The Facility,$02 The Dunes,$03 The Nest,$04 The Forest,$05 The Lab,$06 The HQ
 Cheat9="Max Power",80157899 0003
 Cheat10="Max Speed",8015789A 0003
-Cheat11="Weapom Select",80157E05 0063,80157E00 00??
+Cheat11="Weapon Select",80157E05 0063,80157E00 00??
 Cheat11_N=This will give you the selected weapon and infinite use.
 Cheat11_O=$00 Assault Riffle,$01 Flamethrower,$02 Rocket Launcher,$03 Spread Shot,$04 Homing,$05 Laser,$06 Rebound,$07 Shotgun,$08 Vulcan,$09 BFG
+Cheat12="Press F9 for Gent's Mega Score",891577AA FFFF,891577AB FFFF
+
+//----
+
+//End Of File----------> Anything under here was put in by you <--------------------------------
+
