@@ -19,7 +19,7 @@
 // Note that Project64 automatically prefixes "http://"
 
 Author=PJ64LegacyTeam
-Date=12th May 2023 Version: 1
+Date=13th May 2023 Version: 1
 Homepage=www.project64-legacy.com
 Version=Project64 1.6.2 (Legacy)
 
@@ -155,6 +155,11 @@ Use GlideN64 & Jabo's 1.6.1 Audio=800080
 Use GlideN64 & Jabo's 1.6.1 Audio.Sel=800080
 Use GlideN64 & Jabo's 1.6.1 Audio.Seltext=FFFFFF
 
+//Added by Gent to show better in GLideN64 video plugin & RSP Emulation Plugin
+GlideN64 & RSP Emulation=800080
+GlideN64 & RSP Emulation.Sel=800080
+GlideN64 & RSP Emulation.Seltext=FFFFFF
+
 //Added by Gent to show better in GLideN64 video plugin
 Use GLideN64 Video=800080
 Use GLideN64 Video.Sel=800080
@@ -171,9 +176,9 @@ Use GLideN64 HLE Video.Sel=800080
 Use GLideN64 HLE Video.Seltext=FFFFFF
 
 //Added by Gent to show better in Icepir8s-Legacy-LLE & Parallel-RSP plugins
-Use Icepir8s-Legacy-LLE & Parallel-RSP=800080
-Use Icepir8s-Legacy-LLE & Parallel-RSP.Sel=800080
-Use Icepir8s-Legacy-LLE & Parallel-RSP.Seltext=FFFFFF
+Icepir8s-Legacy-LLE & Parallel-RSP=800080
+Icepir8s-Legacy-LLE & Parallel-RSP.Sel=800080
+Icepir8s-Legacy-LLE & Parallel-RSP.Seltext=FFFFFF
 
 //Added by Gent to show better in Icepir8s-Legacy-RSP plugin
 Use Icepir8s-Legacy-RSP=800080
@@ -184,21 +189,6 @@ Use Icepir8s-Legacy-RSP.Seltext=FFFFFF
 Use RSP Emulation Plugin=800080
 Use RSP Emulation Plugin.Sel=800080
 Use RSP Emulation Plugin.Seltext=FFFFFF
-
-//Added by Gent to show better in angrylion-rdp-plus video plugin
-Use angrylion-rdp-plus Video=800080
-Use angrylion-rdp-plus Video.Sel=800080
-Use angrylion-rdp-plus Video.Seltext=FFFFFF
-
-//Added by Gent to show better in Iconoclast+MarathonMan rsp plugin
-Use Iconoclast+MarathonMan RSP=800080
-Use Iconoclast+MarathonMan RSP.Sel=800080
-Use Iconoclast+MarathonMan RSP Video.Seltext=FFFFFF
-
-//Added by Gent to show better in angrylion-rdp-plus video & Iconoclast+MarathonMan rsp plugins
-Use angrylion+Iconoclast Plugins=800080
-Use angrylion+Iconoclast Plugins.Sel=800080
-Use angrylion+Iconoclast Plugins.Seltext=FFFFFF
 
 //Added by Gent to show better in N-Rage input plugin
 Use N-Rage input=800080
@@ -406,7 +396,7 @@ Linking=Global
 Plugin Note=[video] possible slow downs in menus
 Save Type=First Save Type
 Self-modifying code Method=Change Memory
-Status=Compatible
+Status=Use GLideN64 Video
 
 [85C18B16-DF9622AF-C:4A]
 Name=64 Oozumou 2 (J)
@@ -415,7 +405,7 @@ Counter Factor=2
 Linking=Global
 Save Type=First Save Type
 Self-modifying code Method=Change Memory
-Status=Compatible
+Status=Use GLideN64 Video
 
 [7A6081FC-FF8F7A78-C:4A]
 Name=64 Trump Collection - Alice no Wakuwaku Trump World (J)
@@ -424,7 +414,7 @@ Counter Factor=2
 Linking=Global
 Save Type=First Save Type
 Self-modifying code Method=Change Memory
-Status=Compatible
+Status=Use GLideN64 Video
 
 //
 //-------------------------  A  --------------------------
@@ -1823,10 +1813,9 @@ CPU Type=Recompiler
 Core Note=(see GameFAQ)
 Counter Factor=2
 Linking=Off
-Plugin Note=[video] errors:framebuffer/menus (See Gamefaq)
 Save Type=16kbit Eeprom
 Self-modifying code Method=Protected Memory
-Status=Use GLideN64 Video
+Status=Use GlideN64 & RSP Emulation Plugin
 Use Large Buffer
 
 [46A3F7AF-0F7591D0-C:45]
@@ -2346,10 +2335,9 @@ Name=Animal Forest - Doubutsu no Mori (U) [T-Eng]
 CPU Type=Recompiler
 Counter Factor=2
 Linking=Global
-Plugin Note=[video] errors:pause menu
 Save Type=First Save Type
 Self-modifying code Method=Check Memory Advance
-Status=Use GLideN64 Video
+Status=Compatible
 //Cheat1=80026084 0024  // Hang Fix
 
 [769D4D13-DA233FFE-C:45]
@@ -3858,27 +3846,23 @@ Status=Uncertain
 [20073BC7-5E3B0111-C:45]
 Name=International Track & Field 2000 (U)
 CPU Type=Recompiler
-Core Note=slow;use Project64 v1.4
 Counter Factor=2
 ExpansionPak
 Linking=Global
-Plugin Note=[video] Jabo errors (Use 3rd party plugin (See Gamefaq)
 Save Type=First Save Type
 Self-modifying code Method=Check Memory Advance
-Status=Broken (c & p)
+Status=Use GLideN64 Video
 Use Large Buffer
 
 [6712C779-3B72781D-C:50]
 Name=International Track & Field Summer Games (E) (M3)
 CPU Type=Recompiler
-Core Note=slow;use Project64 v1.4
 Counter Factor=2
 ExpansionPak
 Linking=Global
-Plugin Note=[video] Jabo errors (Use 3rd party plugin (See Gamefaq)
 Save Type=First Save Type
 Self-modifying code Method=Check Memory Advance
-Status=Broken (c & p)
+Status=Use GLideN64 Video
 Use Large Buffer
 
 [D137A2CA-62B65053-C:4A]
@@ -7860,7 +7844,7 @@ Counter Factor=2
 Linking=Off
 Save Type=First Save Type
 Self-modifying code Method=Check Memory Advance
-Status=Use Icepir8s-Legacy-LLE & Parallel-RSP
+Status=Interpreter only
 //Cheat0=81036274 0000,81036276 0000//jal 800970F0 osRecvMesg #14
 
 
@@ -14763,7 +14747,7 @@ Disable Reg Cache
 Linking=Off
 Save Type=FlashRam
 Self-modifying code Method=Default
-Status=Compatible
+Status=GlideN64 & RSP Emulation
 
 [3EA79920-2FA5A328-C:00]
 Name=Custom Robo (CHN) (iQue)
@@ -15967,7 +15951,7 @@ ExpansionPak
 Linking=Off
 Save Type=First Save Type
 Self-modifying code Method=Check Memory Advance
-Status=Use Icepir8s-Legacy-LLE & Parallel-RSP
+Status=Interpreter only
 VI=1800
 //Cheat0=81036274 0000,81036276 0000//jal 800970F0 osRecvMesg #14
 
@@ -15980,7 +15964,7 @@ Linking=Off
 Plugin Note=[video]Use GlideN64 LLE
 Save Type=First Save Type
 Self-modifying code Method=Check Memory Advance
-Status=Use Icepir8s-Legacy-RSP
+Status=Interpreter only
 VI=1800
 //Cheat0=81036274 0000,81036276 0000//jal 800970F0 osRecvMesg #14
 
@@ -17477,14 +17461,7 @@ Plugin Note=GFX Subscreen/Inventory JaboD3D
 Save Type=First Save Type
 Self-modifying code Method=Check Memory Advance
 Status=Interpreter only
-//WaitMult=5000
-
-//
-//-------- Any entries below this point are for ROMs you have added via the GUI [EOF] --------
-//
-
-
-[D0E29F11-E029063F-C:50]
+//WaitMult=5000[D0E29F11-E029063F-C:50]
 Name=Aidyn Chronicles - The First Mage (Europe) (Prototype) (1)
 CPU Type=Recompiler
 Counter Factor=2
@@ -17985,4 +17962,10 @@ Counter Factor=Default
 Linking=Global
 Save Type=First Save Type
 Self-modifying code Method=Default
-Status=Compatible
+Status=Use GLideN64 HLE Video
+
+//
+//-------- Any entries below this point are for ROMs you have added yourself via the GUI [EOF] --------
+//
+
+
