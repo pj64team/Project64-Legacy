@@ -55,6 +55,7 @@ void CE_SaveCheat(int item);
 void CS_UpdateSearchProc(HWND hDlg);
 DWORD WINAPI LiveUpdate(LPVOID arg);
 void StopLiveUpdate();
+void __cdecl Create_Memory_Window(int Child);
 
 // The following were done to clean up the message map a little
 LRESULT CheatSearchResults_FindItem(NMHDR* lParam);
@@ -440,7 +441,11 @@ BOOL CALLBACK CheatSearchDlgProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lPa
 					CE_UpdateControls(hDlg, -1);	// Save eats the item so default to nothing
 					break;
 				}
-
+				case IDB_CS_CHEAT_MEMVIEWER:
+				{
+					Create_Memory_Window(FALSE);
+					break;
+				}
 				case IDT_SEARCH_VALUE: {
 					if (HIWORD(wParam) == EN_CHANGE) {
 						char strVal[8];
