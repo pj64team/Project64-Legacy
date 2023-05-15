@@ -16,8 +16,10 @@ void CountryCodeToString(char string[], BYTE Country, int length) {
 	case 'D': strncpy(string, "Germany", length); break;
 	case 'E': strncpy(string, "USA", length); break;
 	case 'F': strncpy(string, "France", length); break;
+	case 'G': strncpy(string, "Gateway (NTSC)", length); break;
 	case 'I': strncpy(string, "Italy", length); break;
 	case 'J': strncpy(string, "Japan", length); break;
+	case 'L': strncpy(string, "Lodgenet (PAL)", length); break;
 	case 'P': strncpy(string, "Europe", length); break;
 	case 'S': strncpy(string, "Spain", length); break;
 	case 'U': strncpy(string, "Australia", length); break;
@@ -68,7 +70,7 @@ int GetRomRegionByCode(BYTE CountryCode) {
 	case 'D': // Germany
 	case 'F': // French
 	case 'I': // Italian
-	case 'P': // Europe
+	case 'L': // Lodgenet (PAL)
 	case 'S': // Spanish
 	case 'U': // Australia
 	case 'X': // PAL
@@ -80,6 +82,7 @@ int GetRomRegionByCode(BYTE CountryCode) {
 	case 'B':	// Brazil
 	case 'C':	// China
 	case 'E':	// USA
+	case 'G':   // Gateway (NTSC)
 	case 'J':	// Japan
 	case ' ':	// PD
 	case 0:		// PD
