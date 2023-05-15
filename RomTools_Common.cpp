@@ -70,6 +70,7 @@ int GetRomRegionByCode(BYTE CountryCode) {
 	case 'D': // Germany
 	case 'F': // French
 	case 'I': // Italian
+	case 'P': // Europe
 	case 'L': // Lodgenet (PAL)
 	case 'S': // Spanish
 	case 'U': // Australia
@@ -82,7 +83,7 @@ int GetRomRegionByCode(BYTE CountryCode) {
 	case 'B':	// Brazil
 	case 'C':	// China
 	case 'E':	// USA
-	case 'G':   // Gateway (NTSC)
+	case 'G':       // Gateway (NTSC)
 	case 'J':	// Japan
 	case ' ':	// PD
 	case 0:		// PD
