@@ -494,6 +494,9 @@
     <ClInclude Include="WatchPoints.h">
       <Filter>Header Files\Debugger Headers</Filter>
     </ClInclude>
+    <ClInclude Include="SettingsID.h">
+      <Filter>Header Files\General Header</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="PJ64.rc">

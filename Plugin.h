@@ -241,6 +241,58 @@ typedef struct {
 	void (__cdecl *Enter_Memory_Window)( void );
 } DEBUG_INFO;
 
+typedef enum Setting_Type
+{
+	SettingType_Unknown = -1,
+	SettingType_ConstString = 0,
+	SettingType_ConstValue = 1,
+	SettingType_CfgFile = 2,
+	SettingType_Registry = 3,
+	SettingType_RelativePath = 4,
+	TemporarySetting = 5,
+	SettingType_RomDatabase = 6,
+	SettingType_CheatSetting = 7,
+	SettingType_GameSetting = 8,
+	SettingType_BoolVariable = 9,
+	SettingType_NumberVariable = 10,
+	SettingType_StringVariable = 11,
+	SettingType_SelectedDirectory = 12,
+	SettingType_RdbSetting = 13,
+	SettingType_Enhancement = 14,
+} SettingType;
+
+typedef enum Setting_Data_Type
+{
+	Data_DWORD = 0,
+	Data_String = 1,
+	Data_CPUTYPE = 2,
+	Data_SelfMod = 3,
+	Data_OnOff = 4,
+	Data_YesNo = 5,
+	Data_SaveChip = 6
+} SettingDataType;
+
+typedef struct {
+	DWORD  dwSize;
+	int    DefaultStartRange;
+	int    SettingStartRange;
+	int    MaximumSettings;
+	int    NoDefault;
+	int    DefaultLocation;
+	void * handle;
+	unsigned int (*GetSetting)      ( void * handle, int ID );
+	const char * (*GetSettingSz)    ( void * handle, int ID, char * Buffer, int BufferLen );
+    void         (*SetSetting)      ( void * handle, int ID, unsigned int Value );
+    void         (*SetSettingSz)    ( void * handle, int ID, const char * Value );
+	void         (*RegisterSetting) ( void * handle, int ID, int DefaultID, SettingDataType Type, 
+                                      SettingType Location, const char * Category, const char * DefaultStr, DWORD Value );
+	void         (*UseUnregisteredSetting) (int ID);
+} PLUGIN_SETTINGS;
+
+typedef struct {
+	unsigned int (*FindSystemSettingId) (void* handle, const char* Name);
+} PLUGIN_SETTINGS2;
+
 typedef struct {
 	HWND hwnd;
 	HINSTANCE hinst;
@@ -337,6 +389,12 @@ void (__cdecl *ShowCFB)			   ( void );
 void (__cdecl *UpdateScreen)       ( void );
 void (__cdecl *ViStatusChanged)    ( void );
 void (__cdecl *ViWidthChanged)     ( void );
+// Used by Jabo Direct3D8 1.7.0.48-57
+void (__cdecl *SetSettingInfo)    (PLUGIN_SETTINGS* info);
+void (__cdecl *SetSettingInfo2)   (PLUGIN_SETTINGS2* info);
+void (__cdecl *DrawFullScreenStatus)   (const char* lpString, int RightAlign);
+void (__cdecl *GetRomBrowserMenu)  ( void );
+void (__cdecl *OnRomBrowserMenuItem)   (int MenuID, HWND hParent /*, uint8_t* HEADER*/);
 
 /************ Audio DLL: Functions *****************/
 void (__cdecl *AiCloseDLL)       ( void );
@@ -366,6 +424,14 @@ void (__cdecl *WM_KeyDown)       ( WPARAM wParam, LPARAM lParam );
 void (__cdecl *WM_KeyUp)         ( WPARAM wParam, LPARAM lParam );
 void (__cdecl *RumbleCommand)	 ( int Control, BOOL bRumble );
 
+int dummyHandle;
+void DummyRegisterSetting(void* _this, int ID, int DefaultID, SettingDataType DataType,
+	SettingType Type, const char* Category, const char* DefaultStr,
+	unsigned int Value);
+unsigned int DummyGetSetting(void* _this, int Type);
+const char* DummyGetSettingSz(void* _this, int Type, char* Buffer, unsigned int BufferSize);
+void DummySetSetting(void* _this, int ID, unsigned int Value);
+void DummySetSettingSz(void* _this, int ID, const char* Value);
 /********** Plugin: Functions *********************/
 #ifdef __cplusplus
 extern "C" {

@@ -30,6 +30,7 @@
 #include "Debugger.h"
 #include "plugin.h"
 #include "settings.h"
+#include "SettingsID.h"
 #include "EmulateAI.h"
 #include "resource.h"
 
@@ -211,11 +212,83 @@ BOOL LoadGFXDll(char * GfxDll) {
 		GetGfxDebugInfo = NULL;
 		InitiateGFXDebugger = NULL;
 	}
+	/***** For Jabo Direct3D8 1.7.0.48-57 *****/
+	if (PluginInfo.Version >= 0x0104) {
+		SetSettingInfo = (void(__cdecl*)(PLUGIN_SETTINGS*))GetProcAddress(hGfxDll, "SetSettingInfo");
+		if (SetSettingInfo == NULL) { return FALSE; }
+		SetSettingInfo2 = (void(__cdecl*)(PLUGIN_SETTINGS2*))GetProcAddress(hGfxDll, "SetSettingInfo2");
+		if (SetSettingInfo2 == NULL) { return FALSE; }
+		DrawFullScreenStatus = (void(__cdecl*)(void))GetProcAddress(hGfxDll, "DrawFullScreenStatus");
+		GetRomBrowserMenu = (void(__cdecl*)(void))GetProcAddress(hGfxDll, "GetRomBrowserMenu");
+		OnRomBrowserMenuItem = (void(__cdecl*)(void))GetProcAddress(hGfxDll, "OnRomBrowserMenuItem");
+	} else {
+		SetSettingInfo = NULL;
+		SetSettingInfo2 = NULL;
+		DrawFullScreenStatus = NULL;
+		GetRomBrowserMenu = NULL;
+		OnRomBrowserMenuItem = NULL;
+	}
+	if (SetSettingInfo)
+	{
+		PLUGIN_SETTINGS info;
+		info.dwSize = sizeof(PLUGIN_SETTINGS);
+		info.DefaultStartRange = FirstGfxDefaultSet;
+		info.SettingStartRange = FirstGfxSettings;
+		info.MaximumSettings = MaxPluginSetting;
+		info.NoDefault = Default_None;
+		info.DefaultLocation = SettingType_CfgFile;
+		//info.handle = g_Settings;
+		//info.RegisterSetting = (void(*)(void*, int, int, SettingDataType, SettingType, const char*, const char*, uint32_t)) & CSettings::RegisterSetting;
+		//info.GetSetting = (uint32_t(*)(void*, int)) & CSettings::GetSetting;
+		//info.GetSettingSz = (const char* (*)(void*, int, char*, int)) & CSettings::GetSettingSz;
+		//info.SetSetting = (void(*)(void*, int, uint32_t)) & CSettings::SetSetting;
+		//info.SetSettingSz = (void(*)(void*, int, const char*)) & CSettings::SetSettingSz;
+		info.handle = &dummyHandle;
+		info.RegisterSetting = (void(*)(void*, int, int, SettingDataType, SettingType, const char*, const char*, unsigned int)) & DummyRegisterSetting;
+		info.GetSetting = (unsigned int(*)(void*, int)) & DummyGetSetting;
+		info.GetSettingSz = (const char* (*)(void*, int, char*, int)) & DummyGetSettingSz;
+		info.SetSetting = (void(*)(void*, int, unsigned int)) & DummySetSetting;
+		info.SetSettingSz = (void(*)(void*, int, const char*)) & DummySetSettingSz;
+		info.UseUnregisteredSetting = NULL;
+
+		SetSettingInfo(&info);
+	}
+
 #ifdef CFB_READ
 	FrameBufferRead = (void (__cdecl *)(DWORD))GetProcAddress( hGfxDll, "FBRead" );
 	FrameBufferWrite = (void (__cdecl *)(DWORD, DWORD))GetProcAddress( hGfxDll, "FBWrite" );
 #endif
 	return TRUE;
+}
+
+int dummyHandle = 0;
+
+void DummyRegisterSetting(void* _this, int ID, int DefaultID, SettingDataType DataType,
+	SettingType Type, const char* Category, const char* DefaultStr,
+	unsigned int Value)
+{
+	// Do nothing
+}
+
+unsigned int DummyGetSetting(void* _this, int Type) {
+	// Do nothing
+	return 0;
+}
+
+const char* DummyGetSettingSz(void* _this, int Type, char* Buffer, unsigned int BufferSize)
+{
+	// Do nothing
+	return "dummy";
+}
+
+void DummySetSetting(void* _this, int ID, unsigned int Value)
+{
+	// Do nothing
+}
+
+void DummySetSettingSz(void* _this, int ID, const char* Value)
+{
+	// Do nothing
 }
 
 BOOL LoadRSPDll(char * RspDll) {
@@ -686,6 +759,7 @@ BOOL ValidPluginVersion ( PLUGIN_INFO * PluginInfo ) {
 	case PLUGIN_TYPE_GFX:
 		if (PluginInfo->Version == 0x0102) { return TRUE; }
 		if (PluginInfo->Version == 0x0103) { return TRUE; }
+		if (PluginInfo->Version == 0x0104) { return TRUE; }
 		break;
 	case PLUGIN_TYPE_AUDIO:
 		if (PluginInfo->Version == 0x0101) { return TRUE; }

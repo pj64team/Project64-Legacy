@@ -172,7 +172,7 @@
       <PrecompiledHeaderOutputFile>.\Release_External\Project64.pch</PrecompiledHeaderOutputFile>
       <ObjectFileName>.\Release_External\</ObjectFileName>
       <ProgramDataBaseFileName>.\Release_External\</ProgramDataBaseFileName>
-      <CallingConvention>FastCall</CallingConvention>
+      <CallingConvention>Cdecl</CallingConvention>
       <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
       <EnablePREfast>false</EnablePREfast>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
@@ -427,6 +427,7 @@
     <ClInclude Include="RomTools_Common.h" />
     <ClInclude Include="Settings Api.h" />
     <ClInclude Include="Settings Common Defines.h" />
+    <ClInclude Include="SettingsID.h" />
     <ClInclude Include="tlb Display.h" />
     <ClInclude Include="Cheats.h" />
     <ClInclude Include="HTMLHELP.H" />
