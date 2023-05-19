@@ -19,7 +19,7 @@
 // Note that Project64 automatically prefixes "http://"
 
 Author=PJ64LegacyTeam
-Date=13th May 2023 Version: 1
+Date=14th May 2023 Version: 1
 Homepage=www.project64-legacy.com
 Version=Project64 1.6.2 (Legacy)
 
@@ -14951,7 +14951,7 @@ Self-modifying code Method=Check Memory & cache
 Status=Interpreter only
 
 [79D25B51-2350B06E-C:00]
-Name=Star Fox 64 (CHN)
+Name=Starfox 64 (CHN)
 CPU Type=Interpreter
 Counter Factor=2
 Disable Reg Cache
@@ -14961,6 +14961,7 @@ Linking=Off
 Save Type=First Save Type
 Self-modifying code Method=Check Memory & cache
 Status=Issues (core)
+Core Note=Use savefix version, Check rom information for file name.
 //WaitMult=3000
 
 [480B85A4-640135A3-C:00]
@@ -17450,27 +17451,18 @@ Status=Interpreter only
 //WaitMult=5000
 
 [03868F24-702159FA-C:55]
-Name=The Legend of Zelda Ocarina of Time (CHN) (A) [SaveFix]
-CPU Type=Interpreter
+Name=Aidyn Chronicles - The First Mage (Europe) (Prototype) (1)
+CPU Type=Recompiler
 Core Note=No native save support
 Counter Factor=2
 Disable TLB
 ExpansionPak
-Linking=Off
-Plugin Note=GFX Subscreen/Inventory JaboD3D
-Save Type=First Save Type
-Self-modifying code Method=Check Memory Advance
-Status=Interpreter only
-//WaitMult=5000[D0E29F11-E029063F-C:50]
-Name=Aidyn Chronicles - The First Mage (Europe) (Prototype) (1)
-CPU Type=Recompiler
-Counter Factor=2
-Disable TLB
-ExpansionPak
 Linking=Global
+Plugin Note=GFX Subscreen/Inventory JaboD3D
 Save Type=First Save Type
 Self-modifying code Method=Change Memory
 Status=Compatible
+//WaitMult=5000[D0E29F11-E029063F-C:50]
 
 
 [8825E18B-3297746B-C:50]
