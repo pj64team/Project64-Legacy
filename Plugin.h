@@ -26,10 +26,14 @@
 #ifndef __Plugin_h 
 #define __Plugin_h 
 
-#define DefaultGFXDll				"Jabo_Direct3D8.dll"
-#define DefaultRSPDll				"RSP.dll"
+ // Added Icepir8s Legacy LLE Video as default (Gent)
+#define DefaultGFXDll				"Icepir8sLegacyLLE.dll"
+
+ // Added Icepir8s Legacy RSP as default (Gent)
+#define DefaultRSPDll				"Icepir8sLegacyRSP.dll"
 #define DefaultAudioDll				"AziAudio_Legacy.dll"
-// Added NRage inout as defualt
+
+// Added NRage Legacy input as default (Gent)
 #define DefaultControllerDll		"NRage_Legacy_Input.dll"
 
 #define PLUGIN_TYPE_RSP				1
