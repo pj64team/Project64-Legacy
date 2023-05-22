@@ -191,10 +191,11 @@ typedef struct {
 	void (__cdecl *ShowCFB)( void );
 } RSP_INFO_1_1;
 
+/*
 typedef struct {
 	HINSTANCE hInst;
-	BOOL MemoryBswaped;    /* If this is set to TRUE, then the memory has been pre
-							  bswap on a dword (32 bits) boundry */
+	BOOL MemoryBswaped;		// If this is set to TRUE, then the memory has been pre
+							//  bswap on a dword (32 bits) boundry 
 	BYTE* RDRAM;
 	BYTE* DMEM;
 	BYTE* IMEM;
@@ -229,6 +230,7 @@ typedef struct {
 	BYTE* HEADER;	// This is the rom header (first 40h bytes of the rom
 					// This will be in the same memory format as the rest of the memory.
 } RSP_INFO_1_2;
+*/
 
 typedef struct {
 	/* Menu */
@@ -354,13 +356,13 @@ void (__cdecl *GetRspDebugInfo)		( RSPDEBUG_INFO * DebugInfo );
 void (__cdecl *RSPCloseDLL)			( void );
 void (__cdecl *RSPDllAbout)			( HWND hWnd );
 void (__cdecl *RSPDllConfig)		( HWND hWnd );
-void(__cdecl* RSPRomOpen)			(void);
-void(__cdecl* RSPRomClosed)			(void);
-DWORD (__cdecl *DoRspCycles)		( DWORD );
-void (__cdecl *InitiateRSP_1_0)		( RSP_INFO_1_0 Rsp_Info, DWORD * Cycles);
-void(__cdecl* InitiateRSP_1_1)		(RSP_INFO_1_1 Rsp_Info, DWORD* Cycles);
-void(__cdecl* InitiateRSP_1_2)		(RSP_INFO_1_2 Rsp_Info, DWORD* Cycles);
-void (__cdecl *InitiateRSPDebugger)	( DEBUG_INFO DebugInfo);
+void (__cdecl *RSPRomOpen)			(void);
+void (__cdecl *RSPRomClosed)		(void);
+DWORD (__cdecl *DoRspCycles)		(DWORD);
+void (__cdecl *InitiateRSP_1_0)		(RSP_INFO_1_0 Rsp_Info, DWORD *Cycles);
+void (__cdecl *InitiateRSP_1_1)		(RSP_INFO_1_1 Rsp_Info, DWORD *Cycles);
+void (__cdecl *InitiateRSPDebugger)	(DEBUG_INFO DebugInfo);
+DWORD (__cdecl *SetRomHeader)		(BYTE*);
 
 /********** GFX DLL: Functions *********************/
 void (__cdecl *CaptureScreen)      ( char * );

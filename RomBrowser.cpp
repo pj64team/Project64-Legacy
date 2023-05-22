@@ -264,7 +264,7 @@ BOOL IsRomBrowserMaximized(void) {
 BOOL IsSortAscending(int Index) {
 	char Search[200];
 	sprintf(Search, "Sort Ascending %d", Index);
-	return Settings_ReadBool(APPS_NAME, "Rom Browser Page", Search, FALSE);
+	return Settings_ReadBool(APPS_NAME, "Rom Browser Page", Search, TRUE); // was FALSE
 }
 
 void LoadRomList(void) {
@@ -452,7 +452,7 @@ void GetSortField(int Index, char* ret, int max) {
 	char String[200], * read;
 
 	sprintf(String, "Sort Field %d", Index);
-	Settings_Read(APPS_NAME, "Rom Browser Page", String, "", &read);
+	Settings_Read(APPS_NAME, "Rom Browser Page", String, "Good Name", &read);
 	strncpy(ret, read, max);
 	if (read) free(read);
 }
@@ -1037,10 +1037,17 @@ int CALLBACK SelectRomDirCallBack(HWND hwnd, DWORD uMsg, DWORD, DWORD lpData) {
 	return 0;
 }
 
+extern "C"
+{
+	void TerminateAudioThread();
+}
+
 void SelectRomDir(void) {
 	char Buffer[MAX_PATH], Directory[MAX_PATH], RomDirectory[MAX_PATH + 1];
 	LPITEMIDLIST pidl;
 	BROWSEINFO bi = { 0 };	// Initialization to 0 prevents XP crash
+	
+	TerminateAudioThread();
 
 	Settings_GetDirectory(RomDir, RomDirectory, sizeof(RomDirectory));
 
@@ -1063,11 +1070,14 @@ void SelectRomDir(void) {
 			}
 			SetRomDirectory(Directory);
 			Settings_Write(APPS_NAME, "Directories", "Use Default Rom", "False");
+			ResetRomBrowserColomuns();
 			RefreshRomBrowser();
 		}
 	}
 
 	CoUninitialize();
+
+	SetupPlugins(hMainWindow);
 }
 
 void SetRomBrowserMaximized(BOOL Maximized) {

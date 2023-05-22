@@ -1244,7 +1244,8 @@ int r4300i_CPU_MemoryFilter( DWORD dwExptCode, LPEXCEPTION_POINTERS lpEP) {
 		case 6: ReadPos += 1; break;
 		case 7: ReadPos += 1; break;
 		default:
-			_asm int 3
+			//_asm int 3
+			break;
 		}
 		break;
 	case 5: ReadPos += 5; break;
