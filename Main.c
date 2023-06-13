@@ -1986,7 +1986,8 @@ void DeleteAdvanceMenuOptions(HMENU hMenu) {
 	hSubMenu = GetSubMenu(hMenu, 1);
 	DeleteMenu(hSubMenu, 3, MF_BYPOSITION); //Line
 
-	DeleteMenu(hMenu, ID_FILE_STARTEMULATION, MF_BYCOMMAND);
+/* Added to Basic Mode as I feel users should be able to take screenshots without having to uncheck Basic Mode (Gent)
+  DeleteMenu(hMenu, ID_SYSTEM_GENERATEBITMAP, MF_BYCOMMAND); */
 	DeleteMenu(hMenu, ID_SYSTEM_GENERATEBITMAP, MF_BYCOMMAND);
 	DeleteMenu(hMenu, ID_CPU_SAVEAS, MF_BYCOMMAND);
 	DeleteMenu(hMenu, ID_CPU_LOAD, MF_BYCOMMAND);
