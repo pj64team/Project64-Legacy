@@ -64,7 +64,7 @@ LANG_STR DefaultString[] = {
 		{ MENU_SAVE,        "&Save"                  },
 		{ MENU_SAVE_AS,     "Save As..."             },
 		{ MENU_RESTORE,     "&Restore"               },
-		{ MENU_LOAD,        "Load..."                },
+		{ MENU_LOAD,        "Restore From"                },
 		{ MENU_CURRENT_SAVE,"Current Save S&tate"    },
 			{ MENU_SLOT_DEFAULT,"Default"            },
 			{ MENU_SLOT_1,      "Slot 1"             },

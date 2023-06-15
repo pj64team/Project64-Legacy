@@ -45,13 +45,14 @@ BOOL PluginsInitilized = FALSE;
 
 BOOL PluginsChanged ( HWND hDlg );
 BOOL ValidPluginVersion ( PLUGIN_INFO * PluginInfo );
-
+volatile BOOL bTerminateAudioThread = FALSE;
 
 void __cdecl AudioThread (void) {
 	SetThreadPriority(GetCurrentThread(), THREAD_PRIORITY_TIME_CRITICAL );
-	for (;;) { 
-	//	AiUpdate(TRUE);
-		Sleep(1);
+	for (;bTerminateAudioThread == 0;) {
+	//for (;;) {
+		AiUpdate(TRUE);
+		//Sleep(1);
 	}
 }
 
@@ -271,6 +272,7 @@ void TerminateAudioThread()
 {
 	static DWORD AI_DUMMY = 0;
 	TerminateThread(hAudioThread, 0);
+	bTerminateAudioThread = TRUE;
 	if (AiCloseDLL != NULL) { AiCloseDLL(); }
 	FreeLibrary(hAudioDll);
 
@@ -288,6 +290,7 @@ void TerminateAudioThread()
 void ResetAudio(HWND hWnd) {
 	static DWORD AI_DUMMY = 0;
 	TerminateThread(hAudioThread,0);
+	bTerminateAudioThread = TRUE; 
 	if (AiCloseDLL != NULL) { AiCloseDLL(); }
 	FreeLibrary(hAudioDll);
 	
@@ -337,6 +340,7 @@ void ResetAudio(HWND hWnd) {
 		}
 		if (AiUpdate) { 
 			DWORD ThreadID;
+			bTerminateAudioThread = FALSE;
 			hAudioThread = CreateThread(NULL,0,(LPTHREAD_START_ROUTINE)AudioThread, (LPVOID)NULL,0, &ThreadID);			
 		}
 	}
@@ -437,10 +441,11 @@ void SetupPlugins (HWND hWnd) {
 			DisplayError(GS(MSG_FAIL_INIT_AUDIO));
 			PluginsInitilized = FALSE;
 		}
-		//if (AiUpdate) { 
-		//	DWORD ThreadID;
-		//	hAudioThread = CreateThread(NULL,0,(LPTHREAD_START_ROUTINE)AudioThread, (LPVOID)NULL,0, &ThreadID);			
-		//}
+		if (AiUpdate) { 
+			DWORD ThreadID;
+			bTerminateAudioThread = FALSE;
+			hAudioThread = CreateThread(NULL,0,(LPTHREAD_START_ROUTINE)AudioThread, (LPVOID)NULL,0, &ThreadID);			
+		}
 	}
 
 	if (!LoadRSPDll(RspDLL)) { 
@@ -724,14 +729,19 @@ void SetupPluginScreen (HWND hDlg) {
 
 void ShutdownPlugins (void) {
 	unsigned int names;
+
+	if (!PluginsInitilized)
+		return;
+
 	for (names = 0; names < PluginCount; names++)
 	{
 		free(PluginNames[names]);
 		PluginNames[names] = 0;
 	}
 
-	if (AiRomClosed != NULL)
+	//if (AiRomClosed != NULL)
 		TerminateThread(hAudioThread,0);
+	bTerminateAudioThread = TRUE;
 
 	if (GFXCloseDLL != NULL && GfxRomClosed != NULL) { GFXCloseDLL(); }
 	if (RSPCloseDLL != NULL && RSPRomClosed != NULL) { RSPCloseDLL(); }
@@ -750,7 +760,7 @@ BOOL ValidPluginVersion ( PLUGIN_INFO * PluginInfo ) {
 		if (PluginInfo->Version == 0x0001) { return TRUE; }
 		if (PluginInfo->Version == 0x0100) { return TRUE; }
 		if (PluginInfo->Version == 0x0101) { return TRUE; }
-		if (PluginInfo->Version == 0x0102) { return TRUE; }
+		//if (PluginInfo->Version == 0x0102) { return TRUE; }
 		break;
 	case PLUGIN_TYPE_GFX:
 		if (PluginInfo->Version == 0x0102) { return TRUE; }

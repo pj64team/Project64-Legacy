@@ -438,7 +438,7 @@ void FixMenuLang(HMENU hMenu) {
 
 	//Help Menu
 	hSubMenu = GetSubMenu(hMenu, 4);
-#ifdef BETA_VERSION
+#ifdef _BETA_VERSION
 	MenuSetText(hSubMenu, 2, GS(MENU_USER_MAN), NULL);
 	MenuSetText(hSubMenu, 3, GS(MENU_GAME_FAQ), NULL);
 	MenuSetText(hSubMenu, 5, GS(MENU_ABOUT_INI), NULL);
@@ -1987,7 +1987,7 @@ void DeleteAdvanceMenuOptions(HMENU hMenu) {
 	DeleteMenu(hSubMenu, 3, MF_BYPOSITION); //Line
 
 	DeleteMenu(hMenu, ID_FILE_STARTEMULATION, MF_BYCOMMAND);
-	DeleteMenu(hMenu, ID_SYSTEM_GENERATEBITMAP, MF_BYCOMMAND);
+		//DeleteMenu(hMenu, ID_SYSTEM_GENERATEBITMAP, MF_BYCOMMAND);
 	DeleteMenu(hMenu, ID_CPU_SAVEAS, MF_BYCOMMAND);
 	DeleteMenu(hMenu, ID_CPU_LOAD, MF_BYCOMMAND);
 	DeleteMenu(hMenu, ID_OPTIONS_ALWAYSONTOP, MF_BYCOMMAND);
@@ -2066,7 +2066,7 @@ void SetupMenu(HWND hWnd) {
 			CheckMenuItem(hMenu, ID_OPTIONS_PROFILING_OFF, MF_BYCOMMAND | MFS_CHECKED);
 	}
 
-#ifdef BETA_VERSION
+#ifdef _BETA_VERSION
 	{
 		MENUITEMINFO menuinfo;
 		char String[256];
@@ -2262,6 +2262,7 @@ void ShutdownApplication(void) {
 	if (TargetInfo != NULL)
 		VirtualFree(TargetInfo, 0, MEM_RELEASE);
 	FreeRomBrowser();
+	Sleep(100);
 	ShutdownPlugins();
 	SaveRecentFiles();
 	Release_Memory();

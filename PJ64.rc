@@ -523,7 +523,7 @@ END
 IDD_About DIALOGEX 0, 0, 555, 198
 STYLE DS_SETFONT | DS_MODALFRAME | DS_3DLOOK | DS_FIXEDSYS | DS_CENTER | WS_POPUP | WS_CAPTION | WS_SYSMENU
 EXSTYLE WS_EX_APPWINDOW
-CAPTION "About Project64"
+CAPTION "About Project64 "
 FONT 8, "MS Shell Dlg", 0, 0, 0x1
 BEGIN
     CONTROL         IDB_BITMAP3,IDB_PJ64LOGO,"Static",SS_BITMAP | SS_REALSIZEIMAGE,0,0,554,197
@@ -798,7 +798,7 @@ BEGIN
         MENUITEM "&Save\tF5",                   ID_CPU_SAVE, GRAYED
         MENUITEM "Save As...\tCtrl+S",          ID_CPU_SAVEAS, GRAYED
         MENUITEM "&Restore\tF7",                ID_CPU_RESTORE, GRAYED
-        MENUITEM "Load...\tCtrl+L",             ID_CPU_LOAD, GRAYED
+        MENUITEM "Restore From\tCtrl+L",             ID_CPU_LOAD, GRAYED
         MENUITEM SEPARATOR
         POPUP "Current Save S&tate", GRAYED
         BEGIN
