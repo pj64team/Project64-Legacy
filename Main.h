@@ -65,7 +65,7 @@ extern "C" {
 #define Default_LimitFPS			TRUE
 #define Default_AlwaysOnTop			FALSE
 #define Default_BasicMode			TRUE
-#define Default_RememberCheats		FALSE
+#define Default_RememberCheats		TRUE
 #define Default_RomsToRemember		4
 #define Default_RomsDirsToRemember	4
 #define LinkBlocks

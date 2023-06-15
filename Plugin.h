@@ -184,7 +184,7 @@ typedef struct {
 	DWORD * DPC__PIPEBUSY_REG;
 	DWORD * DPC__TMEM_REG;
 
-	void ( __cdecl *CheckInterrupts)( void );
+	void (__cdecl *CheckInterrupts)( void );
 	void (__cdecl *ProcessDlist)( void );
 	void (__cdecl *ProcessAlist)( void );
 	void (__cdecl *ProcessRdpList)( void );
