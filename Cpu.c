@@ -147,7 +147,8 @@ void CloseCpu (void) {
 	DWORD ExitCode, OldProtect;
 	
 	if (!CPURunning || hCPU == NULL) { return; }
-
+	PauseCpu();
+	Sleep(50);
 	CPU_Action.CloseCPU = TRUE;
 	CPU_Action.Stepping = FALSE;
 	CPU_Action.DoSomething = TRUE;
