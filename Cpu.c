@@ -172,7 +172,7 @@ void CloseCpu (void) {
 		DisplayError("Emulation thread failed to terminate plugins\nReport this if you can reproduce reliably");
 		TerminateThread(hCPU, 0);
 		hCPU = NULL;
-		SetupPlugins(hMainWindow);
+		SetupPlugins(hMainWindow,FALSE);
 	}
 
 	CPURunning = FALSE;
@@ -1240,7 +1240,7 @@ void StartEmulation ( void ) {
 	SetupMenu(hMainWindow);
 
 	if (!inFullScreen)	// Only reset plugins if not in fullscreen
-		SetupPlugins(hMainWindow);
+		SetupPlugins(hMainWindow,TRUE);
 	else
 		ResetAudio(hMainWindow);
 

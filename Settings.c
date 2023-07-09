@@ -646,16 +646,17 @@ BOOL CALLBACK PluginSelectProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
 			if (CPURunning) {
 				CloseCpu();
 				ShutdownPlugins();
-				SetupPlugins(hMainWindow);
+				SetupPlugins(hMainWindow, TRUE);
 				StartEmulation();
 			}
 			else {
 				ShutdownPlugins();
 				if (!RomBrowser) {
-					SetupPlugins(hMainWindow);
+					SetupPlugins(hMainWindow, TRUE);
 				}
 				if (RomBrowser) {
-					SetupPlugins(hHiddenWin);
+					SetupPlugins(hHiddenWin,TRUE);
+					//SetupPlugins(hMainWindow, TRUE);
 				}
 			}
 			FreePluginList();
