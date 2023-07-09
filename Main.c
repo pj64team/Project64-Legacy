@@ -2358,7 +2358,7 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 	if (strlen(lpszArgs) > 0) {
 		DWORD ThreadID;
 
-		SetupPlugins(hMainWindow);
+		SetupPlugins(hMainWindow,FALSE);
 		SetupMenu(hMainWindow);
 		ShowWindow(hMainWindow, nWinMode);
 
@@ -2377,7 +2377,7 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 			ShowRomList(hMainWindow);
 		}
 		else {
-			SetupPlugins(hMainWindow);
+			SetupPlugins(hMainWindow,FALSE);
 			SetupMenu(hMainWindow);
 			ShowWindow(hMainWindow, nWinMode);
 		}
