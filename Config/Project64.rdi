@@ -15,7 +15,7 @@
 // Note that Project64 automatically prefixes "http://"
 
 Author=PJ64LegacyTeam
-Date=29th August 2022 Version: 1
+Date=9th July 2023 Version: 1
 Homepage=www.project64-legacy.com
 Version=Project64 1.6.2 (Legacy)
 
@@ -2126,6 +2126,15 @@ ReleaseDate=2000/03/03
 
 [0DED0568-1502515E-C:4A]
 Name=Eikou no Saint Andrews (J)
+Developer=SETA Corporation 
+ForceFeedback=No
+GameInformation=eikou-no-saint-andrews-st-andrews-old-course
+Genre=Sports/Golf 
+Players=4
+ReleaseDate=1996/11/29
+
+[020C3E4E-5A2763C8-C:45]
+Name=St Andrews Old Course (USA)
 Developer=SETA Corporation 
 ForceFeedback=No
 GameInformation=eikou-no-saint-andrews-st-andrews-old-course
@@ -6897,7 +6906,7 @@ ReleaseDate=1998/01/04
 Name=Shin Nihon Pro wrestling Toukon Road 2 - The Next Generation (J)
 Developer=Hudson Soft
 ForceFeedback=No
-GameInformation=
+GameInformation=shin-nihon-pro-wrestling-toukon-road-2-the-next-generation
 Genre=Wrestling
 Players=2
 ReleaseDate=1998/12/26
@@ -7145,15 +7154,6 @@ Genre=Adventure
 Players=1
 ReleaseDate=2000/11/21
 
-[0DED0568-1502515E-C:4A]
-Name=St. Andrews Old Course (J) [!]
-Developer=Seta
-ForceFeedback=No
-GameInformation=
-Genre=Sport-Golf
-Players=4
-ReleaseDate=1996/11/29
-
 [FFCAA7C1-68858537-C:4A]
 Name=Star Fox 64 (J) [!]
 Developer=Nintendo
@@ -7338,7 +7338,7 @@ ReleaseDate=2000/12/18
 Name=Star Wars Episode I - Racer (E) [!]
 Developer=LucasArts
 ForceFeedback=Yes
-GameInformation=
+GameInformation=star-wars-episode-i-racer
 Genre=Racing-Future
 Players=2
 ReleaseDate=1999/06/04
@@ -7374,7 +7374,7 @@ ReleaseDate=1999/05/18
 Name=StarCraft 64 (E) [!]
 Developer=Blizzard / Mass Media
 ForceFeedback=Yes
-GameInformation=
+GameInformation=starcraft-64
 Genre=RT Strategy
 Players=2
 ReleaseDate=Unreleased
@@ -7436,8 +7436,8 @@ ReleaseDate=2000/10/01
 [F4646B69-C5751095-C:4A]
 Name=Super B-Daman - Battle Phoenix 64 (J) [!]
 Developer=Hudson Soft
-ForceFeedback=Yes
-GameInformation=
+ForceFeedback=No
+GameInformation=super-b-daman-battle-phoenix-64
 Genre=Action
 Players=2
 ReleaseDate=1998/07/24
@@ -7446,7 +7446,7 @@ ReleaseDate=1998/07/24
 Name=Super Bowling (J) [!]
 Developer=Athena
 ForceFeedback=Yes
-GameInformation=
+GameInformation=super-bowling
 Genre=Sport-Bowling
 Players=4
 ReleaseDate=2001/01/16
@@ -7455,7 +7455,7 @@ ReleaseDate=2001/01/16
 Name=Super Bowling 64 (U) [!]
 Developer=Athena
 ForceFeedback=Yes
-GameInformation=
+GameInformation=super-bowling
 Genre=Sport-Bowling
 Players=4
 ReleaseDate=2001/01/16
@@ -7464,7 +7464,7 @@ ReleaseDate=2001/01/16
 Name=Super Mario 64 (E) [!]
 Developer=Nintendo
 ForceFeedback=No
-GameInformation=
+GameInformation=super-mario-64
 Genre=Platform
 Players=1
 ReleaseDate=1996/09/26
@@ -7473,34 +7473,70 @@ ReleaseDate=1996/09/26
 Name=Super Mario 64 (J) [!]
 Developer=Nintendo
 ForceFeedback=No
-GameInformation=
+GameInformation=super-mario-64
 Genre=Platform
 Players=1
 ReleaseDate=1996/09/26
 
-[635A2BFF-8B022326-C:45]
-Name=Super Mario 64 (U) [!]
+[4EAA3D0E-74757C24-C:4A]
+Name=Super Mario 64 (J) [!]
 Developer=Nintendo
 ForceFeedback=No
-GameInformation=
+GameInformation=super-mario-64
 Genre=Platform
 Players=1
 ReleaseDate=1996/09/26
+
+[480B85A4-640135A3-C:00]
+Name=Super Mario 64 (CHN)
+Developer=Nintendo
+ForceFeedback=No
+GameInformation=super-mario-64
+Genre=Platform
+Players=1
+ReleaseDate=2003/11/21
+
+[3728A23B-16401DFB-C:00]
+Name=Super Mario 64 (CHN)-03-10-15 iQue
+Developer=Nintendo
+ForceFeedback=No
+GameInformation=super-mario-64
+Genre=Platform
+Players=1
+ReleaseDate=2003/11/21
+
+[6F72A924-EE8EA790-C:00]
+Name=Super Mario 64 - Shindou Pack Taiou Version (J) (T-Eng)
+Developer=Nintendo
+ForceFeedback=No
+GameInformation=super-mario-64
+Genre=Platform
+Players=1
+ReleaseDate=2003/11/21
+
+[AAA7D336-0428D610-C:00]
+Name=Super Mario 64 - Shindou (iQue) [4ksavefix]
+Developer=Nintendo
+ForceFeedback=No
+GameInformation=super-mario-64
+Genre=Platform
+Players=1
+ReleaseDate=2003/11/21
 
 [635A42C5-BDC58EDC-C:45]
 Name=Super Mario 64 (U) [T-Bra]
 Developer=Nintendo
 ForceFeedback=No
-GameInformation=
+GameInformation=super-mario-64
 Genre=Platform
 Players=1
-ReleaseDate=1996/09/26
+ReleaseDate=??/??/??
 
 [D6FBA4A8-6326AA2C-C:4A]
 Name=Super Mario 64 - Shindou Pack Taiou Version (J) (V1.3)
 Developer=Nintendo
 ForceFeedback=Yes
-GameInformation=
+GameInformation=super-mario-64
 Genre=Platform
 Players=1
 ReleaseDate=1996/09/26
@@ -7509,28 +7545,28 @@ ReleaseDate=1996/09/26
 Name=Super Robot Spirits (J) [!]
 Developer=Banpresto
 ForceFeedback=Yes
-GameInformation=
+GameInformation=super-robot-spirits
 Genre=Fighting
 Players=2
 ReleaseDate=1998/07/17
-
-[997D29AE-C13FF636-C:4A]
-Name=Super Real Mahjong VS [Aleck 64]
-Developer=Seta
-ForceFeedback=Yes
-GameInformation=
-Genre=Puzzle
-Players=1
-ReleaseDate=1999/??/??
 
 [1649D810-F73AD6D2-C:4A]
 Name=Super Robot Taisen 64 (J) [!]
 Developer=Banpresto
 ForceFeedback=No
-GameInformation=
+GameInformation=super-robot-taisen-64
 Genre=Strategy
 Players=1
 ReleaseDate=1999/10/29
+
+[997D29AE-C13FF636-C:4A]
+Name=Super Real Mahjong VS [Aleck 64]
+Developer=Seta
+ForceFeedback=Yes
+GameInformation=super-real-mahjong-vs
+Genre=Puzzle
+Players=1
+ReleaseDate=1999/??/??
 
 [DD26FDA1-CB4A6BE3-C:55]
 Name=Super Smash Bros. (A) [!]
@@ -7568,6 +7604,15 @@ Genre=Fighting
 Players=4
 ReleaseDate=2005/11/15
 
+[76F623A0-4BF72D22-C:43]
+Name=Super Smash Bros. (CHN) [SaveFix]
+Developer=HAL Laboratory
+ForceFeedback=Yes
+GameInformation=nintendo-all-star-dairantou-smash-brothers-super-smash-bros
+Genre=Fighting
+Players=4
+ReleaseDate=2005/11/15
+
 [9CE02E22-206EF1B0-C:4A]
 Name=Super Speed Race 64 (J) [!]
 Developer=Taito
@@ -7581,7 +7626,7 @@ ReleaseDate=1998/05/29
 Name=Supercross 2000 (E) [!]
 Developer=MBL Research
 ForceFeedback=Yes
-GameInformation=
+GameInformation=supercross-2000
 Genre=Racing-Motorbk
 Players=2
 ReleaseDate=1999/12/03
@@ -7590,7 +7635,7 @@ ReleaseDate=1999/12/03
 Name=Supercross 2000 (U) [!]
 Developer=MBL Research
 ForceFeedback=Yes
-GameInformation=
+GameInformation=supercross-2000
 Genre=Racing-Motorbk
 Players=2
 ReleaseDate=1999/12/03
@@ -7599,25 +7644,34 @@ ReleaseDate=1999/12/03
 Name=Superman (E) [!]
 Developer=Titus
 ForceFeedback=Yes
-GameInformation=
+GameInformation=superman
 Genre=Action
 Players=4
-ReleaseDate=1999/05/29
+ReleaseDate=1999/07/23
 
 [A2E8F35B-C9DC87D9-C:45]
 Name=Superman (U) [!]
 Developer=Titus
 ForceFeedback=Yes
-GameInformation=
+GameInformation=superman
 Genre=Action
 Players=4
-ReleaseDate=1999/05/29
+ReleaseDate=1999/05/28
+
+[944FAFC4-B288266A-C:00]
+Name=Superman (U) (M2) (Prototype)
+Developer=Titus
+ForceFeedback=Yes
+GameInformation=superman
+Genre=Action
+Players=4
+ReleaseDate=2016/11/22
 
 [35E811F3-99792724-C:4A]
 Name=Susume! Taisen Puzzle Dama Toukon! Marumata Chou (J) [!]
 Developer=Konami
 ForceFeedback=No
-GameInformation=
+GameInformation=susume-taisen-puzzle-dama-toukon-marumata-chou
 Genre=Puzzle
 Players=2
 ReleaseDate=1998/03/25
@@ -7626,7 +7680,7 @@ ReleaseDate=1998/03/25
 Name=SYD2K (EUR) [PAL60 FIX]
 Developer=Attention To Detail
 ForceFeedback=No
-GameInformation=
+GameInformation=sydney-2000
 Genre=Sport
 Players=1
 ReleaseDate=Unreleased
@@ -7635,7 +7689,7 @@ ReleaseDate=Unreleased
 Name=Sydney 2000 (E) (Unreleased)
 Developer=Attention To Detail
 ForceFeedback=No
-GameInformation=
+GameInformation=sydney-2000
 Genre=Sport
 Players=1
 ReleaseDate=Unreleased
@@ -7644,7 +7698,7 @@ ReleaseDate=Unreleased
 Name=Sydney 2000 (U) (Unreleased)
 Developer=Attention To Detail
 ForceFeedback=No
-GameInformation=
+GameInformation=sydney-2000
 Genre=Sport
 Players=1
 ReleaseDate=Unreleased
@@ -7653,7 +7707,7 @@ ReleaseDate=Unreleased
 Name=Sydney 2000 (U)
 Developer=Attention To Detail
 ForceFeedback=No
-GameInformation=
+GameInformation=sydney-2000
 Genre=Sport
 Players=1
 ReleaseDate=Unreleased
@@ -7662,7 +7716,7 @@ ReleaseDate=Unreleased
 Name=Sydney 2000 (E) (Unreleased)
 Developer=Attention To Detail
 ForceFeedback=No
-GameInformation=
+GameInformation=sydney-2000
 Genre=Sport
 Players=1
 ReleaseDate=Unreleased
@@ -7673,7 +7727,7 @@ ReleaseDate=Unreleased
 Name=Taz Express (E) [!]
 Developer=Infogrames
 ForceFeedback=No
-GameInformation=
+GameInformation=taz-express
 Genre=Platform
 Players=1
 ReleaseDate=2000/08/01
@@ -7682,7 +7736,7 @@ ReleaseDate=2000/08/01
 Name=Taz Express (U) (Unreleased)
 Developer=Infogrames
 ForceFeedback=No
-GameInformation=
+GameInformation=taz-express
 Genre=Platform
 Players=1
 ReleaseDate=Unreleased
@@ -7700,7 +7754,7 @@ ReleaseDate=2000/11/10
 Name=Tetris 64 (J) [!]
 Developer=Amtex
 ForceFeedback=Yes
-GameInformation=
+GameInformation=tetris-64
 Genre=Puzzle
 Players=4
 ReleaseDate=1998/11/13
@@ -7709,7 +7763,7 @@ ReleaseDate=1998/11/13
 Name=Tetrisphere (E) [!]
 Developer=H2O Entertainment
 ForceFeedback=No
-GameInformation=
+GameInformation=tetrisphere
 Genre=Puzzle
 Players=2
 ReleaseDate=1997/08/11
@@ -7718,7 +7772,7 @@ ReleaseDate=1997/08/11
 Name=Tetrisphere (U) [!]
 Developer=H2O Entertainment
 ForceFeedback=No
-GameInformation=
+GameInformation=tetrisphere
 Genre=Puzzle
 Players=2
 ReleaseDate=1997/08/11
@@ -7727,7 +7781,7 @@ ReleaseDate=1997/08/11
 Name=The New Tetris (E) [!]
 Developer=H2O Interactive
 ForceFeedback=No
-GameInformation=
+GameInformation=the-new-tetris
 Genre=Puzzle
 Players=4
 ReleaseDate=1999/07/31
@@ -7736,7 +7790,7 @@ ReleaseDate=1999/07/31
 Name=The New Tetris  (U) [!]
 Developer=H2O Interactive
 ForceFeedback=No
-GameInformation=
+GameInformation=the-new-tetris
 Genre=Puzzle
 Players=4
 ReleaseDate=1999/07/31
@@ -7745,7 +7799,7 @@ ReleaseDate=1999/07/31
 Name=Tigger's Honey Hunt (E) [!]
 Developer=Doki Denki Studio
 ForceFeedback=No
-GameInformation=
+GameInformation=tiggers-honey-hunt
 Genre=Action
 Players=1
 ReleaseDate=2000/11/01
@@ -7754,7 +7808,7 @@ ReleaseDate=2000/11/01
 Name=Tigger's Honey Hunt (U) [!]
 Developer=Doki Denki Studio
 ForceFeedback=No
-GameInformation=
+GameInformation=tiggers-honey-hunt
 Genre=Action
 Players=1
 ReleaseDate=2000/11/01
@@ -8109,11 +8163,20 @@ Genre=Sport-Baseball
 Players=2
 ReleaseDate=1999/03/22
 
+[916AE6B8-8817AB22-C:4A]
+Name=Jikuu Senshi Turok (J)
+Developer=Iguana Entertainment
+ForceFeedback=No
+GameInformation=jikuu-senshi-turok-turok-dinosaur-hunter
+Genre=Action
+Players=1
+ReleaseDate=1997/02/28
+
 [2F7009DD-FC3BAC53-C:50]
 Name=Turok - Dinosaur Hunter (E) (V1.0) [!]
 Developer=Iguana Entertainment
 ForceFeedback=No
-GameInformation=
+GameInformation=jikuu-senshi-turok-turok-dinosaur-hunter
 Genre=Action
 Players=1
 ReleaseDate=1997/02/28
@@ -8122,7 +8185,7 @@ ReleaseDate=1997/02/28
 Name=Turok - Dinosaur Hunter (E) (V1.0) [a1]
 Developer=Iguana Entertainment
 ForceFeedback=No
-GameInformation=
+GameInformation=jikuu-senshi-turok-turok-dinosaur-hunter
 Genre=Action
 Players=1
 ReleaseDate=1997/02/28
@@ -8131,7 +8194,7 @@ ReleaseDate=1997/02/28
 Name=Turok - Dinosaur Hunter (E) (V1.1)/(V1.2) [!]
 Developer=Iguana Entertainment
 ForceFeedback=No
-GameInformation=
+GameInformation=jikuu-senshi-turok-turok-dinosaur-hunter
 Genre=Action
 Players=1
 ReleaseDate=1998/??/??
@@ -8140,16 +8203,7 @@ ReleaseDate=1998/??/??
 Name=Turok - Dinosaur Hunter (G) [!]
 Developer=Iguana Entertainment
 ForceFeedback=No
-GameInformation=
-Genre=Action
-Players=1
-ReleaseDate=1997/02/28
-
-[916AE6B8-8817AB22-C:4A]
-Name=Turok - Dinosaur Hunter (J) [!]
-Developer=Iguana Entertainment
-ForceFeedback=No
-GameInformation=
+GameInformation=jikuu-senshi-turok-turok-dinosaur-hunter
 Genre=Action
 Players=1
 ReleaseDate=1997/02/28
@@ -8158,7 +8212,7 @@ ReleaseDate=1997/02/28
 Name=Turok - Dinosaur Hunter (U) (V1.0) [!]
 Developer=Iguana Entertainment
 ForceFeedback=No
-GameInformation=
+GameInformation=jikuu-senshi-turok-turok-dinosaur-hunter
 Genre=Action
 Players=1
 ReleaseDate=1997/02/28
@@ -8167,7 +8221,7 @@ ReleaseDate=1997/02/28
 Name=Turok - Dinosaur Hunter (U) (V1.1)/(v1.2) [!]
 Developer=Iguana Entertainment
 ForceFeedback=No
-GameInformation=
+GameInformation=jikuu-senshi-turok-turok-dinosaur-hunter
 Genre=Action
 Players=1
 ReleaseDate=1998/??/??
@@ -8340,36 +8394,27 @@ ReleaseDate=1998/11/10
 Name=Utchan Nanchan no Hono no Challenger - Denryuu Ira Ira Bou
 Developer=Hudson Soft
 ForceFeedback=No
-GameInformation=
+GameInformation=utchan-nanchan-no-hono-no-challenger-denryuu-ira-ira-bou
 Genre=Puzzle
 Players=2
 ReleaseDate=1997/12/19
 
 //-------------------------  V  --------------------------
 
-[DD10BC7E-F900B351-C:50]
-Name=Vigilante 8 - 2nd Offence (E) [!]
-Developer=Luxoflux Corp.
+[5D40ED2C-10D6ABCF-C:00]
+Name=Viewpoint2064-Prototype
+Developer=Nintendo EAD
 ForceFeedback=Yes
-GameInformation=
+GameInformation=viewpoint2064
 Genre=Action
-Players=4
-ReleaseDate=2000/02/02
-
-[F5C5866D-052713D9-C:45]
-Name=Vigilante 8 - 2nd Offense (U) [!]
-Developer=Luxoflux Corp.
-ForceFeedback=Yes
-GameInformation=
-Genre=Action
-Players=4
-ReleaseDate=2000/02/02
+Players=1
+ReleaseDate=2020/03/28
 
 [151F79F4-8EEDC8E5-C:50]
 Name=Vigilante 8 (E) [!]
 Developer=Luxoflux Corp.
 ForceFeedback=Yes
-GameInformation=
+GameInformation=vigilante-8
 Genre=Action
 Players=4
 ReleaseDate=1999/03/17
@@ -8378,7 +8423,7 @@ ReleaseDate=1999/03/17
 Name=Vigilante 8 (F) [!]
 Developer=Luxoflux Corp.
 ForceFeedback=Yes
-GameInformation=
+GameInformation=vigilante-8
 Genre=Action
 Players=4
 ReleaseDate=1999/03/17
@@ -8387,7 +8432,7 @@ ReleaseDate=1999/03/17
 Name=Vigilante 8 (G) [!]
 Developer=Luxoflux Corp.
 ForceFeedback=Yes
-GameInformation=
+GameInformation=vigilante-8
 Genre=Action
 Players=4
 ReleaseDate=1999/03/17
@@ -8396,10 +8441,28 @@ ReleaseDate=1999/03/17
 Name=Vigilante 8 (U) [!]
 Developer=Luxoflux Corp.
 ForceFeedback=Yes
-GameInformation=
+GameInformation=vigilante-8
 Genre=Action
 Players=4
 ReleaseDate=1999/03/17
+
+[DD10BC7E-F900B351-C:50]
+Name=Vigilante 8 - 2nd Offence (E) [!]
+Developer=Luxoflux Corp.
+ForceFeedback=Yes
+GameInformation=vigilante-8-2nd-offence
+Genre=Action
+Players=4
+ReleaseDate=2000/02/02
+
+[F5C5866D-052713D9-C:45]
+Name=Vigilante 8 - 2nd Offense (U) [!]
+Developer=Luxoflux Corp.
+ForceFeedback=Yes
+GameInformation=vigilante-8-2nd-offence
+Genre=Action
+Players=4
+ReleaseDate=2000/02/02
 
 [60006C98-2605A381-C:4A]
 Name=Violence Killer - Turok New Generation (J) [!]
@@ -8414,7 +8477,7 @@ ReleaseDate=1999/06/18
 Name=Virtual Chess 64 (E) [!]
 Developer=Titus
 ForceFeedback=No
-GameInformation=
+GameInformation=virtual-chess-64
 Genre=Strategy
 Players=2
 ReleaseDate=1998/06/10
@@ -8423,7 +8486,7 @@ ReleaseDate=1998/06/10
 Name=Virtual Chess 64 (U) [!]
 Developer=Titus
 ForceFeedback=No
-GameInformation=
+GameInformation=virtual-chess-64
 Genre=Strategy
 Players=2
 ReleaseDate=1998/06/10
@@ -8432,7 +8495,7 @@ ReleaseDate=1998/06/10
 Name=Virtual Pool 64 (E) [!]
 Developer=Celeris Corporation
 ForceFeedback=Yes
-GameInformation=
+GameInformation=virtual-pool-64
 Genre=Simulation
 Players=2
 ReleaseDate=1998/12/17
@@ -8441,7 +8504,7 @@ ReleaseDate=1998/12/17
 Name=Virtual Pool 64 (U) [!]
 Developer=Celeris Corporation
 ForceFeedback=Yes
-GameInformation=
+GameInformation=virtual-pool-64
 Genre=Simulation
 Players=2
 ReleaseDate=1998/12/17
@@ -8450,7 +8513,7 @@ ReleaseDate=1998/12/17
 Name=Virtual Pro Wrestling (J) [!]
 Developer=Aki Corporation / Asmik Ace Enterainment
 ForceFeedback=Yes
-GameInformation=
+GameInformation=virtual-pro-wrestling-6
 Genre=Sport-Wrestlng
 Players=4
 ReleaseDate=1997/12/19
@@ -8459,7 +8522,7 @@ ReleaseDate=1997/12/19
 Name=Virtual Pro Wrestling 2 (J) [!]
 Developer=Aki Corporation / Asmik Ace Enterainment
 ForceFeedback=Yes
-GameInformation=
+GameInformation=virtual-pro-wrestling-2-oudou-keishou
 Genre=Sport-Wrestlng
 Players=4
 ReleaseDate=2000/01/28
@@ -8468,7 +8531,7 @@ ReleaseDate=2000/01/28
 Name=Virtual Pro Wrestling 2 (J) [T-Eng]
 Developer=Aki Corporation / Asmik Ace Enterainment
 ForceFeedback=Yes
-GameInformation=
+GameInformation=virtual-pro-wrestling-2-oudou-keishou
 Genre=Sport-Wrestlng
 Players=4
 ReleaseDate=2000/01/28
@@ -8477,7 +8540,7 @@ ReleaseDate=2000/01/28
 Name=V-Rally Edition 99 (E) [!]
 Developer=Eden Studios
 ForceFeedback=Yes
-GameInformation=
+GameInformation=v-rally-edition-99
 Genre=Racing-Rally
 Players=2
 ReleaseDate=1999/09/18
@@ -8486,7 +8549,7 @@ ReleaseDate=1999/09/18
 Name=V-Rally Edition 99 (J) [!]
 Developer=Eden Studios
 ForceFeedback=Yes
-GameInformation=
+GameInformation=v-rally-edition-99
 Genre=Racing-Rally
 Players=2
 ReleaseDate=1999/09/18
@@ -8495,7 +8558,7 @@ ReleaseDate=1999/09/18
 Name=V-Rally Edition 99 (U) [!]
 Developer=Eden Studios
 ForceFeedback=Yes
-GameInformation=
+GameInformation=v-rally-edition-99
 Genre=Racing-Rally
 Players=2
 ReleaseDate=1999/09/18
@@ -8504,10 +8567,10 @@ ReleaseDate=1999/09/18
 Name=Vivid Dolls (J) [ALECK64]
 Developer=Visco
 ForceFeedback=no
-GameInformation=
+GameInformation=vivid-dolls
 Genre=Puzzle
 Players=1
-ReleaseDate=1998/??/??
+ReleaseDate=1999/??/??
 
 //-------------------------  W  --------------------------
 
@@ -9030,7 +9093,7 @@ ReleaseDate=2000/11/14
 Name=Xena Warrior Princess - Talisman of Fate (E) [!]
 Developer=Saffire
 ForceFeedback=Yes
-GameInformation=
+GameInformation=xena-warrior-princess-the-talisman-of-fate
 Genre=Fighting
 Players=4
 ReleaseDate=1999/12/14
@@ -9039,10 +9102,19 @@ ReleaseDate=1999/12/14
 Name=Xena Warrior Princess - Talisman of Fate (U) [!]
 Developer=Saffire
 ForceFeedback=Yes
-GameInformation=
+GameInformation=xena-warrior-princess-the-talisman-of-fate
 Genre=Fighting
 Players=4
 ReleaseDate=1999/12/14
+
+[470112E9-53C66CB4-C:41]
+Name=XENO CRISIS 64
+Developer=Bitmap Bureau
+ForceFeedback=Yes
+GameInformation=xeno-crisis-64
+Genre=Fighting
+Players=4
+ReleaseDate=2023/04/??
 
 //-------------------------  Y  --------------------------
 
@@ -9050,7 +9122,7 @@ ReleaseDate=1999/12/14
 Name=Yakouchuu II - Satsujun Kouru (J) [!]
 Developer=Athena
 ForceFeedback=No
-GameInformation=
+GameInformation=yakouchuu-ii-satsujin-kouru
 Genre=Adventure
 Players=1
 ReleaseDate=1999/10/22
@@ -9059,7 +9131,7 @@ ReleaseDate=1999/10/22
 Name=Yoshi's Story (E) [!]
 Developer=Nintendo
 ForceFeedback=Yes
-GameInformation=
+GameInformation=yoshis-story
 Genre=Platform
 Players=1
 ReleaseDate=1997/12/21
@@ -9068,7 +9140,7 @@ ReleaseDate=1997/12/21
 Name=Yoshi's Story (J) [!]
 Developer=Nintendo
 ForceFeedback=Yes
-GameInformation=
+GameInformation=yoshis-story
 Genre=Platform
 Players=1
 ReleaseDate=1998/03/10
@@ -9077,10 +9149,28 @@ ReleaseDate=1998/03/10
 Name=Yoshi's Story (U) [!]
 Developer=Nintendo
 ForceFeedback=Yes
-GameInformation=
+GameInformation=yoshis-story
 Genre=Platform
 Players=1
 ReleaseDate=1998/03/10
+
+[CED13EDF-A3C5182C-C:00]
+Name=Yoshi's Story (CHN) (iQue)
+Developer=Nintendo
+ForceFeedback=Yes
+GameInformation=yoshis-story
+Genre=Platform
+Players=1
+ReleaseDate=2004/03/25
+
+[8C04964A-80112706-C:43]
+Name=Yoshi's Story (CHN) [f1]
+Developer=Nintendo
+ForceFeedback=Yes
+GameInformation=yoshis-story
+Genre=Platform
+Players=1
+ReleaseDate=2004/03/25
 
 [9FE6162D-E97E4037-C:4A]
 Name=Yuke Yuke!! Trouble Makers (J) [!]
@@ -9115,7 +9205,7 @@ ReleaseDate=2001/??/??
 Name=Zelda no Densetsu - Mujura no Kamen - Zelda Collection Version (J) (GC Version)
 Developer=Nintendo
 ForceFeedback=Yes
-GameInformation=
+GameInformation=legend-of-zelda-majoras-mask-zelda-no-densetsu-mujura-no-kamen
 Genre=Action-Adventure
 Players=1
 ReleaseDate=2003/04/27
@@ -9151,7 +9241,7 @@ ReleaseDate=1998/11/21
 Name=Zelda no Densetsu - Toki no Ocarina - Zelda Collection Version (J) (GC Version)
 Developer=Nintendo
 ForceFeedback=Yes
-GameInformation=
+GameInformation=the-legend-of-zelda-ocarina-of-time-zelda-no-densetsu-toki-no-ocarina
 Genre=Action-Adventure
 Players=1
 ReleaseDate=2003/04/27
@@ -9160,7 +9250,7 @@ ReleaseDate=2003/04/27
 Name=Zelda no Densetsu - Toki no Ocarina GC Ura (J) (GC Version)
 Developer=Nintendo
 ForceFeedback=Yes
-GameInformation=
+GameInformation=legend-of-zelda-ocarina-of-time-master-quest-zelda-no-densetsu-toki-no-ocarina-gc-ura
 Genre=Action-Adventure
 Players=1
 ReleaseDate=2003/04/27
@@ -9169,7 +9259,7 @@ ReleaseDate=2003/04/27
 Name=Zelda no Densetsu - Toki no Ocarina GC (J) (GC Version)
 Developer=Nintendo
 ForceFeedback=Yes
-GameInformation=
+GameInformation=legend-of-zelda-ocarina-of-time-master-quest-zelda-no-densetsu-toki-no-ocarina-gc-ura
 Genre=Action-Adventure
 Players=1
 ReleaseDate=2003/04/27
@@ -9181,6 +9271,6 @@ ForceFeedback=No
 Genre=RPG
 Players=1
 ReleaseDate=1999/06/11
-GameInformation=
+GameInformation=zool-majou-tsukai-densetsu
 
 //-------------------------  EOF  --------------------------//
