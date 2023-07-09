@@ -17,7 +17,7 @@
 // Note that Project64 automatically prefixes "http://"
 
 Author=PJ64LegacyTeam
-Date=13th May 2023 Version: 1
+Date=9th July 2023 Version: 1
 Homepage=www.project64-legacy.com
 Version=Project64 1.6.2 (Legacy)
 
@@ -583,7 +583,7 @@ Coins Note=Press GS Once on a Level To Get that amount of Coins
 Level Note=Select a Level. Jump Into a Painting. Press A at the Stars Collected Screen. As Stats are fading hold L, and you'll jump to the level you've selected.
 Level Select=$01 Intro,$04 Big Boo's Haunt,$05 Cool Cool Mountain,$06 Mushroom Castle,$07 Hazy Maze Cave,$08 Shifting Sand Land,$09 Bob omb Battlefield,$0A Snowman's Land,$0B Wet Dry World,$0C Jolly Roger Bay,$0D Tiny Huge World,$0E Tick tock Clock,$0F Rainbow Ride,$10 Mushroom Castle Field,$11 Bowser In The Dark World,$12 Vanish Cap Under The Moat,$13 Bowser In The Fire Sea,$14 The Secret Aquarium,$15 Bowser In The Sky,$16 Lethal Lava Land,$17 Dire Dire Docks,$18 Whomp's Fortress,$19 The End,$1A Castle Courtyard,$1B The Princess's Secret Slide,$1C Cavern Of The Metal Cap,$1D Tower Of The Wing Cap,$1E Bowser In The Dark World Boss,$1F Wing Mario Over The Rainbow,$21 Bowser In The Fire Sea Boss,$22 Bowser In The Sky Boss,$24 Tall Tall Mountain
 Levitate Note=Press L to levitate & Let go to land
-Marios Cap=$10 Normal,$12 Invisible Mario,$15 Metal Mario,$16 Invisible Metal Mario,$19 Flying Mario
+Marios Cap=$09 No Hat,$10 Normal,$12 Invisible Mario,$15 Metal Mario,$16 Invisible Metal Mario,$19 Flying Mario
 Slot Note=Once the Code is activated, you will see it as a new option in the chosen Save Slot.This will have the Cannon open already to get upto Yoshi on the Roof. but make sure to save the game after collecting Red Coins and turn this code off before saving. you will now have it all saved to mempak
 
 [CaptainFalcon]
@@ -599,6 +599,15 @@ Levitate Note=Press L to levitate & Let go to land
 Modes Note=Here you can Choose Options for Sonics Modes
 Slot Note=Once the Code is activated, you will see it as a new option in the chosen Save Slot.This will have the Cannon open already to get upto Yoshi on the Roof. but make sure to save the game after collecting Red Coins and turn this code off before saving. you will now have it all saved to mempak
 Sonics Modes=$10 Normal,$12 Invisible Sonic,$15 Metal Sonic,$16 Invisible Metal Sonic,$19 Flying Sonic
+
+[SuperIce]
+Cap Note=Here you can Choose Options for Icepir8 with His Cap on
+Coins Note=Press GS Once on a Level To Get that amount of Coins
+Level Note=Select a Level. Jump Into a Painting. Press A at the Stars Collected Screen. As Stats are fading hold L, and you'll jump to the level you've selected.
+Level Select=$01 Intro,$04 Big Amimer's Haunt,$05 Cool Cool Mountain,$06 Mushroom Castle,$07 Hazy Maze Cave,$08 Shifting Sand Land,$09 Da-Bomb Battlefield,$0A Snowman's Land,$0B Wet Dry World,$0C Jolly Jabo Bay,$0D Tiny Huge World,$0E Tick tock Clock,$0F Rainbow Ride,$10 Mushroom Castle Field,$11 Boozer In The Dark World,$12 Vanish Cap Under The Moat,$13 Boozer In The Fire Sea,$14 The Secret Aquarium,$15 Boozer In The Sky,$16 Lethal Lava Land,$17 Dire Dire Docks,$18 Slougi's Fortress,$19 The End,$1A Castle Courtyard,$1B The Princess's Secret Slide,$1C Cavern Of The Metal Cap,$1D Tower Of The Wing Cap,$1E Boozer In The Dark World Boss,$1F Wing Mario Over The Rainbow,$21 Boozer In The Fire Sea Boss,$22 Boozer In The Sky Boss,$24 Tall Tall Mountain
+Levitate Note=Press L to levitate & Let go to land
+Marios Cap=$09 No Hat,$10 Normal,$12 Invisible Icepir8,$15 Metal Icepir8,$16 Invisible Metal Icepir8,$19 Flying Icepir8
+Slot Note=Once the Code is activated, you will see it as a new option in the chosen Save Slot.This will have the Cannon open already to get upto Yoshi on the Roof. but make sure to save the game after collecting Red Coins and turn this code off before saving. you will now have it all saved to mempak
 
 
 [SuperSmashBrothers]
@@ -4513,7 +4522,7 @@ Cheat37_O=[ZeldaMM]Warp Mod
 
 [1FBAF161-2C1C54F1-C:41]
 Name=1080 Snowboarding (JU) (M2)
-Cheat0="Infinite Damage All Players & Levels",803F4C3D 0000
+Cheat0="Infinite Damage All Players & Levels",803F4C3D 0000,807F4C3D 0000
 Cheat1="Infinite Lives & Continues",8026B1CB 0003
 Cheat2="Enable All Levels & Boarders",80255089 00FF,8025508B 0005,81255096 FCFF,80255098 0007
 Cheat3="Freeze Timer In\Match Race",D1267B20 05E1,81267B20 1000
@@ -11076,6 +11085,32 @@ Cheat12_O=[StarWarsRogue]Medals
 
 //----
 
+[CA6CBF1E-89EF2FC0-C:47]
+Name=Star Wars - Rogue Squadron (Gateway)
+Cheat0="Infinite\Lives",8012F560 0009
+Cheat1="Infinite\Shields",811368CC 4316
+Cheat2="Infinite\Secondary Weapon",8010D382 0063,8012F593 00??
+Cheat2_O=[StarWarsRogue]Weapon
+Cheat3="Have\Completion Time 0:00",8112F5F4 3FCB
+Cheat4="Have\999 Enemies Destroyed",8112F5D4 03E7
+Cheat5="Have\Accuracy 100%",8012F5D3 00C0
+Cheat6="Have\100 Civilians Saves",8012F5D6 0064
+Cheat6_N=[StarWarsRogue]100% Note
+Cheat7="Have\100 Bonus Collected",8012F5D7 0064
+Cheat8="Always Complete Mission",8012F564 0001
+Cheat8_N=[StarWarsRogue]Complete Note
+Cheat9="Access All Levels & Ships",8012F59D 007E,8012F5B8 0005,8012F5B9 000F,8012F5BA 00E0,8012F5BB 009C
+Cheat9_N=[StarWarsRogue]All Note
+Cheat10="Replace V-Wing with 69 Buick Electra",8112F5AA 000E
+Cheat10_N=[StarWarsRogue]69 Note
+Cheat11="Play AT-ST Level",8112F5A8 1250
+Cheat11_N=[StarWarsRogue]AT-ST Note
+Cheat12="Press F9 for Medals Option",50001301 0000,8812F56C 00??
+Cheat12_N=[StarWarsRogue]Medals Note
+Cheat12_O=[StarWarsRogue]Medals
+
+//----
+
 [FB315F95-7786CBFB-C:45]
 Name=Star Wars - Shadows of the Empire (USA) (Beta)
 Cheat0="Access ej is a Wampa",8118B088 2065,8118B08A 6A20,8118B08C 6973,8118B08E 2061,8118B090 2057,8118B092 616D,8118B094 7061
@@ -11231,7 +11266,6 @@ Name=Super Mario 64 (U)
 Cheat0="Press GS For 255 Coins",8933B218 00FF
 Cheat0_N=[SuperMario]Coins Note
 Cheat1="Have\Level Select",A032D58C 00??
-Cheat11"[Slot B Codes]\Have All\120 Stars",80207793 0001,8020777B 00C7,50001101 0000,8020777C 00FF
 Cheat1_O=@Off and On 1
 Cheat2="Don't Hurt Mario\Monsters",A033B197 0001
 Cheat3="Infinite\Lives",8033B21D 0064
@@ -11247,6 +11281,7 @@ Cheat8="[Slot A Codes]\Have All\120 Stars",80207723 0001,8020770B 00C7,50001101 
 Cheat8_N=[SuperMario]Slot Note
 Cheat9="[Slot A Codes]\Have All\Key doors unlocked (and mote empty)",8020770A 007E
 Cheat10="[Slot A Codes]\Have All\Max 100 Coin Records For All Levels",50000F01 0000,80207725 0064
+Cheat11="[Slot B Codes]\Have All\120 Stars",80207793 0001,8020777B 00C7,50001101 0000,8020777C 00FF
 Cheat11_N=[SuperMario]Slot Note
 Cheat12="[Slot B Codes]\Have All\Key doors unlocked (and mote empty)",8020777A 007E
 Cheat13="[Slot B Codes]\Have All\Max 100 Coin Records For All Levels",50000F01 0000,80207795 0064
@@ -11294,7 +11329,7 @@ Cheat11_O=[SuperSmashBrothers]Character Mod
 Cheat12="Story Mode\Player 2\Character Modifier",800A4BAF 00??
 Cheat12_N=[SuperSmashBrothers]Character Note
 Cheat12_O=[SuperSmashBrothers]Character Mod
-Cheat13="Story Mode\Player 3\Character Modifier",800A4C23 00??
+Cheat13="Story Mode\Player 3\Character Modifier",800A4C23 00?? 
 Cheat13_N=[SuperSmashBrothers]Character Note
 Cheat13_O=[SuperSmashBrothers]Character Mod
 Cheat14="Story Mode\Player 4\Character Modifier",800A4C97 00??
@@ -11346,7 +11381,7 @@ Cheat36_O=[SuperSmashBrothers]Kirby B Button Move
 Cheat37="VS. Mode\Player 1\Kirby B Button Move\Sector Z",8026BF87 00??
 Cheat37_O=[SuperSmashBrothers]Kirby B Button Move
 Cheat38="P1 Press Down On D-Pad To Make Items Appear In Random Spots",D109EFA4 0400,8118D0A2 0001
-Cheat39="Hav All Characters",810A4938 0FF0
+Cheat39="Have All Characters",810A4938 0FF0
 Cheat40="VS. Mode\Have\Mushroom Kindom",800A4937 00FF
 Cheat41="Story Mode\Always Get Pacifist (60,000 Points)",810A4B6E 0000
 Cheat42="Bonus Stage Character Modifier (Training Mode)",8018F1D3 00??
@@ -13527,11 +13562,13 @@ Cheat5_N=This is only for Human VS. Human Game
 
 [4E4A7643-A37439D7-C:45]
 Name=Virtual Pool 64 (U)
-Cheat0="Always Your Turn\Player 1",802EF798 0000
+Cheat0="Always Your Turn\Player 1",802EF798 00??
+Cheat0_O=$00 Player 1,$01 Player 2
 Cheat1="Always Your Turn\Player 2",802EF798 0001
 Cheat2="Ball\Always In Hand",802EF79C 0002
 Cheat3="Max Ratings\Player 1",81062C6A FFFF
-Cheat4="Max Ratings\Player 2",81062CEE FFFF
+Cheat4="Max Ratings\Player 2",81062CEE ????
+Cheat4_O=Wins
 Cheat5="Wins Options\Player 1",812EF780 ????
 Cheat5_O=Wins
 Cheat6="Wins Options\Player 2",812EF782 ????
@@ -24366,7 +24403,7 @@ Cheat1="Infinite\Lives",80159FC9 0009
 Cheat2="Infinite\Boost",8113B59C 0000,8113B59E 0000,8113E47C 0000,8113E47E 0000
 Cheat3="Infinite\Lasers",80159FD3 00??
 Cheat3_O=[StarFox]Lasers
-Cheat4="Infinite\Smart Bombs",801702CB 0004
+Cheat4="Infinite\Smart Bombs",801702CB 0009
 Cheat5="Level Select",D017075F 0000,8017075F 00??
 Cheat5_O=[StarFox]Level
 Cheat6="Have All Medals",50000802 0000,81170D80 7777
@@ -24602,7 +24639,7 @@ Cheat36="VS. Mode\Player 1\Kirby B Button Move\Yoshi's Island",8026EE37 00??
 Cheat36_O=[SuperSmashBrothers]Kirby B Button Move
 Cheat37="VS. Mode\Player 1\Kirby B Button Move\Sector Z",8026CB07 00??
 Cheat37_O=[SuperSmashBrothers]Kirby B Button Move
-Cheat38="Have All Characters, Switch Menu & Mushroom Kingdom",810A54B8 0FF0,800A54B7 00FF
+Cheat38="Have All Characters, VS Switch Menu & Mushroom Kingdom",810A54B8 0FF0,800A54B7 00FF
 Cheat39="Story Mode\Always Get Pacifist (60,000 Points)",810A56EE 0000
 Cheat40="Bonus Stage Character Modifier (Training Mode)",8018FD53 00??
 Cheat40_N=[SuperSmashBrothers]Character Note
@@ -25795,7 +25832,7 @@ Name=Super Mario 64 - Kirby Edition (v1.1) (U)
 Cheat0="Press GS For 255 Coins",8933B218 00FF
 Cheat0_N=[SuperMario]Coins Note
 Cheat1="Have\Level Select",A032D58C 00??
-Cheat11"[Slot B Codes]\Have All\120 Stars",80207793 0001,8020777B 00C7,50001101 0000,8020777C 00FF
+Cheat11="[Slot B Codes]\Have All\120 Stars",80207793 0001,8020777B 00C7,50001101 0000,8020777C 00FF
 Cheat1_O=@Off and On 1
 Cheat2="Don't Hurt Mario\Monsters",A033B197 0001
 Cheat3="Infinite\Lives",8033B21D 0064
@@ -25826,6 +25863,46 @@ Cheat20="Level Select",D033AFA1 0020,A032DDF9 00??
 Cheat20_N=[SuperMario]Level Note
 Cheat20_O=[SuperMario]Level Select
  
+//----
+
+[BB315072-27EBD8AA-C:45]
+Name=SUPER ICE 64 (U)
+Cheat0="Press GS For 255 Coins",8933B218 00FF
+Cheat0_N=[SuperIce]Coins Note
+Cheat1="Have\Level Select",A032D58C 00??
+Cheat1_O=@Off and On 1
+Cheat2="Monsters Don't Hurt Icepir8",A033B197 0001
+Cheat3="Infinite\Lives",8033B21D 0064
+Cheat4="Infinite\Energy & Breath",8033B21E 0008
+Cheat5="Have\Debug Mode",A032D598 00??
+Cheat5_O=@Off and On 1
+Cheat6="Icepir8's Cap On Options",8033B177 00??
+Cheat6_N=[SuperIce]Cap Note
+Cheat6_O=[SuperIce]Marios Cap
+Cheat7="Press L To Levitate",D033AFA1 0020,8133B1BC 4220,D033B1BD 0020,8133B17C 0300,D033B1BD 0020,8133B17E 0880
+Cheat7_N=[SuperIce]Levitate Note
+Cheat8="[Slot A Codes]\Have All\120 Stars",80207723 0001,8020770B 00C7,50001101 0000,8020770C 00FF
+Cheat8_N=[SuperIce]Slot Note
+Cheat9="[Slot A Codes]\Have All\Key doors unlocked (and mote empty)",8020770A 007E
+Cheat10="[Slot A Codes]\Have All\Max 100 Coin Records For All Levels",50000F01 0000,80207725 0064
+Cheat11="[Slot B Codes]\Have All\120 Stars",80207793 0001,8020777B 00C7,50001101 0000,8020777C 00FF
+Cheat11_N=Select a Level. Jump Into a Painting. Press A at the Stars Collected Screen. As Stats are fading hold L, and you'll jump to the level you've selected.
+Cheat12="[Slot B Codes]\Have All\Key doors unlocked (and mote empty)",8020777A 007E
+Cheat13="[Slot B Codes]\Have All\Max 100 Coin Records For All Levels",50000F01 0000,80207795 0064
+Cheat14="[Slot C Codes]\Have All\120 Stars",80207803 0001,802077EB 00C7,50001101 0000,802077EC 00FF
+Cheat14_N=[SuperIce]Slot Note
+Cheat15="[Slot C Codes]\Have All\Key doors unlocked (and mote empty)",802077EA 007E
+Cheat16="[Slot C Codes]\Have All\Max 100 Coin Records For All Levels",50000F01 0000,80207805 0064
+Cheat17="[Slot D Codes]\Have All\120 Stars",80207873 0001,8020785B 00C7,50001101 0000,8020785C 00FF
+Cheat17_N=[SuperIce]Slot Note
+Cheat18="[Slot D Codes]\Have All\Key doors unlocked (and mote empty)",8020785A 007E
+Cheat19="[Slot D Codes]\Have All\Max 100 Coin Records For All Levels",50000F01 0000,80207875 0064
+Cheat20="Level Select",D033AFA1 0020,8132DDF8 00??
+Cheat20_N=[SuperIce]Level Note
+Cheat20_O=Level Select
+Level Select=$01 Intro,$04 Big Amimers Haunt,$05 Cool Cool Mountain,$06 Mushroom Castle,$07 Hazy Maze Cave,$08 Shifting Sand Land,$09 Da-Bomb Battlefield,$0A Snowmans Land,$0B Wet Dry World,$0C Jolly Jabo Bay,$0D Tiny Huge World,$0E Tick tock Clock,$0F Rainbow Ride,$10 Mushroom Castle Field,$11 Boozer In The Dark World,$12 Vanish Cap Under The Moat,$13 Boozer In The Fire Sea,$14 The Secret Aquarium,$15 Boozer In The Sky,$16 Lethal Lava Land,$17 Dire Dire Docks,$18 Slougis Fortress,$19 The End,$1A Castle Courtyard,$1B The Princess Secret Slide,$1C Cavern Of The Metal Cap,$1D Tower Of The Wing Cap,$1E Boozer In The Dark World Boss,$1F Wing Mario Over The Rainbow,$21 Boozer In The Fire Sea Boss,$22 Boozer In The Sky Boss,$24 Tall Tall Mountain
+
+
 //----
 
 [AB8232F1-701C5F44-C:45]
@@ -26404,7 +26481,6 @@ Name=Captain Falcon 64 1.3 (U) (Hack)
 Cheat0="Press GS For 255 Coins",8933B218 00FF
 Cheat0_N=[SuperMario]Coins Note
 Cheat1="Have\Level Select",A032D58C 00??
-Cheat11"[Slot B Codes]\Have All\120 Stars",80207793 0001,8020777B 00C7,50001101 0000,8020777C 00FF
 Cheat1_O=@Off and On 1
 Cheat2="Monsters Don't Hurt Falcon",A033B197 0001
 Cheat3="Infinite\Lives",8033B21D 0064
@@ -26420,6 +26496,7 @@ Cheat8="[Slot A Codes]\Have All\120 Stars",80207723 0001,8020770B 00C7,50001101 
 Cheat8_N=[SuperMario]Slot Note
 Cheat9="[Slot A Codes]\Have All\Key doors unlocked (and mote empty)",8020770A 007E
 Cheat10="[Slot A Codes]\Have All\Max 100 Coin Records For All Levels",50000F01 0000,80207725 0064
+Cheat11="[Slot B Codes]\Have All\120 Stars",80207793 0001,8020777B 00C7,50001101 0000,8020777C 00FF
 Cheat11_N=[SuperMario]Slot Note
 Cheat12="[Slot B Codes]\Have All\Key doors unlocked (and mote empty)",8020777A 007E
 Cheat13="[Slot B Codes]\Have All\Max 100 Coin Records For All Levels",50000F01 0000,80207795 0064
@@ -26434,6 +26511,90 @@ Cheat19="[Slot D Codes]\Have All\Max 100 Coin Records For All Levels",50000F01 0
 Cheat20="Level Select",D033AFA1 0020,A032DDF9 00??
 Cheat20_N=[SuperMario]Level Note
 Cheat20_O=[SuperMario]Level Select
+
+//----
+
+[9EFA01FB-F06E8E90-C:45]
+Name=Smash Remix (U)
+Cheat0="Give Kirby A Wierd Blow-Up",8025E158 000A
+Cheat1="Story Mode\Skip Straight To Master Hand",800A4AE7 000D
+Cheat2="Story Mode\Infinite Time",810A4B2E 43CB
+Cheat3="Story Mode\Player 1\Infinite Lives",800A4B43 0004
+Cheat4="Story Mode\Player 2\Infinite Lives",800A4BB7 0004
+Cheat5="Story Mode\Player 3\Infinite Lives",800A4C2B 0004
+Cheat6="Story Mode\Player 4\Infinite Lives",800A4C9F 0004
+Cheat7="Story Mode\Player 1\Low % Health",810A4B86 0000
+Cheat8="Story Mode\Player 2\Low % Health",810A4BFA 0000
+Cheat9="Story Mode\Player 3\Low % Health",810A4C6E 0000
+Cheat10="Story Mode\Player 4\Low % Health",810A4CE2 0000
+Cheat11="Story Mode\Player 1\Character Modifier",800A4B3B 00??
+Cheat11_N=[SuperSmashBrothers]Character Note
+Cheat11_O=[SuperSmashBrothers]Character Mod
+Cheat12="Story Mode\Player 2\Character Modifier",800A4BAF 00??
+Cheat12_N=[SuperSmashBrothers]Character Note
+Cheat12_O=[SuperSmashBrothers]Character Mod
+Cheat13="Story Mode\Player 3\Character Modifier",800A4C23 00?? 
+Cheat13_N=[SuperSmashBrothers]Character Note
+Cheat13_O=[SuperSmashBrothers]Character Mod
+Cheat14="Story Mode\Player 4\Character Modifier",800A4C97 00??
+Cheat14_N=[SuperSmashBrothers]Character Note
+Cheat14_O=[SuperSmashBrothers]Character Mod
+Cheat15="Story Mode\Player 1\Kirby B Button Move\Hyrule Castle",80268B0F 00??
+Cheat15_O=[SuperSmashBrothers]Kirby B Button Move
+Cheat16="Story Mode\Player 1\Kirby B Button Move\Yoshi's Island",80268E4F 00??
+Cheat16_O=[SuperSmashBrothers]Kirby B Button Move
+Cheat17="Story Mode\Player 1\Kirby B Button Move\Sector Z",802710F7 00??
+Cheat17_O=[SuperSmashBrothers]Kirby B Button Move
+Cheat18="Story Mode\Player 1\Kirby B Button Move\Peach's Castle",80263D9F 00??
+Cheat18_O=[SuperSmashBrothers]Kirby B Button Move
+Cheat19="Story Mode\Player 1\Kirby B Button Move\Saffron City",80273A97 00??
+Cheat19_O=[SuperSmashBrothers]Kirby B Button Move
+Cheat20="Story Mode\Player 1\Kirby B Button Move\Congo Jungle",80270ACF 00??
+Cheat20_O=[SuperSmashBrothers]Kirby B Button Move
+Cheat21="Story Mode\Player 1\Kirby B Button Move\Kirby's Dreamland",8026DB3F 00??
+Cheat21_O=[SuperSmashBrothers]Kirby B Button Move
+Cheat22="Story Mode\Player 1\Kirby B Button Move\Planet Zebes",8026FFA7 00??
+Cheat22_O=[SuperSmashBrothers]Kirby B Button Move
+Cheat23="Story Mode\Player 1\Kirby B Button Move\Metal Mario Stage",80263597 00??
+Cheat23_O=[SuperSmashBrothers]Kirby B Button Move
+Cheat24="Story Mode\Player 1\Kirby B Button Move\Fighting Polygon Team",8026271F 00??
+Cheat24_O=[SuperSmashBrothers]Kirby B Button Move
+Cheat25="Story Mode\Player 1\Kirby B Button Move\Master Hand Stage",80271C4F 00??
+Cheat25_O=[SuperSmashBrothers]Kirby B Button Move
+Cheat26="VS. Mode\Infinite Time",810A4D1E 43CB
+Cheat27="VS. Mode\Player 1\Low % Health",810A4D76 0000
+Cheat28="VS. Mode\Player 2\Low % Health",810A4DEA 0000
+Cheat29="VS. Mode\Player 3\Low % Health",810A4E5E 0000
+Cheat30="VS. Mode\Player 4\Low % Health",810A4ED2 0000
+Cheat31="VS. Mode\Player 1\Character Modifier",800A4D2B 00??
+Cheat31_N=[SuperSmashBrothers]=Character Note
+Cheat31_O=[SuperSmashBrothers]Character Mod
+Cheat32="VS. Mode\Player 2\Character Modifier",800A4D9F 00??
+Cheat32_N=[SuperSmashBrothers]Character Note
+Cheat32_O=[SuperSmashBrothers]Character Mod
+Cheat33="VS. Mode\Player 3\Character Modifier",800A4E13 00??
+Cheat33_N=[SuperSmashBrothers]Character Note
+Cheat33_O=[SuperSmashBrothers]Character Mod
+Cheat34="VS. Mode\Player 4\Character Modifier",800A4E87 00??
+Cheat34_N=[SuperSmashBrothers]Character Note
+Cheat34_O=[SuperSmashBrothers]Character Mod
+Cheat35="VS. Mode\Player 1\Kirby B Button Move\Hyrule Castle",802639EF 00??
+Cheat35_O=[SuperSmashBrothers]Kirby B Button Move
+Cheat36="VS. Mode\Player 1\Kirby B Button Move\Yoshi's Island",8026E2B7 00??
+Cheat36_O=[SuperSmashBrothers]Kirby B Button Move
+Cheat37="VS. Mode\Player 1\Kirby B Button Move\Sector Z",8026BF87 00??
+Cheat37_O=[SuperSmashBrothers]Kirby B Button Move
+Cheat38="P1 Press Down On D-Pad To Make Items Appear In Random Spots",D109EFA4 0400,8118D0A2 0001
+Cheat39="Have All Characters",810A4938 0FF0
+Cheat40="VS. Mode\Have\Mushroom Kindom",800A4937 00FF
+Cheat41="Story Mode\Always Get Pacifist (60,000 Points)",810A4B6E 0000
+Cheat42="Bonus Stage Character Modifier (Training Mode)",8018F1D3 00??
+Cheat42_N=[SuperSmashBrothers]Character Note
+Cheat42_O=[SuperSmashBrothers]Character Mod
+Cheat43="Enable Item Switch Menu (All Modes)",811348E2 0004
+Cheat43_N=[SuperSmashBrothers]Switch Menu Note
+Cheat44="Story Mode\Player 1\Stage Select",D1045188 0010,800A4AE7 00??
+Cheat44_O=[SuperSmashBrothers]Stage Select
 
 //----
 
@@ -26527,7 +26688,6 @@ Name=Super Mario 64 (Gateway)
 Cheat0="Press GS For 255 Coins",8930F388 00FF
 Cheat0_N=[SuperMario]Coins Note
 Cheat1="Monsters Don't Hurt Mario",A030F307 0001
-Cheat11"[Slot B Codes]\Have All\120 Stars",80207793 0001,8020777B 00C7,50001101 0000,8020777C 00FF
 Cheat2="Infinite\Lives",8030F38D 0064
 Cheat3="Infinite\Energy & Breath",8030F38E 0008
 Cheat4="Mario's Cap On Options",8030F2E7 00??
@@ -26539,6 +26699,7 @@ Cheat6="[Slot A Codes]\Have All\120 Stars",80207B23 0001,80207B0B 00C7,50001101 
 Cheat6_N=[SuperMario]Slot Note
 Cheat7="[Slot A Codes]\Have All\Key doors unlocked (and mote empty)",80207B0A 007E
 Cheat8="[Slot A Codes]\Have All\Max 100 Coin Records For All Levels",50000F01 0000,80207B25 0064
+Cheat9="[Slot B Codes]\Have All\120 Stars",80207793 0001,8020777B 00C7,50001101 0000,8020777C 00FF
 Cheat9_N=[SuperMario]Slot Note
 Cheat10="[Slot B Codes]\Have All\Key doors unlocked (and mote empty)",8020777A 007E
 Cheat11="[Slot B Codes]\Have All\Max 100 Coin Records For All Levels",50000F01 0000,80207795 0064
@@ -27130,9 +27291,19 @@ Cheat10="Have All Characters",5000125C 0000,810EB3A8 0000,5000125C 0000,810EB3AA
 
 //----
 
+[B1C889CC-E8AED4C1-C:47]
+Name=Rush 2 - Extreme Racing USA (Gateway)
+Cheat0="Unlock Cheats Menu",810C3808 0100,50000D02 0000,810C37B4 0101,800C37CE 0001
+Cheat0_N=This Unlocks the Cheat Menu and All Cheats within. It can be fouind in Setup.
+Cheat1="Unlock All Cars",50000902 0000,810C3484 FFFF
+Cheat4="Always 1st",80113209 0000
+Cheat4_N=You can come in last and still win when time runs out. 
+
+//----
+
 [955CE1F8-166B4F4C-C:47]
 Name=Star Fox 64 (Gateway)
-Cheat0="Infinite\Boost\Player 1",81146F5C 0000,81146F5E 0000,81149E3C 0000,81149E3E 0000
+Cheat0="Infinite\Boost\Player 1",8114270C 0000,8114270E 0000,811455EC 0000,811455EE 0000
 Cheat1="Have All Medals",50000802 0000,8117D920 7777
 Cheat1_N=[StarFox]Medals Note
 Cheat2="Infinite\Lasers\Player 1",80166BDB 00??
@@ -27140,8 +27311,8 @@ Cheat2_O=[StarFox]Lasers
 Cheat3="Loads O' Hits",80166BC7 00FF
 Cheat4="Infinite\Armor\Slippy",8017C9EB 00FF
 Cheat5="Infinite\Energy\Player 1",800B7A68 00??
-Cheat5_O=$24 On,$AC Off
 Cheat5_N=[StarFox]Energy Note
+Cheat5_O=$24 On,$AC Off
 Cheat6="Infinite\Lives",80166BD1 0009
 Cheat7="Infinite\Smart Bombs\Player 1",8017CED3 0009
 Cheat8="Infinite\Armor\Falco",8017C9E7 00FF
@@ -27151,27 +27322,135 @@ Cheat10_O=[StarFox]Level
 
 //----
 
+[8EE30438-6DAE1C7D-C:47]
+Name=Super Smash Brothers (Gateway)
+Cheat0="Story Mode\Infinite Time",810A4E4E 43CB
+Cheat1="Story Mode\Player 1\Infinite Lives",800A4E63 0004
+Cheat2="Story Mode\Player 1\Low % Health",810A4EA6 0000
+Cheat3="Story Mode\Player 1\Character Modifier",800A4E5B 00??
+Cheat3_N=[SuperSmashBrothers]Character Note
+Cheat3_O=[SuperSmashBrothers]Character Mod
+Cheat4="Story Mode\Player 2\Character Modifier",800A4ECF 00??
+Cheat4_N=[SuperSmashBrothers]Character Note
+Cheat4_O=[SuperSmashBrothers]Character Mod
+Cheat5="Story Mode\Player 3\Character Modifier",800A4F43 00??
+Cheat5_N=[SuperSmashBrothers]Character Note
+Cheat5_O=[SuperSmashBrothers]Character Mod
+Cheat6="Story Mode\Player 4\Character Modifier",800A4FB7 00??
+Cheat6_N=[SuperSmashBrothers]Character Note
+Cheat6_O=[SuperSmashBrothers]Character Mod
+Cheat7="VS. Mode\Infinite Time",810A503E 43CB
+Cheat8="VS. Mode\Player 1\Low % Health",810A5096 0000
+Cheat9="VS. Mode\Player 2\Low % Health",810A510A 0000
+Cheat10="VS. Mode\Player 3\Low % Health",810A517E 0000
+Cheat11="VS. Mode\Player 4\Low % Health",810A51F2 0000
+Cheat12="VS. Mode\Player 1\Character Modifier",800A504B 00??
+Cheat12_N=[SuperSmashBrothers]=Character Note
+Cheat12_O=[SuperSmashBrothers]Character Mod
+Cheat13="VS. Mode\Player 2\Character Modifier",800A50BF 00??
+Cheat13_N=[SuperSmashBrothers]Character Note
+Cheat13_O=[SuperSmashBrothers]Character Mod
+Cheat14="VS. Mode\Player 3\Character Modifier",800A5133 00??
+Cheat14_N=[SuperSmashBrothers]Character Note
+Cheat14_O=[SuperSmashBrothers]Character Mod
+Cheat15="VS. Mode\Player 4\Character Modifier",800A51A7 00??
+Cheat15_N=[SuperSmashBrothers]Character Note
+Cheat15_O=[SuperSmashBrothers]Character Mod
+Cheat16="Have All Characters & Extras",810A4C58 0FF0,800A4C57 00FF
+Cheat16_N=This gives you All Characters, VS  Options Switch Menu & Mushroom Kingdom
+Cheat17="Story Mode\Press F9 for Stage Select",880A4E07 00??
+Cheat17_O=[SuperSmashBrothers]Stage Select
+
+//----
+
+[960DDFA4-A38A1C08-C:47]
+Name=The New Tetris (Gateway)
+Cheat0="Press L + C-Down For Cheat Screen",D0110533 0024,8103C000 0000,D0110533 0024,8103C002 0000
+
+//----
+
+[7468EACE-ED32A09F-C:47]
+Name=Virtual Chess 64 (Gateway)
+Cheat0="Debug Mode",800DCFA0 0001
+Cheat1="Time Always Counts Down",801236C5 00??
+Cheat1_O=$00 On White Players Side,$01 On Black Players Side
+Cheat2="Always Play On",800DDF67 00??
+Cheat2_O=$00 A 3D Board,$01 A 2D Board
+Cheat3="Auto Play",800DDF47 00??
+Cheat3_O=$00 Off,$01 On
+
+//----
+
+[D8A44F27-73408E53-C:47]
+Name=Virtual Pool 64 (Gateway)
+Cheat0="Always Your Turn",802EC6C8 00??
+Cheat0_O=$00 Player 1,$01 Player 2
+Cheat1="Games Won\Player 1",802EC6B1 00??
+Cheat1_O=Wins
+Cheat2="Games Won\Player 2",802EC6B3 00??
+Cheat2_O=Wins2
+Wins=$0000 Zero Points,$FFFF Max Points
+Wins2=$00 Zero Points,$FF Max Points
+
+//----
+
+[9318DAEF-F1732347-C:47]
+Name=Wave Race 64 (Gateway)
+Cheat0="Misses Don't Count\Player 1",801C2BEF 0000
+Cheat1="Infinite Time Stunt Mode",811C2D7E 3A98
+Cheat2="99 Points",801CB4C3 0063
+Cheat2_N=[WaveRace]Points Note
+Cheat3="Infinite Course Out Time\Player 1",801C2DA3 00FF
+Cheat4="Maximum Power & Speed Option\Player 1",801C2BE7 00??
+Cheat4_O=[WaveRace]Max Power & Speed
+Cheat5="Maximum Power & Speed Option\Player 2",801C2F6A 00??
+Cheat5_O=[WaveRace]Max Power & Speed
+Cheat6="Misses Don't Count\Player 2",801C2F67 0000
+Cheat7="All Difficulty Levels & Tracks Unlocked",801CB400 001F,801CB40B 0016
+Cheat8="Infinite Course Out Time\Player 2",801C311B 00FF
+
+//----
+
+[712E0CB5-3608A9C1-C:47]
+Name=Yoshi’s Story (Gateway)
+Cheat0="Infinite\Health",50000804 0000,800F90F7 00??
+Cheat0_N=[YoshisStory]All Yoshis
+Cheat0_O=[YoshisStory]Health
+Cheat1="Infinite\Eggs (Once You Get One)",8103E52C 2400
+Cheat1_N=[YoshisStory]All Yoshis
+Cheat2="Infinite\Lives",800F9137 00FF
+Cheat2_N=[YoshisStory]All Yoshis
+Cheat3="Press F9 To Have All Fruit",880F8D13 001E
+Cheat4="Enable All Levels (Trial Mode)",810F919C FFFF,810F919E FFFF
+
+//------ Homebrew --------
+
 [470112E9-53C66CB4-C:41]
 Name=XENO CRISIS 64
-Cheat0="Infinite Continues",80157793 0063
-Cheat1="Infinite Max Health",80157898 0007,80158B29 0063
-Cheat2="Infinite Ammo",81157E10 03E7
-Cheat3="Infinite Max Grenades",8015789C 0006,80157E13 0063
-Cheat4="Infinite Max Credits (Tags)",80157E15 0063
-Cheat5="Max Ammo Limit",8015789B 0007
-Cheat6="Max Grenade Power",8015789D 0002
+Cheat0="Infinite\Continues",80157793 0063
+Cheat1="Infinite\Max Health",80157898 0007,80158B29 0063
+Cheat2="Infinite\Ammo",81157E10 03E7
+Cheat3="Infinite\Max Grenades",8015789C 0006,80157E13 0063
+Cheat4="Infinite\Max Credits (Tags)",80157E15 0063
+Cheat5="Max\Ammo Limit",8015789B 0007
+Cheat6="Max\Grenade Power",8015789D 0002
 Cheat7="Have Gas Mask",80157E16 0001
 Cheat8="Area Select",801577C8 00??
 Cheat8_N=Just enable this before the start of the area and go to that location. Make sure you disable before the end of the area or it will stay on the same one.
 Cheat8_O=$00 The Perimeter,$01 The Facility,$02 The Dunes,$03 The Nest,$04 The Forest,$05 The Lab,$06 The HQ
-Cheat9="Max Power",80157899 0003
-Cheat10="Max Speed",8015789A 0003
+Cheat9="Power Options",80157899 00??
+Cheat9_O=$01 Normal Power,$02 Medium Power,$03 Max Power
+Cheat10="Speed Options",8015789A 00??
+Cheat10_O=$01 Normal Speed,$02 Medium Speed,$03 Max Speed
 Cheat11="Weapon Select",80157E05 0063,80157E00 00??
-Cheat11_N=This will give you the selected weapon and infinite use.
+Cheat11_N=This will give you the selected weapon and infinite use. Do not use Rocket Launcher with Any Boos as it will lead to game freeze or crash.
 Cheat11_O=$00 Assault Riffle,$01 Flamethrower,$02 Rocket Launcher,$03 Spread Shot,$04 Homing,$05 Laser,$06 Rebound,$07 Shotgun,$08 Vulcan,$09 BFG
 Cheat12="Press F9 for Gent's Mega Score",891577AA FFFF,891577AB FFFF
+Cheat13="Always Have S Ranking",80158B31 0000
 
-//----
+
+
 
 //End Of File----------> Anything under here was put in by you <--------------------------------
+
 
