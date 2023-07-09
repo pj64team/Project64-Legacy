@@ -346,7 +346,7 @@ void ResetAudio(HWND hWnd) {
 	}
 }
 
-void SetupPlugins (HWND hWnd) {
+void SetupPlugins (HWND hWnd, BOOL bDoInit) {
 	static DWORD AI_DUMMY = 0;
 	ShutdownPlugins();
 	GetCurrentDlls();
@@ -391,9 +391,12 @@ void SetupPlugins (HWND hWnd) {
 		GfxInfo.VI__X_SCALE_REG = &VI_X_SCALE_REG;
 		GfxInfo.VI__Y_SCALE_REG = &VI_Y_SCALE_REG;
 		
-		if (!InitiateGFX(GfxInfo) ) {
-			DisplayError(GS(MSG_FAIL_INIT_GFX));
-			PluginsInitilized = FALSE;
+		if (bDoInit)
+		{
+			if (!InitiateGFX(GfxInfo)) {
+				DisplayError(GS(MSG_FAIL_INIT_GFX));
+				PluginsInitilized = FALSE;
+			}
 		}
 	}
 
@@ -429,22 +432,25 @@ void SetupPlugins (HWND hWnd) {
 		AudioInfo.AI__BITRATE_REG = &AI_BITRATE_REG;	
 		AudioInfo.CheckInterrupts = AiCheckInterrupts;
 		if (EmulateAI == TRUE) EmuAI_InitializePluginHook();
-		if (!InitiateAudio(AudioInfo)) {
-			AiCloseDLL       = NULL;
-			AiDacrateChanged = NULL;
-			AiLenChanged     = NULL;
-			AiReadLength     = NULL;
-			AiUpdate         = NULL;
-			InitiateAudio    = NULL;
-			ProcessAList     = NULL;
-			AiRomClosed      = NULL;
-			DisplayError(GS(MSG_FAIL_INIT_AUDIO));
-			PluginsInitilized = FALSE;
-		}
-		if (AiUpdate) { 
-			DWORD ThreadID;
-			bTerminateAudioThread = FALSE;
-			hAudioThread = CreateThread(NULL,0,(LPTHREAD_START_ROUTINE)AudioThread, (LPVOID)NULL,0, &ThreadID);			
+		if (bDoInit)
+		{
+			if (!InitiateAudio(AudioInfo)) {
+				AiCloseDLL = NULL;
+				AiDacrateChanged = NULL;
+				AiLenChanged = NULL;
+				AiReadLength = NULL;
+				AiUpdate = NULL;
+				InitiateAudio = NULL;
+				ProcessAList = NULL;
+				AiRomClosed = NULL;
+				DisplayError(GS(MSG_FAIL_INIT_AUDIO));
+				PluginsInitilized = FALSE;
+			}
+			if (AiUpdate) {
+				DWORD ThreadID;
+				bTerminateAudioThread = FALSE;
+				hAudioThread = CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)AudioThread, (LPVOID)NULL, 0, &ThreadID);
+			}
 		}
 	}
 
@@ -542,18 +548,21 @@ void SetupPlugins (HWND hWnd) {
 		RspInfo10.DPC__TMEM_REG = &DPC_TMEM_REG;
 		RspInfo11.DPC__TMEM_REG = &DPC_TMEM_REG;
 
-		switch (RSPVersion)
+		if (bDoInit)
 		{
-		case 0x0100:
-			InitiateRSP_1_0(RspInfo10, &RspTaskValue);
-			break;
-		case 0x0101:
-		case 0x0102:
-			InitiateRSP_1_1(RspInfo11, &RspTaskValue);
-			break;
-		default:
-			InitiateRSP_1_0(RspInfo10, &RspTaskValue);
-			break;
+			switch (RSPVersion)
+			{
+			case 0x0100:
+				InitiateRSP_1_0(RspInfo10, &RspTaskValue);
+				break;
+			case 0x0101:
+			case 0x0102:
+				InitiateRSP_1_1(RspInfo11, &RspTaskValue);
+				break;
+			default:
+				InitiateRSP_1_0(RspInfo10, &RspTaskValue);
+				break;
+			}
 		}
 
 		if (((DWORD)SetRomHeader) != NULL)
@@ -600,17 +609,20 @@ void SetupPlugins (HWND hWnd) {
 		Controllers[3].RawData = FALSE;
 		Controllers[3].Plugin  = PLUGIN_NONE;
 	
-		if (ContVersion == 0x0100) {
-			InitiateControllers_1_0(hWnd,Controllers);
-		}
-		if (ContVersion == 0x0101) {
-			CONTROL_INFO ControlInfo;
-			ControlInfo.Controls = Controllers;
-			ControlInfo.HEADER = (BYTE *)RomHeader;
-			ControlInfo.hinst = hInst;
-			ControlInfo.hMainWindow = hWnd;
-			ControlInfo.MemoryBswaped = TRUE;
-			InitiateControllers_1_1(ControlInfo);
+		if (bDoInit)
+		{
+			if (ContVersion == 0x0100) {
+				InitiateControllers_1_0(hWnd, Controllers);
+			}
+			if (ContVersion == 0x0101) {
+				CONTROL_INFO ControlInfo;
+				ControlInfo.Controls = Controllers;
+				ControlInfo.HEADER = (BYTE*)RomHeader;
+				ControlInfo.hinst = hInst;
+				ControlInfo.hMainWindow = hWnd;
+				ControlInfo.MemoryBswaped = TRUE;
+				InitiateControllers_1_1(ControlInfo);
+			}
 		}
 #ifndef EXTERNAL_RELEASE
 //		Controllers[0].Plugin  = PLUGIN_RUMBLE_PAK;

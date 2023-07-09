@@ -250,7 +250,7 @@ void HideRomBrowser(void) {
 
 	EnableWindow(hRomList, FALSE);
 	ShowWindow(hRomList, SW_HIDE);
-	SetupPlugins(hMainWindow);
+	SetupPlugins(hMainWindow,TRUE);
 
 	SendMessage(hMainWindow, WM_USER + 17, 0, 0);
 	ShowWindow(hMainWindow, SW_SHOW);
@@ -1077,7 +1077,7 @@ void SelectRomDir(void) {
 
 	CoUninitialize();
 
-	SetupPlugins(hMainWindow);
+	SetupPlugins(hMainWindow,FALSE);
 }
 
 void SetRomBrowserMaximized(BOOL Maximized) {
@@ -1163,7 +1163,8 @@ void ShowRomList(HWND hParent) {
 	if (hRomList != NULL && IsWindowVisible(hRomList))
 		return;
 	
-	SetupPlugins(hHiddenWin);
+	SetupPlugins(hHiddenWin,TRUE);
+	//SetupPlugins(hMainWindow, TRUE);
 	SetupMenu(hMainWindow);
 	IgnoreMove = TRUE;	
 	ShowWindow(hMainWindow, SW_HIDE);
