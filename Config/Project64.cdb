@@ -17,7 +17,7 @@
 // Note that Project64 automatically prefixes "http://"
 
 Author=PJ64LegacyTeam
-Date=9th July 2023 Version: 1
+Date=11th July 2023 Version: 1
 Homepage=www.project64-legacy.com
 Version=Project64 1.6.2 (Legacy)
 
@@ -13897,7 +13897,7 @@ Cheat1="Enable Cheat Menu",80336593 0001
 Cheat2="Skill Select\Player 2",81335840 ????
 Cheat2_N=[WarGods]Skill Note
 Cheat2_O=[WarGods]Skill
-Cheat3="Skill Select\Player 1",8133583D ????
+Cheat3="Skill Select\Player 1",8133583C ????
 Cheat3_N=[WarGods]Skill Note
 Cheat3_O=[WarGods]Skill
 Cheat4="Difficulty Select",80336573 00??
@@ -20707,7 +20707,7 @@ Cheat1="Enable Cheat Menu",80336973 0001
 Cheat2="Skill Select\Player 2",81335C20 ????
 Cheat2_N=[WarGods]Skill Note
 Cheat2_O=[WarGods]Skill
-Cheat3="Skill Select\Player 1",81335C1D ????
+Cheat3="Skill Select\Player 1",81335C1C ????
 Cheat3_N=[WarGods]Skill Note
 Cheat3_O=[WarGods]Skill
 Cheat4="Difficulty Select",80336953 00??
@@ -27429,7 +27429,7 @@ Cheat4="Enable All Levels (Trial Mode)",810F919C FFFF,810F919E FFFF
 Name=XENO CRISIS 64
 Cheat0="Infinite\Continues",80157793 0063
 Cheat1="Infinite\Max Health",80157898 0007,80158B29 0063
-Cheat2="Infinite\Ammo",81157E10 03E7
+Cheat2="Infinite\Max Ammo",80157E11 007D,80157E05 0063
 Cheat3="Infinite\Max Grenades",8015789C 0006,80157E13 0063
 Cheat4="Infinite\Max Credits (Tags)",80157E15 0063
 Cheat5="Max\Ammo Limit",8015789B 0007
@@ -27442,12 +27442,34 @@ Cheat9="Power Options",80157899 00??
 Cheat9_O=$01 Normal Power,$02 Medium Power,$03 Max Power
 Cheat10="Speed Options",8015789A 00??
 Cheat10_O=$01 Normal Speed,$02 Medium Speed,$03 Max Speed
-Cheat11="Weapon Select",80157E05 0063,80157E00 00??
-Cheat11_N=This will give you the selected weapon and infinite use. Do not use Rocket Launcher with Any Boos as it will lead to game freeze or crash.
+Cheat11="Weapon Select",80157E00 00??
+Cheat11_N=This will give you the selected weapon. Do not use Rocket Launcher with Any Boos as it will lead to game freeze or crash.
 Cheat11_O=$00 Assault Riffle,$01 Flamethrower,$02 Rocket Launcher,$03 Spread Shot,$04 Homing,$05 Laser,$06 Rebound,$07 Shotgun,$08 Vulcan,$09 BFG
-Cheat12="Press F9 for Gent's Mega Score",891577AA FFFF,891577AB FFFF
+Cheat12="Press F9 for Gent's Mega Score",891577AA FFFF,891577AC FFFF
 Cheat13="Always Have S Ranking",80158B31 0000
 
+[470112E9-53C66CB4-C:50]
+Name=XENO CRISIS (E)
+Cheat0="Infinite\Continues",80157793 0063
+Cheat1="Infinite\Max Health",80157898 0007,80158B29 0063
+Cheat2="Infinite\Max Ammo",80157E11 007D,80157E05 0063
+Cheat3="Infinite\Max Grenades",8015789C 0006,80157E13 0063
+Cheat4="Infinite\Max Credits (Tags)",80157E15 0063
+Cheat5="Max\Ammo Limit",8015789B 0007
+Cheat6="Max\Grenade Power",8015789D 0002
+Cheat7="Have Gas Mask",80157E16 0001
+Cheat8="Area Select",801577C8 00??
+Cheat8_N=Just enable this before the start of the area and go to that location. Make sure you disable before the end of the area or it will stay on the same one.
+Cheat8_O=$00 The Perimeter,$01 The Facility,$02 The Dunes,$03 The Nest,$04 The Forest,$05 The Lab,$06 The HQ
+Cheat9="Power Options",80157899 00??
+Cheat9_O=$01 Normal Power,$02 Medium Power,$03 Max Power
+Cheat10="Speed Options",8015789A 00??
+Cheat10_O=$01 Normal Speed,$02 Medium Speed,$03 Max Speed
+Cheat11="Weapon Select",80157E00 00??
+Cheat11_N=This will give you the selected weapon. Do not use Rocket Launcher with Any Boos as it will lead to game freeze or crash.
+Cheat11_O=$00 Assault Riffle,$01 Flamethrower,$02 Rocket Launcher,$03 Spread Shot,$04 Homing,$05 Laser,$06 Rebound,$07 Shotgun,$08 Vulcan,$09 BFG
+Cheat12="Press F9 for Gent's Mega Score",891577AA FFFF,891577AC FFFF
+Cheat13="Always Have S Ranking",80158B31 0000
 
 
 
