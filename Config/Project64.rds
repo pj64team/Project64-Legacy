@@ -19,7 +19,7 @@
 // Note that Project64 automatically prefixes "http://"
 
 Author=PJ64LegacyTeam
-Date=9th July 2023 Version: 1
+Date=11th July 2023 Version: 1
 Homepage=www.project64-legacy.com
 Version=Project64 1.6.3 (Legacy)
 
@@ -8476,7 +8476,7 @@ Linking=Global
 Plugin Note=[video] & [Audio]  (see GameFAQ)
 Save Type=First Save Type
 Self-modifying code Method=Check Memory & cache
-Status=Use Icepir8s-Legacy-LLE & Parallel-RSP
+Status=Use GLideN64 Video
 
 [845B0269-57DE9502-C:4A]
 Name=Top Gear Hyper Bike (J)
@@ -8488,7 +8488,7 @@ Linking=Global
 Plugin Note=[video] & [Audio]  (see GameFAQ)
 Save Type=First Save Type
 Self-modifying code Method=Check Memory & cache
-Status=Use Icepir8s-Legacy-LLE & Parallel-RSP
+Status=Use GLideN64 Video
 
 [8ECC02F0-7F8BDE81-C:45]
 Name=Top Gear Hyper Bike (U)
@@ -8500,7 +8500,7 @@ Linking=Global
 Plugin Note=[video] & [Audio]  (see GameFAQ)
 Save Type=First Save Type
 Self-modifying code Method=Check Memory & cache
-Status=Use Icepir8s-Legacy-LLE & Parallel-RSP
+Status=Use GLideN64 Video
 
 [D09BA538-1C1A5489-C:50]
 Name=Top Gear Overdrive (E)
@@ -8512,7 +8512,7 @@ Linking=Global
 Plugin Note=[video] & [Audio]  (see GameFAQ)
 Save Type=First Save Type
 Self-modifying code Method=Check Memory & cache
-Status=Use Icepir8s-Legacy-LLE & Parallel-RSP
+Status=Use GLideN64 Video
 Use Large Buffer
 
 [0578F24F-9175BF17-C:4A]
@@ -8525,7 +8525,7 @@ Linking=Global
 Plugin Note=[video] & [Audio] (see GameFAQ)
 Save Type=First Save Type
 Self-modifying code Method=Check Memory & cache
-Status=Use Icepir8s-Legacy-LLE & Parallel-RSP
+Status=Use GLideN64 Video
 
 [D741CD80-ACA9B912-C:45]
 Name=Top Gear Overdrive (U)
@@ -8537,7 +8537,7 @@ Linking=Global
 Plugin Note=[video] & [Audio] (see GameFAQ)
 Save Type=First Save Type
 Self-modifying code Method=Check Memory & cache
-Status=Use Icepir8s-Legacy-LLE & Parallel-RSP
+Status=Use GLideN64 Video
 Use Large Buffer
 
 [7F43E701-536328D1-C:50]
@@ -13796,13 +13796,13 @@ Status=Use 3rd party video
 
 [635A42C5-BDC58EDC-C:45]
 Name=Super Mario 64 (U) [T-Bra]
-CPU Type=Default
-Counter Factor=Default
+CPU Type=Recompiler
+Counter Factor=2
 ExpansionPak
 Linking=Global
 Plugin Note=[video] missing:dissolve effect (see GameFAQ)
 Save Type=First Save Type
-Self-modifying code Method=Default
+Self-modifying code Method=Cache
 Status=Compatible
 
 [997D29AE-C13FF636-C:4A]
@@ -14672,6 +14672,160 @@ ExpansionPak
 Linking=Global
 Save Type=First Save Type
 Self-modifying code Method=Default
+Status=Compatible
+
+[FF95988A-548A491D-C:45]
+Name=Super Mario 64 - Kirby Edition (v1.1) (U)
+CPU Type=Recompiler
+Core Note=Hangs on Press Start
+Counter Factor=1
+ExpansionPak
+Linking=Global
+Save Type=First Save Type
+Self-modifying code Method=Check Memory Advance
+Status=Unsupported
+
+[824C5A80-43245C7E-C:45]
+Name=Super Mario 64 - Sonic Edition (v4.1) (U)
+CPU Type=Recompiler
+Counter Factor=2
+ExpansionPak
+Linking=Global
+Save Type=First Save Type
+Self-modifying code Method=Cache
+Status=Use GLideN64 Video
+
+[BB315072-27EBD8AA-C:45]
+Name=SUPER ICE 64 (U)
+CPU Type=Recompiler
+Counter Factor=2
+ExpansionPak
+Linking=Global
+Plugin Note=[video] missing:dissolve effect (see GameFAQ)
+SP Hack
+Save Type=First Save Type
+Self-modifying code Method=Check Memory Advance
+Status=Compatible
+
+[0ED61ED8-87F81B02-C:45]
+Name=SM64 Multiplayer 1.0 (U) (Hack)
+CPU Type=Recompiler
+Counter Factor=2
+ExpansionPak
+Linking=Global
+Plugin Note=[video] missing:dissolve effect (see GameFAQ)
+SP Hack
+Save Type=First Save Type
+Self-modifying code Method=Check Memory Advance
+Status=Compatible
+
+[7BFD81D7-1AD5F4B9-C:4A]
+Name=SM64 - Reduced Lag (J) (Hack) v1
+CPU Type=Recompiler
+Counter Factor=2
+ExpansionPak
+Linking=Global
+Plugin Note=[video] missing:dissolve effect (see GameFAQ)
+SP Hack
+Save Type=First Save Type
+Self-modifying code Method=Check Memory Advance
+Status=Compatible
+
+[041ACAB1-C239679B-C:45]
+Name=SM64 - Reduced Lag (U) (Hack) v1
+CPU Type=Recompiler
+Counter Factor=2
+ExpansionPak
+Linking=Global
+Plugin Note=[video] missing:dissolve effect (see GameFAQ)
+SP Hack
+Save Type=First Save Type
+Self-modifying code Method=Check Memory Advance
+Status=Compatible
+
+[3114B9B3-05DCE9CA-C:4A]
+Name=SM64 - Shindou Improvement (Hack) v1
+CPU Type=Recompiler
+Counter Factor=2
+ExpansionPak
+Linking=Global
+Plugin Note=[video] missing:dissolve effect (see GameFAQ)
+SP Hack
+Save Type=First Save Type
+Self-modifying code Method=Check Memory Advance
+Status=Compatible
+
+[7301E2C3-BE9383E5-C:45]
+Name=SM and the Marvel Adventure (Hack)
+CPU Type=Recompiler
+Core Note=Another one stuck after load screen
+Counter Factor=2
+ExpansionPak
+Linking=Global
+SP Hack
+Save Type=First Save Type
+Self-modifying code Method=Check Memory Advance
+Status=Compatible
+
+
+[80AA9870-0BEF5B37-C:45]
+Name=SUPER LUIGI 64 (U) v2.0 (Hack)
+CPU Type=Recompiler
+Counter Factor=2
+ExpansionPak
+Linking=Global
+Plugin Note=[video] missing:dissolve effect (see GameFAQ)
+SP Hack
+Save Type=First Save Type
+Self-modifying code Method=Check Memory Advance
+Status=Use GLideN64 Video
+
+[D0EEB49E-22A3C5CC-C:45]
+Name=SM64 Twisted Adventures (U) 1.0 (Hack)
+CPU Type=Recompiler
+Counter Factor=2
+ExpansionPak
+Linking=Global
+Plugin Note=[video] missing:dissolve effect (see GameFAQ)
+SP Hack
+Save Type=First Save Type
+Self-modifying code Method=Check Memory Advance
+Status=Compatible
+
+[5AE2B156-C43A321A-C:45]
+Name=SM64 Twisted Adventures (U) 2.0 (Hack)
+CPU Type=Recompiler
+Counter Factor=2
+ExpansionPak
+Linking=Global
+Plugin Note=[video] missing:dissolve effect (see GameFAQ)
+SP Hack
+Save Type=First Save Type
+Self-modifying code Method=Check Memory Advance
+Status=Compatible
+
+[2DBBF3CF-C685C65F-C:45]
+Name=SM64 Star Road (U) (Hack)
+CPU Type=Recompiler
+Core Note=Another one stuck after load screen
+Counter Factor=2
+ExpansionPak
+Linking=Global
+SP Hack
+Save Type=First Save Type
+Self-modifying code Method=Check Memory Advance
+Status=Compatible
+
+[EC0E7243-9814B50A-C:45]
+Name=SUPER MARIO 64 (U) - Smoke Fix (Hack) v2
+CPU Type=Recompiler
+Counter Factor=2
+ExpansionPak
+Linking=Global
+Plugin Note=[video] missing:dissolve effect (see GameFAQ)
+SP Hack
+Save Type=First Save Type
+Self-modifying code Method=Check Memory Advance
 Status=Compatible
 
 [D9042FBB-FCFF997C-C:46]
@@ -16369,27 +16523,6 @@ Save Type=First Save Type
 Self-modifying code Method=Check Memory Advance
 Status=Use GLideN64 Video
 
-[FF95988A-548A491D-C:45]
-Name=Super Mario 64 - Kirby Edition (v1.1) (U)
-CPU Type=Recompiler
-Core Note=Hangs on Press Start
-Counter Factor=1
-ExpansionPak
-Linking=Global
-Save Type=First Save Type
-Self-modifying code Method=Check Memory Advance
-Status=Unsupported
-
-[824C5A80-43245C7E-C:45]
-Name=Super Mario 64 - Sonic Edition (v4.1) (U)
-CPU Type=Recompiler
-Counter Factor=2
-ExpansionPak
-Linking=Global
-Save Type=First Save Type
-Self-modifying code Method=Cache
-Status=Use GLideN64 Video
-
 [59B4F567-AA977143-C:00]
 Name=Duck Dodgers Starring Daffy Duck (March 7 2000 Prototype)
 CPU Type=Recompiler
@@ -17710,7 +17843,16 @@ Status=Issues (plugin)
 [470112E9-53C66CB4-C:41]
 Name=XENO CRISIS 64
 CPU Type=Recompiler
-Counter Factor=Default
+Counter Factor=2
+Linking=Global
+Save Type=First Save Type
+Self-modifying code Method=Default
+Status=Use GLideN64 HLE Video
+
+[470112E9-53C66CB4-C:50]
+Name=XENO CRISIS (E)
+CPU Type=Recompiler
+Counter Factor=2
 Linking=Global
 Save Type=First Save Type
 Self-modifying code Method=Default
@@ -18055,45 +18197,6 @@ Status=Compatible
 //-------- Any entries below this point are for ROMs you have added yourself via the GUI [EOF] --------
 //
 
-[BB315072-27EBD8AA-C:45]
-Name=SUPER ICE 64 (U)
-CPU Type=Recompiler
-Counter Factor=2
-ExpansionPak
-Linking=Global
-Plugin Note=[video] missing:dissolve effect (see GameFAQ)
-SP Hack
-Save Type=First Save Type
-Self-modifying code Method=Check Memory Advance
-Status=Compatible
 
-[DF6873B4-F129DD07-C:50]
-Name=SUPER ICE 64 (E)
-CPU Type=Recompiler
-Counter Factor=2
-ExpansionPak
-Linking=Global
-Plugin Note=[video] missing:dissolve effect (see GameFAQ)
-SP Hack
-Save Type=First Save Type
-Self-modifying code Method=Check Memory Advance
-Status=Compatible
 
-[DF687FB4-C56F6AA3-C:50]
-Name=SUPER_IC
-CPU Type=Recompiler
-Counter Factor=2
-ExpansionPak
-Linking=Global
-Plugin Note=[video] missing:dissolve effect (see GameFAQ)
-SP Hack
-Save Type=First Save Type
-Self-modifying code Method=Check Memory Advance
-Status=Compatible
-[5CB335ED-23C1B3ED-C:00]
-Name=sodium64 (PD)
-CPU Type=Recompiler
-Counter Factor=Default
-Linking=Global
-Save Type=First Save Type
-Self-modifying code Method=Default
+
