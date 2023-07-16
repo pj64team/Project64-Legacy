@@ -689,10 +689,13 @@ void UpdateCheatCreateList(HWND hDlg) {
 		item.iSubItem = 0;
 		ListView_InsertItem(hListView, &item);
 
-		if (curr->numBits == bits8)
+		if (strlen(curr->Text) > 0) {
+			sprintf(s, "80%06X ...", curr->Address);
+		} else if (curr->numBits == bits8) {
 			sprintf(s, "%02X%06X %02X", curr->Activator, curr->Address, curr->Value);
-		else
+		} else {
 			sprintf(s, "%02X%06X %04X", curr->Activator, curr->Address, curr->Value);
+		}
 
 		item.pszText = s;
 		item.iSubItem = 1;
@@ -953,6 +956,9 @@ LRESULT CALLBACK CheatSearch_Add_Proc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARA
 				Edit_Enable(GetDlgItem(hDlg, IDT_CSE_PREVIEW), FALSE);
 
 				Edit_SetText(GetDlgItem(hDlg, IDT_CSE_TEXT), cheat_dev.modify->Text);
+
+				ComboBox_AddString(hComboBox, "Text string constant write");
+				ComboBox_SetCurSel(hComboBox, 0);
 			}
 
 			// Had to move these after subclassing the controls to avoid a race condition between setting and checking the values
@@ -1404,7 +1410,7 @@ void CE_UpdateControls(HWND hDlg, int item) {
 // Save the cheat to file
 // All entries with the same name as item's shall be saved and removed
 void CE_SaveCheat(int item) {
-	int CheatLen, count;
+	int CheatLen, count, text_len;
 	CODEENTRY* code;
 	CHEAT make_cheat = { 0 };
 
@@ -1428,7 +1434,12 @@ void CE_SaveCheat(int item) {
 		if (code == NULL)
 			break;
 
-		if (strcmp(make_cheat.name, code->Name) == 0) {
+		if (strcmp(make_cheat.name, code->Name) != 0) {
+			continue;
+		}
+
+		text_len = strlen(code->Text);
+		if (text_len == 0) {
 			char junk[50], * tmp = NULL;
 
 			sprintf(junk, ",%02X%06X %04X", code->Activator, code->Address, code->Value);
@@ -1446,6 +1457,43 @@ void CE_SaveCheat(int item) {
 			else {
 				make_cheat.codestring = tmp;
 				strcat(make_cheat.codestring, junk);
+			}
+		} else {
+			// Write cheat as a text value
+			char * buffer = NULL, * text = code->Text;
+			int buffer_len = strlen(",xxxxxxxx xxxx");
+			DWORD addr = code->Address;
+
+			CheatLen = (text_len / 2 + text_len % 2) * buffer_len + 1;
+			buffer = realloc(make_cheat.codestring, sizeof(*make_cheat.codestring) * CheatLen);
+			if (!buffer) {
+				return;	// Failed to allocate memory
+			}
+			make_cheat.codestring = buffer;
+
+			// If the address is unaligned, the first line must be 8-bit
+			if (addr % 2) {
+				WORD value = text[0];
+				sprintf(buffer, ",80%06X %04X", addr, value);
+				buffer += buffer_len;
+				text += 1;
+				addr += 1;
+				CheatLen -= 1;
+			}
+
+			// Write as many 16-bit values as needed
+			for (int i = 0; i < text_len / 2; i++) {
+				WORD value = text[0] << 8 | text[1];
+				sprintf(buffer, ",81%06X %04X", addr, value);
+				buffer += buffer_len;
+				text += 2;
+				addr += 2;
+			}
+
+			// Write an optional trailing 8-bit value
+			if (text_len % 2) {
+				WORD value = text[0];
+				sprintf(buffer, ",80%06X %04X", addr, value);
 			}
 		}
 	}
