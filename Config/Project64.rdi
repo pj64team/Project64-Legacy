@@ -15,7 +15,7 @@
 // Note that Project64 automatically prefixes "http://"
 
 Author=PJ64LegacyTeam
-Date=12th July 2023 Version: 1
+Date=16th July 2023 Version: 1
 Homepage=www.project64-legacy.com
 Version=Project64 1.6.3 (Legacy)
 
@@ -9173,7 +9173,16 @@ Players=4
 ReleaseDate=1999/12/14
 
 [470112E9-53C66CB4-C:41]
-Name=XENO CRISIS 64
+Name=XENO CRISIS 64 (JU)
+Developer=Bitmap Bureau
+ForceFeedback=Yes
+GameInformation=xeno-crisis-64
+Genre=Fighting
+Players=4
+ReleaseDate=2023/04/??
+
+[470112E9-53C66CB4-C:50]
+Name=XENO CRISIS 64 (E)
 Developer=Bitmap Bureau
 ForceFeedback=Yes
 GameInformation=xeno-crisis-64

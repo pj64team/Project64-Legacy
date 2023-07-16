@@ -2,7 +2,7 @@
 // Project64 1.6.3 (Legacy) Official (Cheat Data Base) by Gent of PJ64LegacyTeam
 // Based On Our Original Project64 Official CHT by Gent/Project64 team
 // All Region Cheat Codes are a Collabaration of:
-// ARHQ, Codejunkies, Gameshark Central, Kai666, Gent, Emucheats over the years.
+// ARHQ, Codejunkies, Gameshark Central, Kai666, Gent, Parasyte, Emucheats over the years.
 // ----------------------------------------------------------------------------
 //
 // This Cheat file is only to be used with Project64 1.6.3 (Legacy) and higher
@@ -17,7 +17,7 @@
 // Note that Project64 automatically prefixes "http://"
 
 Author=PJ64LegacyTeam
-Date=11th July 2023 Version: 1
+Date=16th July 2023 Version: 1
 Homepage=www.project64-legacy.com
 Version=Project64 1.632 (Legacy)
 
@@ -27426,53 +27426,167 @@ Cheat4="Enable All Levels (Trial Mode)",810F919C FFFF,810F919E FFFF
 //------ Homebrew --------
 
 [470112E9-53C66CB4-C:41]
-Name=XENO CRISIS 64
+Name=XENO CRISIS 64 (JU)
 Cheat0="Infinite\Continues",80157793 0063
-Cheat1="Infinite\Max Health",80157898 0007,80158B29 0063
-Cheat2="Infinite\Max Ammo",80157E11 007D,80157E05 0063
-Cheat3="Infinite\Max Grenades",8015789C 0006,80157E13 0063
-Cheat4="Infinite\Max Credits (Tags)",80157E15 0063
-Cheat5="Max\Ammo Limit",8015789B 0007
-Cheat6="Max\Grenade Power",8015789D 0002
-Cheat7="Have Gas Mask",80157E16 0001
-Cheat8="Area Select",801577C8 00??
+Cheat1="Infinite\Max Health\Player 1",80157898 0007,80158B29 0063
+Cheat2="Infinite\Max Ammo\Player 1",80157E11 007D,80157E05 0063
+Cheat3="Infinite\Max Grenades\Player 1",8015789C 0006,80157E13 0063
+Cheat4="Infinite\Max Credits (Tags)\Player 1",80157E15 0063
+Cheat5="Max\Ammo Limit\Player 1",8015789B 0007
+Cheat6="Max\Grenade Power\Player 1",8015789D 0002
+Cheat7="Have Gas Mask\Player 1",80157E16 0001
+Cheat8="Cheat Menu\Level Select",801577C8 00??
 Cheat8_N=Just enable this before the start of the area and go to that location. Make sure you disable before the end of the area or it will stay on the same one.
-Cheat8_O=$00 The Perimeter,$01 The Facility,$02 The Dunes,$03 The Nest,$04 The Forest,$05 The Lab,$06 The HQ
-Cheat9="Power Options",80157899 00??
+Cheat8_O=$00 The Perimeter (Default),$01 The Facility,$02 The Dunes,$03 The Nest,$04 The Forest,$05 The Lab,$06 The HQ
+Cheat9="Power Options\Player 1",80157899 00??
 Cheat9_O=$01 Normal Power,$02 Medium Power,$03 Max Power
-Cheat10="Speed Options",8015789A 00??
+Cheat10="Speed Options\Player 1",8015789A 00??
 Cheat10_O=$01 Normal Speed,$02 Medium Speed,$03 Max Speed
-Cheat11="Weapon Select",80157E00 00??
+Cheat11="Weapon Select\Player 1",80157E00 00??
 Cheat11_N=This will give you the selected weapon. Do not use Rocket Launcher with Any Boos as it will lead to game freeze or crash.
-Cheat11_O=$00 Assault Riffle,$01 Flamethrower,$02 Rocket Launcher,$03 Spread Shot,$04 Homing,$05 Laser,$06 Rebound,$07 Shotgun,$08 Vulcan,$09 BFG
-Cheat12="Press F9 for Gent's Mega Score",891577AA FFFF,891577AC FFFF
-Cheat13="Always Have S Ranking",80158B31 0000
+Cheat11_O=$00 Assault Riffle (Default),$01 Flamethrower,$02 Rocket Launcher,$03 Spread Shot,$04 Homing,$05 Laser,$06 Rebound,$07 Shotgun,$08 Vulcan,$09 BFG
+Cheat12="Press F9 for Gent's Mega Score\Player 1",891577A8 03E7,891577AA 03E7,891577AC 03E7
+Cheat13="Always Have S Ranking\Player 1",80158B31 0000
+Cheat14="Infinite\Max Health\Player 2",80157890 0007,80158B69 0063
+Cheat15="Infinite\Max Ammo\Player 2",80157E55 0063
+Cheat16="Infinite\Max Grenades\Player 2",80157894 0006,80157E57 0063
+Cheat17="Infinite\Max Credits (Tags)\Player 2",80157E59 0063
+Cheat18="Max\Ammo Limit\Player 2",80157893 0007
+Cheat19="Max\Grenade Power\Player 2",80157895 0002
+Cheat20="Have Gas Mask\Player 2",80157E5A 0001
+Cheat21="Power Options\Player 2",80157891 00??
+Cheat21_O=$01 Normal Power,$02 Medium Power,$03 Max Power
+Cheat22="Speed Options\Player 2",80157892 00??
+Cheat22_O=$01 Normal Speed,$02 Medium Speed,$03 Max Speed
+Cheat23="Weapon Select\Player 2",80157E44 00??
+Cheat23_N=This will give you the selected weapon. Do not use Rocket Launcher with Any Boos as it will lead to game freeze or crash.
+Cheat23_O=$00 Assault Riffle,$01 Flamethrower,$02 Rocket Launcher,$03 Spread Shot,$04 Homing,$05 Laser,$06 Rebound,$07 Shotgun,$08 Vulcan,$09 BFG
+Cheat24="Always Have S Ranking\Player 2",80158B71 0000
+Cheat25="Language Select",88157867 00??
+Cheat25_O=$00 English (Default),$01 Francais,$02 Italiano,$03 Deutsch,$04 Espanol,$05 Portugues,$06 Nederlands,$07 Nihongo
+Cheat26="Options Menu\Difficulty Select",801577F1 00??
+Cheat26_O=$00 Easy,$01 Hard (Default)
+Cheat27="Options Menu\Audio\Music Switch",801577EF 00??
+Cheat27_O=$00 Off,$01 On (Default)
+Cheat28="Options Menu\Audio\Sounds Switch",801577EE 00??
+Cheat28_O=$00 Off,$01 On (Default)
+Cheat29="Options Menu\Audio\Announcer Switch",801577D4 00??
+Cheat29_O=$00 Off,$01 On (Default)
+Cheat30="Options Menu\Controls\Player 1",80157909 00??
+Cheat30_O=$02 6 Button 1 (Default),$03 6 Button 2,$00 3 Button 1,$01 3 Button 2
+Cheat31="Options Menu\Controls\Player 2",80157908 00??
+Cheat31_O=$02 6 Button 1 (Default),$03 6 Button 2,$00 3 Button 1,$01 3 Button 2
+Cheat32="Options Menu\Vibration Option",801577ED 00??
+Cheat32_O=$00 Off,$01 On (Default)
+Cheat33="Options Menu\Show Score",801577EC 00??
+Cheat33_O=$00 Off,$01 On (Default)
+Cheat34="Extra Play Mode Options",810????? ????,810????? ????,810????? ????,810????? ????
+Cheat34_N=When Play Infinite Mode is enabled, The Monsters never stop coming. Basically, you fight until you die. When Play Boss Rush Mode is enabled, it allows you to play Boss after Boss without having to play through the game normally
+Cheat34_O=$3422A:00C0:34230:1480:34222:0294:34224:10C5 Play Infinite Mode,$3422A:0298:34230:5082:34222:00C0:34224:14C0 Play Boss Rush Mode
+Cheat35="Cheat Menu\Seeds",811577C0 ????
+Cheat35_O=$0000 0 (Default),$FFFF 65535
+Cheat36="Cheat Menu\Infinite Health",801577CD 00??
+Cheat36_O=$00 Off (Default),$01 On
+Cheat37="Cheat Menu\Infinite Continues",801577CC 00??
+Cheat37_O=$00 Off (Default),$01 On
+Cheat38="Cheat Menu\Infinite Ammo",801577CB 00??
+Cheat38_O=$00 Off (Default),$01 On
+Cheat39="Cheat Menu\Infinite Grenades",801577CA 00??
+Cheat39_O=$00 Off (Default),$01 On
+Cheat40="Cheat Menu\Infinite Dog Tags",801577C9 00??
+Cheat40_O=$00 Off (Default),$01 On
+Cheat41="Enable Cheat Menu and Backer Menu:",810342F2 0004,81034540 0C05,81034542 19EC,81034ACC 0C05,81034ACE 19EC,811467B0 03E0,811467B2 F025,811467B4 9382,811467B6 8322,811467B8 0002,811467BA 1080,811467BC 3C01,811467BE 8012,811467C0 0041,811467C2 1021,811467C4 8C55,811467C6 DEE8,811467C8 8EA4,811467CA 00E0,811467CC 3405,811467CE 000F,811467D0 0C00,811467D2 86F0,811467D4 3406,811467D6 0016,811467D8 8EA4,811467DA 0010,811467DC 3405,811467DE 000F,811467E0 0C00,811467E2 86F0,811467E4 3406,811467E6 0018,811467E8 9382,811467EA 8322,811467EC 03C0,811467EE 0008,811467F0 2406,811467F2 001A
+Cheat41_N=This Enables and Displays the Developer Cheat and Backer Menus
+
 
 [470112E9-53C66CB4-C:50]
-Name=XENO CRISIS (E)
+Name=XENO CRISIS 64 (E)
 Cheat0="Infinite\Continues",80157793 0063
-Cheat1="Infinite\Max Health",80157898 0007,80158B29 0063
-Cheat2="Infinite\Max Ammo",80157E11 007D,80157E05 0063
-Cheat3="Infinite\Max Grenades",8015789C 0006,80157E13 0063
-Cheat4="Infinite\Max Credits (Tags)",80157E15 0063
-Cheat5="Max\Ammo Limit",8015789B 0007
-Cheat6="Max\Grenade Power",8015789D 0002
-Cheat7="Have Gas Mask",80157E16 0001
-Cheat8="Area Select",801577C8 00??
+Cheat1="Infinite\Max Health\Player 1",80157898 0007,80158B29 0063
+Cheat2="Infinite\Max Ammo\Player 1",80157E11 007D,80157E05 0063
+Cheat3="Infinite\Max Grenades\Player 1",8015789C 0006,80157E13 0063
+Cheat4="Infinite\Max Credits (Tags)\Player 1",80157E15 0063
+Cheat5="Max\Ammo Limit\Player 1",8015789B 0007
+Cheat6="Max\Grenade Power\Player 1",8015789D 0002
+Cheat7="Have Gas Mask\Player 1",80157E16 0001
+Cheat8="Cheat Menu\Level Select",801577C8 00??
 Cheat8_N=Just enable this before the start of the area and go to that location. Make sure you disable before the end of the area or it will stay on the same one.
-Cheat8_O=$00 The Perimeter,$01 The Facility,$02 The Dunes,$03 The Nest,$04 The Forest,$05 The Lab,$06 The HQ
-Cheat9="Power Options",80157899 00??
+Cheat8_O=$00 The Perimeter (Default),$01 The Facility,$02 The Dunes,$03 The Nest,$04 The Forest,$05 The Lab,$06 The HQ
+Cheat9="Power Options\Player 1",80157899 00??
 Cheat9_O=$01 Normal Power,$02 Medium Power,$03 Max Power
-Cheat10="Speed Options",8015789A 00??
+Cheat10="Speed Options\Player 1",8015789A 00??
 Cheat10_O=$01 Normal Speed,$02 Medium Speed,$03 Max Speed
-Cheat11="Weapon Select",80157E00 00??
+Cheat11="Weapon Select\Player 1",80157E00 00??
 Cheat11_N=This will give you the selected weapon. Do not use Rocket Launcher with Any Boos as it will lead to game freeze or crash.
-Cheat11_O=$00 Assault Riffle,$01 Flamethrower,$02 Rocket Launcher,$03 Spread Shot,$04 Homing,$05 Laser,$06 Rebound,$07 Shotgun,$08 Vulcan,$09 BFG
-Cheat12="Press F9 for Gent's Mega Score",891577AA FFFF,891577AC FFFF
-Cheat13="Always Have S Ranking",80158B31 0000
-
+Cheat11_O=$00 Assault Riffle (Default),$01 Flamethrower,$02 Rocket Launcher,$03 Spread Shot,$04 Homing,$05 Laser,$06 Rebound,$07 Shotgun,$08 Vulcan,$09 BFG
+Cheat12="Press F9 for Gent's Mega Score\Player 1",891577A8 03E7,891577AA 03E7,891577AC 03E7
+Cheat13="Always Have S Ranking\Player 1",80158B31 0000
+Cheat14="Infinite\Max Health\Player 2",80157890 0007,80158B69 0063
+Cheat15="Infinite\Max Ammo\Player 2",80157E55 0063
+Cheat16="Infinite\Max Grenades\Player 2",80157894 0006,80157E57 0063
+Cheat17="Infinite\Max Credits (Tags)\Player 2",80157E59 0063
+Cheat18="Max\Ammo Limit\Player 2",80157893 0007
+Cheat19="Max\Grenade Power\Player 2",80157895 0002
+Cheat20="Have Gas Mask\Player 2",80157E5A 0001
+Cheat21="Power Options\Player 2",80157891 00??
+Cheat21_O=$01 Normal Power,$02 Medium Power,$03 Max Power
+Cheat22="Speed Options\Player 2",80157892 00??
+Cheat22_O=$01 Normal Speed,$02 Medium Speed,$03 Max Speed
+Cheat23="Weapon Select\Player 2",80157E44 00??
+Cheat23_N=This will give you the selected weapon. Do not use Rocket Launcher with Any Boos as it will lead to game freeze or crash.
+Cheat23_O=$00 Assault Riffle891577AA FFFF,,$01 Flamethrower,$02 Rocket Launcher,$03 Spread Shot,$04 Homing,$05 Laser,$06 Rebound,$07 Shotgun,$08 Vulcan,$09 BFG
+Cheat24="Always Have S Ranking\Player 2",80158B71 0000
+Cheat25="Language Select",88157867 00??
+Cheat25_O=$00 English (Default),$01 Francais,$02 Italiano,$03 Deutsch,$04 Espanol,$05 Portugues,$06 Nederlands,$07 Nihongo
+Cheat26="Options Menu\Difficulty Select",801577F1 00??
+Cheat26_O=$00 Easy,$01 Hard (Default)
+Cheat27="Options Menu\Audio\Music Switch",801577EF 00??
+Cheat27_O=$00 Off,$01 On (Default)
+Cheat28="Options Menu\Audio\Sounds Switch",801577EE 00??
+Cheat28_O=$00 Off,$01 On (Default)
+Cheat29="Options Menu\Audio\Announcer Switch",801577D4 00??
+Cheat29_O=$00 Off,$01 On (Default)
+Cheat30="Options Menu\Controls\Player 1",80157909 00??
+Cheat30_O=$02 6 Button 1 (Default),$03 6 Button 2,$00 3 Button 1,$01 3 Button 2
+Cheat31="Options Menu\Controls\Player 2",80157908 00??
+Cheat31_O=$02 6 Button 1 (Default),$03 6 Button 2,$00 3 Button 1,$01 3 Button 2
+Cheat32="Options Menu\Vibration Option",801577ED 00??
+Cheat32_O=$00 Off,$01 On (Default)
+Cheat33="Options Menu\Show Score",801577EC 00??
+Cheat33_O=$00 Off,$01 On (Default)
+Cheat34="Extra Play Mode Options",810????? ????,810????? ????,810????? ????,810????? ????
+Cheat34_N=When Play Infinite Mode is enabled, The Monsters never stop coming. Basically, you fight until you die. When Play Boss Rush Mode is enabled, it allows you to play Boss after Boss without having to play through the game normally
+Cheat34_O=$3422A:00C0:34230:1480:34222:0294:34224:10C5 Play Infinite Mode,$3422A:0298:34230:5082:34222:00C0:34224:14C0 Play Boss Rush Mode
+Cheat35="Cheat Menu\Seeds",811577C0 ????
+Cheat35_O=$0000 0 (Default),$FFFF 65535
+Cheat36="Cheat Menu\Infinite Health",801577CD 00??
+Cheat36_O=$00 Off (Default),$01 On
+Cheat37="Cheat Menu\Infinite Continues",801577CC 00??
+Cheat37_O=$00 Off (Default),$01 On
+Cheat38="Cheat Menu\Infinite Ammo",801577CB 00??
+Cheat38_O=$00 Off (Default),$01 On
+Cheat39="Cheat Menu\Infinite Grenades",801577CA 00??
+Cheat39_O=$00 Off (Default),$01 On
+Cheat40="Cheat Menu\Infinite Dog Tags",801577C9 00??
+Cheat40_O=$00 Off (Default),$01 On
+Cheat41="Enable Cheat Menu and Backer Menu:",810342F2 0004,81034540 0C05,81034542 19EC,81034ACC 0C05,81034ACE 19EC,811467B0 03E0,811467B2 F025,811467B4 9382,811467B6 8322,811467B8 0002,811467BA 1080,811467BC 3C01,811467BE 8012,811467C0 0041,811467C2 1021,811467C4 8C55,811467C6 DEE8,811467C8 8EA4,811467CA 00E0,811467CC 3405,811467CE 000F,811467D0 0C00,811467D2 86F0,811467D4 3406,811467D6 0016,811467D8 8EA4,811467DA 0010,811467DC 3405,811467DE 000F,811467E0 0C00,811467E2 86F0,811467E4 3406,811467E6 0018,811467E8 9382,811467EA 8322,811467EC 03C0,811467EE 0008,811467F0 2406,811467F2 001A
+Cheat41_N=This Enables and Displays the Developer Cheat and Backer Menus
 
 
 //End Of File----------> Anything under here was put in by you <--------------------------------
 
 
+[A256E7AF-E1B21BF4-C:45]
+Name=TANDEM TROUBLE (U)
+Cheat0="Press A to Levitate",D00FD2E4 0080,8106E17C 41F1
+Cheat1="0 Deaths",8106E422 0000
+
+[7AABCF07-73F39DA2-C:20]
+Name=Dead Ritual (Home Brew)
+Cheat0="Infinite Health",8007DEC3 0064
+Cheat1="Have\No Weapon Slot 1",8007DCD0 00FF
+Cheat1_N=This allows you to toggle an empty hand rather than always having a weapon enabled
+Cheat2="Have\Pistol & Infinite Ammo",8107DCDA 03E7
+Cheat3="Have\Riffle & Infinite Ammo",8107DCE2 03E7,8107DCE6 03E7
+Cheat4="Have\Shotgun & Infinite Ammo",8107DCEA 03E7,8107DCEE 03E7
+Cheat5="Have\Machine Gun & Infinite Ammo",8107DCF2 03E7,8107DCF6 03E7

@@ -19,7 +19,7 @@
 // Note that Project64 automatically prefixes "http://"
 
 Author=PJ64LegacyTeam
-Date=11th July 2023 Version: 1
+Date=16th July 2023 Version: 1
 Homepage=www.project64-legacy.com
 Version=Project64 1.6.3 (Legacy)
 
@@ -14085,7 +14085,7 @@ Self-modifying code Method=Cache
 Status=Compatible
 
 [A04237B9-68F62C72-C:00]
-Name=Wildwaters (Unreleased)
+Name=WildWaters - Extreme Kayak (U) (Prototype)
 CPU Type=Recompiler
 Core Note=constant freezing/hanging
 Counter Factor=1
@@ -17841,22 +17841,30 @@ Status=Issues (plugin)
 //------ Homebrew --------
 
 [470112E9-53C66CB4-C:41]
-Name=XENO CRISIS 64
+Name=XENO CRISIS 64 (JU)
 CPU Type=Recompiler
 Counter Factor=2
 Linking=Global
 Save Type=First Save Type
-Self-modifying code Method=Default
+Self-modifying code Method=Check Memory Advance
 Status=Use GLideN64 HLE Video
 
 [470112E9-53C66CB4-C:50]
-Name=XENO CRISIS (E)
+Name=XENO CRISIS 64 (E)
 CPU Type=Recompiler
 Counter Factor=2
 Linking=Global
 Save Type=First Save Type
-Self-modifying code Method=Default
+Self-modifying code Method=Check Memory Advance
 Status=Use GLideN64 HLE Video
+
+[7AABCF07-73F39DA2-C:20]
+Name=Dead Ritual (Home Brew)
+CPU Type=Recompiler
+Counter Factor=1
+Linking=Global
+Save Type=First Save Type
+Self-modifying code Method=Check Memory Advance
 
 //------ Nintendo LodgeNet 64 (Gateway System) --------
 
@@ -18198,5 +18206,22 @@ Status=Compatible
 //
 
 
+[176EFEA7-A704929E-C:20]
+Name=Mission Lost Control (PD by NAN)
+CPU Type=Interpreter
+Counter Factor=2
+ExpansionPak
+Linking=Global
+Save Type=First Save Type
+Self-modifying code Method=Check Memory Advance
 
-
+[8CBEE2AC-3A60A8F3-C:50]
+Name=STARFOX64 (E)
+CPU Type=Recompiler
+Cheat0=80000303 0000 //Sets Video Region to PAL
+Counter Factor=2
+Disable TLB
+Linking=Global
+Save Type=First Save Type
+Self-modifying code Method=Protected Memory
+Status=Compatible
