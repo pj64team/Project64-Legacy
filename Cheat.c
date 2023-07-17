@@ -1160,7 +1160,7 @@ LRESULT CALLBACK CheatEditProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
 				// Delete the current entry being edited and write the new one
 				// This is done because the edited cheat may have a new name
 				Cheats_Read(&del, CheatNo);				
-				Cheats_Delete(&cheat);
+				Cheats_Delete(&del);
 				Cheats_ClearCheat(&del);
 
 				// Write the new cheat
