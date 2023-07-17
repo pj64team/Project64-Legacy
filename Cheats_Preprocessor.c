@@ -285,7 +285,7 @@ BOOL Cheats_Verify(CHEAT *cheat) {
 	}
 
 	find = cheat->codestring;
-	while (find != NULL) {
+	while (find != NULL && find[0]) {
 		addr_tmp = 0;
 		val_tmp = 0;
 
@@ -386,7 +386,7 @@ BOOL Cheats_Verify(CHEAT *cheat) {
 		}
 
 		// Check the next code (Doing + 13 just to skip past characters that have already been verified)
-		find = strchr(find + 13, ',');
+		find += 13;
 	}
 
 	if (address_replace == -1)
