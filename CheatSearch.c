@@ -1464,7 +1464,7 @@ void CE_SaveCheat(int item) {
 			int buffer_len = strlen(",xxxxxxxx xxxx");
 			DWORD addr = code->Address;
 
-			CheatLen = (text_len / 2 + text_len % 2) * buffer_len + 1;
+			CheatLen = (text_len / 2 + 1) * buffer_len + 1;
 			buffer = realloc(make_cheat.codestring, sizeof(*make_cheat.codestring) * CheatLen);
 			if (!buffer) {
 				return;	// Failed to allocate memory
@@ -1478,7 +1478,7 @@ void CE_SaveCheat(int item) {
 				buffer += buffer_len;
 				text += 1;
 				addr += 1;
-				CheatLen -= 1;
+				text_len -= 1;
 			}
 
 			// Write as many 16-bit values as needed
