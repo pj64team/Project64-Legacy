@@ -1338,7 +1338,10 @@ LRESULT CALLBACK CheatListProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
 				ht.pt.y = GET_Y_LPARAM(dwpos);
 				MapWindowPoints(HWND_DESKTOP, lpnmh->hwndFrom, &ht.pt, 1);
 
-				if (BasicMode) { return TRUE; }
+
+				/* Removed Add New Cheat, Edit & Delete Cheats from Advanced Mode & made available in Basic Mode. (Gent)
+				if (BasicMode) { return TRUE; } */
+
 				TreeView_HitTest(lpnmh->hwndFrom, &ht);
 				hSelectedItem = ht.hItem;
 			}
