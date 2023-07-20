@@ -768,7 +768,8 @@ void Copy_Selection(void) {
 	}
 	EmptyClipboard();
 
-	int lines = (selection.range[1] - selection.range[0]) / 16 + 1;
+	DWORD location = selection.range[0] & ~15;
+	int lines = (selection.range[1] - location) / 16 + 1;
 
 	// Each line is exactly 79 bytes, plus the null terminator.
 	HGLOBAL hMemory = GlobalAlloc(GMEM_MOVEABLE, lines * 79 + 1);
@@ -780,7 +781,6 @@ void Copy_Selection(void) {
 	char *memory = GlobalLock(hMemory);
 
 	char *output = memory;
-	DWORD location = selection.range[0] & ~15;
 	for (int i = 0; i < lines; i++) {
 		Write_MemoryLineDump(output, location);
 		output += 79;
