@@ -143,17 +143,21 @@ void Update_Data_Column(struct MEMORY_VIEW_ROW* row, MIPS_WORD word, int index, 
 void Update_Data_Column_With_WatchPoint(struct MEMORY_VIEW_ROW* row, DWORD location, MIPS_WORD word, int index, int i, BOOL ShowDiff) {
 	sprintf(row->HexStr[index], "%02X", word.UB[3 - i]);
 
-	switch (HasWatchPoint(location + i)) {
-	case WP_READ:
+	int has_watch = (int)HasWatchPoint(location + i);
+	if (has_watch & WP_ENABLED) {
 		row->Fonts[index] = hWatchFont;
+	} else {
+		row->Fonts[index] = GetStockObject(ANSI_FIXED_FONT);
+	}
+
+	switch (has_watch & ~WP_ENABLED) {
+	case WP_READ:
 		row->TextColors[index] = TC_READ;
 		break;
 	case WP_WRITE:
-		row->Fonts[index] = hWatchFont;
 		row->TextColors[index] = TC_WRITE;
 		break;
 	case WP_READ_WRITE:
-		row->Fonts[index] = hWatchFont;
 		row->TextColors[index] = TC_READ_WRITE;
 		break;
 	default:
@@ -427,6 +431,7 @@ LRESULT CALLBACK Memory_Window_Proc (HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM
 					break;
 				case 17: {
 					// ASCII column
+					SelectObject(lplvcd->nmcd.hdc, GetStockObject(ANSI_FIXED_FONT));
 					SetTextColor(lplvcd->nmcd.hdc, GetSysColor(COLOR_WINDOWTEXT));
 
 					DWORD location_start = row->Location;
