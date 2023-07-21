@@ -34,8 +34,8 @@ void CS_AddCode(CS_DEV *dev, CODEENTRY code) {
 
 // This is not a real deletion but simply a swap of pointers
 // The item that was removed will be at the end of the list, ready to be replaced/updated
-void CS_RemoveCodeAt(CS_DEV *dev, DWORD location) {
-	DWORD count;
+void CS_RemoveCodeAt(CS_DEV *dev, int location) {
+	int count;
 	
 	// Cannot swap if there are less than 2 items
 	if ((dev->num_stored - location) >= 2) {
@@ -47,7 +47,7 @@ void CS_RemoveCodeAt(CS_DEV *dev, DWORD location) {
 	dev->num_stored--;
 }
 
-CODEENTRY* CS_GetCodeAt(CS_DEV *dev, DWORD location) {
+CODEENTRY* CS_GetCodeAt(CS_DEV *dev, int location) {
 
 	// Check if the location is in bounds
 	if (dev->num_stored == 0 || location < 0 || location > dev->num_stored - 1)
@@ -63,7 +63,7 @@ void CS_ClearDev(CS_DEV *dev) {
 	CS_InitDev(dev);
 }
 
-void CS_SwapDev(CS_DEV *dev, DWORD loc1, DWORD loc2) {
+void CS_SwapDev(CS_DEV *dev, int loc1, int loc2) {
 	CODEENTRY *one, *two;
 	CODEENTRY hold;
 

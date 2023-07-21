@@ -62,10 +62,6 @@ LRESULT CheatSearchResults_FindItem(NMHDR* lParam);
 LRESULT CheatSearchResults_DrawItem(HANDLE hDlg, NMHDR* lParam);
 LRESULT CheatSearchResults_ReadItem(NMHDR* lParam);
 
-CHTDEVENTRY* ReadProject64ChtDev();
-void WriteProject64ChtDev(HWND hDlg);
-char* ResultsToString(void);
-
 BOOL CALLBACK CheatSearchDlgProc(HWND hwnd, UINT Message, WPARAM wParam, LPARAM lParam);
 
 BYTE Value_ReadByte(DWORD addr);
@@ -108,6 +104,9 @@ struct FIND_STATE find_state = { 0 };
 /////////////////////////////////////
 
 void Show_CheatSearchDlg(HWND hParent) {
+	// Ignore unused parameter
+	(void)hParent;
+
 	if (hCheatSearchDlg != NULL) {	// Stop multiple instances
 		SetForegroundWindow(hCheatSearchDlg);
 		return;
@@ -326,8 +325,6 @@ BOOL CALLBACK CheatSearchDlgProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lPa
 
 				case IDB_CS_SEARCH: {
 					Search(hDlg);
-					if (search.searchBy == searchbyvalue)
-						WriteProject64ChtDev(hDlg);
 					break;
 				}
 
@@ -411,7 +408,7 @@ BOOL CALLBACK CheatSearchDlgProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lPa
 				case IDB_CS_CHEAT_REMOVE: {
 					HANDLE hWnd = GetDlgItem(hDlg, IDL_CS_CHEAT_CREATE);
 					int count = ListView_GetSelectedCount(hWnd);
-					DWORD next = -1;
+					int next = -1;
 					for (int i = 0; i < count; i++) {
 						next = ListView_GetNextItem(hWnd, next, LVNI_SELECTED);
 						CS_RemoveCodeAt(&cheat_dev, next - i);
@@ -792,7 +789,7 @@ void Search(HWND hDlg) {
 				for (count = dwstartAddress; count < dwendAddress; count++) {
 					memValue = Value_ReadByte(count);
 					if (search.searchType == unknown || ((BYTE)searchValue == memValue))
-						CS_AddResultByte(&results, count, memValue);
+						CS_AddResultByte(&results, count, (BYTE)memValue);
 				}
 			}
 			else {
@@ -1188,234 +1185,6 @@ void UpdateCheatCodePreview(HWND hDlg) {
 	Edit_SetText(GetDlgItem(hDlg, IDT_CSE_PREVIEW), s);
 }
 
-/********************************************************************************************
-GetCheatDevIniFileName
-
-Purpose:
-Parameters:
-Returns:
-
-********************************************************************************************/
-char* GetCheatDevIniFileName(void) {
-	char path_buffer[_MAX_PATH], drive[_MAX_DRIVE], dir[_MAX_DIR];
-	char fname[_MAX_FNAME], ext[_MAX_EXT];
-	static char IniFileName[_MAX_PATH];
-
-	GetModuleFileName(NULL, path_buffer, sizeof(path_buffer));
-	_splitpath(path_buffer, drive, dir, fname, ext);
-	sprintf(IniFileName, "%s%s%s", drive, dir, CHTDEV_NAME);
-	return IniFileName;
-}
-
-CHTDEVENTRY* ReadProject64ChtDev() {
-	FILE* pFile;
-	size_t lSize, result;
-	char* buffer;
-	//CHTDEVENTRY * ChtDev;
-
-	pFile = fopen(GetCheatDevIniFileName(), "rb");
-	if (pFile == NULL) {
-		// file error
-		return NULL;
-	}
-
-	// obtain file size:
-	fseek(pFile, 0, SEEK_END);
-	lSize = ftell(pFile);
-	rewind(pFile);
-
-	// allocate memory to contain the whole file:
-	buffer = (char*)malloc(sizeof(char) * lSize);
-	if (buffer == NULL) {
-		// Memory error
-		return NULL;
-	}
-
-	// copy the file into the buffer:
-	result = fread(buffer, 1, lSize, pFile);
-	if (result != lSize) {
-		// Reading error
-		return NULL;
-	}
-
-	/* the whole file is now loaded in the memory buffer. */
-
-	// terminate
-	fclose(pFile);
-	free(buffer);
-
-	return NULL; //ChtDev;
-}
-
-void WriteProject64ChtDev(HWND hDlg) {
-	FILE* pFile;
-
-	char Identifier[100];
-	char s[16];
-	CHTDEVENTRY* ChtDev;
-
-	//ChtDev = ReadProject64ChtDev(GetCheatDevIniFileName());
-	ChtDev = (CHTDEVENTRY*)malloc(sizeof(CHTDEVENTRY));
-	if (ChtDev == NULL) {
-		return;
-	}
-
-	RomID(Identifier, RomHeader);
-
-	ChtDev->Identifier = Identifier;
-	ChtDev->Name = RomFullName;
-	ChtDev->LastSearch = (LASTSEARCH*)malloc(sizeof(LASTSEARCH));
-	if (ChtDev->LastSearch == NULL) {
-		free(ChtDev);
-		return;
-	}
-	ChtDev->LastSearch->SearchType = "Value";
-
-	Edit_GetText(GetDlgItem(hDlg, IDT_SEARCH_VALUE), s, 9);
-	ChtDev->LastSearch->SearchValue = s;
-
-	ChtDev->LastSearch->ValueSearchType = search.searchType;
-	ChtDev->LastSearch->NumBits = search.searchNumBits;
-	ChtDev->LastSearch->Results = ResultsToString();
-	if (ChtDev->LastSearch->Results == NULL) {
-		free(ChtDev->LastSearch);
-		free(ChtDev);
-		return;
-	}
-
-	pFile = fopen(GetCheatDevIniFileName(), "wb");
-	if (pFile == NULL) {
-		free(ChtDev->LastSearch->Results);
-		free(ChtDev->LastSearch);
-		free(ChtDev);
-		return;	// File Error
-	}
-
-	fprintf(pFile, "<?xml version=""1.0"" encoding=""ISO-8859-1""?>\r\n");
-	fprintf(pFile, "<CheatDev>\r\n");
-	fprintf(pFile, "\t<Game>\r\n");
-	fprintf(pFile, "\t\t<ID>%s</ID>\r\n", ChtDev->Identifier);
-	fprintf(pFile, "\t\t<Name>%s</Name>\r\n", ChtDev->Name);
-	fprintf(pFile, "\t\t<LastSearch>\r\n");
-	fprintf(pFile, "\t\t\t<SearchType>%s</SearchType>\r\n", ChtDev->LastSearch->SearchType);
-	fprintf(pFile, "\t\t\t<Value>%s</Value>\r\n", ChtDev->LastSearch->SearchValue);
-
-	switch (ChtDev->LastSearch->ValueSearchType) {
-		case unknown:
-			fprintf(pFile, "\t\t\t<ValueSearchType>%s</ValueSearchType>\r\n", "Unknown");
-			break;
-		case dec:
-			fprintf(pFile, "\t\t\t<ValueSearchType>%s</ValueSearchType>\r\n", "Decimal");
-			break;
-		case hex:
-			fprintf(pFile, "\t\t\t<ValueSearchType>%s</ValueSearchType>\r\n", "Hexadecimal");
-			break;
-		case changed:
-			fprintf(pFile, "\t\t\t<ValueSearchType>%s</ValueSearchType>\r\n", "Changed");
-			break;
-		case unchanged:
-			fprintf(pFile, "\t\t\t<ValueSearchType>%s</ValueSearchType>\r\n", "Unchanged");
-			break;
-		case higher:
-			fprintf(pFile, "\t\t\t<ValueSearchType>%s</ValueSearchType>\r\n", "Higher");
-			break;
-		case lower:
-			fprintf(pFile, "\t\t\t<ValueSearchType>%s</ValueSearchType>\r\n", "Lower");
-			break;
-		default:
-			fprintf(pFile, "\t\t\t<ValueSearchType>%s</ValueSearchType>\r\n", "Unsupported");
-			break;
-	}
-
-	if (ChtDev->LastSearch->NumBits == bits8)
-		fprintf(pFile, "\t\t\t<NumBits>%s</NumBits>\r\n", "8bit");
-	else
-		fprintf(pFile, "\t\t\t<NumBits>%s</NumBits>\r\n", "16bit");
-
-	fprintf(pFile, "\t\t\t<Results>\r\n%s\r\n\t\t\t</Results>\r\n", ChtDev->LastSearch->Results);
-	fprintf(pFile, "\t\t</LastSearch>\r\n");
-	fprintf(pFile, "\t</Game>\r\n");
-
-	fprintf(pFile, "</CheatDev>\r\n");
-
-	// terminate
-	fclose(pFile);
-
-	free(ChtDev->LastSearch->Results);
-	free(ChtDev->LastSearch);
-	free(ChtDev);
-}
-
-// TO DO!
-// Rewrite this and make it crash recovery compatible
-// Currently it only backs up the listview shown, it would break future searches if loaded
-// -- Assuming there were over 4096 hits (Or whatever LISTVIEW_MAXSHOW is)
-char* ResultsToString(void) {
-	DWORD count, maxlength = 0;
-	char s[20], * result = NULL;
-	CS_HIT hit = { 0 };
-
-	if (results.num_stored == 0)
-		return result;
-
-	maxlength = (sizeof(s) * min(results.num_stored, LISTVIEW_MAXSHOWN) + 1);
-	maxlength += (6 * (maxlength / 8));	// Extra space to store \r\n\t\t\t\t
-
-	result = calloc(maxlength, sizeof(*result));
-
-	if (result == NULL)
-		return result;
-
-	strcat_s(result, maxlength, "\t\t\t\t");
-
-	for (count = 0; count < min(results.num_stored, LISTVIEW_MAXSHOWN); count++) {
-		DWORD address = results.addresses[count];
-		if (address == -1) {
-			// TODO: Error message
-		}
-
-		if (count != 0 && count % 8 != 0) {
-			strcat_s(result, maxlength, ",   ");
-		}
-
-		// 8 hex, a comma, up to 4 hex, a comma, 4 hex, a comma, null character
-		// So 20 minimum to do a copy
-		if (search.searchNumBits == bits8) {
-			if (!CS_GetHitByte(&hit, &results, count)) {
-				free(result);
-				return NULL;
-			}
-
-			if (secondSearch) {
-				sprintf_s(s, sizeof(s), "%06X %02X %02X", hit.address, hit.value, hit.prev_value);
-			} else {
-				sprintf_s(s, sizeof(s), "%06X %02X", hit.address, hit.value);
-			}
-		}
-		else {
-			if (!CS_GetHitWord(&hit, &results, count)) {
-				free(result);
-				return NULL;
-			}
-
-			if (secondSearch) {
-				sprintf_s(s, sizeof(s), "%06X %04X %04X", hit.address, hit.value, hit.prev_value);
-			} else {
-				sprintf_s(s, sizeof(s), "%06X %04X", hit.address, hit.value);
-			}
-		}
-
-		strcat_s(result, maxlength, s);
-
-		if (count < min(results.num_stored, LISTVIEW_MAXSHOWN) - 1) {
-			if ((count + 1) % 8 == 0)
-				strcat_s(result, maxlength, "\r\n\t\t\t\t");
-		}
-	}
-
-	return result;
-}
-
 // Called on CPU.c's RefreshScreen () on each VI
 void Apply_CheatSearchDev() {
 	DWORD counter;
@@ -1759,7 +1528,7 @@ LRESULT CheatSearchResults_DrawItem(HANDLE hDlg, NMHDR* lParam) {
 				switch (lplvcd->iSubItem) {
 					case 1:
 					case 2: {
-						char val[10];
+						char val[10] = { 0 };
 						DWORD item, address, value;
 
 						item = (DWORD)lplvcd->nmcd.dwItemSpec;
