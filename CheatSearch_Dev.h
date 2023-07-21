@@ -27,15 +27,6 @@ typedef struct LASTSEARCH {
 	char *Results;
 } LASTSEARCH;
 
-// For use in entering the found code into the cheat database
-// May be dumped later, most of this code is found elsewhere
-typedef struct CHTDEVENTRY {
-	char *Identifier;
-	char *Name;
-	LASTSEARCH *LastSearch;
-	CODEENTRY *Codes;
-} CHTDEVENTRY;
-
 // Grouping of all dev entry variables
 // Must be deallocated by calling CS_ClearDev
 typedef struct CS_DEV {
@@ -47,9 +38,9 @@ typedef struct CS_DEV {
 
 void CS_InitDev(CS_DEV *dev);
 void CS_AddCode(CS_DEV *dev, CODEENTRY code);
-void CS_RemoveCodeAt(CS_DEV *dev, DWORD location);
-CODEENTRY* CS_GetCodeAt(CS_DEV *dev, DWORD location);
+void CS_RemoveCodeAt(CS_DEV *dev, int location);
+CODEENTRY* CS_GetCodeAt(CS_DEV *dev, int location);
 void CS_ClearDev(CS_DEV *dev);
-void CS_SwapDev(CS_DEV *dev, DWORD loc1, DWORD loc2);
+void CS_SwapDev(CS_DEV *dev, int loc1, int loc2);
 
 #endif
