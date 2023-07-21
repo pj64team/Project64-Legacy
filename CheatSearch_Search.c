@@ -66,7 +66,7 @@ void CS_ClearResults(CS_RESULTS* res) {
 }
 
 BOOL CS_ReallocateAddresses(CS_RESULTS *res) {
-	BYTE* tmp = (BYTE*)realloc(res->addresses, sizeof(DWORD) * (res->allocated + arr_growth));
+	DWORD* tmp = (DWORD*)realloc(res->addresses, sizeof(DWORD) * (res->allocated + arr_growth));
 
 	// Failure to allocate more memory
 	if (tmp == NULL) {
@@ -118,6 +118,8 @@ BOOL CS_AddResultWord(CS_RESULTS* res, DWORD address, WORD value) {
 // TO DO!!
 // Come up with a better way to handle this
 void CS_AddTextResult(CS_RESULTS* res, DWORD address, char* value) {
+	(void)value;
+
 	CS_AddResultByte(res, address, 0);
 }
 

@@ -68,6 +68,6 @@ BOOL CS_GetHitByte(CS_HIT* hit, CS_RESULTS* res, DWORD address);
 
 BOOL CS_AddResultWord(CS_RESULTS* res, DWORD address, WORD value);
 BOOL CS_AddHitWord(CS_RESULTS* res, CS_HIT* hit);
-BOOL CS_GetHitByte(CS_HIT* hit, CS_RESULTS* res, DWORD address);
+BOOL CS_GetHitWord(CS_HIT* hit, CS_RESULTS* res, DWORD address);
 
 #endif
