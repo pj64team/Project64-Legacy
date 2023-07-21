@@ -90,6 +90,14 @@ BOOL searched = FALSE;
 HANDLE hThread = NULL;
 BOOL doingLiveUpdate = FALSE;
 HANDLE hLUMutex;
+
+struct FIND_STATE {
+	DWORD address_prefix;
+	int shift;
+};
+
+struct FIND_STATE find_state = { 0 };
+
 /////////////////////////////////////
 // End of Global Variables 
 /////////////////////////////////////
@@ -261,6 +269,32 @@ BOOL CALLBACK CheatSearchDlgProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lPa
 				case LVN_GETDISPINFO: {
 					if (wParam == IDL_SEARCH_RESULT_LIST)
 						return CheatSearchResults_ReadItem((LPNMHDR)lParam);
+					break;
+				}
+
+				// Windows doesn't send the right search string with the `LVN_ODFINDITEM`
+				// notification for unknown reasons. For instance, when the same key is pressed
+				// twice, this notification ONLY receives a search string with a single character!
+				// When you press a different key following a potentially long string of identical
+				// characters, then suddenly this notification gets the full string.
+				//
+				// We want to avoid doing the search in `LVN_ODFINDITEM` because of this. Using the
+				// `LVN_INCREMENTALSEARCH` notification instead receives the proper search string.
+				//
+				// On the other hand, `LVN_INCREMENTALSEARCH` doesn't provide an audio indicator when
+				// the find fails.
+				//
+				// The workaround is setting a global `FIND_STATE` struct in `LVN_INCREMENTALSEARCH`,
+				// and reading it in `LVN_ODFINDITEM`.
+				case LVN_INCREMENTALSEARCH:
+				{
+					if (wParam == IDL_SEARCH_RESULT_LIST) {
+						NMLVFINDITEM *findInfo = (NMLVFINDITEM *)lParam;
+						if (findInfo->lvfi.flags & LVFI_STRING) {
+							find_state.address_prefix = strtoul(findInfo->lvfi.psz, NULL, 16);
+							find_state.shift = (6 - strlen(findInfo->lvfi.psz)) << 2;
+						}
+					}
 					break;
 				}
 
@@ -1664,7 +1698,7 @@ BYTE Text_ReadByte(DWORD addr) {
 
 LRESULT CheatSearchResults_FindItem(NMHDR* lParam) {
 	NMLVFINDITEM* findInfo;
-	DWORD currentPos, startPos, address_prefix, searchstr_len;
+	DWORD currentPos, startPos;
 
 	findInfo = (NMLVFINDITEM*)lParam;
 
@@ -1673,8 +1707,7 @@ LRESULT CheatSearchResults_FindItem(NMHDR* lParam) {
 		return -1;
 	}
 
-	searchstr_len = strlen(findInfo->lvfi.psz);
-	if (searchstr_len > 6) {
+	if (strlen(findInfo->lvfi.psz) > 6) {
 		return -1;
 	}
 
@@ -1686,13 +1719,9 @@ LRESULT CheatSearchResults_FindItem(NMHDR* lParam) {
 	}
 
 	currentPos = startPos;
-	address_prefix = strtoul(findInfo->lvfi.psz, NULL, 16);
-
-	// The array that we search against contains DWORDs so this will make it so we can search partials
-	int shift = (6 - searchstr_len) << 2;
 
 	do {
-		if (results.addresses[currentPos] >> shift == address_prefix) {
+		if (results.addresses[currentPos] >> find_state.shift == find_state.address_prefix) {
 			return currentPos;
 		}
 
