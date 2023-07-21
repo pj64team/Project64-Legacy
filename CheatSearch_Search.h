@@ -34,27 +34,40 @@ typedef struct CS_SEARCH {
 	NUMBITS searchNumBits;
 } CS_SEARCH;
 
-typedef struct CS_HITS {
+typedef struct CS_HIT {
 	DWORD address;		// The address the value was scanned at
 	WORD value;			// The value at the time of scan (These may not be the same, depending on the type of scan)
 	WORD prev_value;	// The previous value held at the address (Again, this may not be a static value... greater/less than scans)
-} CS_HITS;
+} CS_HIT;
+
+typedef struct CS_BITMAP {
+	BYTE* bitmap;		// A bitmap of addresses containing results
+	BYTE* values;		// An array of values at each address
+	BYTE* prev_values;	// An array of previous values at each address
+	DWORD reserved;		// Number of addresses that this bitmap can store
+} CS_BITMAP;
 
 // The search results
 typedef struct CS_RESULTS {
-	CS_HITS* hits;			// The stored results of the scan
-	DWORD allocated;		// The amount of memory allocated to results array
-	DWORD num_stored;		// The amount of search resutls stored in the results array
+	CS_BITMAP hits;		// The stored results of the scan
+	DWORD *addresses;	// THe list of addresses found; needed only for populating the listbox
+	DWORD allocated;	// The amount of memory allocated to addresses array
+	DWORD num_stored;	// The amount of search results stored in the addresses array
 } CS_RESULTS;
 
-
 void CS_InitSearch(CS_SEARCH* search);
-void CS_InitResults(CS_RESULTS* res);
-void CS_ReserveSpace(CS_RESULTS* res, DWORD amount);
-void CS_AddResult(CS_RESULTS* res, DWORD address, WORD value);
-void CS_AddTextResult(CS_RESULTS* res, DWORD address, char* value);
+
+BOOL CS_ReserveSpace(CS_RESULTS* res, DWORD amount);
 void CS_ClearResults(CS_RESULTS* res);
-void CS_AddHit(CS_RESULTS* res, CS_HITS* hit);
-CS_HITS* CS_GetHit(CS_RESULTS* res, DWORD loc);
+
+void CS_AddTextResult(CS_RESULTS* res, DWORD address, char *value);
+
+BOOL CS_AddResultByte(CS_RESULTS* res, DWORD address, BYTE value);
+BOOL CS_AddHitByte(CS_RESULTS* res, CS_HIT* hit);
+BOOL CS_GetHitByte(CS_HIT* hit, CS_RESULTS* res, DWORD address);
+
+BOOL CS_AddResultWord(CS_RESULTS* res, DWORD address, WORD value);
+BOOL CS_AddHitWord(CS_RESULTS* res, CS_HIT* hit);
+BOOL CS_GetHitByte(CS_HIT* hit, CS_RESULTS* res, DWORD address);
 
 #endif
