@@ -81,7 +81,7 @@ BYTE Text_ReadByte(DWORD addr);
 // Global Variables 
 /////////////////////////////////////
 CS_SEARCH search;
-CS_RESULTS results;
+CS_RESULTS results = { 0 };
 CS_DEV cheat_dev;
 
 BOOL secondSearch = FALSE;
@@ -90,6 +90,14 @@ BOOL searched = FALSE;
 HANDLE hThread = NULL;
 BOOL doingLiveUpdate = FALSE;
 HANDLE hLUMutex;
+
+struct FIND_STATE {
+	DWORD address_prefix;
+	int shift;
+};
+
+struct FIND_STATE find_state = { 0 };
+
 /////////////////////////////////////
 // End of Global Variables 
 /////////////////////////////////////
@@ -172,13 +180,20 @@ BOOL CALLBACK CheatSearchDlgProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lPa
 					switch (((LPNMHDR)lParam)->idFrom) {
 						case IDL_SEARCH_RESULT_LIST: {
 							int item = ((LPNMITEMACTIVATE)lParam)->iItem;
-							CODEENTRY tmp;
-							CS_HITS hit;
-
-							if (item == -1)
+							if (item == -1) {
 								break;
+							}
 
-							hit = *CS_GetHit(&results, item);
+							DWORD address = results.addresses[item];
+							CS_HIT hit = { 0 };
+							if (
+								(search.searchNumBits == bits8 && !CS_GetHitByte(&hit, &results, address)) ||
+								(search.searchNumBits == bits16 && !CS_GetHitWord(&hit, &results, address))
+							) {
+								// TODO: Error handling
+								break;
+							}
+							CODEENTRY tmp = { 0 };
 							tmp.Address = hit.address;
 							tmp.Value = hit.value;
 							tmp.numBits = search.searchNumBits;
@@ -200,7 +215,7 @@ BOOL CALLBACK CheatSearchDlgProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lPa
 
 						case IDL_CS_CHEAT_CREATE: {	// Double click to allow Edit cheat shortcut
 							int item = ((LPNMITEMACTIVATE)lParam)->iItem;
-							CODEENTRY tmp;
+							CODEENTRY tmp = { 0 };
 
 							tmp.Address = 0;
 							tmp.Value = 0;
@@ -254,6 +269,32 @@ BOOL CALLBACK CheatSearchDlgProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lPa
 				case LVN_GETDISPINFO: {
 					if (wParam == IDL_SEARCH_RESULT_LIST)
 						return CheatSearchResults_ReadItem((LPNMHDR)lParam);
+					break;
+				}
+
+				// Windows doesn't send the right search string with the `LVN_ODFINDITEM`
+				// notification for unknown reasons. For instance, when the same key is pressed
+				// twice, this notification ONLY receives a search string with a single character!
+				// When you press a different key following a potentially long string of identical
+				// characters, then suddenly this notification gets the full string.
+				//
+				// We want to avoid doing the search in `LVN_ODFINDITEM` because of this. Using the
+				// `LVN_INCREMENTALSEARCH` notification instead receives the proper search string.
+				//
+				// On the other hand, `LVN_INCREMENTALSEARCH` doesn't provide an audio indicator when
+				// the find fails.
+				//
+				// The workaround is setting a global `FIND_STATE` struct in `LVN_INCREMENTALSEARCH`,
+				// and reading it in `LVN_ODFINDITEM`.
+				case LVN_INCREMENTALSEARCH:
+				{
+					if (wParam == IDL_SEARCH_RESULT_LIST) {
+						NMLVFINDITEM *findInfo = (NMLVFINDITEM *)lParam;
+						if (findInfo->lvfi.flags & LVFI_STRING) {
+							find_state.address_prefix = strtoul(findInfo->lvfi.psz, NULL, 16);
+							find_state.shift = (6 - strlen(findInfo->lvfi.psz)) << 2;
+						}
+					}
 					break;
 				}
 
@@ -744,22 +785,21 @@ void Search(HWND hDlg) {
 		//	or addresses that match the search value (8bit or 16bit)
 		if (!searched) {
 
-			// Reserve space for the initial search, absolute worst case scenario is for unknown search
-			if (search.searchType == unknown)
-				CS_ReserveSpace(&results, dwendAddress - dwstartAddress);
+			// Reserve space for the initial search
+			CS_ReserveSpace(&results, dwendAddress - dwstartAddress + 1);
 
 			if (search.searchNumBits == bits8) {
 				for (count = dwstartAddress; count < dwendAddress; count++) {
 					memValue = Value_ReadByte(count);
 					if (search.searchType == unknown || ((BYTE)searchValue == memValue))
-						CS_AddResult(&results, count, memValue);
+						CS_AddResultByte(&results, count, memValue);
 				}
 			}
 			else {
 				for (count = dwstartAddress; count < dwendAddress; count += 2) {
 					memValue = Value_ReadWord(count);
 					if (search.searchType == unknown || (searchValue == memValue))
-						CS_AddResult(&results, count, memValue);
+						CS_AddResultWord(&results, count, memValue);
 				}
 			}
 
@@ -773,20 +813,29 @@ void Search(HWND hDlg) {
 		else {
 			struct CS_RESULTS tmp = { 0 };
 			WORD mem_value;
-			CS_HITS* hit;
+			CS_HIT hit = { 0 };
 			BOOL matched;
+			DWORD address;
 
-			CS_ReserveSpace(&tmp, dwendAddress - dwstartAddress);
+			CS_ReserveSpace(&tmp, dwendAddress - dwstartAddress + 1);
 
 			// Subsequent searches of Hex/Dec values
 			for (count = 0; count < results.num_stored; count++) {
+				address = results.addresses[count];
+				if (
+					(search.searchNumBits == bits8 && !CS_GetHitByte(&hit, &results, address)) ||
+					(search.searchNumBits == bits16 && !CS_GetHitWord(&hit, &results, address))
+				) {
+					// Attempted to access memory out of bounds
+					// TODO: Show error message
+					return;
+				}
 
-				hit = CS_GetHit(&results, count);
-
-				if (search.searchNumBits == bits8)
-					mem_value = Value_ReadByte(hit->address);
-				else
-					mem_value = Value_ReadWord(hit->address);
+				if (search.searchNumBits == bits8) {
+					mem_value = Value_ReadByte(hit.address);
+				} else {
+					mem_value = Value_ReadWord(hit.address);
+				}
 
 				switch (search.searchType) {
 					case dec:
@@ -797,16 +846,16 @@ void Search(HWND hDlg) {
 						matched = TRUE;
 						break;
 					case changed:
-						matched = (hit->value != mem_value);
+						matched = (hit.value != mem_value);
 						break;
 					case unchanged:
-						matched = (hit->value == mem_value);
+						matched = (hit.value == mem_value);
 						break;
 					case lower:
-						matched = (hit->value > mem_value);
+						matched = (hit.value > mem_value);
 						break;
 					case higher:
-						matched = (hit->value < mem_value);
+						matched = (hit.value < mem_value);
 						break;
 					default:
 						matched = FALSE;
@@ -816,9 +865,14 @@ void Search(HWND hDlg) {
 				if (!matched)
 					continue;
 
-				hit->prev_value = hit->value;
-				hit->value = mem_value;
-				CS_AddHit(&tmp, hit);
+				hit.prev_value = hit.value;
+				hit.value = mem_value;
+
+				if (search.searchNumBits == bits8) {
+					CS_AddHitByte(&tmp, &hit);
+				} else {
+					CS_AddHitWord(&tmp, &hit);
+				}
 			}
 
 			secondSearch = TRUE;
@@ -870,8 +924,9 @@ void Search(HWND hDlg) {
 	InitSearchFormatList(hDlg);
 
 	// The Live Update thread (hThread should always be NULL since Live Update is stopped before searching)
-	if (hThread == NULL)
+	if (hThread == NULL) {
 		hThread = CreateThread(NULL, 0, LiveUpdate, hDlg, 0, NULL);
+	}
 }
 
 LRESULT CALLBACK CheatSearch_Add_Proc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam) {
@@ -1201,16 +1256,19 @@ void WriteProject64ChtDev(HWND hDlg) {
 
 	//ChtDev = ReadProject64ChtDev(GetCheatDevIniFileName());
 	ChtDev = (CHTDEVENTRY*)malloc(sizeof(CHTDEVENTRY));
-	if (ChtDev == NULL)
+	if (ChtDev == NULL) {
 		return;
+	}
 
 	RomID(Identifier, RomHeader);
 
 	ChtDev->Identifier = Identifier;
 	ChtDev->Name = RomFullName;
 	ChtDev->LastSearch = (LASTSEARCH*)malloc(sizeof(LASTSEARCH));
-	if (ChtDev->LastSearch == NULL)
+	if (ChtDev->LastSearch == NULL) {
+		free(ChtDev);
 		return;
+	}
 	ChtDev->LastSearch->SearchType = "Value";
 
 	Edit_GetText(GetDlgItem(hDlg, IDT_SEARCH_VALUE), s, 9);
@@ -1219,10 +1277,19 @@ void WriteProject64ChtDev(HWND hDlg) {
 	ChtDev->LastSearch->ValueSearchType = search.searchType;
 	ChtDev->LastSearch->NumBits = search.searchNumBits;
 	ChtDev->LastSearch->Results = ResultsToString();
+	if (ChtDev->LastSearch->Results == NULL) {
+		free(ChtDev->LastSearch);
+		free(ChtDev);
+		return;
+	}
 
 	pFile = fopen(GetCheatDevIniFileName(), "wb");
-	if (pFile == NULL)
+	if (pFile == NULL) {
+		free(ChtDev->LastSearch->Results);
+		free(ChtDev->LastSearch);
+		free(ChtDev);
 		return;	// File Error
+	}
 
 	fprintf(pFile, "<?xml version=""1.0"" encoding=""ISO-8859-1""?>\r\n");
 	fprintf(pFile, "<CheatDev>\r\n");
@@ -1274,6 +1341,7 @@ void WriteProject64ChtDev(HWND hDlg) {
 	// terminate
 	fclose(pFile);
 
+	free(ChtDev->LastSearch->Results);
 	free(ChtDev->LastSearch);
 	free(ChtDev);
 }
@@ -1285,7 +1353,7 @@ void WriteProject64ChtDev(HWND hDlg) {
 char* ResultsToString(void) {
 	DWORD count, maxlength = 0;
 	char s[20], * result = NULL;
-	CS_HITS* hit;
+	CS_HIT hit = { 0 };
 
 	if (results.num_stored == 0)
 		return result;
@@ -1301,24 +1369,40 @@ char* ResultsToString(void) {
 	strcat_s(result, maxlength, "\t\t\t\t");
 
 	for (count = 0; count < min(results.num_stored, LISTVIEW_MAXSHOWN); count++) {
-		hit = CS_GetHit(&results, count);
+		DWORD address = results.addresses[count];
+		if (address == -1) {
+			// TODO: Error message
+		}
 
-		if (count != 0 && count % 8 != 0)
+		if (count != 0 && count % 8 != 0) {
 			strcat_s(result, maxlength, ",   ");
+		}
 
 		// 8 hex, a comma, up to 4 hex, a comma, 4 hex, a comma, null character
 		// So 20 minimum to do a copy
 		if (search.searchNumBits == bits8) {
-			if (secondSearch)
-				sprintf_s(s, sizeof(s), "%06X %02X %02X", hit->address, hit->value, hit->prev_value);
-			else
-				sprintf_s(s, sizeof(s), "%06X %02X", hit->address, hit->value);
+			if (!CS_GetHitByte(&hit, &results, count)) {
+				free(result);
+				return NULL;
+			}
+
+			if (secondSearch) {
+				sprintf_s(s, sizeof(s), "%06X %02X %02X", hit.address, hit.value, hit.prev_value);
+			} else {
+				sprintf_s(s, sizeof(s), "%06X %02X", hit.address, hit.value);
+			}
 		}
 		else {
-			if (secondSearch)
-				sprintf_s(s, sizeof(s), "%06X %04X %04X", hit->address, hit->value, hit->prev_value);
-			else
-				sprintf_s(s, sizeof(s), "%06X %04X", hit->address, hit->value);
+			if (!CS_GetHitWord(&hit, &results, count)) {
+				free(result);
+				return NULL;
+			}
+
+			if (secondSearch) {
+				sprintf_s(s, sizeof(s), "%06X %04X %04X", hit.address, hit.value, hit.prev_value);
+			} else {
+				sprintf_s(s, sizeof(s), "%06X %04X", hit.address, hit.value);
+			}
 		}
 
 		strcat_s(result, maxlength, s);
@@ -1542,29 +1626,34 @@ void CS_UpdateSearchProc(HWND hDlg) {
 DWORD WINAPI LiveUpdate(LPVOID arg) {
 	DWORD wait_result;
 
-	if (hLUMutex == NULL)
+	if (hLUMutex == NULL) {
 		hLUMutex = CreateMutex(NULL, FALSE, NULL);
+	}
 
 	// Failed to create the mutex
-	if (hLUMutex == NULL)
+	if (hLUMutex == NULL) {
 		return 0;
+	}
 
 	wait_result = WaitForSingleObject(hLUMutex, INFINITE);
 
-	if (wait_result == WAIT_OBJECT_0)
+	if (wait_result == WAIT_OBJECT_0) {
 		doingLiveUpdate = TRUE;
+	}
 	ReleaseMutex(hLUMutex);
 
 	while (TRUE) {
 		Sleep(150);
 
-		wait_result = WaitForSingleObject(hLUMutex, INFINITE);
+		wait_result = WaitForSingleObject(hLUMutex, 0);
+		if (wait_result != WAIT_OBJECT_0) {
+			continue;
+		}
 
 		if (wait_result == WAIT_OBJECT_0 && doingLiveUpdate == TRUE) {
 			SendMessage(arg, WM_LV_UPDATE, 0, 0);
 			ReleaseMutex(hLUMutex);
-		}
-		else {
+		} else {
 			ReleaseMutex(hLUMutex);
 			return 0;
 		}
@@ -1609,60 +1698,39 @@ BYTE Text_ReadByte(DWORD addr) {
 
 LRESULT CheatSearchResults_FindItem(NMHDR* lParam) {
 	NMLVFINDITEM* findInfo;
-	DWORD currentPos, startPos, searchstr;
+	DWORD currentPos, startPos;
 
 	findInfo = (NMLVFINDITEM*)lParam;
 
 	// searchstr criteria is not supported, only works with strings for now
-	if (((findInfo->lvfi.flags) & LVFI_STRING) == 0)
+	if (((findInfo->lvfi.flags) & LVFI_STRING) == 0) {
 		return -1;
+	}
+
+	if (strlen(findInfo->lvfi.psz) > 6) {
+		return -1;
+	}
 
 	startPos = findInfo->iStart;
 
 	// Either the last item was selected or nothing was, start at the top
-	if (startPos >= results.num_stored || startPos < 0)
+	if (startPos >= results.num_stored || startPos < 0) {
 		startPos = 0;
-
-	currentPos = startPos;
-	searchstr = strtoul(findInfo->lvfi.psz, NULL, 16);
-
-	// The array that we search against contains DWORDs so this will make it so we can search partials
-	// Shift the number enough time to the right and this works
-	switch (strlen(findInfo->lvfi.psz)) {
-		case 1:
-			searchstr = searchstr << 20;
-			break;
-		case 2:
-			searchstr = searchstr << 16;
-			break;
-		case 3:
-			searchstr = searchstr << 12;
-			break;
-		case 4:
-			searchstr = searchstr << 8;
-			break;
-		case 5:
-			searchstr = searchstr << 4;
-			break;
-			/*case 6:
-				searchstr = searchstr << 8;
-				break;
-			case 7:
-				searchstr = searchstr << 4;
-				break;*/
-		default:
-			break;
 	}
 
+	currentPos = startPos;
+
 	do {
-		if (results.hits[currentPos].address == searchstr)
+		if (results.addresses[currentPos] >> find_state.shift == find_state.address_prefix) {
 			return currentPos;
+		}
 
 		// Start at the top if we've reached the bottom of the list
-		if (currentPos == results.num_stored - 1)
+		if (currentPos == results.num_stored - 1) {
 			currentPos = 0;
-		else
+		} else {
 			currentPos++;
+		}
 	} while (currentPos != startPos);
 
 	// Not found
@@ -1692,31 +1760,31 @@ LRESULT CheatSearchResults_DrawItem(HANDLE hDlg, NMHDR* lParam) {
 					case 1:
 					case 2: {
 						char val[10];
-						DWORD dwVal, loc;
+						DWORD item, address, value;
 
-						loc = (DWORD)lplvcd->nmcd.dwItemSpec;
+						item = (DWORD)lplvcd->nmcd.dwItemSpec;
 
 						// White background
 						lplvcd->clrTextBk = RGB(255, 255, 255);
 
 						// Not found (This should not happen)
 						// Black text
-						if (loc < 0 || loc > results.num_stored)
+						if (item < 0 || item > results.num_stored)
 							lplvcd->clrText = RGB(0, 0, 0);
 
 						else {
-							// Get the first value (hex)
-							ListView_GetItemText(GetDlgItem(hDlg, IDL_SEARCH_RESULT_LIST), loc, 1, val, sizeof(val));
+							address = results.addresses[item];
 
-							val[sizeof(val) - 1] = 0;	// To get rid of the "Might not be null terminated" warning
-							dwVal = strtoul(val, NULL, 16);
+							// Get the first value (hex)
+							ListView_GetItemText(GetDlgItem(hDlg, IDL_SEARCH_RESULT_LIST), item, 1, val, sizeof(val) - 1);
+							value = strtoul(val, NULL, 16);
 
 							// Black text (Same value)
-							if (results.hits[loc].value == dwVal)
+							if (results.hits.values[address] == value)
 								lplvcd->clrText = RGB(0, 0, 0);
 
 							// Red text (Lower value)
-							else if (results.hits[loc].value > dwVal)
+							else if (results.hits.values[address] > value)
 								lplvcd->clrText = RGB(180, 0, 0);
 
 							// Green text (Higher value)
@@ -1747,52 +1815,61 @@ LRESULT CheatSearchResults_DrawItem(HANDLE hDlg, NMHDR* lParam) {
 LRESULT CheatSearchResults_ReadItem(NMHDR* lParam) {
 	LV_DISPINFO* lpdi = (LV_DISPINFO*)lParam;
 	char cpy[20];
-	CS_HITS* curr;
 
 	// Only setting text
-	if (!(lpdi->item.mask & LVIF_TEXT))
+	if (!(lpdi->item.mask & LVIF_TEXT)) {
 		return TRUE;
+	}
 
 	// To do, check to see if that second check is actually necessary
-	if (results.num_stored == 0 || (DWORD)lpdi->item.iItem > results.num_stored)
+	if (results.num_stored == 0 || (DWORD)lpdi->item.iItem > results.num_stored) {
 		return TRUE;
+	}
 
-	curr = &results.hits[lpdi->item.iItem];
+	DWORD address = results.addresses[lpdi->item.iItem];
+	CS_HIT hit = { 0 };
+	if (
+		(search.searchNumBits == bits8 && !CS_GetHitByte(&hit, &results, address)) ||
+		(search.searchNumBits == bits16 && !CS_GetHitWord(&hit, &results, address))
+	) {
+		// TODO: Error handling
+		return TRUE;
+	}
 
 	// Searching by Value
 	if (search.searchBy == searchbyvalue) {
 		switch (lpdi->item.iSubItem) {
 			case 0:
 				// Address
-				sprintf(cpy, "%06X", curr->address);
+				sprintf(cpy, "%06X", hit.address);
 				lstrcpy(lpdi->item.pszText, cpy);
 				break;
 			case 1:
 				// Current Value (Hex)
 				if (!doingLiveUpdate) {
 					if (search.searchNumBits == bits16)
-						sprintf(cpy, "%04X", curr->value);
+						sprintf(cpy, "%04X", hit.value);
 					else
-						sprintf(cpy, "%02X", curr->value);
+						sprintf(cpy, "%02X", hit.value);
 				}
 				else {
 					if (search.searchNumBits == bits16)
-						sprintf(cpy, "%04X", Value_ReadWord(curr->address));
+						sprintf(cpy, "%04X", Value_ReadWord(hit.address));
 					else
-						sprintf(cpy, "%02X", Value_ReadByte(curr->address));
+						sprintf(cpy, "%02X", Value_ReadByte(hit.address));
 				}
 				lstrcpy(lpdi->item.pszText, cpy);
 				break;
 			case 2:
 				// Current Value (Dec)
 				if (!doingLiveUpdate) {
-					sprintf(cpy, "%u", curr->value);
+					sprintf(cpy, "%u", hit.value);
 				}
 				else {
 					if (search.searchNumBits == bits16)
-						sprintf(cpy, "%u", Value_ReadWord(curr->address));
+						sprintf(cpy, "%u", Value_ReadWord(hit.address));
 					else
-						sprintf(cpy, "%u", Value_ReadByte(curr->address));
+						sprintf(cpy, "%u", Value_ReadByte(hit.address));
 				}
 				lstrcpy(lpdi->item.pszText, cpy);
 				break;
@@ -1800,9 +1877,9 @@ LRESULT CheatSearchResults_ReadItem(NMHDR* lParam) {
 				// Old Value (Hex)
 				if (secondSearch) {
 					if (search.searchNumBits == bits16)
-						sprintf(cpy, "%04X", curr->prev_value);
+						sprintf(cpy, "%04X", hit.prev_value);
 					else
-						sprintf(cpy, "%02X", curr->prev_value);
+						sprintf(cpy, "%02X", hit.prev_value);
 					lstrcpy(lpdi->item.pszText, cpy);
 				}
 				break;
@@ -1814,7 +1891,7 @@ LRESULT CheatSearchResults_ReadItem(NMHDR* lParam) {
 		switch (lpdi->item.iSubItem) {
 			case 0:
 				// Address
-				sprintf(cpy, "%06X", curr->address);
+				sprintf(cpy, "%06X", hit.address);
 				lstrcpy(lpdi->item.pszText, cpy);
 				break;
 			case 1:
