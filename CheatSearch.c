@@ -885,7 +885,7 @@ void Search(HWND hDlg) {
 
 		search.searchBy = searchbytext;
 
-		CS_ClearResults(&results);
+		CS_ReserveSpace(&results, dwendAddress - dwstartAddress + 1);
 
 		possibleAddress = 0;
 
