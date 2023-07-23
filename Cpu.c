@@ -180,7 +180,6 @@ void CloseCpu (void) {
 		TerminateThread(hCPU, 0);
 
 		hCPU = NULL;
-		SetupPlugins(hMainWindow,FALSE);
 	}
 
 	CPURunning = FALSE;
