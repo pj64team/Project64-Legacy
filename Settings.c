@@ -655,12 +655,12 @@ BOOL CALLBACK PluginSelectProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
 			if (CPURunning) {
 				CloseCpu();
 				ShutdownPlugins();
-				SetupPlugins(hMainWindow, TRUE);
+				SetupPlugins(hMainWindow);
 				StartEmulation();
 			}
 			else {
 				ShutdownPlugins();
-				SetupPlugins(hMainWindow, TRUE);
+				SetupPlugins(hMainWindow);
 			}
 			FreePluginList();
 		}
