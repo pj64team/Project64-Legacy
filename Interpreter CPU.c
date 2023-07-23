@@ -733,8 +733,9 @@ void ExecuteInterpreterOpCode (void) {
 }
 
 void __cdecl StartInterpreterCPU (void ) { 
-	if (CoInitialize(NULL) != S_OK)
+	if (CoInitialize(NULL) != S_OK) {
 		return;
+	}
 
 	NextInstruction = NORMAL;
 
