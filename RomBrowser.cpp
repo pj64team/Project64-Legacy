@@ -1160,7 +1160,6 @@ void ShowRomList(HWND hParent) {
 	if (hRomList != NULL && IsWindowVisible(hRomList))
 		return;
 	
-	SetupPlugins(hMainWindow, TRUE);
 	SetupMenu(hMainWindow);
 	IgnoreMove = TRUE;	
 	ShowWindow(hMainWindow, SW_HIDE);
