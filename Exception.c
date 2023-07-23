@@ -84,7 +84,7 @@ void DoAddressError ( BOOL DelaySlot, DWORD BadVaddr, BOOL FromRead) {
 	PROGRAM_COUNTER = 0x80000180;
 }
 
-void DoBreakException ( BOOL DelaySlot) {
+void _fastcall DoBreakException ( BOOL DelaySlot) {
 	if (ShowDebugMessages) {
 		if ((STATUS_REGISTER & STATUS_EXL) != 0) {
 			DisplayError("EXL set in Break Exception");
@@ -169,7 +169,7 @@ void _fastcall DoTLBMiss ( BOOL DelaySlot, DWORD BadVaddr ) {
 	}
 }
 
-void _fastcall DoSysCallException ( BOOL DelaySlot) {
+void _fastcall DoSysCallException(BOOL DelaySlot) {
 	if (ShowDebugMessages) {
 		if ((STATUS_REGISTER & STATUS_EXL) != 0) {
 			DisplayError("EXL set in SysCall Exception");
@@ -183,7 +183,30 @@ void _fastcall DoSysCallException ( BOOL DelaySlot) {
 	if (DelaySlot) {
 		CAUSE_REGISTER |= CAUSE_BD;
 		EPC_REGISTER = PROGRAM_COUNTER - 4;
-	} else {
+	}
+	else {
+		EPC_REGISTER = PROGRAM_COUNTER;
+	}
+	STATUS_REGISTER |= STATUS_EXL;
+	PROGRAM_COUNTER = 0x80000180;
+}
+
+void _fastcall DoIllegalInstructionException(BOOL DelaySlot) {
+	if (ShowDebugMessages) {
+		if ((STATUS_REGISTER & STATUS_EXL) != 0) {
+			DisplayError("EXL set in SysCall Exception");
+		}
+		if ((STATUS_REGISTER & STATUS_ERL) != 0) {
+			DisplayError("ERL set in SysCall Exception");
+		}
+	}
+
+	CAUSE_REGISTER = EXC_II;
+	if (DelaySlot) {
+		CAUSE_REGISTER |= CAUSE_BD;
+		EPC_REGISTER = PROGRAM_COUNTER - 4;
+	}
+	else {
 		EPC_REGISTER = PROGRAM_COUNTER;
 	}
 	STATUS_REGISTER |= STATUS_EXL;

@@ -563,8 +563,20 @@ void CompileExit (DWORD TargetPC, REG_INFO ExitRegSet, int reason, int CompileNo
 		Ret();
 		break;
 	case DoSysCall:
-		MoveConstToX86reg(NextInstruction == JUMP || NextInstruction == DELAY_SLOT,x86_ECX);		
-		Call_Direct(DoSysCallException,"DoSysCallException");
+		MoveConstToX86reg(NextInstruction == JUMP || NextInstruction == DELAY_SLOT, x86_ECX);
+		Call_Direct(DoSysCallException, "DoSysCallException");
+		if (CPU_Type == CPU_SyncCores) { Call_Direct(SyncToPC, "SyncToPC"); }
+		Ret();
+		break;
+	case DoIlleaglOp:
+		MoveConstToX86reg(NextInstruction == JUMP || NextInstruction == DELAY_SLOT, x86_ECX);
+		Call_Direct(DoIllegalInstructionException, "DoIllegalInstructionException");
+		if (CPU_Type == CPU_SyncCores) { Call_Direct(SyncToPC, "SyncToPC"); }
+		Ret();
+		break;
+	case DoBreak:
+		MoveConstToX86reg(NextInstruction == JUMP || NextInstruction == DELAY_SLOT, x86_ECX);
+		Call_Direct(DoBreakException, "DoBreakException");
 		if (CPU_Type == CPU_SyncCores) { Call_Direct(SyncToPC, "SyncToPC"); }
 		Ret();
 		break;
@@ -2163,7 +2175,7 @@ BOOL GenerateX86Code (BLOCK_SECTION * Section, DWORD Test) {
 			case R4300i_SPECIAL_DSLL32: Compile_R4300i_SPECIAL_DSLL32(Section); break;
 			case R4300i_SPECIAL_DSRL32: Compile_R4300i_SPECIAL_DSRL32(Section); break;
 			case R4300i_SPECIAL_DSRA32: Compile_R4300i_SPECIAL_DSRA32(Section); break;
-			case R4300i_SPECIAL_BREAK: R4300i_SPECIAL_BREAK; break;
+			case R4300i_SPECIAL_BREAK: Compile_R4300i_SPECIAL_BREAK(Section); break;
 			case R4300i_SPECIAL_TEQ: R4300i_SPECIAL_BREAK; break;
 			default:
 				Compile_R4300i_UnknownOpcode(Section); break;

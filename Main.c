@@ -567,14 +567,22 @@ void LoadSettings(void) {
 		ShowPifRamErrors = Default_ShowPifRamErrors;
 	}
 	else {
-		AutoLoadMapFile = Settings_ReadBool(APPS_NAME, STR_DEBUG, STR_AUTOMAP, Default_AutoMap);
-		ShowUnhandledMemory = Settings_ReadBool(APPS_NAME, STR_DEBUG, STR_SHOWUNHMEM, Default_ShowUnhandledMemory);
-		ShowTLBMisses = Settings_ReadBool(APPS_NAME, STR_DEBUG, STR_SHOWTLB, Default_ShowTLBMisses);
-		Profiling = Settings_ReadBool(APPS_NAME, STR_DEBUG, STR_PROFILE, Default_ProfilingOn);
-		IndividualBlock = Settings_ReadBool(APPS_NAME, STR_DEBUG, STR_LOGBLOCKS, Default_IndividualBlock);
-		ShowDListAListCount = Settings_ReadBool(APPS_NAME, STR_DEBUG, STR_ADLISTCOUNT, Default_ShowDlistCount);
-		ShowCompMem = Settings_ReadBool(APPS_NAME, STR_DEBUG, STR_SHOWCOMPMEM, Default_ShowCompileMemory);
-		ShowPifRamErrors = Settings_ReadBool(APPS_NAME, STR_DEBUG, STR_PIFERRORS, Default_ShowPifRamErrors);
+		//AutoLoadMapFile = Settings_ReadBool(APPS_NAME, STR_DEBUG, STR_AUTOMAP, Default_AutoMap);
+		//ShowUnhandledMemory = Settings_ReadBool(APPS_NAME, STR_DEBUG, STR_SHOWUNHMEM, Default_ShowUnhandledMemory);
+		//ShowTLBMisses = Settings_ReadBool(APPS_NAME, STR_DEBUG, STR_SHOWTLB, Default_ShowTLBMisses);
+		//Profiling = Settings_ReadBool(APPS_NAME, STR_DEBUG, STR_PROFILE, Default_ProfilingOn);
+		//IndividualBlock = Settings_ReadBool(APPS_NAME, STR_DEBUG, STR_LOGBLOCKS, Default_IndividualBlock);
+		//ShowDListAListCount = Settings_ReadBool(APPS_NAME, STR_DEBUG, STR_ADLISTCOUNT, Default_ShowDlistCount);
+		//ShowCompMem = Settings_ReadBool(APPS_NAME, STR_DEBUG, STR_SHOWCOMPMEM, Default_ShowCompileMemory);
+		//ShowPifRamErrors = Settings_ReadBool(APPS_NAME, STR_DEBUG, STR_PIFERRORS, Default_ShowPifRamErrors);
+		AutoLoadMapFile = Default_AutoMap;
+		ShowUnhandledMemory = Default_ShowUnhandledMemory;
+		ShowTLBMisses = Default_ShowTLBMisses;
+		Profiling = Default_ProfilingOn;
+		IndividualBlock = Default_IndividualBlock;
+		ShowDListAListCount = Default_ShowDlistCount;
+		ShowCompMem = Default_ShowCompileMemory;
+		ShowPifRamErrors = Default_ShowPifRamErrors;
 	}
 }
 

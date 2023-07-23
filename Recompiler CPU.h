@@ -43,6 +43,8 @@
 #define DoSysCall				4
 #define TLBReadMiss				5
 #define ExitResetRecompCode		6
+#define DoBreak					7
+#define DoIlleaglOp				8
 
 #define STATE_KNOWN_VALUE		1
 //#define STATE_UNKNOW_VALUE

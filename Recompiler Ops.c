@@ -3030,8 +3030,12 @@ void Compile_R4300i_SPECIAL_JALR (BLOCK_SECTION * Section) {
 	}
 }
 
-void Compile_R4300i_SPECIAL_SYSCALL (BLOCK_SECTION * Section) {
-	CompileExit(Section->CompilePC,Section->RegWorking,DoSysCall,TRUE,NULL);
+void Compile_R4300i_SPECIAL_SYSCALL(BLOCK_SECTION* Section) {
+	CompileExit(Section->CompilePC, Section->RegWorking, DoSysCall, TRUE, NULL);
+}
+
+void Compile_R4300i_SPECIAL_BREAK(BLOCK_SECTION* Section) {
+	CompileExit(Section->CompilePC, Section->RegWorking, DoBreak, TRUE, NULL);
 }
 
 void Compile_R4300i_SPECIAL_MFLO (BLOCK_SECTION * Section) {
@@ -4922,20 +4926,21 @@ void Compile_R4300i_COP0_CO_ERET( BLOCK_SECTION * Section) {
 
 /************************** Other functions **************************/
 void Compile_R4300i_UnknownOpcode (BLOCK_SECTION * Section) {
-	CPU_Message("  %X Unhandled Opcode: %s",Section->CompilePC, R4300iOpcodeName(Opcode.Hex,Section->CompilePC));
+//	CPU_Message("  %X Unhandled Opcode: %s",Section->CompilePC, R4300iOpcodeName(Opcode.Hex,Section->CompilePC));
+	CompileExit(Section->CompilePC, Section->RegWorking, DoIlleaglOp, TRUE, NULL);
 
-	FreeSection(Section->ContinueSection,Section);
-	FreeSection(Section->JumpSection,Section);
-	BlockCycleCount -= CountPerOp;
-	BlockRandomModifier -= 1;
-	MoveConstToVariable(Section->CompilePC,&PROGRAM_COUNTER,"PROGRAM_COUNTER");
-	WriteBackRegisters(Section);
-	AddConstToVariable(BlockCycleCount,&CP0[9],Cop0_Name[9]);
-	SubConstFromVariable(BlockRandomModifier,&CP0[1],Cop0_Name[1]);
-	if (CPU_Type == CPU_SyncCores) { Call_Direct(SyncToPC, "SyncToPC"); }
-	MoveConstToVariable(Opcode.Hex,&Opcode.Hex,"Opcode.Hex");
-	Call_Direct(R4300i_UnknownOpcode, "R4300i_UnknownOpcode");
-	Ret();
-	if (NextInstruction == NORMAL) { NextInstruction = END_BLOCK; }
+	//FreeSection(Section->ContinueSection,Section);
+	//FreeSection(Section->JumpSection,Section);
+	//BlockCycleCount -= CountPerOp;
+	//BlockRandomModifier -= 1;
+	//MoveConstToVariable(Section->CompilePC,&PROGRAM_COUNTER,"PROGRAM_COUNTER");
+	//WriteBackRegisters(Section);
+	//AddConstToVariable(BlockCycleCount,&CP0[9],Cop0_Name[9]);
+	//SubConstFromVariable(BlockRandomModifier,&CP0[1],Cop0_Name[1]);
+	//if (CPU_Type == CPU_SyncCores) { Call_Direct(SyncToPC, "SyncToPC"); }
+	//MoveConstToVariable(Opcode.Hex,&Opcode.Hex,"Opcode.Hex");
+	//Call_Direct(R4300i_UnknownOpcode, "R4300i_UnknownOpcode");
+	//Ret();
+	//if (NextInstruction == NORMAL) { NextInstruction = END_BLOCK; }
 }
 

@@ -687,9 +687,9 @@ void _fastcall r4300i_SPECIAL_SYSCALL (void) {
 }
 
 void _fastcall r4300i_SPECIAL_BREAK (void) {
-	/*DoBreakException(NextInstruction == JUMP);
+	DoBreakException(NextInstruction == JUMP);
 	NextInstruction = JUMP;
-	JumpToLocation = PROGRAM_COUNTER;*/
+	JumpToLocation = PROGRAM_COUNTER;
 }
 
 void _fastcall r4300i_SPECIAL_SYNC (void) {
@@ -1506,25 +1506,28 @@ void _fastcall r4300i_COP1_L_CVT_D (void) {
 
 /************************** Other functions **************************/
 void _fastcall R4300i_UnknownOpcode (void) {
-	char Message[200];
+	//char Message[200];
 
-	sprintf(Message,"%s: %08X\n%s\n\n", GS(MSG_UNHANDLED_OP), PROGRAM_COUNTER,
-		R4300iOpcodeName(Opcode.Hex,PROGRAM_COUNTER));
-	strcat(Message,"Stoping Emulation !");
-	
-	if (HaveDebugger && !inFullScreen) {
-		int response;
+	//sprintf(Message,"%s: %08X\n%s\n\n", GS(MSG_UNHANDLED_OP), PROGRAM_COUNTER,
+	//	R4300iOpcodeName(Opcode.Hex,PROGRAM_COUNTER));
+	//strcat(Message,"Stoping Emulation !");
+	//
+	//if (HaveDebugger && !inFullScreen) {
+	//	int response;
 
-		strcat(Message,"\n\nDo you wish to enter the debugger?");
-	
-		response = MessageBox(NULL,Message,GS(MSG_MSGBOX_TITLE), MB_YESNO | MB_ICONERROR );
-		if (response == IDYES) {
-			Enter_R4300i_Commands_Window ();
-		}
-		ExitThread(0);
-	} 
-	else {
-		DisplayError(Message);
-		ExitThread(0);
-	}
+	//	strcat(Message,"\n\nDo you wish to enter the debugger?");
+	//
+	//	response = MessageBox(NULL,Message,GS(MSG_MSGBOX_TITLE), MB_YESNO | MB_ICONERROR );
+	//	if (response == IDYES) {
+	//		Enter_R4300i_Commands_Window ();
+	//	}
+	//	ExitThread(0);
+	//} 
+	//else {
+	//	DisplayError(Message);
+	//	ExitThread(0);
+	//}
+	DoIllegalInstructionException(NextInstruction == JUMP);
+	NextInstruction = JUMP;
+	JumpToLocation = PROGRAM_COUNTER;
 }
