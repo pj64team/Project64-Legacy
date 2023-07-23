@@ -419,7 +419,6 @@ void (__cdecl *RumbleCommand)	 ( int Control, BOOL bRumble );
 extern "C" {
 #endif
 void PluginConfiguration ( HWND hWnd );
-//void SetupPlugins        ( HWND hWnd );
 void SetupPlugins(HWND hWnd, BOOL bDoInit);
 void SetupPluginScreen   ( HWND hDlg );
 void ShutdownPlugins     ( void );
