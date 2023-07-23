@@ -46,14 +46,14 @@ BOOL PluginsInitilized = FALSE;
 BOOL PluginsChanged ( HWND hDlg );
 BOOL ValidPluginVersion ( PLUGIN_INFO * PluginInfo );
 volatile BOOL bTerminateAudioThread = FALSE;
+volatile BOOL bAudioThreadExiting = FALSE;
 
 void __cdecl AudioThread (void) {
 	SetThreadPriority(GetCurrentThread(), THREAD_PRIORITY_TIME_CRITICAL );
-	for (;bTerminateAudioThread == 0;) {
-	//for (;;) {
+	while (bTerminateAudioThread == 0) {
 		AiUpdate(TRUE);
-		//Sleep(1);
 	}
+	bAudioThreadExiting = TRUE;
 }
 
 void GetCurrentDlls (void) {
@@ -270,10 +270,20 @@ BOOL LoadRSPDll(char * RspDll) {
 
 void TerminateAudioThread()
 {
-	static DWORD AI_DUMMY = 0;
-	TerminateThread(hAudioThread, 0);
-	bTerminateAudioThread = TRUE;
-	if (AiCloseDLL != NULL) { AiCloseDLL(); }
+	if (AiCloseDLL != NULL) {
+		AiCloseDLL();
+	} else if (AiUpdate != NULL) {
+		bTerminateAudioThread = TRUE;
+		Sleep(1);
+		if (!bAudioThreadExiting) {
+			DisplayError("Audio thread failed to stop gracefully");
+
+			// This is a last resort when the audio thread refuses to gracefully exit.
+			// Calling this function WILL cause problems!
+			// SEE: https://learn.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-terminatethread#remarks
+			TerminateThread(hAudioThread, 0);
+		}
+	}
 	FreeLibrary(hAudioDll);
 
 	AiCloseDLL = NULL;
@@ -289,10 +299,8 @@ void TerminateAudioThread()
 
 void ResetAudio(HWND hWnd) {
 	static DWORD AI_DUMMY = 0;
-	TerminateThread(hAudioThread,0);
-	bTerminateAudioThread = TRUE; 
-	if (AiCloseDLL != NULL) { AiCloseDLL(); }
-	FreeLibrary(hAudioDll);
+
+	TerminateAudioThread();
 	
 	if (!LoadAudioDll(AudioDLL) ) {
 		AiCloseDLL       = NULL;
@@ -341,7 +349,8 @@ void ResetAudio(HWND hWnd) {
 		if (AiUpdate) { 
 			DWORD ThreadID;
 			bTerminateAudioThread = FALSE;
-			hAudioThread = CreateThread(NULL,0,(LPTHREAD_START_ROUTINE)AudioThread, (LPVOID)NULL,0, &ThreadID);			
+			bAudioThreadExiting = FALSE;
+			hAudioThread = CreateThread(NULL,0,(LPTHREAD_START_ROUTINE)AudioThread, (LPVOID)NULL,0, &ThreadID);
 		}
 	}
 }
@@ -739,27 +748,21 @@ void SetupPluginScreen (HWND hDlg) {
 	}
 }
 
-void ShutdownPlugins (void) {
+void ShutdownPlugins(void) {
 	unsigned int names;
 
 	if (!PluginsInitilized)
 		return;
 
-	for (names = 0; names < PluginCount; names++)
-	{
+	for (names = 0; names < PluginCount; names++) {
 		free(PluginNames[names]);
 		PluginNames[names] = 0;
 	}
 
-	//if (AiRomClosed != NULL)
-		TerminateThread(hAudioThread,0);
-	bTerminateAudioThread = TRUE;
-
-	if (GFXCloseDLL != NULL && GfxRomClosed != NULL) { GFXCloseDLL(); }
-	if (RSPCloseDLL != NULL && RSPRomClosed != NULL) { RSPCloseDLL(); }
-	if (AiCloseDLL != NULL && AiRomClosed != NULL) { AiCloseDLL(); }
-	if (ContCloseDLL != NULL && ContRomClosed != NULL) { ContCloseDLL(); }
-	FreeLibrary(hAudioDll);
+	TerminateAudioThread();
+	if (GFXCloseDLL != NULL) { GFXCloseDLL(); }
+	if (RSPCloseDLL != NULL) { RSPCloseDLL(); }
+	if (ContCloseDLL != NULL) { ContCloseDLL(); }
 	FreeLibrary(hControllerDll);
 	FreeLibrary(hGfxDll);
 	FreeLibrary(hRspDll);
