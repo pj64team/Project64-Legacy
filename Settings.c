@@ -233,7 +233,10 @@ BOOL CALLBACK DefaultOptionsProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lPa
 
 		AddDropDownItem(hDlg, IDC_CPU_TYPE, CORE_INTERPTER, CPU_Interpreter, &SystemCPU_Type);
 		AddDropDownItem(hDlg, IDC_CPU_TYPE, CORE_RECOMPILER, CPU_Recompiler, &SystemCPU_Type);
-		if (HaveDebugger) { AddDropDownItem(hDlg, IDC_CPU_TYPE, CORE_SYNC, CPU_SyncCores, &SystemCPU_Type); }
+		AddDropDownItem(hDlg, IDC_CPU_TYPE, CORE_SYNC, CPU_SyncCores, &SystemCPU_Type);
+		if (HaveDebugger) {
+			EnableWindow(GetDlgItem(hDlg, IDC_CPU_TYPE), FALSE);
+		}
 
 		AddDropDownItem(hDlg, IDC_SELFMOD, SMCM_NONE, ModCode_None, &SystemSelfModCheck);
 		AddDropDownItem(hDlg, IDC_SELFMOD, SMCM_CACHE, ModCode_Cache, &SystemSelfModCheck);
@@ -247,6 +250,12 @@ BOOL CALLBACK DefaultOptionsProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lPa
 
 		AddDropDownItem(hDlg, IDC_ABL, ABL_ON, TRUE, &SystemABL);
 		AddDropDownItem(hDlg, IDC_ABL, ABL_OFF, FALSE, &SystemABL);
+		break;
+	case WM_COMMAND:
+		if (HIWORD(wParam) == BN_CLICKED && LOWORD(wParam) == IDC_USEDEBUGGER) {
+			BOOL enable_cpu_type = !(Button_GetCheck(lParam) & BST_CHECKED);
+			EnableWindow(GetDlgItem(hDlg, IDC_CPU_TYPE), enable_cpu_type);
+		}
 		break;
 	case WM_NOTIFY:
 		if (((NMHDR FAR*) lParam)->code == PSN_APPLY) {
