@@ -132,7 +132,7 @@ extern BOOL HaveDebugger, ShowDebugMessages, AutoLoadMapFile, ShowUnhandledMemor
 	AutoFullScreen, SystemABL, AlwaysOnTop, BasicMode, DelaySI, RememberCheats,AudioSignal, EmulateAI;
 extern unsigned int CurrentFrame;
 extern int CPU_Type, SystemCPU_Type, SelfModCheck, SystemSelfModCheck, RomsToRemember, RomDirsToRemember;
-extern HWND hMainWindow, hHiddenWin, hStatusWnd;
+extern HWND hMainWindow, hStatusWnd;
 extern char CurrentSave[256];
 extern HMENU hMainMenu;
 extern HINSTANCE hInst;
