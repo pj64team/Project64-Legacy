@@ -2866,8 +2866,10 @@ void MarkCodeBlock (DWORD PAddr) {
 void __cdecl StartRecompilerCPU (void ) { 
 	DWORD Addr;
 	BYTE * Block;
-		
-	CoInitialize(NULL);
+
+	if (CoInitialize(NULL) != S_OK) {
+		return;
+	}
 #ifdef Log_x86Code
 	Start_x86_Log();
 #endif
@@ -2909,6 +2911,9 @@ void __cdecl StartRecompilerCPU (void ) {
 			DWORD Value;
 
 			for (;;) {
+				if (CPU_Action.CloseCPU) {
+					DoSomething();
+				}
 				Addr = PROGRAM_COUNTER;
 				if (UseTlb) {
 					if (!TranslateVaddr(&Addr)) {
