@@ -174,7 +174,7 @@ void CloseCpu (void) {
 	if (hCPU != NULL) { 
 		DisplayError("Emulation thread failed to terminate plugins\nReport this if you can reproduce reliably");
 
-		// This is a last resort when the audio thread refuses to gracefully exit.
+		// This is a last resort when the CPU thread refuses to gracefully exit.
 		// Calling this function WILL cause problems!
 		// SEE: https://learn.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-terminatethread#remarks
 		TerminateThread(hCPU, 0);
