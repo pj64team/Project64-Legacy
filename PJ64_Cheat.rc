@@ -17,6 +17,7 @@
 
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_NLB)
 LANGUAGE LANG_DUTCH, SUBLANG_DUTCH_BELGIAN
+#pragma code_page(1252)
 
 #ifdef APSTUDIO_INVOKED
 /////////////////////////////////////////////////////////////////////////////
@@ -24,18 +25,18 @@ LANGUAGE LANG_DUTCH, SUBLANG_DUTCH_BELGIAN
 // TEXTINCLUDE
 //
 
-1 TEXTINCLUDE
+1 TEXTINCLUDE 
 BEGIN
     "resource_cheat.h\0"
 END
 
-2 TEXTINCLUDE
+2 TEXTINCLUDE 
 BEGIN
     "#include ""afxres.h""\r\n"
     "\0"
 END
 
-3 TEXTINCLUDE
+3 TEXTINCLUDE 
 BEGIN
     "\r\n"
     "\0"
@@ -52,6 +53,7 @@ END
 
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENA)
 LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_AUS
+#pragma code_page(1252)
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -93,6 +95,7 @@ BEGIN
     EDITTEXT        IDT_CS_CHEAT_NOTE,280,186,147,38,ES_MULTILINE | ES_READONLY
     LTEXT           "Static",IDS_RDRAMSIZE,16,23,159,8
     PUSHBUTTON      "View Memory",IDB_CS_CHEAT_MEMVIEWER,323,234,50,14
+    CONTROL         "Case Sensitive",IDC_CASE_SENSITIVE,"Button",BS_AUTOCHECKBOX | WS_DISABLED | WS_TABSTOP,50,83,124,11
 END
 
 IDD_Cheats_Search_Edit DIALOGEX 0, 0, 224, 155
