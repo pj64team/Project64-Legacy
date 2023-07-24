@@ -8,12 +8,15 @@ EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
+		Logging|Win32 = Logging|Win32
 		Release for XP|Win32 = Release for XP|Win32
 		Release|Win32 = Release|Win32
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{AC366B6C-F277-056E-0EE8-B3ED4CCDFDA5}.Debug|Win32.ActiveCfg = Debug|Win32
 		{AC366B6C-F277-056E-0EE8-B3ED4CCDFDA5}.Debug|Win32.Build.0 = Debug|Win32
+		{AC366B6C-F277-056E-0EE8-B3ED4CCDFDA5}.Logging|Win32.ActiveCfg = Logging|Win32
+		{AC366B6C-F277-056E-0EE8-B3ED4CCDFDA5}.Logging|Win32.Build.0 = Logging|Win32
 		{AC366B6C-F277-056E-0EE8-B3ED4CCDFDA5}.Release for XP|Win32.ActiveCfg = Release for XP|Win32
 		{AC366B6C-F277-056E-0EE8-B3ED4CCDFDA5}.Release for XP|Win32.Build.0 = Release for XP|Win32
 		{AC366B6C-F277-056E-0EE8-B3ED4CCDFDA5}.Release|Win32.ActiveCfg = Release|Win32
