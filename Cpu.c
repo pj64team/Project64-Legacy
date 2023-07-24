@@ -146,17 +146,19 @@ void CheckTimer (void) {
 void CloseCpu (void) {
 	DWORD ExitCode, OldProtect;
 	
-	if (!CPURunning || hCPU == NULL) { return; }
-	PauseCpu();
-	Sleep(50);
+	if (CPU_Action.CloseCPU || !CPURunning || hCPU == NULL) { return; }
+
+	// FIXME: Don't race global state like `CPU_Action` and `CPURunning` across multiple threads!!!
 	CPU_Action.CloseCPU = TRUE;
 	CPU_Action.Stepping = FALSE;
+	CPU_Action.DoInterrupt = FALSE;
+	CPU_Action.CheckInterrupts = FALSE;
 	CPU_Action.DoSomething = TRUE;
 	PulseEvent(CPU_Action.hStepping);
 
 	ManualPaused = FALSE;
 	if (CPU_Paused) { PauseCpu(); }
-	
+
 	{
 		BOOL Temp = AlwaysOnTop;
 		AlwaysOnTop = FALSE;
@@ -165,14 +167,19 @@ void CloseCpu (void) {
 	}
 
 	ExitCode = WaitForSingleObject(hCPU, 50);
-	if (ExitCode != WAIT_ABANDONED)
+	if (ExitCode == WAIT_OBJECT_0) {
 		hCPU = NULL;
+	}
 
 	if (hCPU != NULL) { 
 		DisplayError("Emulation thread failed to terminate plugins\nReport this if you can reproduce reliably");
+
+		// This is a last resort when the CPU thread refuses to gracefully exit.
+		// Calling this function WILL cause problems!
+		// SEE: https://learn.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-terminatethread#remarks
 		TerminateThread(hCPU, 0);
+
 		hCPU = NULL;
-		SetupPlugins(hMainWindow,FALSE);
 	}
 
 	CPURunning = FALSE;
@@ -183,12 +190,11 @@ void CloseCpu (void) {
 	CloseEeprom();
 	CloseMempak();
 	CloseSram();
-	FreeSyncMemory();	
-	/*
+	FreeSyncMemory();
 	if (GfxRomClosed != NULL) { GfxRomClosed(); }
-	if (ContRomClosed != NULL) { ContRomClosed(); }*/
-	if (AiRomClosed != NULL)   { AiRomClosed(); }	
-	if (RSPRomClosed) { RSPRomClosed(); }
+	if (ContRomClosed != NULL) { ContRomClosed(); }
+	if (AiRomClosed != NULL) { AiRomClosed(); }
+	if (RSPRomClosed != NULL) { RSPRomClosed(); }
 	if (Profiling) { GenerateTimerResults(); }
 	CloseHandle(CPU_Action.hStepping);
 	SendMessage( hStatusWnd, SB_SETTEXT, 0, (LPARAM)GS(MSG_EMULATION_ENDED) );
@@ -453,10 +459,6 @@ void ProcessMessages (void) {
 
 void DoSomething ( void ) {
 	if (CPU_Action.CloseCPU) { 
-		if (GfxRomClosed != NULL)
-			GfxRomClosed();
-		if (ContRomClosed != NULL)
-			ContRomClosed();
 		CoUninitialize();
 		ExitThread(0); 
 	}
@@ -1190,7 +1192,6 @@ void SetCoreToSkipping(void) {
 
 void StartEmulation ( void ) {
 	DWORD ThreadID, count;
-	CloseCpu();
 
 	memset(&CPU_Action,0,sizeof(CPU_Action));
 	//memcpy(RomHeader,ROM,sizeof(RomHeader));
@@ -1209,8 +1210,9 @@ void StartEmulation ( void ) {
 	
 	RecompPos = RecompCode;
 
-	if (HaveDebugger)
-	Enable_R4300i_Commands_Window();
+	if (HaveDebugger) {
+		Enable_R4300i_Commands_Window();
+	}
 	if (InR4300iCommandsWindow) {
 		SetCoreToStepping();
 	}
@@ -1239,15 +1241,14 @@ void StartEmulation ( void ) {
 	CPURunning = TRUE;
 	SetupMenu(hMainWindow);
 
-	if (!inFullScreen)	// Only reset plugins if not in fullscreen
-		SetupPlugins(hMainWindow,TRUE);
-	else
+	if (inFullScreen) {
 		ResetAudio(hMainWindow);
+	}
 
 	switch (CPU_Type) {
 	case CPU_Interpreter: hCPU = CreateThread(NULL,0,(LPTHREAD_START_ROUTINE)StartInterpreterCPU,NULL,0, &ThreadID); break;
-	case CPU_Recompiler: hCPU = CreateThread(NULL,0,(LPTHREAD_START_ROUTINE)StartRecompilerCPU,NULL,0, &ThreadID);	break;
-	case CPU_SyncCores: hCPU = CreateThread(NULL,0,(LPTHREAD_START_ROUTINE)StartSyncCPU,NULL,0, &ThreadID);	 break;
+	case CPU_Recompiler: hCPU = CreateThread(NULL,0,(LPTHREAD_START_ROUTINE)StartRecompilerCPU,NULL,0, &ThreadID); break;
+	case CPU_SyncCores: hCPU = CreateThread(NULL,0,(LPTHREAD_START_ROUTINE)StartSyncCPU,NULL,0, &ThreadID); break;
 	default:
 		DisplayError("Unhandled CPU %d",CPU_Type);
 	}

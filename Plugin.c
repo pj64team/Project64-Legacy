@@ -46,14 +46,14 @@ BOOL PluginsInitilized = FALSE;
 BOOL PluginsChanged ( HWND hDlg );
 BOOL ValidPluginVersion ( PLUGIN_INFO * PluginInfo );
 volatile BOOL bTerminateAudioThread = FALSE;
+volatile BOOL bAudioThreadExiting = FALSE;
 
 void __cdecl AudioThread (void) {
 	SetThreadPriority(GetCurrentThread(), THREAD_PRIORITY_TIME_CRITICAL );
-	for (;bTerminateAudioThread == 0;) {
-	//for (;;) {
+	while (bTerminateAudioThread == 0) {
 		AiUpdate(TRUE);
-		//Sleep(1);
 	}
+	bAudioThreadExiting = TRUE;
 }
 
 void GetCurrentDlls (void) {
@@ -270,10 +270,20 @@ BOOL LoadRSPDll(char * RspDll) {
 
 void TerminateAudioThread()
 {
-	static DWORD AI_DUMMY = 0;
-	TerminateThread(hAudioThread, 0);
-	bTerminateAudioThread = TRUE;
-	if (AiCloseDLL != NULL) { AiCloseDLL(); }
+	if (AiCloseDLL != NULL) {
+		AiCloseDLL();
+	} else if (AiUpdate != NULL) {
+		bTerminateAudioThread = TRUE;
+		Sleep(1);
+		if (!bAudioThreadExiting) {
+			DisplayError("Audio thread failed to stop gracefully");
+
+			// This is a last resort when the audio thread refuses to gracefully exit.
+			// Calling this function WILL cause problems!
+			// SEE: https://learn.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-terminatethread#remarks
+			TerminateThread(hAudioThread, 0);
+		}
+	}
 	FreeLibrary(hAudioDll);
 
 	AiCloseDLL = NULL;
@@ -289,10 +299,8 @@ void TerminateAudioThread()
 
 void ResetAudio(HWND hWnd) {
 	static DWORD AI_DUMMY = 0;
-	TerminateThread(hAudioThread,0);
-	bTerminateAudioThread = TRUE; 
-	if (AiCloseDLL != NULL) { AiCloseDLL(); }
-	FreeLibrary(hAudioDll);
+
+	TerminateAudioThread();
 	
 	if (!LoadAudioDll(AudioDLL) ) {
 		AiCloseDLL       = NULL;
@@ -341,12 +349,13 @@ void ResetAudio(HWND hWnd) {
 		if (AiUpdate) { 
 			DWORD ThreadID;
 			bTerminateAudioThread = FALSE;
-			hAudioThread = CreateThread(NULL,0,(LPTHREAD_START_ROUTINE)AudioThread, (LPVOID)NULL,0, &ThreadID);			
+			bAudioThreadExiting = FALSE;
+			hAudioThread = CreateThread(NULL,0,(LPTHREAD_START_ROUTINE)AudioThread, (LPVOID)NULL,0, &ThreadID);
 		}
 	}
 }
 
-void SetupPlugins (HWND hWnd, BOOL bDoInit) {
+void SetupPlugins (HWND hWnd) {
 	static DWORD AI_DUMMY = 0;
 	ShutdownPlugins();
 	GetCurrentDlls();
@@ -391,12 +400,9 @@ void SetupPlugins (HWND hWnd, BOOL bDoInit) {
 		GfxInfo.VI__X_SCALE_REG = &VI_X_SCALE_REG;
 		GfxInfo.VI__Y_SCALE_REG = &VI_Y_SCALE_REG;
 		
-		if (bDoInit)
-		{
-			if (!InitiateGFX(GfxInfo)) {
-				DisplayError(GS(MSG_FAIL_INIT_GFX));
-				PluginsInitilized = FALSE;
-			}
+		if (!InitiateGFX(GfxInfo)) {
+			DisplayError(GS(MSG_FAIL_INIT_GFX));
+			PluginsInitilized = FALSE;
 		}
 	}
 
@@ -432,25 +438,23 @@ void SetupPlugins (HWND hWnd, BOOL bDoInit) {
 		AudioInfo.AI__BITRATE_REG = &AI_BITRATE_REG;	
 		AudioInfo.CheckInterrupts = AiCheckInterrupts;
 		if (EmulateAI == TRUE) EmuAI_InitializePluginHook();
-		if (bDoInit)
-		{
-			if (!InitiateAudio(AudioInfo)) {
-				AiCloseDLL = NULL;
-				AiDacrateChanged = NULL;
-				AiLenChanged = NULL;
-				AiReadLength = NULL;
-				AiUpdate = NULL;
-				InitiateAudio = NULL;
-				ProcessAList = NULL;
-				AiRomClosed = NULL;
-				DisplayError(GS(MSG_FAIL_INIT_AUDIO));
-				PluginsInitilized = FALSE;
-			}
-			if (AiUpdate) {
-				DWORD ThreadID;
-				bTerminateAudioThread = FALSE;
-				hAudioThread = CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)AudioThread, (LPVOID)NULL, 0, &ThreadID);
-			}
+		if (!InitiateAudio(AudioInfo)) {
+			AiCloseDLL = NULL;
+			AiDacrateChanged = NULL;
+			AiLenChanged = NULL;
+			AiReadLength = NULL;
+			AiUpdate = NULL;
+			InitiateAudio = NULL;
+			ProcessAList = NULL;
+			AiRomClosed = NULL;
+			DisplayError(GS(MSG_FAIL_INIT_AUDIO));
+			PluginsInitilized = FALSE;
+		}
+		if (AiUpdate) {
+			DWORD ThreadID;
+			bTerminateAudioThread = FALSE;
+			bAudioThreadExiting = FALSE;
+			hAudioThread = CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)AudioThread, (LPVOID)NULL, 0, &ThreadID);
 		}
 	}
 
@@ -548,21 +552,18 @@ void SetupPlugins (HWND hWnd, BOOL bDoInit) {
 		RspInfo10.DPC__TMEM_REG = &DPC_TMEM_REG;
 		RspInfo11.DPC__TMEM_REG = &DPC_TMEM_REG;
 
-		if (bDoInit)
+		switch (RSPVersion)
 		{
-			switch (RSPVersion)
-			{
-			case 0x0100:
-				InitiateRSP_1_0(RspInfo10, &RspTaskValue);
-				break;
-			case 0x0101:
-			case 0x0102:
-				InitiateRSP_1_1(RspInfo11, &RspTaskValue);
-				break;
-			default:
-				InitiateRSP_1_0(RspInfo10, &RspTaskValue);
-				break;
-			}
+		case 0x0100:
+			InitiateRSP_1_0(RspInfo10, &RspTaskValue);
+			break;
+		case 0x0101:
+		case 0x0102:
+			InitiateRSP_1_1(RspInfo11, &RspTaskValue);
+			break;
+		default:
+			InitiateRSP_1_0(RspInfo10, &RspTaskValue);
+			break;
 		}
 
 		if (((DWORD)SetRomHeader) != NULL)
@@ -609,20 +610,17 @@ void SetupPlugins (HWND hWnd, BOOL bDoInit) {
 		Controllers[3].RawData = FALSE;
 		Controllers[3].Plugin  = PLUGIN_NONE;
 	
-		if (bDoInit)
-		{
-			if (ContVersion == 0x0100) {
-				InitiateControllers_1_0(hWnd, Controllers);
-			}
-			if (ContVersion == 0x0101) {
-				CONTROL_INFO ControlInfo;
-				ControlInfo.Controls = Controllers;
-				ControlInfo.HEADER = (BYTE*)RomHeader;
-				ControlInfo.hinst = hInst;
-				ControlInfo.hMainWindow = hWnd;
-				ControlInfo.MemoryBswaped = TRUE;
-				InitiateControllers_1_1(ControlInfo);
-			}
+		if (ContVersion == 0x0100) {
+			InitiateControllers_1_0(hWnd, Controllers);
+		}
+		if (ContVersion == 0x0101) {
+			CONTROL_INFO ControlInfo;
+			ControlInfo.Controls = Controllers;
+			ControlInfo.HEADER = (BYTE*)RomHeader;
+			ControlInfo.hinst = hInst;
+			ControlInfo.hMainWindow = hWnd;
+			ControlInfo.MemoryBswaped = TRUE;
+			InitiateControllers_1_1(ControlInfo);
 		}
 #ifndef EXTERNAL_RELEASE
 //		Controllers[0].Plugin  = PLUGIN_RUMBLE_PAK;
@@ -739,27 +737,21 @@ void SetupPluginScreen (HWND hDlg) {
 	}
 }
 
-void ShutdownPlugins (void) {
+void ShutdownPlugins(void) {
 	unsigned int names;
 
 	if (!PluginsInitilized)
 		return;
 
-	for (names = 0; names < PluginCount; names++)
-	{
+	for (names = 0; names < PluginCount; names++) {
 		free(PluginNames[names]);
 		PluginNames[names] = 0;
 	}
 
-	//if (AiRomClosed != NULL)
-		TerminateThread(hAudioThread,0);
-	bTerminateAudioThread = TRUE;
-
-	if (GFXCloseDLL != NULL && GfxRomClosed != NULL) { GFXCloseDLL(); }
-	if (RSPCloseDLL != NULL && RSPRomClosed != NULL) { RSPCloseDLL(); }
-	if (AiCloseDLL != NULL && AiRomClosed != NULL) { AiCloseDLL(); }
-	if (ContCloseDLL != NULL && ContRomClosed != NULL) { ContCloseDLL(); }
-	FreeLibrary(hAudioDll);
+	TerminateAudioThread();
+	if (GFXCloseDLL != NULL) { GFXCloseDLL(); }
+	if (RSPCloseDLL != NULL) { RSPCloseDLL(); }
+	if (ContCloseDLL != NULL) { ContCloseDLL(); }
 	FreeLibrary(hControllerDll);
 	FreeLibrary(hGfxDll);
 	FreeLibrary(hRspDll);

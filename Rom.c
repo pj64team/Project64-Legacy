@@ -993,7 +993,6 @@ DWORD WINAPI OpenChosenFile(LPVOID lpArgs) {
 
 	if (!RememberCheats) { DisableAllCheats(); }
 	EnableOpenMenuItems();
-	//if (RomBrowser) { SetupPlugins(hMainWindow,FALSE); }
 	SetCurrentSaveState(hMainWindow, ID_CURRENTSAVE_DEFAULT);
 	sprintf(WinTitle, "%s - [ %s ]", GS(MSG_LOADED), FileName);
 	SendMessage(hStatusWnd, SB_SETTEXT, 0, (LPARAM)WinTitle);

@@ -52,7 +52,7 @@ IgnoreMove, Recursion, ShowPifRamErrors, LimitFPS, ShowCPUPer, AutoZip,
 AutoFullScreen, SystemABL, AlwaysOnTop, BasicMode, DelaySI, RememberCheats, AudioSignal, EmulateAI;
 unsigned int CurrentFrame;
 int CPU_Type, SystemCPU_Type, SelfModCheck, SystemSelfModCheck, RomsToRemember, RomDirsToRemember;
-HWND hMainWindow, hHiddenWin, hStatusWnd, hCheatSearchDlg;
+HWND hMainWindow, hStatusWnd, hCheatSearchDlg;
 char CurrentSave[256];
 HMENU hMainMenu;
 HINSTANCE hInst;
@@ -642,11 +642,9 @@ LRESULT CALLBACK Main_Proc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
 
 	switch (uMsg) {
 		case WM_CREATE:
-			if (hHiddenWin) {
-				hStatusWnd = CreateStatusWindow(WS_CHILD | WS_VISIBLE, "", hWnd, 100);
-				SendMessage(hStatusWnd, SB_SETTEXT, 0, (LPARAM)"");
-				ChangeWinSize(hWnd, 640, 480, hStatusWnd);
-			}
+			hStatusWnd = CreateStatusWindow(WS_CHILD | WS_VISIBLE, "", hWnd, 100);
+			SendMessage(hStatusWnd, SB_SETTEXT, 0, (LPARAM)"");
+			ChangeWinSize(hWnd, 640, 480, hStatusWnd);
 			break;
 
 		case WM_NCLBUTTONDBLCLK:
@@ -678,11 +676,6 @@ LRESULT CALLBACK Main_Proc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
 				break;
 			}
 
-			if (hWnd == hHiddenWin) {
-				ValidateRect(hWnd, NULL);
-				break;
-			}
-
 			__try {
 				if (CPU_Paused && DrawScreen != NULL)
 					DrawScreen();
@@ -696,8 +689,9 @@ LRESULT CALLBACK Main_Proc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
 			break;
 
 		case WM_MOVE:
-			if (IgnoreMove || hWnd == hHiddenWin)
+			if (IgnoreMove) {
 				break;
+			}
 
 			if (MoveScreen != NULL && CPURunning)
 				MoveScreen((int)(short)LOWORD(lParam), (int)(short)HIWORD(lParam));
@@ -726,9 +720,6 @@ LRESULT CALLBACK Main_Proc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
 			RECT clrect, swrect;
 			int Parts[2];
 
-			if (hWnd == hHiddenWin)
-				break;
-
 			GetClientRect(hWnd, &clrect);
 			GetClientRect(hStatusWnd, &swrect);
 
@@ -752,21 +743,17 @@ LRESULT CALLBACK Main_Proc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
 		}
 
 		case WM_SETFOCUS:
-			if (hWnd == hHiddenWin)
-				break;
-
-			if (AutoSleep && !ManualPaused && (CPU_Paused || CPU_Action.Pause)) 
+			if (AutoSleep && !ManualPaused && (CPU_Paused || CPU_Action.Pause)) {
 				PauseCpu();
+			}
 
 			RomList_SetFocus();
 			break;
 
 		case WM_KILLFOCUS:
-			if (hWnd == hHiddenWin)
-				break;
-
-			if (AutoSleep && !CPU_Paused) 
+			if (AutoSleep && !CPU_Paused) {
 				PauseCpu();
+			}
 			break;
 
 		case WM_NOTIFY:
@@ -781,8 +768,9 @@ LRESULT CALLBACK Main_Proc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
 			break;
 
 		case WM_DRAWITEM:
-			if (wParam == IDC_ROMLIST)
+			if (wParam == IDC_ROMLIST) {
 				RomListDrawItem((LPDRAWITEMSTRUCT)lParam);
+			}
 			break;
 
 		case WM_MENUSELECT:
@@ -987,35 +975,37 @@ LRESULT CALLBACK Main_Proc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
 			break;
 
 		case WM_KEYDOWN:
-			if (!CPURunning || !hCPU)
+			if (CPU_Action.CloseCPU || !CPURunning || !hCPU) {
 				break;
+			}
 
 			if (WM_KeyDown)
 				WM_KeyDown(wParam, lParam);
 			break;
 
 		case WM_KEYUP:
-			if (!CPURunning || !hCPU)
+			if (CPU_Action.CloseCPU || !CPURunning || !hCPU) {
 				break;
+			}
 
-			if (WM_KeyUp)
+			if (WM_KeyUp) {
 				WM_KeyUp(wParam, lParam);
+			}
 			break;
 
 		//case WM_ERASEBKGND:
 		//	break;
 
 		case WM_USER + 10:
-			if (hWnd == hHiddenWin)
-				break;
-
 			if (!wParam) {
-				while (ShowCursor(FALSE) >= 0)
+				while (ShowCursor(FALSE) >= 0) {
 					Sleep(0);
+				}
 			}
 			else {
-				while (ShowCursor(TRUE) < 0)
+				while (ShowCursor(TRUE) < 0) {
 					Sleep(0);
+				}
 			}
 			break;
 
@@ -1127,10 +1117,16 @@ LRESULT CALLBACK Main_Proc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
 					DestroyWindow(hWnd);
 					break;
 
-				case ID_CPU_RESET:
-					CloseCpu();
-					StartEmulation();
+				case ID_CPU_RESET: {
+					// FIXME: The CPU thread needs to be running to reset, but the threads have a ton of data races.
+					// Rapidly pressing F1 will cause the "Emulation thread failed to terminate plugins" error.
+					// This cannot be fixed without proper thread synchronization.
+					if (!CPU_Action.CloseCPU && CPURunning && hCPU) {
+						CloseCpu();
+						StartEmulation();
+					}
 					break;
+				}
 
 				case ID_CPU_PAUSE:
 					ManualPaused = TRUE;
@@ -2338,13 +2334,6 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 	AccelCPURunning = LoadAccelerators(hInst, MAKEINTRESOURCE(IDR_CPURUNNING));
 	AccelRomBrowser = LoadAccelerators(hInst, MAKEINTRESOURCE(IDR_ROMBROWSER));
 
-	hHiddenWin = CreateWindow(AppName, AppName, WS_OVERLAPPED | WS_CLIPCHILDREN |
-		WS_CLIPSIBLINGS | WS_SYSMENU | WS_MINIMIZEBOX, X, Y, WindowWidth, WindowHeight,
-		NULL, NULL, hInst, NULL
-	);
-
-	if (!hHiddenWin) { return FALSE; }
-
 	hMainWindow = CreateWindow(AppName, AppName, WS_OVERLAPPED | WS_CLIPCHILDREN |
 		WS_CLIPSIBLINGS | WS_SYSMENU | WS_MINIMIZEBOX, X, Y, WindowWidth, WindowHeight,
 		NULL, NULL, hInst, NULL
@@ -2355,10 +2344,11 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 	if (!hMainWindow)
 		return FALSE;
 
+	SetupPlugins(hMainWindow);
+
 	if (strlen(lpszArgs) > 0) {
 		DWORD ThreadID;
 
-		SetupPlugins(hMainWindow,FALSE);
 		SetupMenu(hMainWindow);
 		ShowWindow(hMainWindow, nWinMode);
 
@@ -2377,7 +2367,6 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 			ShowRomList(hMainWindow);
 		}
 		else {
-			SetupPlugins(hMainWindow,FALSE);
 			SetupMenu(hMainWindow);
 			ShowWindow(hMainWindow, nWinMode);
 		}
