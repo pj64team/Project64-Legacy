@@ -314,12 +314,14 @@ BOOL CALLBACK CheatSearchDlgProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lPa
 				case IDR_SEARCH_VALUE: {
 					Edit_Enable(GetDlgItem(hDlg, IDT_SEARCH_TEXT), FALSE);
 					Edit_Enable(GetDlgItem(hDlg, IDT_SEARCH_VALUE), TRUE);
+					Button_Enable(GetDlgItem(hDlg, IDC_CASE_SENSITIVE), FALSE);
 					break;
 				}
 
 				case IDR_SEARCH_TEXT: {
 					Edit_Enable(GetDlgItem(hDlg, IDT_SEARCH_TEXT), TRUE);
 					Edit_Enable(GetDlgItem(hDlg, IDT_SEARCH_VALUE), FALSE);
+					Button_Enable(GetDlgItem(hDlg, IDC_CASE_SENSITIVE), TRUE);
 					break;
 				}
 
@@ -341,6 +343,8 @@ BOOL CALLBACK CheatSearchDlgProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lPa
 					Edit_SetText(GetDlgItem(hDlg, IDT_SEARCH_TEXT), "");
 					Button_SetCheck(GetDlgItem(hDlg, IDR_SEARCH_VALUE), BST_CHECKED);
 					Button_SetCheck(GetDlgItem(hDlg, IDR_SEARCH_TEXT), BST_UNCHECKED);
+					Button_Enable(GetDlgItem(hDlg, IDC_CASE_SENSITIVE), FALSE);
+					Button_SetCheck(GetDlgItem(hDlg, IDC_CASE_SENSITIVE), BST_CHECKED);
 					SetWindowText(GetDlgItem(hDlg, IDGB_CS_RESULTS), "Results");
 					break;
 				}
@@ -530,7 +534,8 @@ void Setup_CheatSearch_Window(HWND hParent) {
 	Defaults_CheatSearchDlg();	// Load sane defaults
 	CS_InitDev(&cheat_dev);
 
-	CheckRadioButton(hParent, IDR_SEARCH_VALUE, IDR_SEARCH_JAL, IDR_SEARCH_VALUE);
+	CheckRadioButton(hParent, IDR_SEARCH_VALUE, IDR_SEARCH_TEXT, IDR_SEARCH_VALUE);
+	Button_SetCheck(GetDlgItem(hParent, IDC_CASE_SENSITIVE), BST_CHECKED);
 
 	if (RdramSize == 0x400000) {
 		Edit_SetText(GetDlgItem(hParent, IDS_RDRAMSIZE), "RDRam size: 4MB");
@@ -763,7 +768,7 @@ void Search(HWND hDlg) {
 	Edit_GetText(GetDlgItem(hDlg, IDT_ADDRESS_END), endAddress, 11);
 
 	dwstartAddress = strtoul(startAddress, NULL, 16);
-	dwendAddress = strtoul(endAddress, NULL, 16);
+	dwendAddress = strtoul(endAddress, NULL, 16) + 1;
 
 	// Value search
 	if (Button_GetCheck(GetDlgItem(hDlg, IDR_SEARCH_VALUE)) == BST_CHECKED) {
@@ -783,7 +788,7 @@ void Search(HWND hDlg) {
 		if (!searched) {
 
 			// Reserve space for the initial search
-			CS_ReserveSpace(&results, dwendAddress - dwstartAddress + 1);
+			CS_ReserveSpace(&results, dwendAddress - dwstartAddress);
 
 			if (search.searchNumBits == bits8) {
 				for (count = dwstartAddress; count < dwendAddress; count++) {
@@ -814,7 +819,7 @@ void Search(HWND hDlg) {
 			BOOL matched;
 			DWORD address;
 
-			CS_ReserveSpace(&tmp, dwendAddress - dwstartAddress + 1);
+			CS_ReserveSpace(&tmp, dwendAddress - dwstartAddress);
 
 			// Subsequent searches of Hex/Dec values
 			for (count = 0; count < results.num_stored; count++) {
@@ -885,20 +890,29 @@ void Search(HWND hDlg) {
 
 		search.searchBy = searchbytext;
 
-		CS_ReserveSpace(&results, dwendAddress - dwstartAddress + 1);
+		CS_ReserveSpace(&results, dwendAddress - dwstartAddress);
 
 		possibleAddress = 0;
 
 		// Fetch the string being searched for
 		Edit_GetText(GetDlgItem(hDlg, IDT_SEARCH_TEXT), search.search_string, STRING_MAX - 1);
+		BOOL case_sensitive = ((Button_GetCheck(GetDlgItem(hDlg, IDC_CASE_SENSITIVE)) & BST_CHECKED) == BST_CHECKED);
 		textsearch_len = strlen(search.search_string);
+
+		// Case insensitive searches always convert the string to lowercase
+		if (!case_sensitive) {
+			for (DWORD i = 0; i < textsearch_len; i++) {
+				search.search_string[i] = (char)tolower(search.search_string[i]);
+			}
+		}
 
 		for (count = dwstartAddress, count2 = 0; count < dwendAddress; count++) {
 
 			// Pattern match
-			if ((BYTE)search.search_string[count2] == Text_ReadByte(count + 1)) {
+			BYTE ch = Text_ReadByte(count);
+			if ((BYTE)search.search_string[count2] == (case_sensitive ? ch : (BYTE)tolower(ch))) {
 				if (count2 == 0) {
-					possibleAddress = count + 1;
+					possibleAddress = count;
 				}
 				count2++;
 
