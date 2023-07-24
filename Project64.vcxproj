@@ -357,7 +357,6 @@
     <ClInclude Include="r4300i Registers.h" />
     <ClInclude Include="Real-Time Clock.h" />
     <ClInclude Include="resource_cheat.h" />
-    <ClInclude Include="resource_cheatsearch.h" />
     <ClInclude Include="RomTools_Common.h" />
     <ClInclude Include="Settings Api.h" />
     <ClInclude Include="Settings Common Defines.h" />
