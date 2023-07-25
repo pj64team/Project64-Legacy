@@ -479,8 +479,9 @@ int GetStoredWinPos(char* WinName, DWORD* X, DWORD* Y) {
 	sprintf(String, STR_LEFT, WinName);
 	b = Settings_ReadInt(APPS_NAME, STR_WINDOW, String, -1);
 
-	if (a == -1 || b == -1)
+	if (a < 0 || b < 0) {
 		return FALSE;
+	}
 
 	*X = b;
 	*Y = a;
@@ -2279,26 +2280,23 @@ void ShutdownApplication(void) {
 
 void StoreCurrentWinPos(char* WinName, HWND hWnd) {
 	RECT WinRect;
-	WINDOWPLACEMENT wndpl;
-	WINDOWPLACEMENT* lpwndpl = &wndpl;
+	WINDOWPLACEMENT wndpl = { 0 };
 	char String[200], Value[20];
 	wndpl.length = sizeof(WINDOWPLACEMENT);
-	LONG X, Y;
 
 	GetWindowRect(hWnd, &WinRect);
-	GetWindowPlacement(hWnd, lpwndpl);
-
-	X = WinRect.left;// +WinRect.left - wndpl.rcNormalPosition.left;
-	Y = WinRect.top;// +WinRect.top - wndpl.rcNormalPosition.top;
+	GetWindowPlacement(hWnd, &wndpl);
+	if (WinRect.left == wndpl.ptMinPosition.x || WinRect.top == wndpl.ptMinPosition.y) {
+		// Do not save window position when minimized
+		return;
+	}
 
 	sprintf(String, STR_TOP, WinName);
-	//sprintf(Value, "%d", WinRect.top);
-	sprintf(Value, "%d", Y);
+	sprintf(Value, "%d", WinRect.top);
 	Settings_Write(APPS_NAME, STR_WINDOW, String, Value);
 
 	sprintf(String, STR_LEFT, WinName);
-	//sprintf(Value, "%d", WinRect.left);
-	sprintf(Value, "%d", X);
+	sprintf(Value, "%d", WinRect.left);
 	Settings_Write(APPS_NAME, STR_WINDOW, String, Value);
 }
 
