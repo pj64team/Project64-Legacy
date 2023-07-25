@@ -870,10 +870,51 @@ void _fastcall r4300i_SPECIAL_DSUBU (void) {
 	GPR[Opcode.REG.rd].DW = GPR[Opcode.BRANCH.rs].DW - GPR[Opcode.BRANCH.rt].DW;
 }
 
+void _fastcall r4300i_SPECIAL_TGE(void) {
+	if (GPR[Opcode.BRANCH.rs].DW >= GPR[Opcode.BRANCH.rt].DW) {
+		DoTrapException(NextInstruction == JUMP);
+		NextInstruction = JUMP;
+		JumpToLocation = PROGRAM_COUNTER;
+	}
+}
+
+void _fastcall r4300i_SPECIAL_TGEU(void) {
+	if (GPR[Opcode.BRANCH.rs].UDW == GPR[Opcode.BRANCH.rt].UDW) {
+		DoTrapException(NextInstruction == JUMP);
+		NextInstruction = JUMP;
+		JumpToLocation = PROGRAM_COUNTER;
+	}
+}
+
+void _fastcall r4300i_SPECIAL_TLT(void) {
+	if (GPR[Opcode.BRANCH.rs].DW < GPR[Opcode.BRANCH.rt].DW) {
+		DoTrapException(NextInstruction == JUMP);
+		NextInstruction = JUMP;
+		JumpToLocation = PROGRAM_COUNTER;
+	}
+}
+
+void _fastcall r4300i_SPECIAL_TLTU(void) {
+	if (GPR[Opcode.BRANCH.rs].UDW < GPR[Opcode.BRANCH.rt].UDW) {
+		DoTrapException(NextInstruction == JUMP);
+		NextInstruction = JUMP;
+		JumpToLocation = PROGRAM_COUNTER;
+	}
+}
+
 void _fastcall r4300i_SPECIAL_TEQ (void) {
 	if (GPR[Opcode.BRANCH.rs].DW == GPR[Opcode.BRANCH.rt].DW) {
-		if (ShowDebugMessages)
-			DisplayError("Should trap this ???");
+		DoTrapException(NextInstruction == JUMP);
+		NextInstruction = JUMP;
+		JumpToLocation = PROGRAM_COUNTER;
+	}
+}
+
+void _fastcall r4300i_SPECIAL_TNE(void) {
+	if (GPR[Opcode.BRANCH.rs].DW != GPR[Opcode.BRANCH.rt].DW) {
+		DoTrapException(NextInstruction == JUMP);
+		NextInstruction = JUMP;
+		JumpToLocation = PROGRAM_COUNTER;
 	}
 }
 

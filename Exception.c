@@ -212,3 +212,25 @@ void _fastcall DoIllegalInstructionException(BOOL DelaySlot) {
 	STATUS_REGISTER |= STATUS_EXL;
 	PROGRAM_COUNTER = 0x80000180;
 }
+
+void _fastcall DoTrapException(BOOL DelaySlot) {
+	if (ShowDebugMessages) {
+		if ((STATUS_REGISTER & STATUS_EXL) != 0) {
+			DisplayError("EXL set in Break Exception");
+		}
+		if ((STATUS_REGISTER & STATUS_ERL) != 0) {
+			DisplayError("ERL set in Break Exception");
+		}
+	}
+
+	CAUSE_REGISTER = EXC_TRAP;
+	if (DelaySlot) {
+		CAUSE_REGISTER |= CAUSE_BD;
+		EPC_REGISTER = PROGRAM_COUNTER - 4;
+	}
+	else {
+		EPC_REGISTER = PROGRAM_COUNTER;
+	}
+	STATUS_REGISTER |= STATUS_EXL;
+	PROGRAM_COUNTER = 0x80000180;
+}
