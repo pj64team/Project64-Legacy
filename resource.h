@@ -39,6 +39,7 @@
 #define IDD_Debugger_MemDump            178
 #define IDB_BITMAP2                     182
 #define IDB_BITMAP3                     183
+#define IDD_MEM_BOOKMARK_EDIT           184
 #define IDC_CLOSE_BUTTON                1001
 #define RSP_LIST                        1004
 #define RSP_ABOUT                       1006
@@ -265,6 +266,10 @@
 #define IDC_CLEAR_MEMORY                1258
 #define IDC_CHECK1                      1259
 #define IDC_USEDEBUGGER                 1259
+#define IDC_END                         1260
+#define IDC_BOOKMARK_VADDR              1261
+#define IDC_BOOKMARK_PADDR              1262
+#define IDC_START                       1263
 #define ID_FILE_OPEN_ROM                40001
 #define ID_FILE_ROM_INFO                40002
 #define ID_FILE_EXIT                    40005
@@ -346,9 +351,9 @@
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        183
+#define _APS_NEXT_RESOURCE_VALUE        185
 #define _APS_NEXT_COMMAND_VALUE         40175
-#define _APS_NEXT_CONTROL_VALUE         1260
+#define _APS_NEXT_CONTROL_VALUE         1264
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif

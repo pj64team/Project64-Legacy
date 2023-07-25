@@ -26,18 +26,25 @@
 
 #include <windows.h>
 #include <windowsx.h>
+#include <versionhelpers.h>
 #include <commctrl.h>
 #include <stdio.h>
 #include "main.h"
 #include "CPU.h"
 #include "debugger.h"
 #include "resource.h"
+#include "rom.h"
+#include "SessionMemBookmarks.h"
 
 #define IDC_VADDR			0x100
 #define IDC_PADDR			0x101
 #define IDC_LIST_VIEW		0x102
 #define IDC_SCRL_BAR		0x103
 #define IDC_REFRESH			0x104
+#define IDC_BOOKMARKS		0x105
+#define IDC_BOOKMARK_ADD	0x106
+#define IDC_BOOKMARK_UPDATE	0x107
+#define IDC_BOOKMARK_REMOVE	0x108
 
 // TODO: Figure out if these can be queried instead of hardcoded
 #define PADDING 6
@@ -50,8 +57,16 @@ void Refresh_Memory_With_Diff(BOOL ShowDiff);
 void Clear_Selection(void);
 void Copy_Selection(void);
 int Get_Ascii_Index(POINTS pt);
+LRESULT Change_Bookmark_Selection(int next);
+unsigned int Get_Bookmark_Name_Width(char *name);
+void Update_Bookmark_Width(void);
+void Add_Bookmark(void);
+void Edit_Bookmark(void);
+void Update_Bookmark(unsigned int item);
+void Remove_Bookmark(unsigned int item);
+void Load_Bookmark(unsigned int item);
 
-LRESULT CALLBACK Memory_Window_Proc (HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam);
+LRESULT CALLBACK Memory_Window_Proc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam);
 
 struct MEMORY_VIEW_ROW {
 	unsigned char OldData[16];
@@ -83,7 +98,7 @@ const COLORREF BG_ODD			= RGB(230, 230, 230);
 
 static HWND Memory_Win_hDlg, hAddrEdit, hVAddr, hPAddr, hRefresh, hList, hScrlBar;
 static HBRUSH hBkEven, hBkOdd;
-static HFONT hWatchFont;
+static HFONT hWatchFont, hDefaultFont;
 static HANDLE hRefreshThread = NULL;
 static HANDLE hRefreshMutex = NULL;
 static int InMemoryWindow = FALSE;
@@ -91,6 +106,9 @@ static int wheel = 0;
 static int thumb = -1;
 static struct MEMORY_VIEW_ROW MemoryViewRows[16];
 static struct SELECTION selection = { 0 };
+static struct MEM_BOOKMARK bookmarks[MAX_MEM_BOOKMARKS] = { 0 };
+static unsigned int num_bookmarks = 0;
+static char bookmarks_cbor[MAX_PATH + 1] = { 0 };
 
 void __cdecl Create_Memory_Window ( int Child ) {
 	DWORD ThreadID;
@@ -98,10 +116,34 @@ void __cdecl Create_Memory_Window ( int Child ) {
 		hBkEven = CreateSolidBrush(BG_EVEN);
 		hBkOdd = CreateSolidBrush(BG_ODD);
 
+		// Create a font for the watchpoints within the hex editor
 		LOGFONT lf;
 		GetObject(GetStockObject(ANSI_FIXED_FONT), sizeof(lf), &lf);
 		lf.lfUnderline = TRUE;
 		hWatchFont = CreateFontIndirect(&lf);
+
+		// Create a default font that matches the system theme
+		NONCLIENTMETRICS metrics = { 0 };
+		metrics.cbSize = sizeof(NONCLIENTMETRICS);
+		if (!IsWindowsVistaOrGreater()) {
+			// NOTE: This is for compatibility with Windows XP.
+			metrics.cbSize -= sizeof(metrics.iPaddedBorderWidth);
+		}
+		SystemParametersInfo(SPI_GETNONCLIENTMETRICS, sizeof(NONCLIENTMETRICS), &metrics, 0);
+		hDefaultFont = CreateFontIndirect(&metrics.lfMessageFont);
+
+		// Load session bookmarks
+		char save_directory[MAX_PATH + 1] = { 0 };
+		Settings_GetDirectory(AutoSaveDir, save_directory, sizeof(save_directory));
+		if (strlen(save_directory) + strlen(RomFullName) + 27 <= sizeof(bookmarks_cbor)) {
+			sprintf(bookmarks_cbor, "%s%s.session.membookmarks.cbor", save_directory, RomFullName);
+			if (!Session_Load_MemBookmarks(&num_bookmarks, bookmarks, MAX_MEM_BOOKMARKS, bookmarks_cbor)) {
+				num_bookmarks = 0;
+			}
+		} else {
+			num_bookmarks = 0;
+			bookmarks_cbor[0] = 0;
+		}
 
 		InMemoryWindow = TRUE;
 		DialogBox( hInst, "MEMORY", NULL,(DLGPROC) Memory_Window_Proc );
@@ -321,7 +363,7 @@ void Write_MemoryLineDump(char *output, unsigned int location) {
 	sprintf(output, "%s %s\r\n", bytes, ascii);
 }
 
-LRESULT CALLBACK Memory_Window_Proc (HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam)  {	
+LRESULT CALLBACK Memory_Window_Proc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam) {
 	PAINTSTRUCT ps;
 	RECT rcBox;
 
@@ -335,21 +377,28 @@ LRESULT CALLBACK Memory_Window_Proc (HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM
 		StoreCurrentWinPos("Memory",hDlg);
 		break;
 	case WM_PAINT:
-		BeginPaint( hDlg, &ps );
+		BeginPaint(hDlg, &ps);
+		SetBkMode(ps.hdc, TRANSPARENT);
+
+		SelectObject(ps.hdc, hDefaultFont);
+		TextOut(ps.hdc, 731, 15, "Bookmarks:", 10);
+
 		SelectObject(ps.hdc, GetStockObject(ANSI_FIXED_FONT));
-		SetBkMode( ps.hdc, TRANSPARENT );
-		TextOut(ps.hdc,25,17,"Address:",8);
+		TextOut(ps.hdc, 25, 17, "Address:", 8);
+
 		rcBox.left   = 5;
 		rcBox.top    = 5;
-		rcBox.right  = 721;
+		rcBox.right  = 719;
 		rcBox.bottom = 348;
-		DrawEdge( ps.hdc, &rcBox, EDGE_RAISED, BF_RECT );
-		rcBox.left   = 8;
-		rcBox.top    = 8;
-		rcBox.right  = 718;
-		rcBox.bottom = 345;
-		DrawEdge( ps.hdc, &rcBox, EDGE_ETCHED, BF_RECT );
-		EndPaint( hDlg, &ps );
+		DrawEdge(ps.hdc, &rcBox, EDGE_ETCHED, BF_RECT);
+
+		rcBox.left   = 724;
+		rcBox.top    = 5;
+		rcBox.right  = 891;
+		rcBox.bottom = 348;
+		DrawEdge(ps.hdc, &rcBox, EDGE_ETCHED, BF_RECT);
+
+		EndPaint(hDlg, &ps);
 		return TRUE;
 	case WM_COMMAND:
 		switch (LOWORD(wParam)) {
@@ -359,9 +408,21 @@ LRESULT CALLBACK Memory_Window_Proc (HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM
 			}
 			break;
 		case IDC_VADDR:
-		case IDC_PADDR:
+		case IDC_PADDR: {
+			char Value[20];
+			GetWindowText(hAddrEdit, Value, sizeof(Value));
+			DWORD address = AsciiToHex(Value);
+			if (LOWORD(wParam) == IDC_VADDR && address < 0x80000000 || address >= 0x80800000) {
+				SetWindowText(hAddrEdit, "80000000");
+			} else if (LOWORD(wParam) == IDC_PADDR && address >= 0x20000000) {
+				SetWindowText(hAddrEdit, "00000000");
+			}
+
+			Clear_Selection();
+			ListBox_SetCurSel(GetDlgItem(hDlg, IDC_BOOKMARKS), -1);
 			Refresh_Memory_With_Diff(FALSE);
 			break;
+		}
 		case IDC_REFRESH:
 			Start_Auto_Refresh_Thread();
 			Refresh_Memory_With_Diff(FALSE);
@@ -369,6 +430,28 @@ LRESULT CALLBACK Memory_Window_Proc (HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM
 		case IDCANCEL:
 			Clear_Selection();
 			break;
+		case IDC_BOOKMARKS:
+			if (HIWORD(wParam) == LBN_DBLCLK) {
+				Edit_Bookmark();
+			}
+			break;
+		case IDC_BOOKMARK_ADD:
+			Add_Bookmark();
+			break;
+		case IDC_BOOKMARK_UPDATE: {
+			int item = ListBox_GetCurSel(GetDlgItem(hDlg, IDC_BOOKMARKS));
+			if (item != LB_ERR) {
+				Update_Bookmark(item);
+			}
+			break;
+		}
+		case IDC_BOOKMARK_REMOVE: {
+			int item = ListBox_GetCurSel(GetDlgItem(hDlg, IDC_BOOKMARKS));
+			if (item != LB_ERR) {
+				Remove_Bookmark(item);
+			}
+			break;
+		}
 		default:
 			break;
 		}
@@ -693,6 +776,9 @@ LRESULT CALLBACK Memory_ListViewDrag_Proc(HWND hWnd, UINT uMsg, WPARAM wParam, L
 			selection.range_cmp[0] = location;
 			selection.range_cmp[1] = location;
 		}
+
+		EnableWindow(GetDlgItem(Memory_Win_hDlg, IDC_BOOKMARK_ADD), TRUE);
+
 		return FALSE;
 	}
 	case WM_LBUTTONUP:
@@ -751,6 +837,175 @@ LRESULT CALLBACK Memory_ListViewDrag_Proc(HWND hWnd, UINT uMsg, WPARAM wParam, L
 	return DefSubclassProc(hWnd, uMsg, wParam, lParam);
 }
 
+LRESULT CALLBACK Bookmarks_ListBox_Proc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam, UINT_PTR uIdSubclass, DWORD_PTR dwRefData) {
+	(void)uIdSubclass;
+	(void)dwRefData;
+
+	static BOOL mouse_held = FALSE;
+
+	switch (uMsg) {
+	case WM_LBUTTONDOWN: {
+		mouse_held = TRUE;
+
+		int height = ListBox_GetItemHeight(hWnd, 0);
+		POINT pt = { LOWORD(lParam), HIWORD(lParam) };
+		int item = (pt.y / height) + ListBox_GetTopIndex(hWnd);
+
+		if (item >= 0 && (unsigned int)item < num_bookmarks) {
+			BOOL is_virtual = (Button_GetCheck(hVAddr) == BST_CHECKED);
+			if (bookmarks[item].is_virtual != is_virtual) {
+				// Deselect the item if the virtual addressing setting doesn't match
+				// TODO: Color these items so they look disabled (needs OWNER DRAW?)
+				return FALSE;
+			}
+
+			Load_Bookmark(item);
+		}
+
+		break;
+	}
+	case WM_LBUTTONUP:
+		mouse_held = FALSE;
+		break;
+	case WM_MOUSEMOVE:
+		if (mouse_held) {
+			// Disable dragging
+			// TODO: Use drag to reorder bookmarks
+			return FALSE;
+		}
+		break;
+	case WM_KEYDOWN:
+		switch (wParam) {
+		case VK_UP:
+			if (Change_Bookmark_Selection(-1)) {
+				return TRUE;
+			}
+			break;
+		case VK_DOWN:
+			if (Change_Bookmark_Selection(1)) {
+				return TRUE;
+			}
+			break;
+		case VK_F2: {
+			int item = ListBox_GetCurSel(hWnd);
+			if (item != LB_ERR) {
+				Edit_Bookmark();
+				return TRUE;
+			}
+			break;
+		}
+		case VK_DELETE: {
+			int item = ListBox_GetCurSel(hWnd);
+			if (item != LB_ERR) {
+				Remove_Bookmark(item);
+				return TRUE;
+			}
+			break;
+		}
+		default:
+			break;
+		}
+		break;
+	}
+
+	return DefSubclassProc(hWnd, uMsg, wParam, lParam);
+}
+
+INT_PTR CALLBACK Edit_Bookmark_Proc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam) {
+	(void)lParam;
+
+	HWND hBookmarks = GetDlgItem(Memory_Win_hDlg, IDC_BOOKMARKS);
+	int item = ListBox_GetCurSel(hBookmarks);
+
+	switch (uMsg) {
+	case WM_INITDIALOG: {
+		char address[9] = { 0 };
+
+		// TODO: Support language translations
+		HWND hName = GetDlgItem(hDlg, IDC_NAME);
+		Edit_SetText(hName, bookmarks[item].name);
+		Edit_LimitText(hName, sizeof(bookmarks->name) - 1);
+
+		HWND hStart = GetDlgItem(hDlg, IDC_START);
+		sprintf(address, "%08X", bookmarks[item].selection_range[0]);
+		Edit_SetText(hStart, address);
+		Edit_LimitText(hStart, 8);
+
+		HWND hEnd = GetDlgItem(hDlg, IDC_END);
+		sprintf(address, "%08X", bookmarks[item].selection_range[1]);
+		Edit_SetText(hEnd, address);
+		Edit_LimitText(hEnd, 8);
+
+		CheckRadioButton(hDlg, IDC_BOOKMARK_VADDR, IDC_BOOKMARK_PADDR, bookmarks[item].is_virtual ? IDC_BOOKMARK_VADDR : IDC_BOOKMARK_PADDR);
+
+		return TRUE;
+	}
+	case WM_COMMAND:
+		switch (LOWORD(wParam)) {
+		case IDOK: {
+			char name[sizeof(bookmarks->name)] = { 0 };
+			char temp[9] = { 0 };
+			char *end = NULL;
+			DWORD start_address = 0;
+			DWORD end_address = 0;
+
+			// Validate inputs
+			Edit_GetText(GetDlgItem(hDlg, IDC_NAME), name, sizeof(name));
+			if (name[0] == 0) {
+				DisplayError("Name is required");
+				return FALSE;
+			}
+
+			Edit_GetText(GetDlgItem(hDlg, IDC_START), temp, sizeof(temp));
+			start_address = strtoul(temp, &end, 16);
+			if (end == temp || *end != 0) {
+				DisplayError("Start address is invalid");
+				return FALSE;
+			}
+
+			Edit_GetText(GetDlgItem(hDlg, IDC_END), temp, sizeof(temp));
+			end_address = strtoul(temp, &end, 16);
+			if (end == temp || *end != 0) {
+				DisplayError("End address is invalid");
+				return FALSE;
+			}
+			if (end_address < start_address) {
+				DisplayError("Invalid address range: End must be greater or equal to start");
+				return FALSE;
+			}
+
+			// Update bookmark "atomically"
+			strcpy(bookmarks[item].name, name);
+			bookmarks[item].width_required = Get_Bookmark_Name_Width(name);
+			bookmarks[item].selection_range[0] = start_address;
+			bookmarks[item].selection_range[1] = end_address;
+			bookmarks[item].is_virtual = (Button_GetCheck(GetDlgItem(hDlg, IDC_BOOKMARK_VADDR)) == BST_CHECKED);
+
+			// Update parent control
+			BOOL is_virtual = (Button_GetCheck(hVAddr) == BST_CHECKED);
+			if (bookmarks[item].is_virtual == is_virtual) {
+				ListBox_DeleteString(hBookmarks, item);
+				ListBox_InsertString(hBookmarks, item, name);
+				ListBox_SetCurSel(hBookmarks, item);
+				Load_Bookmark(item);
+			} else {
+				ListBox_SetCurSel(hBookmarks, -1);
+			}
+
+			EndDialog(hDlg, 1);
+			return TRUE;
+		}
+		case IDCANCEL:
+			EndDialog(hDlg, 0);
+			return TRUE;
+		default:
+			return FALSE;
+		}
+	default:
+		return FALSE;
+	}
+}
+
 void Clear_Selection(void) {
 	selection.enabled = FALSE;
 	selection.dragging = FALSE;
@@ -760,6 +1015,8 @@ void Clear_Selection(void) {
 	selection.range[1] = 0;
 	selection.range_cmp[0] = 0;
 	selection.range_cmp[1] = 0;
+
+	EnableWindow(GetDlgItem(Memory_Win_hDlg, IDC_BOOKMARK_ADD), FALSE);
 }
 
 void Copy_Selection(void) {
@@ -824,7 +1081,7 @@ void Scroll_Memory_View(int lines) {
 			location = UINT_MAX - 256 + 1;
 		}
 	} else {
-		if (location >= -lines * 16) {
+		if (location >= (unsigned int)(-lines * 16)) {
 			location += lines * 16;
 		} else {
 			location = 0;
@@ -835,6 +1092,24 @@ void Scroll_Memory_View(int lines) {
 	SetWindowText(hAddrEdit, value);
 
 	ReleaseMutex(hRefreshMutex);
+}
+
+LRESULT Change_Bookmark_Selection(int next) {
+	BOOL result = FALSE;
+	BOOL is_virtual = (Button_GetCheck(hVAddr) == BST_CHECKED);
+	HWND hBookmarks = GetDlgItem(Memory_Win_hDlg, IDC_BOOKMARKS);
+	int item = ListBox_GetCurSel(hBookmarks) + next;
+	while (item >= 0 && (unsigned int)item < num_bookmarks) {
+		result = TRUE;
+		if (bookmarks[item].is_virtual == is_virtual) {
+			ListBox_SetCurSel(hBookmarks, item);
+			Load_Bookmark(item);
+			return TRUE;
+		}
+
+		item += next;
+	}
+	return result;
 }
 
 void __cdecl Refresh_Memory(void) {
@@ -886,8 +1161,9 @@ void Start_Auto_Refresh_Thread(void) {
 }
 
 void Setup_Memory_Window (HWND hDlg) {
-#define WindowWidth  742
+#define WindowWidth  912
 #define WindowHeight 392
+	HWND hBookmarks, hBookmarkAdd, hBookmarkEdit, hBookmarkRemove;
 	DWORD X, Y;
 
 	if (hRefreshMutex == NULL) {
@@ -898,48 +1174,52 @@ void Setup_Memory_Window (HWND hDlg) {
 	hVAddr = CreateWindowEx(0,"BUTTON", "Virtual Addressing", WS_CHILD | WS_VISIBLE | 
 		BS_AUTORADIOBUTTON, 215,13,150,21,hDlg,(HMENU)IDC_VADDR,hInst,NULL );
 	SendMessage(hVAddr,BM_SETCHECK, BST_CHECKED,0);
-	
-	hPAddr = CreateWindowEx(0,"BUTTON", "Physical Addressing", WS_CHILD | WS_VISIBLE | 
-		BS_AUTORADIOBUTTON, 375,13,155,21,hDlg,(HMENU)IDC_PADDR,hInst,NULL );
+	SendMessage(hVAddr, WM_SETFONT, (WPARAM)hDefaultFont, 0);
 
-	hRefresh = CreateWindowEx(0,"BUTTON", "Auto Refresh", WS_CHILD | WS_VISIBLE |
-		BS_AUTOCHECKBOX, 595,13,100,21,hDlg,(HMENU)IDC_REFRESH,hInst,NULL );
+	hPAddr = CreateWindowEx(0, "BUTTON", "Physical Addressing", WS_CHILD | WS_VISIBLE |
+		BS_AUTORADIOBUTTON, 375, 13, 155, 21, hDlg, (HMENU)IDC_PADDR, hInst, NULL);
+	SendMessage(hPAddr, WM_SETFONT, (WPARAM)hDefaultFont, 0);
+
+	hRefresh = CreateWindowEx(0, "BUTTON", "Auto Refresh", WS_CHILD | WS_VISIBLE |
+		BS_AUTOCHECKBOX, 595, 13, 100, 21, hDlg, (HMENU)IDC_REFRESH, hInst, NULL);
 	SendMessage(hRefresh, BM_SETCHECK, BST_CHECKED, 0);
 	Start_Auto_Refresh_Thread();
+	SendMessage(hRefresh, WM_SETFONT, (WPARAM)hDefaultFont, 0);
 
 	hList = CreateWindowEx(WS_EX_CLIENTEDGE, WC_LISTVIEW, "", WS_CHILD | WS_VISIBLE |
-		LVS_OWNERDATA | LVS_REPORT | LVS_NOSORTHEADER | LVS_SINGLESEL, 14,39,682,300,hDlg,
-		(HMENU)IDC_LIST_VIEW,hInst,NULL );
+		LVS_OWNERDATA | LVS_REPORT | LVS_NOSORTHEADER | LVS_SINGLESEL, 12, 39, 682, 300, hDlg,
+		(HMENU)IDC_LIST_VIEW, hInst, NULL);
 	if (hList) {
+		SendMessage(hList, WM_SETFONT, (WPARAM)hDefaultFont, 0);
 		ListView_SetExtendedListViewStyle(hList, LVS_EX_DOUBLEBUFFER);
 
 		LV_COLUMN  col;
 		int count;
 
 		col.mask = LVCF_FMT | LVCF_WIDTH | LVCF_TEXT | LVCF_SUBITEM;
-		col.fmt  = LVCFMT_LEFT;
+		col.fmt = LVCFMT_LEFT;
 
-		col.pszText  = "Address";
-		col.cx       = 90;
+		col.pszText = "Address";
+		col.cx = 90;
 		col.iSubItem = 0;
-		ListView_InsertColumn ( hList, 0, &col);
+		ListView_InsertColumn(hList, 0, &col);
 
 		char ColumnName[3] = { 0 };
-		col.pszText  = ColumnName;
-		col.cx       = 28;
+		col.pszText = ColumnName;
+		col.cx = 28;
 		for (int i = 0; i < 16; i++) {
 			sprintf(ColumnName, " %X", i);
 			col.iSubItem = i + 1;
 			ListView_InsertColumn(hList, i + 1, &col);
 		}
 
-		col.pszText  = "Memory Ascii";
-		col.cx       = 140;
+		col.pszText = "Memory Ascii";
+		col.cx = 140;
 		col.iSubItem = 17;
-		ListView_InsertColumn ( hList, 17, &col);
-		ListView_SetItemCount ( hList, 16);
-		SendMessage(hList,WM_SETFONT, (WPARAM)GetStockObject(ANSI_FIXED_FONT),0);
-		for (count = 0 ; count < 16;count ++ ){
+		ListView_InsertColumn(hList, 17, &col);
+		ListView_SetItemCount(hList, 16);
+		SendMessage(hList, WM_SETFONT, (WPARAM)GetStockObject(ANSI_FIXED_FONT), 0);
+		for (count = 0; count < 16; count++) {
 			Insert_MemoryLineDump(count, count, FALSE);
 		}
 		SetWindowSubclass(hList, Memory_ListViewScroll_Proc, 0, 0);
@@ -956,24 +1236,49 @@ void Setup_Memory_Window (HWND hDlg) {
 	}
 	ReleaseMutex(hRefreshMutex);
 
-	SendMessage(hAddrEdit,EM_SETLIMITTEXT,(WPARAM)8,(LPARAM)0);
-	SetWindowPos(hAddrEdit,NULL, 100,13,100,21, SWP_NOZORDER | SWP_SHOWWINDOW);
-	SendMessage(hAddrEdit,WM_SETFONT, (WPARAM)GetStockObject(ANSI_FIXED_FONT),0);
+	SendMessage(hAddrEdit, EM_SETLIMITTEXT, (WPARAM)8, (LPARAM)0);
+	SetWindowPos(hAddrEdit, NULL, 100, 13, 100, 21, SWP_NOZORDER | SWP_SHOWWINDOW);
+	SendMessage(hAddrEdit, WM_SETFONT, (WPARAM)GetStockObject(ANSI_FIXED_FONT), 0);
 
 	hScrlBar = CreateWindowEx(0, "SCROLLBAR", "", WS_CHILD | WS_VISIBLE |
-		WS_TABSTOP | SBS_VERT, 696,39,20,300, hDlg, (HMENU)IDC_SCRL_BAR, hInst, NULL );
+		WS_TABSTOP | SBS_VERT, 694, 39, 20, 300, hDlg, (HMENU)IDC_SCRL_BAR, hInst, NULL);
 	if (hScrlBar) {
 		SCROLLINFO si;
 
 		si.cbSize = sizeof(si);
-		si.fMask  = SIF_RANGE | SIF_POS | SIF_PAGE;
-		si.nMin   = 0;
-		si.nMax   = 300;
-		si.nPos   = 145;
-		si.nPage  = 10;
-		SetScrollInfo(hScrlBar,SB_CTL,&si,TRUE);
+		si.fMask = SIF_RANGE | SIF_POS | SIF_PAGE;
+		si.nMin = 0;
+		si.nMax = 300;
+		si.nPos = 145;
+		si.nPage = 10;
+		SetScrollInfo(hScrlBar, SB_CTL, &si, TRUE);
 		SetWindowSubclass(hScrlBar, Memory_ListViewScroll_Proc, 0, 0);
-	} 
+	}
+
+	hBookmarks = CreateWindowEx(WS_EX_CLIENTEDGE, WC_LISTBOX, "", WS_CHILD | WS_VISIBLE | WS_VSCROLL | WS_HSCROLL | LBS_NOTIFY,
+		731, 39, 152, 280, hDlg, (HMENU)IDC_BOOKMARKS, hInst, NULL);
+	SendMessage(hBookmarks, WM_SETFONT, (WPARAM)hDefaultFont, 0);
+	SetWindowSubclass(hBookmarks, Bookmarks_ListBox_Proc, 0, 0);
+
+	for (unsigned int i = 0; i < num_bookmarks; i++) {
+		ListBox_AddString(hBookmarks, bookmarks[i].name);
+	}
+	Update_Bookmark_Width();
+
+	hBookmarkAdd = CreateWindowEx(WS_EX_WINDOWEDGE, WC_BUTTON, "Add", WS_CHILD | WS_VISIBLE,
+		731, 318, 36, 22, hDlg, (HMENU)IDC_BOOKMARK_ADD, hInst, NULL);
+	SendMessage(hBookmarkAdd, WM_SETFONT, (WPARAM)hDefaultFont, 0);
+	EnableWindow(hBookmarkAdd, FALSE);
+
+	hBookmarkEdit = CreateWindowEx(WS_EX_WINDOWEDGE, WC_BUTTON, "Update", WS_CHILD | WS_VISIBLE,
+		769, 318, 56, 22, hDlg, (HMENU)IDC_BOOKMARK_UPDATE, hInst, NULL);
+	SendMessage(hBookmarkEdit, WM_SETFONT, (WPARAM)hDefaultFont, 0);
+	EnableWindow(hBookmarkEdit, FALSE);
+
+	hBookmarkRemove = CreateWindowEx(WS_EX_WINDOWEDGE, WC_BUTTON, "Remove", WS_CHILD | WS_VISIBLE,
+		827, 318, 56, 22, hDlg, (HMENU)IDC_BOOKMARK_REMOVE, hInst, NULL);
+	SendMessage(hBookmarkRemove, WM_SETFONT, (WPARAM)hDefaultFont, 0);
+	EnableWindow(hBookmarkRemove, FALSE);
 
 	if ( !GetStoredWinPos( "Memory", &X, &Y ) ) {
 		X = (GetSystemMetrics( SM_CXSCREEN ) - WindowWidth) / 2;
@@ -981,5 +1286,131 @@ void Setup_Memory_Window (HWND hDlg) {
 	}
 	
 	SetWindowPos(hDlg,NULL,X,Y,WindowWidth,WindowHeight, SWP_NOZORDER | SWP_SHOWWINDOW);
-	
+}
+
+unsigned int Get_Bookmark_Name_Width(char *name) {
+	HWND hBookmark = GetDlgItem(Memory_Win_hDlg, IDC_BOOKMARKS);
+	HDC hDcBookmarks = GetDC(hBookmark);
+	HDC hdc = CreateCompatibleDC(hDcBookmarks);
+	HGDIOBJ hOldFont = SelectObject(hdc, hDefaultFont);
+
+	SIZE size = { 0 };
+	GetTextExtentPoint32(hdc, name, strlen(name), &size);
+
+	SelectObject(hdc, hOldFont);
+	DeleteDC(hdc);
+	ReleaseDC(hBookmark, hDcBookmarks);
+
+	return size.cx + GetSystemMetrics(SM_CXEDGE) * 2;
+}
+
+void Update_Bookmark_Width(void) {
+	unsigned int width_required = 0;
+	for (unsigned int i = 0; i < num_bookmarks; i++) {
+		width_required = max(width_required, bookmarks[i].width_required);
+	}
+
+	HWND hBookmarks = GetDlgItem(Memory_Win_hDlg, IDC_BOOKMARKS);
+	if (width_required != ListBox_GetHorizontalExtent(hBookmarks)) {
+		ListBox_SetHorizontalExtent(hBookmarks, width_required);
+	}
+}
+
+void Create_Bookmark_Name(char *name, BOOL is_virtual) {
+	DWORD address = selection.range[0];
+	DWORD len = min(selection.range[1] - address + 1, sizeof(bookmarks->name) - (8 + 6));
+	BYTE value = 0;
+
+	if (is_virtual) {
+		unsigned int i = 0;
+		while (i < len) {
+			if (r4300i_LB_VAddr_NonCPU(address + i, &value) && isprint(value)) {
+				name[i] = value;
+			} else {
+				sprintf(name, "[0x%08X]", address);
+				return;
+			}
+
+			i++;
+		}
+		sprintf(&name[i], " [0x%08X]", address);
+	} else {
+		sprintf(name, "PHYS [0x%08X]", address);
+	}
+}
+
+void Add_Bookmark(void) {
+	if (num_bookmarks < MAX_MEM_BOOKMARKS && selection.enabled) {
+		bookmarks[num_bookmarks].selection_range[0] = selection.range[0];
+		bookmarks[num_bookmarks].selection_range[1] = selection.range[1];
+		bookmarks[num_bookmarks].is_virtual = (Button_GetCheck(hVAddr) == BST_CHECKED);
+
+		Create_Bookmark_Name(bookmarks[num_bookmarks].name, bookmarks[num_bookmarks].is_virtual);
+		bookmarks[num_bookmarks].width_required = Get_Bookmark_Name_Width(bookmarks[num_bookmarks].name);
+
+		ListBox_AddString(GetDlgItem(Memory_Win_hDlg, IDC_BOOKMARKS), bookmarks[num_bookmarks].name);
+
+		num_bookmarks += 1;
+
+		Update_Bookmark_Width();
+
+		Session_Save_MemBookmarks(bookmarks_cbor, bookmarks, num_bookmarks);
+	}
+}
+
+void Edit_Bookmark(void) {
+	if (DialogBox(NULL, MAKEINTRESOURCE(IDD_MEM_BOOKMARK_EDIT), Memory_Win_hDlg, Edit_Bookmark_Proc)) {
+		Update_Bookmark_Width();
+
+		Session_Save_MemBookmarks(bookmarks_cbor, bookmarks, num_bookmarks);
+	}
+}
+
+void Update_Bookmark(unsigned int item) {
+	bookmarks[item].selection_range[0] = selection.range[0];
+	bookmarks[item].selection_range[1] = selection.range[1];
+
+	Session_Save_MemBookmarks(bookmarks_cbor, bookmarks, num_bookmarks);
+}
+
+void Remove_Bookmark(unsigned int item) {
+	if (item < num_bookmarks - 1) {
+		memmove(&bookmarks[item], &bookmarks[item + 1], sizeof(struct MEM_BOOKMARK) * (num_bookmarks - item - 1));
+	}
+
+	HWND hBookmarks = GetDlgItem(Memory_Win_hDlg, IDC_BOOKMARKS);
+	ListBox_DeleteString(hBookmarks, item);
+
+	num_bookmarks -= 1;
+
+	BOOL is_virtual = (Button_GetCheck(hVAddr) == BST_CHECKED);
+	if (item < num_bookmarks && bookmarks[item].is_virtual == is_virtual) {
+		ListBox_SetCurSel(hBookmarks, item);
+	} else {
+		EnableWindow(GetDlgItem(Memory_Win_hDlg, IDC_BOOKMARK_UPDATE), FALSE);
+		EnableWindow(GetDlgItem(Memory_Win_hDlg, IDC_BOOKMARK_REMOVE), FALSE);
+	}
+
+	Update_Bookmark_Width();
+
+	Session_Save_MemBookmarks(bookmarks_cbor, bookmarks, num_bookmarks);
+}
+
+void Load_Bookmark(unsigned int item) {
+	selection.enabled = TRUE;
+	selection.dragging = FALSE;
+	selection.column_hex = TRUE;
+	selection.anchor = bookmarks[item].selection_range[0];
+	selection.range[0] = bookmarks[item].selection_range[0];
+	selection.range[1] = bookmarks[item].selection_range[1];
+	selection.range_cmp[0] = bookmarks[item].selection_range[0];
+	selection.range_cmp[1] = bookmarks[item].selection_range[1];
+
+	char address[10] = { 0 };
+	sprintf(address, "%08X", bookmarks[item].selection_range[0]);
+	SetWindowText(hAddrEdit, address);
+
+	EnableWindow(GetDlgItem(Memory_Win_hDlg, IDC_BOOKMARK_ADD), TRUE);
+	EnableWindow(GetDlgItem(Memory_Win_hDlg, IDC_BOOKMARK_UPDATE), TRUE);
+	EnableWindow(GetDlgItem(Memory_Win_hDlg, IDC_BOOKMARK_REMOVE), TRUE);
 }

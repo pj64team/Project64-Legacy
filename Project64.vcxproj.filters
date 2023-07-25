@@ -70,6 +70,9 @@
     <Filter Include="Lib Files">
       <UniqueIdentifier>{e8877f6e-d284-4c15-84e8-18cf809faa07}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\cbor-lite Headers">
+      <UniqueIdentifier>{c59b946f-43e7-4676-8b2b-840d70c41937}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="BreakPoints.c">
@@ -490,6 +493,12 @@
     </ClInclude>
     <ClInclude Include="WatchPoints.h">
       <Filter>Header Files\Debugger Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="cbor-lite\codec.h">
+      <Filter>Header Files\cbor-lite Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="cbor-lite\codec-fp.h">
+      <Filter>Header Files\cbor-lite Headers</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
