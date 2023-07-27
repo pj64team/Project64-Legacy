@@ -154,6 +154,9 @@ void CloseCpu (void) {
 	CPU_Action.DoInterrupt = FALSE;
 	CPU_Action.CheckInterrupts = FALSE;
 	CPU_Action.DoSomething = TRUE;
+
+	// The memory barrier will ensure that the writes above occur before the CPU is released from the stepping mode.
+	MemoryBarrier();
 	PulseEvent(CPU_Action.hStepping);
 
 	ManualPaused = FALSE;
