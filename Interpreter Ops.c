@@ -1245,6 +1245,10 @@ void _fastcall r4300i_COP1_S_DIV (void) {
 	TEST_COP1_USABLE_EXCEPTION
 	_controlfp(RoundingModel,_MCW_RC);
 	*(float *)FPRFloatLocation[Opcode.FP.fd] = (*(float *)FPRFloatLocation[Opcode.FP.fs] / *(float *)FPRFloatLocation[Opcode.FP.ft]); 
+
+	if (fpclassify(*(float*)FPRFloatLocation[Opcode.FP.fd]) == FP_SUBNORMAL) {
+		*(float*)FPRFloatLocation[Opcode.FP.fd] = 0;
+	}
 }
 
 void _fastcall r4300i_COP1_S_SQRT (void) {

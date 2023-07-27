@@ -3038,6 +3038,31 @@ void Compile_R4300i_SPECIAL_BREAK(BLOCK_SECTION* Section) {
 	CompileExit(Section->CompilePC, Section->RegWorking, DoBreak, TRUE, NULL);
 }
 
+void Compile_R4300i_SPECIAL_TEQ(BLOCK_SECTION* Section) {
+	//CompileExit(Section->CompilePC, Section->RegWorking, DoTrap, TRUE, NULL);
+}
+
+void Compile_R4300i_SPECIAL_TGE(BLOCK_SECTION* Section) {
+	//CompileExit(Section->CompilePC, Section->RegWorking, DoTrap, TRUE, NULL);
+}
+
+void Compile_R4300i_SPECIAL_TGEU(BLOCK_SECTION* Section) {
+	//CompileExit(Section->CompilePC, Section->RegWorking, DoTrap, TRUE, NULL);
+}
+
+void Compile_R4300i_SPECIAL_TLT(BLOCK_SECTION* Section) {
+	//CompileExit(Section->CompilePC, Section->RegWorking, DoTrap, TRUE, NULL);
+}
+
+void Compile_R4300i_SPECIAL_TLTU(BLOCK_SECTION* Section) {
+	//CompileExit(Section->CompilePC, Section->RegWorking, DoTrap, TRUE, NULL);
+}
+
+void Compile_R4300i_SPECIAL_TNE(BLOCK_SECTION* Section) {
+	//CompileExit(Section->CompilePC, Section->RegWorking, DoTrap, TRUE, NULL);
+}
+
+
 void Compile_R4300i_SPECIAL_MFLO (BLOCK_SECTION * Section) {
 	CPU_Message("  %X %s",Section->CompilePC,R4300iOpcodeName(Opcode.Hex,Section->CompilePC));
 	if (Opcode.REG.rd == 0) { return; }

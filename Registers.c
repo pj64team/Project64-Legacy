@@ -349,7 +349,7 @@ void InitalizeR4300iRegisters (int UsePif, int Country, enum CIC_CHIP CIC_Chip) 
 	ERROREPC_REGISTER  = 0xFFFFFFFF;
 	CONFIG_REGISTER     = 0x0006E463;
 	REVISION_REGISTER   = 0x00000511;
-	STATUS_REGISTER     = 0x34000000;
+	STATUS_REGISTER     = 0x241000E0;
 	SetFpuLocations();
 	if (UsePif) {
 		PROGRAM_COUNTER = 0xBFC00000;			

@@ -580,6 +580,12 @@ void CompileExit (DWORD TargetPC, REG_INFO ExitRegSet, int reason, int CompileNo
 		if (CPU_Type == CPU_SyncCores) { Call_Direct(SyncToPC, "SyncToPC"); }
 		Ret();
 		break;
+	case DoTrap:
+		MoveConstToX86reg(NextInstruction == JUMP || NextInstruction == DELAY_SLOT, x86_ECX);
+		Call_Direct(DoTrapException, "DoTrapException");
+		if (CPU_Type == CPU_SyncCores) { Call_Direct(SyncToPC, "SyncToPC"); }
+		Ret();
+		break;
 	case COP1_Unuseable:
 		MoveConstToX86reg(NextInstruction == JUMP || NextInstruction == DELAY_SLOT,x86_ECX);		
 		MoveConstToX86reg(1,x86_EDX);
@@ -2176,7 +2182,12 @@ BOOL GenerateX86Code (BLOCK_SECTION * Section, DWORD Test) {
 			case R4300i_SPECIAL_DSRL32: Compile_R4300i_SPECIAL_DSRL32(Section); break;
 			case R4300i_SPECIAL_DSRA32: Compile_R4300i_SPECIAL_DSRA32(Section); break;
 			case R4300i_SPECIAL_BREAK: Compile_R4300i_SPECIAL_BREAK(Section); break;
-			case R4300i_SPECIAL_TEQ: R4300i_SPECIAL_BREAK; break;
+			case R4300i_SPECIAL_TEQ: Compile_R4300i_SPECIAL_TEQ(Section); break;
+			case R4300i_SPECIAL_TGE: Compile_R4300i_SPECIAL_TGE(Section); break;
+			case R4300i_SPECIAL_TGEU: Compile_R4300i_SPECIAL_TGEU(Section); break;
+			case R4300i_SPECIAL_TLT: Compile_R4300i_SPECIAL_TLT(Section); break;
+			case R4300i_SPECIAL_TLTU: Compile_R4300i_SPECIAL_TLTU(Section); break;
+			case R4300i_SPECIAL_TNE: Compile_R4300i_SPECIAL_TNE(Section); break;
 			default:
 				Compile_R4300i_UnknownOpcode(Section); break;
 			}

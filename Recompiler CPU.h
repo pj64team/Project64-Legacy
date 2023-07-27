@@ -45,6 +45,7 @@
 #define ExitResetRecompCode		6
 #define DoBreak					7
 #define DoIlleaglOp				8
+#define DoTrap					9
 
 #define STATE_KNOWN_VALUE		1
 //#define STATE_UNKNOW_VALUE

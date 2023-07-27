@@ -192,9 +192,9 @@ void CloseCpu (void) {
 	CloseSram();
 	FreeSyncMemory();
 	if (GfxRomClosed != NULL) { GfxRomClosed(); }
-	if (ContRomClosed != NULL) { ContRomClosed(); }
 	if (AiRomClosed != NULL) { AiRomClosed(); }
 	if (RSPRomClosed != NULL) { RSPRomClosed(); }
+	if (ContRomClosed != NULL) { ContRomClosed(); }
 	if (Profiling) { GenerateTimerResults(); }
 	CloseHandle(CPU_Action.hStepping);
 	SendMessage( hStatusWnd, SB_SETTEXT, 0, (LPARAM)GS(MSG_EMULATION_ENDED) );
