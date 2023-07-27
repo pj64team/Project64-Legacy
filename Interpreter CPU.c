@@ -762,6 +762,10 @@ void __cdecl StartInterpreterCPU (void ) {
 						Refresh_Memory();
 
 						WaitForSingleObject(CPU_Action.hStepping, INFINITE);
+
+						// The memory barrier ensures that CPU_Action.Stepping is up-to-date before looping
+						MemoryBarrier();
+
 						if (CPU_Action.Stepping)
 							ExecuteInterpreterOpCode();
 					} while (CPU_Action.Stepping);
