@@ -191,8 +191,6 @@
     </Link>
     <Manifest>
       <GenerateCategoryTags>true</GenerateCategoryTags>
-    </Manifest>
-    <Manifest>
       <EnableDPIAwareness>true</EnableDPIAwareness>
     </Manifest>
   </ItemDefinitionGroup>
@@ -247,8 +245,6 @@
     </Link>
     <Manifest>
       <GenerateCategoryTags>true</GenerateCategoryTags>
-    </Manifest>
-    <Manifest>
       <EnableDPIAwareness>true</EnableDPIAwareness>
     </Manifest>
   </ItemDefinitionGroup>
