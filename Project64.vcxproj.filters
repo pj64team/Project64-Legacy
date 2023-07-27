@@ -410,9 +410,6 @@
     <ClInclude Include="resource_cheat.h">
       <Filter>Header Files\General Header</Filter>
     </ClInclude>
-    <ClInclude Include="resource_cheatsearch.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="EmulateAI.h">
       <Filter>Header Files\Plugin Header</Filter>
     </ClInclude>
