@@ -100,7 +100,16 @@ WATCH_TYPE HasWatchPoint(DWORD Location) {
 }
 
 BOOL CheckForWatchPoint(DWORD Location, WATCH_TYPE Type, int Size) {
-	if (!HaveDebugger || CPU_Action.Stepping || WatchPoints->empty()) {
+	// The memory barrier here is a precaution for inlining this function in tight sequences.
+	// E.g. DMAs will need to check for watchpoints on read and write accesses
+	// between the source and destination with two calls.
+	//
+	// The barrier ensures that if a watchpoint has trapped the CPU thread and is then released
+	// by stopping the CPU, the second funtion call will not attempt to trap the CPU again.
+	// Thus avoiding a potential deadlock.
+	MemoryBarrier();
+
+	if (!HaveDebugger || CPU_Action.CloseCPU || CPU_Action.Stepping || WatchPoints->empty()) {
 		return FALSE;
 	}
 
