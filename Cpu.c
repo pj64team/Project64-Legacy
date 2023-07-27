@@ -166,21 +166,44 @@ void CloseCpu (void) {
 		AlwaysOnTop = Temp;
 	}
 
-	ExitCode = WaitForSingleObject(hCPU, 50);
-	if (ExitCode == WAIT_OBJECT_0) {
-		hCPU = NULL;
-	}
+	LARGE_INTEGER deadline = { 0 };
+	QueryPerformanceCounter(&deadline);
+	deadline.QuadPart += Frequency.QuadPart * 2; // Deadline is 2 seconds from now
+	do {
+		ExitCode = WaitForSingleObject(hCPU, 16);
+		if (ExitCode == WAIT_OBJECT_0) {
+			hCPU = NULL;
+		} else if (ExitCode == WAIT_TIMEOUT) {
+			// Process queued messages while waiting for the CPU thread to stop. This is necessary
+			// because the CPU thread may be waiting for the GUI thread to do something.
+			//
+			// One example is the TimerDone => RefreshScreen => DisplayFPS path, which is called by
+			// the recompiler and intepreter.
+			//
+			// This fixes the deadlock that was blamed on plugins. Hooray!
+			MSG msg;
+			while (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE) != 0) {
+				TranslateMessage(&msg);
+				DispatchMessage(&msg);
+			}
+		}
 
-	if (hCPU != NULL) { 
-		DisplayError("Emulation thread failed to terminate plugins\nReport this if you can reproduce reliably");
+		LARGE_INTEGER now = { 0 };
+		QueryPerformanceCounter(&now);
+		if (now.QuadPart >= deadline.QuadPart && hCPU != NULL) {
+			// We're out of time! The CPU thread cannot make any further progress
+			// since the mutex has been abandoned or the wait failed for another reason.
+			// There is nothing else we can do about this.
+			DisplayError("Emulation thread failed to stop\nReport this if you can reproduce reliably");
 
-		// This is a last resort when the CPU thread refuses to gracefully exit.
-		// Calling this function WILL cause problems!
-		// SEE: https://learn.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-terminatethread#remarks
-		TerminateThread(hCPU, 0);
+			// This is a last resort when the CPU thread refuses to gracefully exit.
+			// Calling this function WILL cause problems!
+			// SEE: https://learn.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-terminatethread#remarks
+			TerminateThread(hCPU, 0);
 
-		hCPU = NULL;
-	}
+			hCPU = NULL;
+		}
+	} while (hCPU != NULL);
 
 	CPURunning = FALSE;
 	VirtualProtect(N64MEM,RdramSize,PAGE_READWRITE,&OldProtect);
@@ -438,23 +461,6 @@ int DelaySlotEffectsJump (DWORD JumpPC) {
 		return DelaySlotEffectsCompare(JumpPC,Command.BRANCH.rs,Command.BRANCH.rt);
 	}
 	return TRUE;
-}
-
-void ProcessMessages (void) {
-	HANDLE hEvent;
-	MSG msg;
-
-	hEvent =  CreateEvent(NULL,FALSE,FALSE,NULL);
-	MsgWaitForMultipleObjects(1,&hEvent,FALSE,1000,QS_ALLINPUT);
-	CloseHandle(hEvent);
-	while (PeekMessage(&msg,NULL,0,0,PM_REMOVE) != 0) {
-		TranslateMessage(&msg);
-		DispatchMessage(&msg);
-		if (msg.message == WM_QUIT) {
-			PostMessage(msg.hwnd,msg.message,msg.wParam,msg.lParam);
-			return;
-		}
-	}
 }
 
 void DoSomething ( void ) {
