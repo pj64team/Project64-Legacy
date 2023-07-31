@@ -98,6 +98,7 @@ extern "C" {
 
 /********** Counter Factor ***********/
 #define Default_CountPerOp			2
+#define ADJUSTMENT					(0x10000000 * 0x10)
 
 /************ Debugging **************/
 #define Default_HaveDebugger		FALSE

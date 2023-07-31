@@ -1665,6 +1665,10 @@ int r4300i_LW_NonMemory ( DWORD PAddr, DWORD * Value ) {
 		break;
 	case 0x04600000:
 		switch (PAddr) {
+		case 0x04600000: *Value = PI_DRAM_ADDR_REG & 0xFFFFFE; break;
+		case 0x04600004: *Value = PI_CART_ADDR_REG & 0xFFFFFFFE; break;
+		case 0x04600008: *Value = PI_RD_LEN_REG; break;
+		case 0x0460000C: *Value = PI_WR_LEN_REG; break;
 		case 0x04600010: *Value = PI_STATUS_REG; break;
 		case 0x04600014: *Value = PI_DOMAIN1_REG; break;
 		case 0x04600018: *Value = PI_BSD_DOM1_PWD_REG; break;
