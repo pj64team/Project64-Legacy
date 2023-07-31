@@ -727,7 +727,7 @@ Entry::read_states Entry::StoreData(const string& str) {
 	}
 
 	// Do not sort if the line passed (str) is a comment ex: // This is a comment
-	if (str.compare(0, 2, "//") == 0 || isspace(str[0])) {
+	if (str.compare(0, 2, "//") == 0 || isspace((unsigned char)str[0])) {
 		unsortable_lines++;
 		data.push_back(str);
 		return read_states::GOOD;

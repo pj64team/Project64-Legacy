@@ -37,6 +37,14 @@ void BGEZ_Compare                  ( BLOCK_SECTION * Section );
 void COP1_BCF_Compare              ( BLOCK_SECTION * Section );
 void COP1_BCT_Compare              ( BLOCK_SECTION * Section );
 
+/**************************  Trap  functions  ************************/
+void Compile_R4300i_SPECIAL_TEQ    ( BLOCK_SECTION * Section );
+void Compile_R4300i_SPECIAL_TGE    ( BLOCK_SECTION * Section );
+void Compile_R4300i_SPECIAL_TGEU   ( BLOCK_SECTION * Section );
+void Compile_R4300i_SPECIAL_TLT    ( BLOCK_SECTION * Section );
+void Compile_R4300i_SPECIAL_TLTU   ( BLOCK_SECTION * Section );
+void Compile_R4300i_SPECIAL_TNE    ( BLOCK_SECTION * Section );
+
 /*************************  OpCode functions *************************/
 void Compile_R4300i_J              ( BLOCK_SECTION * Section );
 void Compile_R4300i_JAL            ( BLOCK_SECTION * Section );
@@ -119,8 +127,9 @@ void Compile_R4300i_SPECIAL_DSLL   ( BLOCK_SECTION * Section );
 void Compile_R4300i_SPECIAL_DSRL   ( BLOCK_SECTION * Section );
 void Compile_R4300i_SPECIAL_DSRA   ( BLOCK_SECTION * Section );
 void Compile_R4300i_SPECIAL_DSLL32 ( BLOCK_SECTION * Section );
-void Compile_R4300i_SPECIAL_DSRL32 ( BLOCK_SECTION * Section );
 void Compile_R4300i_SPECIAL_DSRA32 ( BLOCK_SECTION * Section );
+void Compile_R4300i_SPECIAL_DSRL32 ( BLOCK_SECTION * Section );
+void Compile_R4300i_SPECIAL_BREAK  ( BLOCK_SECTION * Section );
 
 /************************** COP0 functions **************************/
 void Compile_R4300i_COP0_MF        ( BLOCK_SECTION * Section );

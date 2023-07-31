@@ -55,6 +55,7 @@ void PI_DMA_READ (void) {
 	PI_DRAM_ADDR_REG &= 0x1FFFFFFF;
 
 	PI_RD_LEN_REG = (PI_RD_LEN_REG & 1) ? PI_RD_LEN_REG : PI_RD_LEN_REG + 1;	// Fix for Ai Shogi 3
+
 	PI_CART_ADDR_REG &= ~1;	// Taz Express fix
 	PI_DRAM_ADDR_REG &= ~7;	// Tax Express fix
 
@@ -120,11 +121,19 @@ void PI_DMA_WRITE (void) {
 	DWORD i;	
 	PI_DRAM_ADDR_REG &= 0x1FFFFFFF;
 
-	if (PI_WR_LEN_REG != 2)
+	if (PI_WR_LEN_REG > 0x300)
 		PI_WR_LEN_REG = ((PI_WR_LEN_REG & 1)) ? PI_WR_LEN_REG : PI_WR_LEN_REG + 1;	// Fix for Ai Shogi 3
 	
+	int wr_len = PI_WR_LEN_REG;
+	int wr_len_cart = PI_WR_LEN_REG;
+
+	if (!wr_len) wr_len = 7;
+	if (!wr_len_cart) wr_len_cart = 1;
+
+	PI_WR_LEN_REG -= PI_DRAM_ADDR_REG & 6;
+
 	PI_CART_ADDR_REG &= ~1;	// Taz Express fix
-	PI_DRAM_ADDR_REG &= ~7;	// Taz Express fix
+	PI_DRAM_ADDR_REG &= ~1;	// Taz Express fix
 
 	PI_STATUS_REG |= PI_STATUS_DMA_BUSY;
 	if ( PI_DRAM_ADDR_REG + PI_WR_LEN_REG + 1 > RdramSize) {
@@ -193,6 +202,11 @@ void PI_DMA_WRITE (void) {
 		}
 		PI_CART_ADDR_REG += 0x06000000;
 
+		PI_DRAM_ADDR_REG += wr_len + 1;
+		PI_CART_ADDR_REG += wr_len_cart + 1;
+		PI_WR_LEN_REG = 0x7f;
+		PI_RD_LEN_REG = 0x7f;
+
 		if (!DMAUsed) { 
 			DMAUsed = TRUE;
 			FirstDMA(); 
@@ -229,6 +243,11 @@ void PI_DMA_WRITE (void) {
 			}
 		}
 		PI_CART_ADDR_REG += 0x10000000;
+
+		PI_DRAM_ADDR_REG += wr_len + 1;
+		PI_CART_ADDR_REG += wr_len_cart + 1;
+		PI_WR_LEN_REG = 0x7f;
+		PI_RD_LEN_REG = 0x7f;
 
 		if (!DMAUsed) { 
 			DMAUsed = TRUE;
