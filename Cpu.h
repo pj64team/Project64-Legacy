@@ -119,7 +119,7 @@ extern DWORD CFBStart, CFBEnd;
 void __cdecl SetFrameBuffer(DWORD Address, DWORD Length);
 #endif
 
-
+extern int CPOAdjust;
 extern int NextInstruction, JumpToLocation, ManualPaused, CPU_Paused, CountPerOp;
 extern char SaveAsFileName[MAX_PATH], LoadFileName[MAX_PATH];
 extern int DlistCount, AlistCount, CurrentSaveSlot;

@@ -36,6 +36,7 @@
 #include "EmulateAI.h"
 #include "resource.h"
 #include "RomTools_Common.h"
+#include "Win32Timer.h"
 
 #define MenuLocOfUsedFiles	12
 #define MenuLocOfUsedDirs	(MenuLocOfUsedFiles + 1)
@@ -521,6 +522,7 @@ BOOL LoadRomHeader(void) {
 
 void LoadRomOptions(void) {
 	DWORD NewRamSize;
+	byte Country[2] = { 0,0 };
 
 	ReadRomOptions();
 
@@ -585,10 +587,21 @@ void LoadRomOptions(void) {
 
 	switch (GetRomRegion(ROM)) {
 	case PAL_Region:
-		EmuAI_SetFrameRate(50);
+		CPOAdjust = 0;
+		EmuAI_SetFrameRate(49);
 		Timer_Initialize((double)50); break;
 	case NTSC_Region:
 	default:
+		GetRomCountry(&Country, ROM);
+		if (Country != "J")
+		{
+			CPOAdjust = -1;
+		}
+		else
+		{
+			CPOAdjust = -2;
+		}
+
 		EmuAI_SetFrameRate(60);
 		Timer_Initialize((double)60); break;
 	}

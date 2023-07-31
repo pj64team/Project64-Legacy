@@ -38,7 +38,7 @@
 #include "CheatSearch.h"
 #include "RomTools_Common.h"
 
-
+int CPOAdjust = 0;
 int NextInstruction, JumpToLocation, ManualPaused, CPU_Paused, CountPerOp;
 char SaveAsFileName[MAX_PATH], LoadFileName[MAX_PATH];
 int DlistCount, AlistCount, CurrentSaveSlot;
@@ -93,7 +93,7 @@ void ChangeCompareTimer(void) {
 	DWORD NextCompare = COMPARE_REGISTER - COUNT_REGISTER;
 	if ((NextCompare & 0x80000000) != 0) {  NextCompare = 0x7FFFFFFF; }
 	if (NextCompare == 0) { NextCompare = 0x1; }	
-	ChangeTimer(CompareTimer,NextCompare);	
+	ChangeTimer(CompareTimer,NextCompare);
 }
 
 void ChangeTimer(int Type, int Value) {
@@ -218,9 +218,9 @@ void CloseCpu (void) {
 	CloseSram();
 	FreeSyncMemory();
 	if (GfxRomClosed != NULL) { GfxRomClosed(); }
-	if (ContRomClosed != NULL) { ContRomClosed(); }
 	if (AiRomClosed != NULL) { AiRomClosed(); }
 	if (RSPRomClosed != NULL) { RSPRomClosed(); }
+	if (ContRomClosed != NULL) { ContRomClosed(); }
 	if (Profiling) { GenerateTimerResults(); }
 	CloseHandle(CPU_Action.hStepping);
 	SendMessage( hStatusWnd, SB_SETTEXT, 0, (LPARAM)GS(MSG_EMULATION_ENDED) );
@@ -1046,8 +1046,10 @@ void PauseCpu (void) {
 	ReleaseMutex(hPauseMutex);
 }
 
+#define INIT_VI_INTR_TIME 500000
+
 void RefreshScreen (void ){ 
-	static DWORD VI_INTR_TIME = 500000;
+	static DWORD VI_INTR_TIME = INIT_VI_INTR_TIME;
 	static int DlistWaitFor = -2, VIWaitMult = 0;
 	LARGE_INTEGER Time;
 	char Label[100];
@@ -1067,7 +1069,7 @@ void RefreshScreen (void ){
 	if (Profiling) { StartTimer("RefreshScreen"); }
 	
 	if (VI_V_SYNC_REG == 0) {
-		VI_INTR_TIME = 500000;
+		VI_INTR_TIME = INIT_VI_INTR_TIME;
 	} 
 	else {
 		VI_INTR_TIME = (VI_V_SYNC_REG + 1) * ModVI;

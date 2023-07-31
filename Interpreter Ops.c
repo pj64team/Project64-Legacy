@@ -687,9 +687,9 @@ void _fastcall r4300i_SPECIAL_SYSCALL (void) {
 }
 
 void _fastcall r4300i_SPECIAL_BREAK (void) {
-	/*DoBreakException(NextInstruction == JUMP);
+	DoBreakException(NextInstruction == JUMP);
 	NextInstruction = JUMP;
-	JumpToLocation = PROGRAM_COUNTER;*/
+	JumpToLocation = PROGRAM_COUNTER;
 }
 
 void _fastcall r4300i_SPECIAL_SYNC (void) {
@@ -870,10 +870,51 @@ void _fastcall r4300i_SPECIAL_DSUBU (void) {
 	GPR[Opcode.REG.rd].DW = GPR[Opcode.BRANCH.rs].DW - GPR[Opcode.BRANCH.rt].DW;
 }
 
+void _fastcall r4300i_SPECIAL_TGE(void) {
+	if (GPR[Opcode.BRANCH.rs].DW >= GPR[Opcode.BRANCH.rt].DW) {
+		DoTrapException(NextInstruction == JUMP);
+		NextInstruction = JUMP;
+		JumpToLocation = PROGRAM_COUNTER;
+	}
+}
+
+void _fastcall r4300i_SPECIAL_TGEU(void) {
+	if (GPR[Opcode.BRANCH.rs].UDW == GPR[Opcode.BRANCH.rt].UDW) {
+		DoTrapException(NextInstruction == JUMP);
+		NextInstruction = JUMP;
+		JumpToLocation = PROGRAM_COUNTER;
+	}
+}
+
+void _fastcall r4300i_SPECIAL_TLT(void) {
+	if (GPR[Opcode.BRANCH.rs].DW < GPR[Opcode.BRANCH.rt].DW) {
+		DoTrapException(NextInstruction == JUMP);
+		NextInstruction = JUMP;
+		JumpToLocation = PROGRAM_COUNTER;
+	}
+}
+
+void _fastcall r4300i_SPECIAL_TLTU(void) {
+	if (GPR[Opcode.BRANCH.rs].UDW < GPR[Opcode.BRANCH.rt].UDW) {
+		DoTrapException(NextInstruction == JUMP);
+		NextInstruction = JUMP;
+		JumpToLocation = PROGRAM_COUNTER;
+	}
+}
+
 void _fastcall r4300i_SPECIAL_TEQ (void) {
 	if (GPR[Opcode.BRANCH.rs].DW == GPR[Opcode.BRANCH.rt].DW) {
-		if (ShowDebugMessages)
-			DisplayError("Should trap this ???");
+		DoTrapException(NextInstruction == JUMP);
+		NextInstruction = JUMP;
+		JumpToLocation = PROGRAM_COUNTER;
+	}
+}
+
+void _fastcall r4300i_SPECIAL_TNE(void) {
+	if (GPR[Opcode.BRANCH.rs].DW != GPR[Opcode.BRANCH.rt].DW) {
+		DoTrapException(NextInstruction == JUMP);
+		NextInstruction = JUMP;
+		JumpToLocation = PROGRAM_COUNTER;
 	}
 }
 
@@ -1204,6 +1245,11 @@ void _fastcall r4300i_COP1_S_DIV (void) {
 	TEST_COP1_USABLE_EXCEPTION
 	_controlfp(RoundingModel,_MCW_RC);
 	*(float *)FPRFloatLocation[Opcode.FP.fd] = (*(float *)FPRFloatLocation[Opcode.FP.fs] / *(float *)FPRFloatLocation[Opcode.FP.ft]); 
+	
+	// test if denormalize
+	if ((*(int*)FPRFloatLocation[Opcode.FP.fd] & 0x7F800000) == 0) {
+		*(int*)FPRFloatLocation[Opcode.FP.fd] &= 0x80000000;
+	}
 }
 
 void _fastcall r4300i_COP1_S_SQRT (void) {
@@ -1362,6 +1408,11 @@ void _fastcall r4300i_COP1_D_MUL (void) {
 void _fastcall r4300i_COP1_D_DIV (void) {
 	TEST_COP1_USABLE_EXCEPTION
 	*(double *)FPRDoubleLocation[Opcode.FP.fd] = *(double *)FPRDoubleLocation[Opcode.FP.fs] / *(double *)FPRDoubleLocation[Opcode.FP.ft]; 
+
+	// test if denormalize
+	if ((*(int*)FPRDoubleLocation[Opcode.FP.fd] & 0x7FF00000) == 0) {
+		*(int*)FPRDoubleLocation[Opcode.FP.fd] &= 0x80000000;
+	}
 }
 
 void _fastcall r4300i_COP1_D_SQRT (void) {
@@ -1506,25 +1557,28 @@ void _fastcall r4300i_COP1_L_CVT_D (void) {
 
 /************************** Other functions **************************/
 void _fastcall R4300i_UnknownOpcode (void) {
-	char Message[200];
+	//char Message[200];
 
-	sprintf(Message,"%s: %08X\n%s\n\n", GS(MSG_UNHANDLED_OP), PROGRAM_COUNTER,
-		R4300iOpcodeName(Opcode.Hex,PROGRAM_COUNTER));
-	strcat(Message,"Stoping Emulation !");
-	
-	if (HaveDebugger && !inFullScreen) {
-		int response;
+	//sprintf(Message,"%s: %08X\n%s\n\n", GS(MSG_UNHANDLED_OP), PROGRAM_COUNTER,
+	//	R4300iOpcodeName(Opcode.Hex,PROGRAM_COUNTER));
+	//strcat(Message,"Stoping Emulation !");
+	//
+	//if (HaveDebugger && !inFullScreen) {
+	//	int response;
 
-		strcat(Message,"\n\nDo you wish to enter the debugger?");
-	
-		response = MessageBox(NULL,Message,GS(MSG_MSGBOX_TITLE), MB_YESNO | MB_ICONERROR );
-		if (response == IDYES) {
-			Enter_R4300i_Commands_Window ();
-		}
-		ExitThread(0);
-	} 
-	else {
-		DisplayError(Message);
-		ExitThread(0);
-	}
+	//	strcat(Message,"\n\nDo you wish to enter the debugger?");
+	//
+	//	response = MessageBox(NULL,Message,GS(MSG_MSGBOX_TITLE), MB_YESNO | MB_ICONERROR );
+	//	if (response == IDYES) {
+	//		Enter_R4300i_Commands_Window ();
+	//	}
+	//	ExitThread(0);
+	//} 
+	//else {
+	//	DisplayError(Message);
+	//	ExitThread(0);
+	//}
+	DoIllegalInstructionException(NextInstruction == JUMP);
+	NextInstruction = JUMP;
+	JumpToLocation = PROGRAM_COUNTER;
 }

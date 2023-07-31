@@ -282,6 +282,7 @@ BYTE * CompileDelaySlot(void) {
 	}
 
 	BlockCycleCount += CountPerOp;
+
 	//CPU_Message("BlockCycleCount = %d",BlockCycleCount);
 	BlockRandomModifier += 1;
 	//CPU_Message("BlockRandomModifier = %d",BlockRandomModifier);
@@ -563,8 +564,26 @@ void CompileExit (DWORD TargetPC, REG_INFO ExitRegSet, int reason, int CompileNo
 		Ret();
 		break;
 	case DoSysCall:
-		MoveConstToX86reg(NextInstruction == JUMP || NextInstruction == DELAY_SLOT,x86_ECX);		
-		Call_Direct(DoSysCallException,"DoSysCallException");
+		MoveConstToX86reg(NextInstruction == JUMP || NextInstruction == DELAY_SLOT, x86_ECX);
+		Call_Direct(DoSysCallException, "DoSysCallException");
+		if (CPU_Type == CPU_SyncCores) { Call_Direct(SyncToPC, "SyncToPC"); }
+		Ret();
+		break;
+	case DoIlleaglOp:
+		MoveConstToX86reg(NextInstruction == JUMP || NextInstruction == DELAY_SLOT, x86_ECX);
+		Call_Direct(DoIllegalInstructionException, "DoIllegalInstructionException");
+		if (CPU_Type == CPU_SyncCores) { Call_Direct(SyncToPC, "SyncToPC"); }
+		Ret();
+		break;
+	case DoBreak:
+		MoveConstToX86reg(NextInstruction == JUMP || NextInstruction == DELAY_SLOT, x86_ECX);
+		Call_Direct(DoBreakException, "DoBreakException");
+		if (CPU_Type == CPU_SyncCores) { Call_Direct(SyncToPC, "SyncToPC"); }
+		Ret();
+		break;
+	case DoTrap:
+		MoveConstToX86reg(NextInstruction == JUMP || NextInstruction == DELAY_SLOT, x86_ECX);
+		Call_Direct(DoTrapException, "DoTrapException");
 		if (CPU_Type == CPU_SyncCores) { Call_Direct(SyncToPC, "SyncToPC"); }
 		Ret();
 		break;
@@ -2109,9 +2128,7 @@ BOOL GenerateX86Code (BLOCK_SECTION * Section, DWORD Test) {
 		}*/
 
 		BlockCycleCount += CountPerOp;
-		//CPU_Message("BlockCycleCount = %d",BlockCycleCount);
 		BlockRandomModifier += 1;
-		//CPU_Message("BlockRandomModifier = %d",BlockRandomModifier);
 				
 		for (count = 1; count < 10; count ++) { x86Protected(count) = FALSE; }
 
@@ -2163,8 +2180,13 @@ BOOL GenerateX86Code (BLOCK_SECTION * Section, DWORD Test) {
 			case R4300i_SPECIAL_DSLL32: Compile_R4300i_SPECIAL_DSLL32(Section); break;
 			case R4300i_SPECIAL_DSRL32: Compile_R4300i_SPECIAL_DSRL32(Section); break;
 			case R4300i_SPECIAL_DSRA32: Compile_R4300i_SPECIAL_DSRA32(Section); break;
-			case R4300i_SPECIAL_BREAK: R4300i_SPECIAL_BREAK; break;
-			case R4300i_SPECIAL_TEQ: R4300i_SPECIAL_BREAK; break;
+			case R4300i_SPECIAL_BREAK: Compile_R4300i_SPECIAL_BREAK(Section); break;
+			case R4300i_SPECIAL_TEQ: Compile_R4300i_SPECIAL_TEQ(Section); break;
+			case R4300i_SPECIAL_TGE: Compile_R4300i_SPECIAL_TGE(Section); break;
+			case R4300i_SPECIAL_TGEU: Compile_R4300i_SPECIAL_TGEU(Section); break;
+			case R4300i_SPECIAL_TLT: Compile_R4300i_SPECIAL_TLT(Section); break;
+			case R4300i_SPECIAL_TLTU: Compile_R4300i_SPECIAL_TLTU(Section); break;
+			case R4300i_SPECIAL_TNE: Compile_R4300i_SPECIAL_TNE(Section); break;
 			default:
 				Compile_R4300i_UnknownOpcode(Section); break;
 			}
@@ -2402,7 +2424,8 @@ BOOL GenerateX86Code (BLOCK_SECTION * Section, DWORD Test) {
 			break;
 		case DELAY_SLOT:
 			NextInstruction = DELAY_SLOT_DONE;
-			BlockCycleCount -= CountPerOp;
+			//BlockCycleCount += CountPerOp;
+			BlockCycleCount += CPOAdjust;
 			BlockRandomModifier -= 1;
 			Section->CompilePC -= 4; 
 			break;
