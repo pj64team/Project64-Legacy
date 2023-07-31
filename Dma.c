@@ -59,6 +59,11 @@ void PI_DMA_READ (void) {
 	PI_CART_ADDR_REG &= ~1;	// Taz Express fix
 	PI_DRAM_ADDR_REG &= ~7;	// Tax Express fix
 
+	MIPS_DWORD cart_addr = { .UDW = PI_CART_ADDR_REG };
+	MIPS_DWORD dram_addr = { .UDW = PI_DRAM_ADDR_REG };
+	CheckForWatchPoint(cart_addr, WP_WRITE, PI_RD_LEN_REG + 1);
+	CheckForWatchPoint(dram_addr, WP_READ, PI_RD_LEN_REG + 1);
+
 	if ( PI_DRAM_ADDR_REG + PI_RD_LEN_REG + 1 > RdramSize) {
 		if (ShowDebugMessages)
 			DisplayError("PI_DMA_READ not in Memory");
@@ -135,6 +140,9 @@ void PI_DMA_WRITE (void) {
 	PI_CART_ADDR_REG &= ~1;	// Taz Express fix
 	PI_DRAM_ADDR_REG &= ~1;	// Taz Express fix
 
+	MIPS_DWORD dram_addr = { .UDW = PI_DRAM_ADDR_REG };
+	CheckForWatchPoint(dram_addr, WP_WRITE, PI_WR_LEN_REG + 1);
+
 	PI_STATUS_REG |= PI_STATUS_DMA_BUSY;
 	if ( PI_DRAM_ADDR_REG + PI_WR_LEN_REG + 1 > RdramSize) {
 		if (ShowDebugMessages)
@@ -151,6 +159,8 @@ void PI_DMA_WRITE (void) {
 		(PI_CART_ADDR_REG >= 0x08040000 && PI_CART_ADDR_REG <= 0x08050000) ||
 		(PI_CART_ADDR_REG >= 0x08080000 && PI_CART_ADDR_REG <= 0x08090000))
 	{
+		MIPS_DWORD cart_addr = { .UDW = PI_CART_ADDR_REG };
+		CheckForWatchPoint(cart_addr, WP_READ, PI_WR_LEN_REG + 1);
 		switch (SaveUsing) {
 		case Auto:
 			SaveUsing = Sram;
@@ -180,6 +190,8 @@ void PI_DMA_WRITE (void) {
 	
 	if ( PI_CART_ADDR_REG >= 0x06000000 && PI_CART_ADDR_REG < 0x08000000) {
 		PI_CART_ADDR_REG -= 0x06000000;
+		MIPS_DWORD cart_addr = { .UDW = PI_CART_ADDR_REG | 0x10000000 };
+		CheckForWatchPoint(cart_addr, WP_READ, PI_WR_LEN_REG + 1);
 		if (PI_CART_ADDR_REG + PI_WR_LEN_REG + 1 < RomFileSize) {
 			for (i = 0; i < PI_WR_LEN_REG + 1; i ++) {
 				*(N64MEM+((PI_DRAM_ADDR_REG + i) ^ 3)) =  *(ROM+((PI_CART_ADDR_REG + i) ^ 3));
@@ -214,6 +226,8 @@ void PI_DMA_WRITE (void) {
 	}
 	
 	if ( PI_CART_ADDR_REG >= 0x10000000 && PI_CART_ADDR_REG <= 0x1FBFFFFF) {
+		MIPS_DWORD cart_addr = { .UDW = PI_CART_ADDR_REG };
+		CheckForWatchPoint(cart_addr, WP_READ, PI_WR_LEN_REG + 1);
 		PI_CART_ADDR_REG -= 0x10000000;
 		if (PI_CART_ADDR_REG + PI_WR_LEN_REG + 1 < RomFileSize) {
 			for (i = 0; i < PI_WR_LEN_REG + 1; i ++) {
@@ -248,7 +262,7 @@ void PI_DMA_WRITE (void) {
 		//ChangeTimer(PiTimer,(int)(PI_WR_LEN_REG * 8.9));
 		return;
 	}
-	
+
 	if (HaveDebugger && ShowUnhandledMemory) { DisplayError("PI_DMA_WRITE not in ROM"); }
 	PI_STATUS_REG &= ~PI_STATUS_DMA_BUSY;
 	MI_INTR_REG |= MI_INTR_PI;
@@ -258,6 +272,11 @@ void PI_DMA_WRITE (void) {
 
 void SI_DMA_READ (void) {
 	BYTE * PifRamPos = &PIF_Ram[0];
+
+	MIPS_DWORD dram_addr = { .UDW = SI_DRAM_ADDR_REG };
+	MIPS_DWORD pif_addr = { .UDW = SI_PIF_ADDR_WR64B_REG };
+	CheckForWatchPoint(dram_addr, WP_WRITE, 64);
+	CheckForWatchPoint(pif_addr, WP_READ, 64);
 
 	SI_DRAM_ADDR_REG &= 0x7FFFFFFF;
 
@@ -345,6 +364,11 @@ void SI_DMA_READ (void) {
 
 void SI_DMA_WRITE (void) {
 	BYTE * PifRamPos = &PIF_Ram[0];
+
+	MIPS_DWORD pif_addr = { .UDW = SI_PIF_ADDR_WR64B_REG };
+	MIPS_DWORD dram_addr = { .UDW = SI_DRAM_ADDR_REG };
+	CheckForWatchPoint(pif_addr, WP_WRITE, 64);
+	CheckForWatchPoint(dram_addr, WP_READ, 64);
 
 	SI_DRAM_ADDR_REG &= 0x7FFFFFFF;
 
@@ -479,8 +503,14 @@ void SP_DMA_READ(void) {
 	if (length == 0)
 		length = 1;
 	length = ((length + 7) & 0x01FF8);
+
 	for (int i = 0; i <= count; i++)
 	{
+		MIPS_DWORD mem_addr = { .UDW = SP_MEM_ADDR_REG & 0x1FFF };
+		MIPS_DWORD dram_addr = { .UDW = SP_DRAM_ADDR_REG };
+		CheckForWatchPoint(mem_addr, WP_WRITE, length);
+		CheckForWatchPoint(dram_addr, WP_READ, length);
+
 		if (IDMEM_SELECT == 0x1000)
 		{
 			for (int ix = 0; ix < length; ix++)
@@ -542,6 +572,7 @@ void SP_DMA_WRITE(void) {
 	if (length == 0)
 		length = 1;
 	length = ((length + 7) & 0x01FF8);
+
 	for (int i = 0; i <= count; i++)
 	{
 		int remainingLength = length;
@@ -550,6 +581,12 @@ void SP_DMA_WRITE(void) {
 			if ((0x1000 - (SP_MEM_ADDR_REG & 0xFFF)) < blockLength) {
 				blockLength = 0x1000 - (SP_MEM_ADDR_REG & 0xFFF);
 			}
+
+			MIPS_DWORD dram_addr = { .UDW = SP_DRAM_ADDR_REG };
+			MIPS_DWORD mem_addr = { .UDW = SP_MEM_ADDR_REG + 0x1FFF };
+			CheckForWatchPoint(dram_addr, WP_WRITE, blockLength);
+			CheckForWatchPoint(mem_addr, WP_READ, blockLength);
+
 			memcpy(N64MEM + SP_DRAM_ADDR_REG, DMEM + (SP_MEM_ADDR_REG & 0x1FFF), blockLength);
 			if (((SP_MEM_ADDR_REG + blockLength) & 0xFFF) != 0) {
 				SP_MEM_ADDR_REG += blockLength;

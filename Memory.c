@@ -2972,6 +2972,8 @@ int r4300i_SW_NonMemory ( DWORD PAddr, DWORD Value ) {
 		case 0x04500000: AI_DRAM_ADDR_REG = (Value & 0xFFFFF8); break;
 		case 0x04500004: 
 			AI_LEN_REG = Value;  
+			MIPS_DWORD dram_addr = { .UDW = AI_DRAM_ADDR_REG };
+			CheckForWatchPoint(dram_addr, WP_READ, AI_LEN_REG + 1);
 			if (AiLenChanged != NULL) { AiLenChanged(); }
 			break;
 		case 0x04500008: AI_CONTROL_REG = (Value & 1); break;
