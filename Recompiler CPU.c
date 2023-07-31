@@ -2127,11 +2127,7 @@ BOOL GenerateX86Code (BLOCK_SECTION * Section, DWORD Test) {
 			if (CPU_Type == CPU_SyncCores) { Call_Direct(SyncToPC, "SyncToPC"); }
 		}*/
 
-#ifndef USEADJUSTMENT
 		BlockCycleCount += CountPerOp;
-#else
-		BlockCycleCount += CountPerOp + (((AdjCnt++ % ADJUSTMENT) == 1) ? 1 : 0);
-#endif
 		BlockRandomModifier += 1;
 				
 		for (count = 1; count < 10; count ++) { x86Protected(count) = FALSE; }
@@ -2428,7 +2424,8 @@ BOOL GenerateX86Code (BLOCK_SECTION * Section, DWORD Test) {
 			break;
 		case DELAY_SLOT:
 			NextInstruction = DELAY_SLOT_DONE;
-			BlockCycleCount += CountPerOp;
+			//BlockCycleCount += CountPerOp;
+			BlockCycleCount += CPOAdjust;
 			BlockRandomModifier -= 1;
 			Section->CompilePC -= 4; 
 			break;

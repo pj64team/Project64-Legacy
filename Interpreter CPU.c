@@ -709,6 +709,7 @@ void ExecuteInterpreterOpCode (void) {
 		PROGRAM_COUNTER += 4; 
 		break;
 	case DELAY_SLOT:
+		COUNT_REGISTER += CPOAdjust * 2;
 		NextInstruction = JUMP;
 		PROGRAM_COUNTER += 4; 
 		break;

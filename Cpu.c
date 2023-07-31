@@ -38,7 +38,7 @@
 #include "CheatSearch.h"
 #include "RomTools_Common.h"
 
-
+int CPOAdjust = 0;
 int NextInstruction, JumpToLocation, ManualPaused, CPU_Paused, CountPerOp;
 char SaveAsFileName[MAX_PATH], LoadFileName[MAX_PATH];
 int DlistCount, AlistCount, CurrentSaveSlot;
@@ -1046,7 +1046,7 @@ void PauseCpu (void) {
 	ReleaseMutex(hPauseMutex);
 }
 
-#define INIT_VI_INTR_TIME 600000
+#define INIT_VI_INTR_TIME 500000
 
 void RefreshScreen (void ){ 
 	static DWORD VI_INTR_TIME = INIT_VI_INTR_TIME;
