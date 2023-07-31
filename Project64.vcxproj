@@ -61,14 +61,14 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <OutDir>..\PJ64_1.6.2</OutDir>
+    <OutDir>..\PJ64_1.6.2\</OutDir>
     <IntDir>.\Debug\</IntDir>
     <LinkIncremental>true</LinkIncremental>
     <TargetName>$(ProjectName)_Debug</TargetName>
     <RunCodeAnalysis>false</RunCodeAnalysis>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <OutDir>..\PJ64_1.6.2</OutDir>
+    <OutDir>..\PJ64_1.6.2\</OutDir>
     <IntDir>.\Release_External\</IntDir>
     <LinkIncremental>false</LinkIncremental>
     <TargetName>$(ProjectName)_1.6.2</TargetName>
@@ -76,7 +76,7 @@
     <RunCodeAnalysis>false</RunCodeAnalysis>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release for XP|Win32'">
-    <OutDir>..\PJ64_1.6.2</OutDir>
+    <OutDir>..\PJ64_1.6.2\</OutDir>
     <IntDir>.\Release_External\</IntDir>
     <LinkIncremental>false</LinkIncremental>
     <TargetName>$(ProjectName)_1.6.2_XP</TargetName>
@@ -191,8 +191,6 @@
     </Link>
     <Manifest>
       <GenerateCategoryTags>true</GenerateCategoryTags>
-    </Manifest>
-    <Manifest>
       <EnableDPIAwareness>true</EnableDPIAwareness>
     </Manifest>
   </ItemDefinitionGroup>
@@ -247,8 +245,6 @@
     </Link>
     <Manifest>
       <GenerateCategoryTags>true</GenerateCategoryTags>
-    </Manifest>
-    <Manifest>
       <EnableDPIAwareness>true</EnableDPIAwareness>
     </Manifest>
   </ItemDefinitionGroup>
@@ -408,6 +404,7 @@
     <ResourceCompile Include="PJ64_Cheat.rc" />
   </ItemGroup>
   <ItemGroup>
+    <None Include=".editorconfig" />
     <None Include="PJ64.BMP" />
   </ItemGroup>
   <ItemGroup>

@@ -2932,9 +2932,6 @@ void __cdecl StartRecompilerCPU (void ) {
 			DWORD Value;
 
 			for (;;) {
-				if (CPU_Action.CloseCPU) {
-					DoSomething();
-				}
 				Addr = PROGRAM_COUNTER;
 				if (UseTlb) {
 					if (!TranslateVaddr(&Addr)) {
