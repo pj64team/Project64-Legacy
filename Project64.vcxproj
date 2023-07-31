@@ -404,6 +404,7 @@
     <ResourceCompile Include="PJ64_Cheat.rc" />
   </ItemGroup>
   <ItemGroup>
+    <None Include=".editorconfig" />
     <None Include="PJ64.BMP" />
   </ItemGroup>
   <ItemGroup>
