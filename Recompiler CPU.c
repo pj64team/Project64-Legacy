@@ -233,8 +233,6 @@ BYTE * Compiler4300iBlock(void) {
 	return BlockInfo.CompiledLocation;
 }
 
-int HalfCnt = 0;
-
 BYTE * CompileDelaySlot(void) {
 	DWORD StartAddress = PROGRAM_COUNTER;
 	BLOCK_SECTION *Section, DelaySection;
@@ -283,8 +281,8 @@ BYTE * CompileDelaySlot(void) {
 		MoveConstToVariable((DWORD)Block,&CurrentBlock,"CurrentBlock");
 	}
 
-	//BlockCycleCount += CountPerOp;
-	BlockCycleCount += CountPerOp + ((HalfCnt++ % ADJUSTMENT == 1) ? 1 : 0);
+	BlockCycleCount += CountPerOp;
+
 	//CPU_Message("BlockCycleCount = %d",BlockCycleCount);
 	BlockRandomModifier += 1;
 	//CPU_Message("BlockRandomModifier = %d",BlockRandomModifier);
@@ -2129,11 +2127,12 @@ BOOL GenerateX86Code (BLOCK_SECTION * Section, DWORD Test) {
 			if (CPU_Type == CPU_SyncCores) { Call_Direct(SyncToPC, "SyncToPC"); }
 		}*/
 
-		//BlockCycleCount += CountPerOp;
-BlockCycleCount += CountPerOp + ((HalfCnt++ % ADJUSTMENT == 1) ? 1 : 0);
-//CPU_Message("BlockCycleCount = %d",BlockCycleCount);
+#ifndef USEADJUSTMENT
+		BlockCycleCount += CountPerOp;
+#else
+		BlockCycleCount += CountPerOp + (((AdjCnt++ % ADJUSTMENT) == 1) ? 1 : 0);
+#endif
 		BlockRandomModifier += 1;
-		//CPU_Message("BlockRandomModifier = %d",BlockRandomModifier);
 				
 		for (count = 1; count < 10; count ++) { x86Protected(count) = FALSE; }
 
@@ -2429,8 +2428,7 @@ BlockCycleCount += CountPerOp + ((HalfCnt++ % ADJUSTMENT == 1) ? 1 : 0);
 			break;
 		case DELAY_SLOT:
 			NextInstruction = DELAY_SLOT_DONE;
-			//BlockCycleCount += CountPerOp;
-			BlockCycleCount += CountPerOp + ((HalfCnt++ % ADJUSTMENT == 1) ? 1 : 0);
+			BlockCycleCount += CountPerOp;
 			BlockRandomModifier -= 1;
 			Section->CompilePC -= 4; 
 			break;

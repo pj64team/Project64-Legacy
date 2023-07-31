@@ -675,15 +675,14 @@ void BuildInterpreter (void ) {
 	R4300i_CoP1_L[63] = R4300i_UnknownOpcode;	
 }
 
-extern int HalfCnt;
-
 void ExecuteInterpreterOpCode (void) {
 	if (!r4300i_LW_VAddr_NonCPU(PROGRAM_COUNTER, &Opcode.Hex)) {
 		DoTLBMiss(NextInstruction == JUMP, PROGRAM_COUNTER);
 		NextInstruction = NORMAL;
 		return;
 	}
-	COUNT_REGISTER += CountPerOp + ((HalfCnt++ % ADJUSTMENT == 1) ? 1 : 0);
+
+	COUNT_REGISTER += CountPerOp;
 	if (CPU_Type != CPU_SyncCores) { Timers.Timer -= CountPerOp; }
 
 	RANDOM_REGISTER -= 1;

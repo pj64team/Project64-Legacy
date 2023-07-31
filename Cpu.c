@@ -1046,7 +1046,7 @@ void PauseCpu (void) {
 	ReleaseMutex(hPauseMutex);
 }
 
-#define INIT_VI_INTR_TIME 500000
+#define INIT_VI_INTR_TIME 600000
 
 void RefreshScreen (void ){ 
 	static DWORD VI_INTR_TIME = INIT_VI_INTR_TIME;
