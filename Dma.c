@@ -133,7 +133,6 @@ void PI_DMA_WRITE (void) {
 	PI_WR_LEN_REG -= PI_DRAM_ADDR_REG & 6;
 
 	PI_CART_ADDR_REG &= ~1;	// Taz Express fix
-	//PI_DRAM_ADDR_REG &= ~7;	// Taz Express fix
 	PI_DRAM_ADDR_REG &= ~1;	// Taz Express fix
 
 	PI_STATUS_REG |= PI_STATUS_DMA_BUSY;

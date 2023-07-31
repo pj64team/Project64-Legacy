@@ -93,7 +93,7 @@ void ChangeCompareTimer(void) {
 	DWORD NextCompare = COMPARE_REGISTER - COUNT_REGISTER;
 	if ((NextCompare & 0x80000000) != 0) {  NextCompare = 0x7FFFFFFF; }
 	if (NextCompare == 0) { NextCompare = 0x1; }	
-	ChangeTimer(CompareTimer,NextCompare);	
+	ChangeTimer(CompareTimer,NextCompare);
 }
 
 void ChangeTimer(int Type, int Value) {
@@ -1043,8 +1043,10 @@ void PauseCpu (void) {
 	ReleaseMutex(hPauseMutex);
 }
 
+#define INIT_VI_INTR_TIME 500000
+
 void RefreshScreen (void ){ 
-	static DWORD VI_INTR_TIME = 500000;
+	static DWORD VI_INTR_TIME = INIT_VI_INTR_TIME;
 	static int DlistWaitFor = -2, VIWaitMult = 0;
 	LARGE_INTEGER Time;
 	char Label[100];
@@ -1064,7 +1066,7 @@ void RefreshScreen (void ){
 	if (Profiling) { StartTimer("RefreshScreen"); }
 	
 	if (VI_V_SYNC_REG == 0) {
-		VI_INTR_TIME = 500000;
+		VI_INTR_TIME = INIT_VI_INTR_TIME;
 	} 
 	else {
 		VI_INTR_TIME = (VI_V_SYNC_REG + 1) * ModVI;

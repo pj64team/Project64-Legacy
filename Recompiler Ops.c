@@ -40,6 +40,8 @@ void CompileReadTLBMiss (BLOCK_SECTION * Section, int AddressReg, int LookUpReg 
 
 /************************** Branch functions  ************************/
 void Compile_R4300i_Branch (BLOCK_SECTION * Section, void (*CompareFunc)(BLOCK_SECTION * Section), int BranchType, BOOL Link) {
+	CPU_Message("  %X %s", Section->CompilePC, R4300iOpcodeName(Opcode.Hex, Section->CompilePC));
+
 	static int EffectDelaySlot, DoneJumpDelay, DoneContinueDelay;
 	static char ContLabel[100], JumpLabel[100];
 	static REG_INFO RegBeforeDelay;
@@ -217,6 +219,7 @@ void Compile_R4300i_Branch (BLOCK_SECTION * Section, void (*CompareFunc)(BLOCK_S
 void Compile_R4300i_BranchLikely (BLOCK_SECTION * Section, void (*CompareFunc)(BLOCK_SECTION * Section), BOOL Link) {
 	static char ContLabel[100], JumpLabel[100];
 	int count;
+	CPU_Message("  %X %s", Section->CompilePC, R4300iOpcodeName(Opcode.Hex, Section->CompilePC));
 
 	if ( NextInstruction == NORMAL ) {		
 		CPU_Message("  %X %s",Section->CompilePC,R4300iOpcodeName(Opcode.Hex,Section->CompilePC));
@@ -1056,6 +1059,7 @@ void COP1_BCT_Compare (BLOCK_SECTION * Section) {
 /*************************  OpCode functions *************************/
 void Compile_R4300i_J (BLOCK_SECTION * Section) {
 	static char JumpLabel[100];
+	CPU_Message("  %X %s", Section->CompilePC, R4300iOpcodeName(Opcode.Hex, Section->CompilePC));
 
 	if ( NextInstruction == NORMAL ) {
 		CPU_Message("  %X %s",Section->CompilePC,R4300iOpcodeName(Opcode.Hex,Section->CompilePC));
@@ -1088,6 +1092,7 @@ void Compile_R4300i_J (BLOCK_SECTION * Section) {
 
 void Compile_R4300i_JAL (BLOCK_SECTION * Section) {
 	static char JumpLabel[100];
+	CPU_Message("  %X %s", Section->CompilePC, R4300iOpcodeName(Opcode.Hex, Section->CompilePC));
 
 	if ( NextInstruction == NORMAL ) {
 		CPU_Message("  %X %s",Section->CompilePC,R4300iOpcodeName(Opcode.Hex,Section->CompilePC));
@@ -3031,31 +3036,215 @@ void Compile_R4300i_SPECIAL_JALR (BLOCK_SECTION * Section) {
 }
 
 void Compile_R4300i_SPECIAL_SYSCALL(BLOCK_SECTION* Section) {
+	CPU_Message("  %X %s", Section->CompilePC, R4300iOpcodeName(Opcode.Hex, Section->CompilePC));
+
 	CompileExit(Section->CompilePC, Section->RegWorking, DoSysCall, TRUE, NULL);
 }
 
 void Compile_R4300i_SPECIAL_BREAK(BLOCK_SECTION* Section) {
+	CPU_Message("  %X %s", Section->CompilePC, R4300iOpcodeName(Opcode.Hex, Section->CompilePC));
+
 	CompileExit(Section->CompilePC, Section->RegWorking, DoBreak, TRUE, NULL);
 }
 
+#define DoTrapLength 0x00000044
+#define DoTrapLength32 0x00000046
+
 void Compile_R4300i_SPECIAL_TEQ(BLOCK_SECTION* Section) {
-	//CompileExit(Section->CompilePC, Section->RegWorking, DoTrap, TRUE, NULL);
+	CPU_Message("  %X %s", Section->CompilePC, R4300iOpcodeName(Opcode.Hex, Section->CompilePC));
+	int b1 = 0;
+	int b2 = 0;
+	int b3 = 0;
+	//return;
+
+	//BreakPoint();
+
+	for (int i = 0; i < 32; i++)
+	{
+		if (IsMapped(i)) UnMap_GPR(Section, i, TRUE);
+	}
+
+	if (Opcode.BRANCH.rt == Opcode.BRANCH.rs)
+	{
+		CompileExit(Section->CompilePC, Section->RegWorking, DoTrap, TRUE, NULL);
+		return;
+	}
+	else if (Opcode.BRANCH.rt == 0)
+	{
+		Map_GPR_32bit(Section, Opcode.BRANCH.rs, FALSE, Opcode.BRANCH.rs);
+		CompConstToX86reg(MipsRegLo(Opcode.BRANCH.rs), 0);
+	}
+	else if (Opcode.BRANCH.rs == 0)
+	{
+		Map_GPR_32bit(Section, Opcode.BRANCH.rt, FALSE, Opcode.BRANCH.rt);
+		CompConstToX86reg(MipsRegLo(Opcode.BRANCH.rs), 0);
+	}
+	else
+	{
+		Map_GPR_32bit(Section, Opcode.BRANCH.rt, FALSE, Opcode.BRANCH.rt);
+		Map_GPR_32bit(Section, Opcode.BRANCH.rs, FALSE, Opcode.BRANCH.rs);
+		CompX86RegToX86Reg(MipsRegLo(Opcode.BRANCH.rs), MipsRegLo(Opcode.BRANCH.rt));
+	}
+
+	b1 = (int)RecompPos + 1;
+	JneLabel8("bypass TEQ", DoTrapLength);
+	b2 = (int)RecompPos;
+
+	//BreakPoint();
+
+	if (IsMapped(Opcode.BRANCH.rt)) UnMap_GPR(Section, Opcode.BRANCH.rt, FALSE);
+	if (IsMapped(Opcode.BRANCH.rs)) UnMap_GPR(Section, Opcode.BRANCH.rs, FALSE);
+
+	CompileExit(Section->CompilePC, Section->RegWorking, DoTrap, TRUE, NULL);
+	b3 = (int)RecompPos - b2;
+	*(byte*)b1 = b3;
+
+	if (IsMapped(Opcode.BRANCH.rt)) UnMap_GPR(Section, Opcode.BRANCH.rt, FALSE);
+	if (IsMapped(Opcode.BRANCH.rs)) UnMap_GPR(Section, Opcode.BRANCH.rs, FALSE);
 }
 
 void Compile_R4300i_SPECIAL_TGE(BLOCK_SECTION* Section) {
-	//CompileExit(Section->CompilePC, Section->RegWorking, DoTrap, TRUE, NULL);
+	CPU_Message("  %X %s", Section->CompilePC, R4300iOpcodeName(Opcode.Hex, Section->CompilePC));
+
+	for (int i = 0; i < 32; i++)
+	{
+		if (IsMapped(i)) UnMap_GPR(Section, i, TRUE);
+	}
+
+	if (Opcode.BRANCH.rt == Opcode.BRANCH.rs)
+	{
+		//CompileExit(Section->CompilePC, Section->RegWorking, DoTrap, TRUE, NULL);
+	}
+	else if (Opcode.BRANCH.rt == 0)
+	{
+		Map_GPR_32bit(Section, Opcode.BRANCH.rs, TRUE, Opcode.BRANCH.rs);
+		CompConstToX86reg(MipsRegLo(Opcode.BRANCH.rs), 0);
+		JlLabel8("bypass TGE", DoTrapLength);
+		CompileExit(Section->CompilePC, Section->RegWorking, DoTrap, TRUE, NULL);
+	}
+	else if (Opcode.BRANCH.rs == 0)
+	{
+		Map_GPR_32bit(Section, Opcode.BRANCH.rt, TRUE, Opcode.BRANCH.rt);
+		CompConstToX86reg(MipsRegLo(Opcode.BRANCH.rs), 0);
+		JlLabel8("bypass TGE", DoTrapLength);
+		CompileExit(Section->CompilePC, Section->RegWorking, DoTrap, TRUE, NULL);
+	}
+	else
+	{
+		Map_GPR_32bit(Section, Opcode.BRANCH.rt, TRUE, Opcode.BRANCH.rt);
+		Map_GPR_32bit(Section, Opcode.BRANCH.rs, TRUE, Opcode.BRANCH.rs);
+		CompX86RegToX86Reg(MipsRegLo(Opcode.BRANCH.rs), MipsRegLo(Opcode.BRANCH.rt));
+		JlLabel8("bypass TGE", DoTrapLength);
+		CompileExit(Section->CompilePC, Section->RegWorking, DoTrap, TRUE, NULL);
+	}
 }
 
 void Compile_R4300i_SPECIAL_TGEU(BLOCK_SECTION* Section) {
-	//CompileExit(Section->CompilePC, Section->RegWorking, DoTrap, TRUE, NULL);
+	CPU_Message("  %X %s", Section->CompilePC, R4300iOpcodeName(Opcode.Hex, Section->CompilePC));
+
+	for (int i = 0; i < 32; i++)
+	{
+		if (IsMapped(i)) UnMap_GPR(Section, i, TRUE);
+	}
+
+	if (Opcode.BRANCH.rt == Opcode.BRANCH.rs)
+	{
+		//CompileExit(Section->CompilePC, Section->RegWorking, DoTrap, TRUE, NULL);
+	}
+	else if (Opcode.BRANCH.rt == 0)
+	{
+		Map_GPR_32bit(Section, Opcode.BRANCH.rs, FALSE, Opcode.BRANCH.rs);
+		CompConstToX86reg(MipsRegLo(Opcode.BRANCH.rs), 0);
+		JneLabel8("bypass TGEU", DoTrapLength);
+		CompileExit(Section->CompilePC, Section->RegWorking, DoTrap, TRUE, NULL);
+	}
+	else if (Opcode.BRANCH.rs == 0)
+	{
+		Map_GPR_32bit(Section, Opcode.BRANCH.rt, FALSE, Opcode.BRANCH.rt);
+		CompConstToX86reg(MipsRegLo(Opcode.BRANCH.rs), 0);
+		JneLabel8("bypass TGEU", DoTrapLength);
+		CompileExit(Section->CompilePC, Section->RegWorking, DoTrap, TRUE, NULL);
+	}
+	else
+	{
+		Map_GPR_32bit(Section, Opcode.BRANCH.rt, FALSE, Opcode.BRANCH.rt);
+		Map_GPR_32bit(Section, Opcode.BRANCH.rs, FALSE, Opcode.BRANCH.rs);
+		CompX86RegToX86Reg(MipsRegLo(Opcode.BRANCH.rs), MipsRegLo(Opcode.BRANCH.rt));
+		JneLabel8("bypass TGEU", DoTrapLength);
+		CompileExit(Section->CompilePC, Section->RegWorking, DoTrap, TRUE, NULL);
+	}
 }
 
 void Compile_R4300i_SPECIAL_TLT(BLOCK_SECTION* Section) {
-	//CompileExit(Section->CompilePC, Section->RegWorking, DoTrap, TRUE, NULL);
+	CPU_Message("  %X %s", Section->CompilePC, R4300iOpcodeName(Opcode.Hex, Section->CompilePC));
+
+	for (int i = 0; i < 32; i++)
+	{
+		if (IsMapped(i)) UnMap_GPR(Section, i, TRUE);
+	}
+
+	if (Opcode.BRANCH.rt == Opcode.BRANCH.rs)
+	{
+		//CompileExit(Section->CompilePC, Section->RegWorking, DoTrap, TRUE, NULL);
+	}
+	else if (Opcode.BRANCH.rt == 0)
+	{
+		Map_GPR_32bit(Section, Opcode.BRANCH.rs, TRUE, Opcode.BRANCH.rs);
+		CompConstToX86reg(MipsRegLo(Opcode.BRANCH.rs), 0);
+		JgeLabel32("bypass TLT", DoTrapLength32);
+		CompileExit(Section->CompilePC, Section->RegWorking, DoTrap, TRUE, NULL);
+	}
+	else if (Opcode.BRANCH.rs == 0)
+	{
+		Map_GPR_32bit(Section, Opcode.BRANCH.rt, TRUE, Opcode.BRANCH.rt);
+		CompConstToX86reg(MipsRegLo(Opcode.BRANCH.rs), 0);
+		JgeLabel32("bypass TLT", DoTrapLength32);
+		CompileExit(Section->CompilePC, Section->RegWorking, DoTrap, TRUE, NULL);
+	}
+	else
+	{
+		Map_GPR_32bit(Section, Opcode.BRANCH.rt, TRUE, Opcode.BRANCH.rt);
+		Map_GPR_32bit(Section, Opcode.BRANCH.rs, TRUE, Opcode.BRANCH.rs);
+		CompX86RegToX86Reg(MipsRegLo(Opcode.BRANCH.rs), MipsRegLo(Opcode.BRANCH.rt));
+		JgeLabel32("bypass TLT", DoTrapLength32);
+		CompileExit(Section->CompilePC, Section->RegWorking, DoTrap, TRUE, NULL);
+	}
 }
 
 void Compile_R4300i_SPECIAL_TLTU(BLOCK_SECTION* Section) {
-	//CompileExit(Section->CompilePC, Section->RegWorking, DoTrap, TRUE, NULL);
+	CPU_Message("  %X %s", Section->CompilePC, R4300iOpcodeName(Opcode.Hex, Section->CompilePC));
+
+	for (int i = 0; i < 32; i++)
+	{
+		if (IsMapped(i)) UnMap_GPR(Section, i, TRUE);
+	}
+
+	if (Opcode.BRANCH.rt == Opcode.BRANCH.rs)
+	{
+		//CompileExit(Section->CompilePC, Section->RegWorking, DoTrap, TRUE, NULL);
+	}
+	else if (Opcode.BRANCH.rt == 0)
+	{
+		Map_GPR_32bit(Section, Opcode.BRANCH.rs, FALSE, Opcode.BRANCH.rs);
+		CompConstToX86reg(MipsRegLo(Opcode.BRANCH.rs), 0);
+		JgeLabel32("bypass TLTU", DoTrapLength32);
+		CompileExit(Section->CompilePC, Section->RegWorking, DoTrap, TRUE, NULL);
+	}
+	else if (Opcode.BRANCH.rs == 0)
+	{
+		Map_GPR_32bit(Section, Opcode.BRANCH.rt, FALSE, Opcode.BRANCH.rt);
+		CompConstToX86reg(MipsRegLo(Opcode.BRANCH.rs), 0);
+		JgeLabel32("bypass TLTU", DoTrapLength32);
+		CompileExit(Section->CompilePC, Section->RegWorking, DoTrap, TRUE, NULL);
+	}
+	else
+	{
+		Map_GPR_32bit(Section, Opcode.BRANCH.rt, FALSE, Opcode.BRANCH.rt);
+		Map_GPR_32bit(Section, Opcode.BRANCH.rs, FALSE, Opcode.BRANCH.rs);
+		CompX86RegToX86Reg(MipsRegLo(Opcode.BRANCH.rs), MipsRegLo(Opcode.BRANCH.rt));
+		JgeLabel32("bypass TLT", DoTrapLength32);
+		CompileExit(Section->CompilePC, Section->RegWorking, DoTrap, TRUE, NULL);
+	}
 }
 
 void Compile_R4300i_SPECIAL_TNE(BLOCK_SECTION* Section) {

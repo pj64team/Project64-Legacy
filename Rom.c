@@ -36,6 +36,7 @@
 #include "EmulateAI.h"
 #include "resource.h"
 #include "RomTools_Common.h"
+#include "Win32Timer.h"
 
 #define MenuLocOfUsedFiles	12
 #define MenuLocOfUsedDirs	(MenuLocOfUsedFiles + 1)
@@ -589,7 +590,7 @@ void LoadRomOptions(void) {
 		Timer_Initialize((double)50); break;
 	case NTSC_Region:
 	default:
-		EmuAI_SetFrameRate(60);
+		EmuAI_SetFrameRate(59);
 		Timer_Initialize((double)60); break;
 	}
 }

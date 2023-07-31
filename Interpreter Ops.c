@@ -1245,9 +1245,10 @@ void _fastcall r4300i_COP1_S_DIV (void) {
 	TEST_COP1_USABLE_EXCEPTION
 	_controlfp(RoundingModel,_MCW_RC);
 	*(float *)FPRFloatLocation[Opcode.FP.fd] = (*(float *)FPRFloatLocation[Opcode.FP.fs] / *(float *)FPRFloatLocation[Opcode.FP.ft]); 
-
-	if (fpclassify(*(float*)FPRFloatLocation[Opcode.FP.fd]) == FP_SUBNORMAL) {
-		*(float*)FPRFloatLocation[Opcode.FP.fd] = 0;
+	
+	// test if denormalize
+	if ((*(int*)FPRFloatLocation[Opcode.FP.fd] & 0x7F800000) == 0) {
+		*(int*)FPRFloatLocation[Opcode.FP.fd] &= 0x80000000;
 	}
 }
 
@@ -1407,6 +1408,11 @@ void _fastcall r4300i_COP1_D_MUL (void) {
 void _fastcall r4300i_COP1_D_DIV (void) {
 	TEST_COP1_USABLE_EXCEPTION
 	*(double *)FPRDoubleLocation[Opcode.FP.fd] = *(double *)FPRDoubleLocation[Opcode.FP.fs] / *(double *)FPRDoubleLocation[Opcode.FP.ft]; 
+
+	// test if denormalize
+	if ((*(int*)FPRDoubleLocation[Opcode.FP.fd] & 0x7FF00000) == 0) {
+		*(int*)FPRDoubleLocation[Opcode.FP.fd] &= 0x80000000;
+	}
 }
 
 void _fastcall r4300i_COP1_D_SQRT (void) {
