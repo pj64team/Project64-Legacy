@@ -143,8 +143,8 @@ void DoIntrException ( BOOL DelaySlot ) {
 	PROGRAM_COUNTER = 0x80000180;
 }
 
-void _fastcall DoTLBMiss ( BOOL DelaySlot, DWORD BadVaddr ) {
-	CAUSE_REGISTER = EXC_RMISS;
+void _fastcall DoTLBMiss ( BOOL DelaySlot, DWORD BadVaddr, BOOL FromRead ) {
+	CAUSE_REGISTER = FromRead ? EXC_RMISS : EXC_WMISS;
 	BAD_VADDR_REGISTER = BadVaddr;
 	CONTEXT_REGISTER &= 0xFF80000F;
 	CONTEXT_REGISTER |= (BadVaddr >> 9) & 0x007FFFF0;

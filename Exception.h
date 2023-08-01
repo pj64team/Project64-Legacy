@@ -69,7 +69,7 @@ void __cdecl CheckInterrupts			( void );
 void DoAddressError						( BOOL DelaySlot, DWORD BadVaddr, BOOL FromRead );
 void _fastcall DoCopUnusableException	( BOOL DelaySlot, int Coprocessor );
 void DoIntrException					( BOOL DelaySlot );
-void _fastcall DoTLBMiss				( BOOL DelaySlot, DWORD BadVaddr );
+void _fastcall DoTLBMiss				( BOOL DelaySlot, DWORD BadVaddr, BOOL FromRead );
 void _fastcall DoSysCallException		( BOOL DelaySlot );
 void _fastcall DoBreakException			( BOOL DelaySlot );
 void _fastcall DoIllegalInstructionException(BOOL DelaySlot );
