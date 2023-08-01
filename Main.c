@@ -1467,6 +1467,7 @@ LRESULT CALLBACK Main_Proc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
 						hMenu = GetMenu(hWnd);
 						uState = GetMenuState(hMenu, ID_DEBUGGER_GENERATELOG, MF_BYCOMMAND);
 
+						LoadLogOptions(&LogOptions, FALSE);
 						if (uState & MFS_CHECKED) {
 							CheckMenuItem(hMenu, ID_DEBUGGER_GENERATELOG, MF_BYCOMMAND | MFS_UNCHECKED);
 							LogOptions.GenerateLog = FALSE;
@@ -1475,8 +1476,7 @@ LRESULT CALLBACK Main_Proc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
 							CheckMenuItem(hMenu, ID_DEBUGGER_GENERATELOG, MF_BYCOMMAND | MFS_CHECKED);
 							LogOptions.GenerateLog = TRUE;
 						}
-						Settings_Write(APPS_NAME, STR_DEBUG, "Generate Log File", LogOptions.GenerateLog ? STR_TRUE : STR_FALSE);
-
+						SaveLogOptions(&LogOptions);
 						LoadLogOptions(&LogOptions, FALSE);
 						StartLog();
 					}

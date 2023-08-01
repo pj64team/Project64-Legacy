@@ -87,7 +87,7 @@ void EnterLogOptions(HWND hwndOwner) {
 
     LoadLogOptions(&TempOptions,TRUE);
 	PropertySheet(&psh);
-    SaveLogOptions();
+    SaveLogOptions(&TempOptions);
 	LoadLogOptions(&LogOptions, FALSE);
 	return;
 }
@@ -664,7 +664,7 @@ void SaveLogSetting (HKEY hKey,char * String, BOOL Value) {
 	RegSetValueEx(hKey,String,0,REG_DWORD,(CONST BYTE *)&StoreValue,sizeof(DWORD));
 }
 
-void SaveLogOptions (void) {	
+void SaveLogOptions (LOG_OPTIONS* LogOptions) {
 	long lResult;
 	HKEY hKeyResults = 0;
 	DWORD Disposition = 0;
@@ -674,30 +674,31 @@ void SaveLogOptions (void) {
 	lResult = RegCreateKeyEx( HKEY_CURRENT_USER,String,0,"", REG_OPTION_NON_VOLATILE,
 		KEY_ALL_ACCESS,NULL,&hKeyResults,&Disposition);
 	
-	SaveLogSetting(hKeyResults,"Log RDRAM",TempOptions.LogRDRamRegisters);
-	SaveLogSetting(hKeyResults,"Log SP",TempOptions.LogSPRegisters);
-	SaveLogSetting(hKeyResults,"Log DP Command",TempOptions.LogDPCRegisters);
-	SaveLogSetting(hKeyResults,"Log DP Span",TempOptions.LogDPSRegisters);
-	SaveLogSetting(hKeyResults,"Log MIPS Interface (MI)",TempOptions.LogMIPSInterface);
-	SaveLogSetting(hKeyResults,"Log Video Interface (VI)",TempOptions.LogVideoInterface);
-	SaveLogSetting(hKeyResults,"Log Audio Interface (AI)",TempOptions.LogAudioInterface);
-	SaveLogSetting(hKeyResults,"Log Peripheral Interface (PI)",TempOptions.LogPerInterface);
-	SaveLogSetting(hKeyResults,"Log RDRAM Interface (RI)",TempOptions.LogRDRAMInterface);
-	SaveLogSetting(hKeyResults,"Log Serial Interface (SI)",TempOptions.LogSerialInterface);
-	SaveLogSetting(hKeyResults,"Log PifRam DMA Operations",TempOptions.LogPRDMAOperations);
-	SaveLogSetting(hKeyResults,"Log PifRam Direct Memory Loads",TempOptions.LogPRDirectMemLoads);
-	SaveLogSetting(hKeyResults,"Log PifRam DMA Memory Loads",TempOptions.LogPRDMAMemLoads);
-	SaveLogSetting(hKeyResults,"Log PifRam Direct Memory Stores",TempOptions.LogPRDirectMemStores);
-	SaveLogSetting(hKeyResults,"Log PifRam DMA Memory Stores",TempOptions.LogPRDMAMemStores);
-	SaveLogSetting(hKeyResults,"Log Controller Pak",TempOptions.LogControllerPak);
-	SaveLogSetting(hKeyResults,"Log CP0 changes",TempOptions.LogCP0changes);
-	SaveLogSetting(hKeyResults,"Log CP0 reads",TempOptions.LogCP0reads);
-	SaveLogSetting(hKeyResults,"Log Exceptions",TempOptions.LogExceptions);
-	SaveLogSetting(hKeyResults,"No Interrupts",TempOptions.NoInterrupts);
-	SaveLogSetting(hKeyResults,"Log TLB",TempOptions.LogTLB);
-	SaveLogSetting(hKeyResults,"Log Cache Operations",TempOptions.LogCache);
-	SaveLogSetting(hKeyResults,"Log Rom Header",TempOptions.LogRomHeader);
-	SaveLogSetting(hKeyResults,"Log Unknown access",TempOptions.LogUnknown);
+	SaveLogSetting(hKeyResults,"Generate Log File",LogOptions->GenerateLog);
+	SaveLogSetting(hKeyResults,"Log RDRAM",LogOptions->LogRDRamRegisters);
+	SaveLogSetting(hKeyResults,"Log SP",LogOptions->LogSPRegisters);
+	SaveLogSetting(hKeyResults,"Log DP Command",LogOptions->LogDPCRegisters);
+	SaveLogSetting(hKeyResults,"Log DP Span",LogOptions->LogDPSRegisters);
+	SaveLogSetting(hKeyResults,"Log MIPS Interface (MI)",LogOptions->LogMIPSInterface);
+	SaveLogSetting(hKeyResults,"Log Video Interface (VI)", LogOptions->LogVideoInterface);
+	SaveLogSetting(hKeyResults,"Log Audio Interface (AI)", LogOptions->LogAudioInterface);
+	SaveLogSetting(hKeyResults,"Log Peripheral Interface (PI)", LogOptions->LogPerInterface);
+	SaveLogSetting(hKeyResults,"Log RDRAM Interface (RI)", LogOptions->LogRDRAMInterface);
+	SaveLogSetting(hKeyResults,"Log Serial Interface (SI)", LogOptions->LogSerialInterface);
+	SaveLogSetting(hKeyResults,"Log PifRam DMA Operations", LogOptions->LogPRDMAOperations);
+	SaveLogSetting(hKeyResults,"Log PifRam Direct Memory Loads", LogOptions->LogPRDirectMemLoads);
+	SaveLogSetting(hKeyResults,"Log PifRam DMA Memory Loads", LogOptions->LogPRDMAMemLoads);
+	SaveLogSetting(hKeyResults,"Log PifRam Direct Memory Stores", LogOptions->LogPRDirectMemStores);
+	SaveLogSetting(hKeyResults,"Log PifRam DMA Memory Stores", LogOptions->LogPRDMAMemStores);
+	SaveLogSetting(hKeyResults,"Log Controller Pak", LogOptions->LogControllerPak);
+	SaveLogSetting(hKeyResults,"Log CP0 changes", LogOptions->LogCP0changes);
+	SaveLogSetting(hKeyResults,"Log CP0 reads", LogOptions->LogCP0reads);
+	SaveLogSetting(hKeyResults,"Log Exceptions", LogOptions->LogExceptions);
+	SaveLogSetting(hKeyResults,"No Interrupts", LogOptions->NoInterrupts);
+	SaveLogSetting(hKeyResults,"Log TLB", LogOptions->LogTLB);
+	SaveLogSetting(hKeyResults,"Log Cache Operations", LogOptions->LogCache);
+	SaveLogSetting(hKeyResults,"Log Rom Header", LogOptions->LogRomHeader);
+	SaveLogSetting(hKeyResults,"Log Unknown access", LogOptions->LogUnknown);
 	
 	RegCloseKey(hKeyResults);
 }
