@@ -259,7 +259,7 @@ void __cdecl StartSyncCPU (void ) {
 			Addr = PROGRAM_COUNTER;
 			if (UseTlb) {
 				if (!TranslateVaddr(&Addr)) {
-					DoTLBMiss(NextInstruction == DELAY_SLOT,PROGRAM_COUNTER);
+					DoTLBMiss(NextInstruction == DELAY_SLOT,PROGRAM_COUNTER, TRUE);
 					NextInstruction = NORMAL;
 					Addr = PROGRAM_COUNTER;
 					if (!TranslateVaddr(&Addr)) {

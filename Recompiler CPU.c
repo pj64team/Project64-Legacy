@@ -605,6 +605,7 @@ void CompileExit (DWORD TargetPC, REG_INFO ExitRegSet, int reason, int CompileNo
 	case TLBReadMiss:
 		MoveConstToX86reg(NextInstruction == JUMP || NextInstruction == DELAY_SLOT,x86_ECX);
 		MoveVariableToX86reg(&TLBLoadAddress,"TLBLoadAddress",x86_EDX);
+		PushImm32("FromRead", 1);
 		Call_Direct(DoTLBMiss,"DoTLBMiss");
 		if (CPU_Type == CPU_SyncCores) { Call_Direct(SyncToPC, "SyncToPC"); }
 		Ret();
@@ -2930,7 +2931,7 @@ void __cdecl StartRecompilerCPU (void ) {
 				Addr = PROGRAM_COUNTER;
 				if (UseTlb) {
 					if (!TranslateVaddr(&Addr)) {
-						DoTLBMiss(NextInstruction == DELAY_SLOT,PROGRAM_COUNTER);
+						DoTLBMiss(NextInstruction == DELAY_SLOT,PROGRAM_COUNTER, TRUE);
 						NextInstruction = NORMAL;
 						Addr = PROGRAM_COUNTER;
 						if (!TranslateVaddr(&Addr)) {
@@ -3056,7 +3057,7 @@ void __cdecl StartRecompilerCPU (void ) {
 			Addr = PROGRAM_COUNTER;
 			if (UseTlb) {
 				if (!TranslateVaddr(&Addr)) {
-					DoTLBMiss(NextInstruction == DELAY_SLOT,PROGRAM_COUNTER);
+					DoTLBMiss(NextInstruction == DELAY_SLOT,PROGRAM_COUNTER, TRUE);
 					NextInstruction = NORMAL;
 					Addr = PROGRAM_COUNTER;
 					if (!TranslateVaddr(&Addr)) {
