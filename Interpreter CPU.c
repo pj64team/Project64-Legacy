@@ -251,11 +251,11 @@ void BuildInterpreter (void ) {
 	R4300i_Regimm[31] = R4300i_UnknownOpcode;
 	
 	R4300i_CoP0[ 0] = r4300i_COP0_MF;
-	R4300i_CoP0[ 1] = R4300i_UnknownOpcode;
+	R4300i_CoP0[ 1] = r4300i_COP0_DMF;
 	R4300i_CoP0[ 2] = R4300i_UnknownOpcode;
 	R4300i_CoP0[ 3] = R4300i_UnknownOpcode;
 	R4300i_CoP0[ 4] = r4300i_COP0_MT;
-	R4300i_CoP0[ 5] = R4300i_UnknownOpcode;
+	R4300i_CoP0[ 5] = r4300i_COP0_DMT;
 	R4300i_CoP0[ 6] = R4300i_UnknownOpcode;
 	R4300i_CoP0[ 7] = R4300i_UnknownOpcode;
 	R4300i_CoP0[ 8] = R4300i_UnknownOpcode;

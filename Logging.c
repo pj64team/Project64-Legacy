@@ -33,7 +33,7 @@
 #include "resource.h"
 
 void LoadLogSetting (HKEY hKey,char * String, BOOL * Value);
-void SaveLogOptions (void);
+void SaveLogOptions (LOG_OPTIONS* LogOptions);
 
 LRESULT CALLBACK LogGeneralProc ( HWND, UINT, WPARAM, LPARAM );
 LRESULT CALLBACK LogPifProc     ( HWND, UINT, WPARAM, LPARAM );
