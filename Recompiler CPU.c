@@ -2345,6 +2345,7 @@ BOOL GenerateX86Code (BLOCK_SECTION * Section, DWORD Test) {
 		case R4300i_BNEL: Compile_R4300i_BranchLikely(Section,BNE_Compare,FALSE); break;
 		case R4300i_BGTZL:Compile_R4300i_BranchLikely(Section,BGTZ_Compare,FALSE); break;
 		case R4300i_BLEZL:Compile_R4300i_BranchLikely(Section,BLEZ_Compare,FALSE); break;
+		case R4300i_DADDI: Compile_R4300i_DADDI(Section); break;
 		case R4300i_DADDIU: Compile_R4300i_DADDIU(Section); break;
 		case R4300i_LDL: Compile_R4300i_LDL(Section); break;
 		case R4300i_LDR: Compile_R4300i_LDR(Section); break;
@@ -2425,7 +2426,6 @@ BOOL GenerateX86Code (BLOCK_SECTION * Section, DWORD Test) {
 			break;
 		case DELAY_SLOT:
 			NextInstruction = DELAY_SLOT_DONE;
-			//BlockCycleCount += CountPerOp;
 			BlockCycleCount += CPOAdjust;
 			BlockRandomModifier -= 1;
 			Section->CompilePC -= 4; 

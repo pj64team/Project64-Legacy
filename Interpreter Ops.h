@@ -42,6 +42,7 @@ void _fastcall r4300i_BEQL           ( void );
 void _fastcall r4300i_BNEL           ( void );
 void _fastcall r4300i_BLEZL          ( void );
 void _fastcall r4300i_BGTZL          ( void );
+void _fastcall r4300i_DADDI          ( void );
 void _fastcall r4300i_DADDIU         ( void );
 void _fastcall r4300i_LDL            ( void );
 void _fastcall r4300i_LDR            ( void );

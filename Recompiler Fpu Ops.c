@@ -364,6 +364,7 @@ void Compile_R4300i_COP1_MF (BLOCK_SECTION * Section) {
 	DWORD TempReg;
 
 	CPU_Message("  %X %s",Section->CompilePC,R4300iOpcodeName(Opcode.Hex,Section->CompilePC));
+	if (Opcode.BRANCH.rt == 0) { return; }
 	CompileCop1Test(Section);
 
 	UnMap_FPR(Section,Opcode.FP.fs,TRUE);
@@ -378,6 +379,7 @@ void Compile_R4300i_COP1_DMF (BLOCK_SECTION * Section) {
 	DWORD TempReg;
 
 	CPU_Message("  %X %s",Section->CompilePC,R4300iOpcodeName(Opcode.Hex,Section->CompilePC));
+	if (Opcode.BRANCH.rt == 0) { return; }
 	CompileCop1Test(Section);
 
 	UnMap_FPR(Section,Opcode.FP.fs,TRUE);
@@ -762,8 +764,6 @@ void Compile_R4300i_COP1_S_CMP (BLOCK_SECTION * Section) {
 	AndConstToVariable((DWORD)~FPCSR_C, &FSTATUS_REGISTER, "FSTATUS_REGISTER");
 	fpuStoreStatus();
 	x86reg = Map_TempReg(Section,x86_Any8Bit, 0, FALSE);
-	TestConstToX86Reg(cmp,x86_EAX);	
-	Setnz(x86reg);
 	
 	if (cmp != 0) {
 		TestConstToX86Reg(cmp,x86_EAX);	

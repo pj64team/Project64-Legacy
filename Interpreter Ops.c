@@ -120,8 +120,15 @@ void _fastcall r4300i_ADDI (void) {
 		StackValue += (short)Opcode.BRANCH.offset;
 	}
 #endif
-	if (Opcode.BRANCH.rt == 0) { return; }
-	GPR[Opcode.BRANCH.rt].DW = (GPR[Opcode.BRANCH.rs].W[0] + ((short)Opcode.BRANCH.offset));
+	long result = (GPR[Opcode.BRANCH.rs].W[0] + ((short)Opcode.BRANCH.offset));
+	long sign = (long)((short)Opcode.BRANCH.offset) >> 31;
+	if ((GPR[Opcode.BRANCH.rs].W[0] >> 31) == sign && (result >> 31) != sign) {
+		DoIntegerOverflow(NextInstruction == JUMP);
+		NextInstruction = JUMP;
+		JumpToLocation = PROGRAM_COUNTER;
+	} else {
+		GPR[Opcode.BRANCH.rt].DW = result;
+	}
 #ifdef Interpreter_StackTest
 	if (Opcode.BRANCH.rt == 29 && Opcode.BRANCH.rs != 29) {
 		StackValue = GPR[Opcode.BRANCH.rt].W[0];		
@@ -214,6 +221,19 @@ void _fastcall r4300i_BGTZL (void) {
 	} else {
 		NextInstruction = JUMP;
 		JumpToLocation = PROGRAM_COUNTER + 8;
+	}
+}
+
+void _fastcall r4300i_DADDI (void) {
+	_int64 imm = (_int64)((short)Opcode.BRANCH.offset);
+	_int64 result = GPR[Opcode.BRANCH.rs].DW + imm;
+	_int64 sign = (imm >> 63);
+	if ((GPR[Opcode.BRANCH.rs].DW >> 63) == sign && (result >> 63) != sign) {
+		DoIntegerOverflow(NextInstruction == JUMP);
+		NextInstruction = JUMP;
+		JumpToLocation = PROGRAM_COUNTER;
+	} else {
+		GPR[Opcode.BRANCH.rt].DW = result;
 	}
 }
 
@@ -600,12 +620,13 @@ void _fastcall r4300i_SC (void) {
 
 	if (LLBit == 1) {
 		if (!r4300i_SW_VAddr(Address,GPR[Opcode.BRANCH.rt].UW[0])) {
-			DisplayError("SW TLB: %X",Address);
+			if (ShowTLBMisses) {
+				DisplayError("SW TLB: %X", Address);
+			}
+			TLB_WRITE_EXCEPTION(Address);
 		}
-		TLB_WRITE_EXCEPTION(Address);
-	} else {
-		GPR[Opcode.BRANCH.rt].UW[0] = LLBit;
 	}
+	GPR[Opcode.BRANCH.rt].UW[0] = LLBit;
 }
 
 void _fastcall r4300i_LD (void) {
@@ -684,7 +705,7 @@ void _fastcall r4300i_SPECIAL_SRL (void) {
 }
 
 void _fastcall r4300i_SPECIAL_SRA (void) {
-	GPR[Opcode.REG.rd].DW = (GPR[Opcode.BRANCH.rt].W[0] >> Opcode.REG.sa);
+	GPR[Opcode.REG.rd].DW = (long)(GPR[Opcode.BRANCH.rt].DW >> Opcode.REG.sa);
 }
 
 void _fastcall r4300i_SPECIAL_SLLV (void) {
@@ -697,7 +718,7 @@ void _fastcall r4300i_SPECIAL_SRLV (void) {
 }
 
 void _fastcall r4300i_SPECIAL_SRAV (void) {
-	GPR[Opcode.REG.rd].DW = (GPR[Opcode.BRANCH.rt].W[0] >> (GPR[Opcode.BRANCH.rs].UW[0] & 0x1F));
+	GPR[Opcode.REG.rd].DW = (long)(GPR[Opcode.BRANCH.rt].DW >> (GPR[Opcode.BRANCH.rs].UW[0] & 0x1F));
 }
 
 void _fastcall r4300i_SPECIAL_JR (void) {
@@ -833,7 +854,15 @@ void _fastcall r4300i_SPECIAL_DDIVU (void) {
 }
 
 void _fastcall r4300i_SPECIAL_ADD (void) {
-	GPR[Opcode.REG.rd].DW = GPR[Opcode.BRANCH.rs].W[0] + GPR[Opcode.BRANCH.rt].W[0];
+	long result = GPR[Opcode.BRANCH.rs].W[0] + GPR[Opcode.BRANCH.rt].W[0];
+	long sign = GPR[Opcode.BRANCH.rt].W[0] >> 31;
+	if ((GPR[Opcode.BRANCH.rs].W[0] >> 31) == sign && (result >> 31) != sign) {
+		DoIntegerOverflow(NextInstruction == JUMP);
+		NextInstruction = JUMP;
+		JumpToLocation = PROGRAM_COUNTER;
+	} else {
+		GPR[Opcode.REG.rd].DW = result;
+	}
 }
 
 void _fastcall r4300i_SPECIAL_ADDU (void) {
@@ -841,7 +870,15 @@ void _fastcall r4300i_SPECIAL_ADDU (void) {
 }
 
 void _fastcall r4300i_SPECIAL_SUB (void) {
-	GPR[Opcode.REG.rd].DW = GPR[Opcode.BRANCH.rs].W[0] - GPR[Opcode.BRANCH.rt].W[0];
+	long result = GPR[Opcode.BRANCH.rs].W[0] - GPR[Opcode.BRANCH.rt].W[0];
+	long sign = GPR[Opcode.BRANCH.rt].W[0] >> 31;
+	if ((GPR[Opcode.BRANCH.rs].W[0] >> 31) == sign && (result >> 31) != sign) {
+		DoIntegerOverflow(NextInstruction == JUMP);
+		NextInstruction = JUMP;
+		JumpToLocation = PROGRAM_COUNTER;
+	} else {
+		GPR[Opcode.REG.rd].DW = result;
+	}
 }
 
 void _fastcall r4300i_SPECIAL_SUBU (void) {
@@ -886,7 +923,15 @@ void _fastcall r4300i_SPECIAL_SLTU (void) {
 }
 
 void _fastcall r4300i_SPECIAL_DADD (void) {
-	GPR[Opcode.REG.rd].DW = GPR[Opcode.BRANCH.rs].DW + GPR[Opcode.BRANCH.rt].DW;
+	_int64 result = GPR[Opcode.BRANCH.rs].DW + GPR[Opcode.BRANCH.rt].DW;
+	_int64 sign = GPR[Opcode.BRANCH.rt].DW >> 63;
+	if ((GPR[Opcode.BRANCH.rs].DW >> 63) == sign && (result >> 63) != sign) {
+		DoIntegerOverflow(NextInstruction == JUMP);
+		NextInstruction = JUMP;
+		JumpToLocation = PROGRAM_COUNTER;
+	} else {
+		GPR[Opcode.REG.rd].DW = result;
+	}
 }
 
 void _fastcall r4300i_SPECIAL_DADDU (void) {
@@ -894,7 +939,15 @@ void _fastcall r4300i_SPECIAL_DADDU (void) {
 }
 
 void _fastcall r4300i_SPECIAL_DSUB (void) {
-	GPR[Opcode.REG.rd].DW = GPR[Opcode.BRANCH.rs].DW - GPR[Opcode.BRANCH.rt].DW;
+	_int64 result = GPR[Opcode.BRANCH.rs].DW - GPR[Opcode.BRANCH.rt].DW;
+	_int64 sign = GPR[Opcode.BRANCH.rt].DW >> 63;
+	if ((GPR[Opcode.BRANCH.rs].DW >> 63) == sign && (result >> 63) != sign) {
+		DoIntegerOverflow(NextInstruction == JUMP);
+		NextInstruction = JUMP;
+		JumpToLocation = PROGRAM_COUNTER;
+	} else {
+		GPR[Opcode.REG.rd].DW = result;
+	}
 }
 
 void _fastcall r4300i_SPECIAL_DSUBU (void) {
