@@ -111,7 +111,7 @@ void BuildInterpreter (void ) {
 	R4300i_Opcode[21] = r4300i_BNEL;
 	R4300i_Opcode[22] = r4300i_BLEZL;
 	R4300i_Opcode[23] = r4300i_BGTZL;
-	R4300i_Opcode[24] = R4300i_UnknownOpcode;
+	R4300i_Opcode[24] = r4300i_DADDI;
 	R4300i_Opcode[25] = r4300i_DADDIU;
 	R4300i_Opcode[26] = r4300i_LDL;
 	R4300i_Opcode[27] = r4300i_LDR;
@@ -251,11 +251,11 @@ void BuildInterpreter (void ) {
 	R4300i_Regimm[31] = R4300i_UnknownOpcode;
 	
 	R4300i_CoP0[ 0] = r4300i_COP0_MF;
-	R4300i_CoP0[ 1] = R4300i_UnknownOpcode;
+	R4300i_CoP0[ 1] = r4300i_COP0_DMF;
 	R4300i_CoP0[ 2] = R4300i_UnknownOpcode;
 	R4300i_CoP0[ 3] = R4300i_UnknownOpcode;
 	R4300i_CoP0[ 4] = r4300i_COP0_MT;
-	R4300i_CoP0[ 5] = R4300i_UnknownOpcode;
+	R4300i_CoP0[ 5] = r4300i_COP0_DMT;
 	R4300i_CoP0[ 6] = R4300i_UnknownOpcode;
 	R4300i_CoP0[ 7] = R4300i_UnknownOpcode;
 	R4300i_CoP0[ 8] = R4300i_UnknownOpcode;

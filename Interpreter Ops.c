@@ -217,6 +217,12 @@ void _fastcall r4300i_BGTZL (void) {
 	}
 }
 
+void _fastcall r4300i_DADDI(void) {
+	// TODO: overflow detection
+	if (Opcode.BRANCH.rt == 0) return;
+	GPR[Opcode.BRANCH.rt].DW = GPR[Opcode.BRANCH.rs].DW + (_int64)((short)Opcode.BRANCH.offset);
+}
+
 void _fastcall r4300i_DADDIU (void) {
 	GPR[Opcode.BRANCH.rt].DW = GPR[Opcode.BRANCH.rs].DW + (_int64)((short)Opcode.BRANCH.offset);
 }
@@ -564,18 +570,17 @@ void _fastcall r4300i_LL (void) {
 	DWORD Address =  GPR[Opcode.IMM.base].UW[0] + (short)Opcode.IMM.immediate;	
 	if ((Address & 3) != 0) { ADDRESS_ERROR_EXCEPTION(Address,TRUE); }
 
-	if (Opcode.BRANCH.rt == 0) { return; }
-
 	if (!r4300i_LW_VAddr(Address,&GPR[Opcode.BRANCH.rt].UW[0])) {
 		if (ShowTLBMisses) {
 			DisplayError("LL TLB: %X",Address);
 		}
 		TLB_READ_EXCEPTION(Address);
 	} else {
-		GPR[Opcode.BRANCH.rt].DW = GPR[Opcode.BRANCH.rt].W[0];
 		LLBit = 1;
 		LLAddr = Address;
 		TranslateVaddr(&LLAddr);
+		if (Opcode.BRANCH.rt == 0) { return; }
+		GPR[Opcode.BRANCH.rt].DW = GPR[Opcode.BRANCH.rt].W[0];
 	}
 }
 
@@ -600,12 +605,13 @@ void _fastcall r4300i_SC (void) {
 
 	if (LLBit == 1) {
 		if (!r4300i_SW_VAddr(Address,GPR[Opcode.BRANCH.rt].UW[0])) {
-			DisplayError("SW TLB: %X",Address);
+			if (ShowTLBMisses) {
+				DisplayError("SW TLB: %X", Address);
+			}
+			TLB_WRITE_EXCEPTION(Address);
 		}
-		TLB_WRITE_EXCEPTION(Address);
-	} else {
-		GPR[Opcode.BRANCH.rt].UW[0] = LLBit;
 	}
+	GPR[Opcode.BRANCH.rt].UW[0] = LLBit;
 }
 
 void _fastcall r4300i_LD (void) {
@@ -1046,6 +1052,15 @@ void _fastcall r4300i_COP0_MF (void) {
 	GPR[Opcode.BRANCH.rt].DW = (int)CP0[Opcode.REG.rd];
 }
 
+void _fastcall r4300i_COP0_DMF(void) {
+	// TODO: fix when required cop0 registers are converted to 64 bits
+	if (HaveDebugger && LogOptions.LogCP0reads) {
+		LogMessage("%08X: R4300i Read from %s (0x%08X)", PROGRAM_COUNTER,
+			Cop0_Name[Opcode.REG.rd], CP0[Opcode.REG.rd]);
+	}
+	GPR[Opcode.BRANCH.rt].DW = (int)CP0[Opcode.REG.rd];
+}
+
 void _fastcall r4300i_COP0_MT (void) {
 	if (HaveDebugger && LogOptions.LogCP0changes) {
 		LogMessage("%08X: Writing 0x%X to %s register (Originally: 0x%08X)",PROGRAM_COUNTER,
@@ -1100,6 +1115,72 @@ void _fastcall r4300i_COP0_MT (void) {
 		CP0[Opcode.REG.rd] &= 0xFFFFCFF;
 		if (ShowDebugMessages)
 			if ((GPR[Opcode.BRANCH.rt].UW[0] & 0x300) != 0 ){ DisplayError("Set IP0 or IP1"); }
+		break;
+	default:
+		R4300i_UnknownOpcode();
+	}
+
+}
+
+void _fastcall r4300i_COP0_DMT(void) {
+	//TODO: check when the required registers are converted to 64 bits
+	if (HaveDebugger && LogOptions.LogCP0changes) {
+		LogMessage("%08X: Writing 0x%lX to %s register (Originally: 0x%08X)", PROGRAM_COUNTER,
+			GPR[Opcode.BRANCH.rt].UDW, Cop0_Name[Opcode.REG.rd], CP0[Opcode.REG.rd]);
+		if (Opcode.REG.rd == 11) { //Compare
+			LogMessage("%08X: Cause register changed from %08X to %08X", PROGRAM_COUNTER,
+				CAUSE_REGISTER, (CAUSE_REGISTER & ~CAUSE_IP7));
+		}
+	}
+	switch (Opcode.REG.rd) {
+	case 0: //Index
+	case 2: //EntryLo0
+	case 3: //EntryLo1
+	case 5: //PageMask
+	case 6: //Wired
+	case 10: //Entry Hi
+	case 14: //EPC
+	case 16: //Config
+	case 18: //WatchLo
+	case 19: //WatchHi
+	case 28: //Tag lo
+	case 29: //Tag Hi
+	case 30: //ErrEPC
+		CP0[Opcode.REG.rd] = GPR[Opcode.BRANCH.rt].UW[0];
+		break;
+	case 4: //Context
+		CP0[Opcode.REG.rd] = GPR[Opcode.BRANCH.rt].UW[0] & 0xFF800000;
+		break;
+	case 20: //XContext
+		CP0[Opcode.REG.rd] = 0; // TODO: fix when the reg is converted to 64 bits
+		break;
+	case 9: //Count
+		CP0[Opcode.REG.rd] = GPR[Opcode.BRANCH.rt].UW[0];
+		ChangeCompareTimer();
+		break;
+	case 11: //Compare
+		CP0[Opcode.REG.rd] = GPR[Opcode.BRANCH.rt].UW[0];
+		FAKE_CAUSE_REGISTER &= ~CAUSE_IP7;
+		ChangeCompareTimer();
+		break;
+	case 12: //Status
+		if ((CP0[Opcode.REG.rd] ^ GPR[Opcode.BRANCH.rt].UW[0]) != 0) {
+			CP0[Opcode.REG.rd] = GPR[Opcode.BRANCH.rt].UW[0];
+			SetFpuLocations();
+		}
+		else {
+			CP0[Opcode.REG.rd] = GPR[Opcode.BRANCH.rt].UW[0];
+		}
+		if ((CP0[Opcode.REG.rd] & 0x18) != 0) {
+			if (ShowDebugMessages)
+				DisplayError("Left kernel mode ??");
+		}
+		CheckInterrupts();
+		break;
+	case 13: //cause
+		CP0[Opcode.REG.rd] &= 0xFFFFCFF;
+		if (ShowDebugMessages)
+			if ((GPR[Opcode.BRANCH.rt].UW[0] & 0x300) != 0) { DisplayError("Set IP0 or IP1"); }
 		break;
 	default:
 		R4300i_UnknownOpcode();

@@ -199,8 +199,10 @@ typedef union {
 #define R4300i_REGIMM_BGEZALL		0x13
 
 /* R4300i COP0 opcodes */
-#define	R4300i_COP0_MF				 0 
+#define	R4300i_COP0_MF				 0
+#define R4300i_COP0_DMF              1
 #define	R4300i_COP0_MT				 4
+#define R4300i_COP0_DMT              5
 
 /* R4300i COP0 CO opcodes */
 #define R4300i_COP0_CO_TLBR			1

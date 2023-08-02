@@ -50,6 +50,7 @@ OPCODE Opcode;
 HANDLE hCPU;
 BOOL inFullScreen, CPURunning, SPHack;
 DWORD MemoryStack;
+static unsigned int firstFrameWithInterruptsDisabled = 0;
 
 #ifdef CFB_READ
 DWORD CFBStart = 0, CFBEnd = 0;
@@ -569,6 +570,17 @@ void InPermLoop (void) {
 	return;
 
 InterruptsDisabled:
+	if (firstFrameWithInterruptsDisabled == 0) {
+		firstFrameWithInterruptsDisabled = CurrentFrame;
+		return;
+	}
+	else if ((CurrentFrame - firstFrameWithInterruptsDisabled) < 1) {
+		return;
+	}
+	else {
+		firstFrameWithInterruptsDisabled = 0;
+	}
+
 	if (UpdateScreen != NULL) { UpdateScreen(); }
 	CurrentFrame = 0;
 	CurrentPercent = 0;
@@ -1234,6 +1246,7 @@ void StartEmulation ( void ) {
 	Timers.CurrentTimerType = -1;
 	Timers.Timer = 0;
 	CurrentFrame = 0;
+	firstFrameWithInterruptsDisabled = 0;
 	CurrentPercent = 0;
 	for (count = 0; count < MaxTimers; count ++) { Timers.Active[count] = FALSE; }
 	ChangeTimer(ViTimer,5000); 
