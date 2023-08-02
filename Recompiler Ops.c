@@ -2845,15 +2845,19 @@ void Compile_R4300i_SPECIAL_SRA (BLOCK_SECTION * Section) {
 
 	if (IsConst(Opcode.BRANCH.rt)) {
 		if (IsMapped(Opcode.REG.rd)) { UnMap_GPR(Section, Opcode.REG.rd, FALSE); }
-
-		MipsReg_S(Opcode.REG.rd) = (long)(Is64Bit(Opcode.BRANCH.rt) ? MipsReg_S(Opcode.BRANCH.rt) : (_int64)MipsRegLo_S(Opcode.BRANCH.rt)) >> Opcode.REG.sa;
-		MipsRegState(Opcode.REG.rd) = STATE_CONST_64;
+		MipsRegLo(Opcode.REG.rd) = MipsRegLo_S(Opcode.BRANCH.rt) >> Opcode.REG.sa;
+		MipsRegState(Opcode.REG.rd) = STATE_CONST_32;
 		return;
 	}
-	Map_GPR_64bit(Section, Opcode.REG.rd, Opcode.BRANCH.rt);
-	ShiftRightDoubleImmed(MipsRegLo(Opcode.REG.rd), MipsRegHi(Opcode.REG.rd), (BYTE)Opcode.REG.sa);
-	MoveX86RegToX86Reg(MipsRegLo(Opcode.REG.rd), MipsRegHi(Opcode.REG.rd));
-	ShiftRightSignImmed(MipsRegHi(Opcode.REG.rd), 31);
+	if (Is32Bit(Opcode.BRANCH.rt)) {
+		Map_GPR_32bit(Section, Opcode.REG.rd, TRUE, Opcode.BRANCH.rt);
+		ShiftRightSignImmed(MipsRegLo(Opcode.REG.rd), (BYTE)Opcode.REG.sa);
+	} else {
+		Map_GPR_64bit(Section, Opcode.REG.rd, Opcode.BRANCH.rt);
+		ShiftRightDoubleImmed(MipsRegLo(Opcode.REG.rd), MipsRegHi(Opcode.REG.rd), (BYTE)Opcode.REG.sa);
+		MoveX86RegToX86Reg(MipsRegLo(Opcode.REG.rd), MipsRegHi(Opcode.REG.rd));
+		ShiftRightSignImmed(MipsRegHi(Opcode.REG.rd), 31);
+	}
 }
 
 void Compile_R4300i_SPECIAL_SLLV (BLOCK_SECTION * Section) {
@@ -2882,7 +2886,7 @@ void Compile_R4300i_SPECIAL_SRLV (BLOCK_SECTION * Section) {
 	CPU_Message("  %X %s",Section->CompilePC,R4300iOpcodeName(Opcode.Hex,Section->CompilePC));
 	if (Opcode.REG.rd == 0) { return; }
 	
-	if (IsKnown(Opcode.BRANCH.rs) && IsConst(Opcode.BRANCH.rs)) {
+	if (IsConst(Opcode.BRANCH.rs)) {
 		DWORD Shift = (MipsRegLo(Opcode.BRANCH.rs) & 0x1F);
 		if (IsConst(Opcode.BRANCH.rt)) {
 			if (IsMapped(Opcode.REG.rd)) { UnMap_GPR(Section,Opcode.REG.rd, FALSE); }
@@ -2904,26 +2908,36 @@ void Compile_R4300i_SPECIAL_SRAV (BLOCK_SECTION * Section) {
 	CPU_Message("  %X %s",Section->CompilePC,R4300iOpcodeName(Opcode.Hex,Section->CompilePC));
 	if (Opcode.REG.rd == 0) { return; }
 
-	if (IsKnown(Opcode.BRANCH.rs) && IsConst(Opcode.BRANCH.rs)) {
+	if (IsConst(Opcode.BRANCH.rs)) {
 		DWORD Shift = (MipsRegLo(Opcode.BRANCH.rs) & 0x1F);
 		if (IsConst(Opcode.BRANCH.rt)) {
 			if (IsMapped(Opcode.REG.rd)) { UnMap_GPR(Section, Opcode.REG.rd, FALSE); }
-			MipsReg_S(Opcode.REG.rd) = (long)(Is64Bit(Opcode.BRANCH.rt) ? MipsReg_S(Opcode.BRANCH.rt) : (_int64)MipsRegLo_S(Opcode.BRANCH.rt)) >> Shift;
-			MipsRegState(Opcode.REG.rd) = STATE_CONST_64;
+			MipsRegLo(Opcode.REG.rd) = MipsRegLo_S(Opcode.BRANCH.rt) >> Shift;
+			MipsRegState(Opcode.REG.rd) = STATE_CONST_32;
 			return;
 		}
-		Map_GPR_64bit(Section, Opcode.REG.rd, Opcode.BRANCH.rt);
-		ShiftRightDoubleImmed(MipsRegLo(Opcode.REG.rd), MipsRegHi(Opcode.REG.rd), Shift);
-		MoveX86RegToX86Reg(MipsRegLo(Opcode.REG.rd), MipsRegHi(Opcode.REG.rd));
-		ShiftRightSignImmed(MipsRegHi(Opcode.REG.rd), 31);
+		if (Is32Bit(Opcode.BRANCH.rt)) {
+			Map_GPR_32bit(Section, Opcode.REG.rd, TRUE, Opcode.BRANCH.rt);
+			ShiftRightSignImmed(MipsRegLo(Opcode.REG.rd), Shift);
+		} else {
+			Map_GPR_64bit(Section, Opcode.REG.rd, Opcode.BRANCH.rt);
+			ShiftRightDoubleImmed(MipsRegLo(Opcode.REG.rd), MipsRegHi(Opcode.REG.rd), Shift);
+			MoveX86RegToX86Reg(MipsRegLo(Opcode.REG.rd), MipsRegHi(Opcode.REG.rd));
+			ShiftRightSignImmed(MipsRegHi(Opcode.REG.rd), 31);
+		}
 		return;
 	}
 	Map_TempReg(Section, x86_ECX, Opcode.BRANCH.rs, FALSE);
 	AndConstToX86Reg(x86_ECX, 0x1F);
-	Map_GPR_64bit(Section, Opcode.REG.rd, Opcode.BRANCH.rt);
-	ShiftRightDouble(MipsRegLo(Opcode.REG.rd), MipsRegHi(Opcode.REG.rd));
-	MoveX86RegToX86Reg(MipsRegLo(Opcode.REG.rd), MipsRegHi(Opcode.REG.rd));
-	ShiftRightSignImmed(MipsRegHi(Opcode.REG.rd), 31);
+	if (Is32Bit(Opcode.BRANCH.rt)) {
+		Map_GPR_32bit(Section, Opcode.REG.rd, TRUE, Opcode.BRANCH.rt);
+		ShiftRightSign(MipsRegLo(Opcode.REG.rd));
+	} else {
+		Map_GPR_64bit(Section, Opcode.REG.rd, Opcode.BRANCH.rt);
+		ShiftRightDouble(MipsRegLo(Opcode.REG.rd), MipsRegHi(Opcode.REG.rd));
+		MoveX86RegToX86Reg(MipsRegLo(Opcode.REG.rd), MipsRegHi(Opcode.REG.rd));
+		ShiftRightSignImmed(MipsRegHi(Opcode.REG.rd), 31);
+	}
 }
 
 void Compile_R4300i_SPECIAL_JR (BLOCK_SECTION * Section) {
