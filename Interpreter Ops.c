@@ -872,7 +872,7 @@ void _fastcall r4300i_SPECIAL_ADDU (void) {
 void _fastcall r4300i_SPECIAL_SUB (void) {
 	long result = GPR[Opcode.BRANCH.rs].W[0] - GPR[Opcode.BRANCH.rt].W[0];
 	long sign = GPR[Opcode.BRANCH.rt].W[0] >> 31;
-	if ((GPR[Opcode.BRANCH.rs].W[0] >> 31) == sign && (result >> 31) != sign) {
+	if ((GPR[Opcode.BRANCH.rs].W[0] >> 31) != sign && (result >> 31) == sign) {
 		DoIntegerOverflow(NextInstruction == JUMP);
 		NextInstruction = JUMP;
 		JumpToLocation = PROGRAM_COUNTER;
@@ -941,7 +941,7 @@ void _fastcall r4300i_SPECIAL_DADDU (void) {
 void _fastcall r4300i_SPECIAL_DSUB (void) {
 	_int64 result = GPR[Opcode.BRANCH.rs].DW - GPR[Opcode.BRANCH.rt].DW;
 	_int64 sign = GPR[Opcode.BRANCH.rt].DW >> 63;
-	if ((GPR[Opcode.BRANCH.rs].DW >> 63) == sign && (result >> 63) != sign) {
+	if ((GPR[Opcode.BRANCH.rs].DW >> 63) != sign && (result >> 63) == sign) {
 		DoIntegerOverflow(NextInstruction == JUMP);
 		NextInstruction = JUMP;
 		JumpToLocation = PROGRAM_COUNTER;
