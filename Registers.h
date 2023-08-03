@@ -23,25 +23,26 @@
  * should be forwarded to them so if they want them.
  *
  */
-#define INDEX_REGISTER			CP0[0]
-#define RANDOM_REGISTER			CP0[1]
-#define ENTRYLO0_REGISTER		CP0[2]
-#define ENTRYLO1_REGISTER		CP0[3]
-#define CONTEXT_REGISTER		CP0[4]
-#define PAGE_MASK_REGISTER		CP0[5]
-#define WIRED_REGISTER			CP0[6]
-#define BAD_VADDR_REGISTER		CP0[8]
-#define COUNT_REGISTER			CP0[9]
-#define ENTRYHI_REGISTER		CP0[10]
-#define COMPARE_REGISTER		CP0[11]
-#define STATUS_REGISTER			CP0[12]
-#define CAUSE_REGISTER			CP0[13]
-#define EPC_REGISTER			CP0[14]
-#define CONFIG_REGISTER			CP0[16]
-#define TAGLO_REGISTER			CP0[28]
-#define TAGHI_REGISTER			CP0[29]
-#define ERROREPC_REGISTER		CP0[30]
-#define FAKE_CAUSE_REGISTER		CP0[32]
+#define INDEX_REGISTER			CP0[0].UW[0]
+#define RANDOM_REGISTER			CP0[1].UW[0]
+#define ENTRYLO0_REGISTER		CP0[2].UW[0]
+#define ENTRYLO1_REGISTER		CP0[3].UW[0]
+#define CONTEXT_REGISTER		CP0[4].UW[0]
+#define PAGE_MASK_REGISTER		CP0[5].UW[0]
+#define WIRED_REGISTER			CP0[6].UW[0]
+#define BAD_VADDR_REGISTER		CP0[8].UW[0]
+#define COUNT_REGISTER			CP0[9].UW[0]
+#define ENTRYHI_REGISTER		CP0[10].UW[0]
+#define COMPARE_REGISTER		CP0[11].UW[0]
+#define STATUS_REGISTER			CP0[12].UW[0]
+#define CAUSE_REGISTER			CP0[13].UW[0]
+#define EPC_REGISTER			CP0[14].UW[0]
+#define CONFIG_REGISTER			CP0[16].UW[0]
+#define XCONTEXT_REGISTER       CP0[20].UDW
+#define TAGLO_REGISTER			CP0[28].UW[0]
+#define TAGHI_REGISTER			CP0[29].UW[0]
+#define ERROREPC_REGISTER		CP0[30].UW[0]
+#define FAKE_CAUSE_REGISTER		CP0[32].UW[0]
 
 #define COMPARE_REGISTER_NO		11
 #define STATUS_REGISTER_NO		12
@@ -329,7 +330,7 @@ typedef struct {
 	DWORD      PROGRAM_COUNTER;
     MIPS_DWORD GPR[32];
 	MIPS_DWORD FPR[32];
-	DWORD      CP0[33];
+	MIPS_DWORD CP0[33];
 	DWORD      FPCR[32];
 	MIPS_DWORD HI;
 	MIPS_DWORD LO;
@@ -348,10 +349,10 @@ typedef struct {
 
 extern char *GPR_Name[32], *GPR_NameHi[32], *GPR_NameLo[32], *FPR_Name[32], *FPR_NameHi[32],
 	*FPR_NameLo[32],*FPR_Ctrl_Name[32],*Cop0_Name[32];
-extern DWORD PROGRAM_COUNTER, * CP0,*FPCR,*RegRDRAM,*RegSP,*RegDPC,*RegMI,*RegVI,*RegAI,*RegPI,
+extern DWORD PROGRAM_COUNTER, *FPCR,*RegRDRAM,*RegSP,*RegDPC,*RegMI,*RegVI,*RegAI,*RegPI,
 	*RegRI,*RegSI, HalfLine, RegModValue, ViFieldSerration, LLBit, LLAddr;
 void * FPRDoubleLocation[32], * FPRFloatLocation[32];
-extern MIPS_DWORD *GPR, *FPR, HI, LO;
+extern MIPS_DWORD *GPR, *FPR, HI, LO, *CP0;
 extern N64_REGISTERS Registers;
 
 enum FPU_Format {
