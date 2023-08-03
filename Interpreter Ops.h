@@ -42,6 +42,7 @@ void _fastcall r4300i_BEQL           ( void );
 void _fastcall r4300i_BNEL           ( void );
 void _fastcall r4300i_BLEZL          ( void );
 void _fastcall r4300i_BGTZL          ( void );
+void _fastcall r4300i_DADDI          ( void );
 void _fastcall r4300i_DADDIU         ( void );
 void _fastcall r4300i_LDL            ( void );
 void _fastcall r4300i_LDR            ( void );
@@ -134,7 +135,9 @@ void _fastcall r4300i_REGIMM_BGEZAL  ( void );
 
 /************************** COP0 functions **************************/
 void _fastcall r4300i_COP0_MF        ( void );
+void _fastcall r4300i_COP0_DMF       ( void );
 void _fastcall r4300i_COP0_MT        ( void );
+void _fastcall r4300i_COP0_DMT       ( void );
 
 /************************** COP0 CO functions ***********************/
 void _fastcall r4300i_COP0_CO_TLBR   ( void );

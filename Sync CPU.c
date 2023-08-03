@@ -401,7 +401,7 @@ void SyncSystem (void) {
 	//COP0
 	FixRandomReg();
 	for (count = 0; count < 33; count ++) {
-		if (Registers.CP0[count] != SyncRegisters.CP0[count]) {
+		if (Registers.CP0[count].UW[0] != SyncRegisters.CP0[count].UW[0]) {
 			error = TRUE;
 			Error_Message("*** %s (CP0 %d) is not equal!!!",count == 32?"Fake cause":Cop0_Name[count],count);
 			Error_Message("interp value: 0x%08X",SyncRegisters.CP0[count]);
@@ -555,7 +555,7 @@ void SyncToPC (void) {
 			ExecuteInterpreterOpCode();
 		}
 	}*/
-	while (CP0[9] != Registers.CP0[9]) {
+	while (CP0[9].UW[0] != Registers.CP0[9].UW[0]) {
 		ExecuteInterpreterOpCode();
 	}
 	SyncRegisters.MI[2] = Registers.MI[2]; //MI_INTR_REG

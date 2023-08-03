@@ -50,6 +50,7 @@ OPCODE Opcode;
 HANDLE hCPU;
 BOOL inFullScreen, CPURunning, SPHack;
 DWORD MemoryStack;
+static unsigned int firstFrameWithInterruptsDisabled = 0;
 
 #ifdef CFB_READ
 DWORD CFBStart = 0, CFBEnd = 0;
@@ -563,12 +564,23 @@ void InPermLoop (void) {
 	/* check RDP running */
 	if (Timers.Timer > 0) {
 		COUNT_REGISTER += Timers.Timer + 1;
-		if (CPU_Type == CPU_SyncCores) { SyncRegisters.CP0[9] += Timers.Timer + 1; }
+		if (CPU_Type == CPU_SyncCores) { SyncRegisters.CP0[9].UW[0] += Timers.Timer + 1; }
 		Timers.Timer = -1;
 	}
 	return;
 
 InterruptsDisabled:
+	if (firstFrameWithInterruptsDisabled == 0) {
+		firstFrameWithInterruptsDisabled = CurrentFrame;
+		return;
+	}
+	else if ((CurrentFrame - firstFrameWithInterruptsDisabled) < 1) {
+		return;
+	}
+	else {
+		firstFrameWithInterruptsDisabled = 0;
+	}
+
 	if (UpdateScreen != NULL) { UpdateScreen(); }
 	CurrentFrame = 0;
 	CurrentPercent = 0;
@@ -955,8 +967,8 @@ BOOL Machine_SaveState(void) {
 			}
 		}
 
-		while ((int)Registers.CP0[1] < (int)Registers.CP0[6]) {
-			Registers.CP0[1] += 32 - Registers.CP0[6];
+		while ((int)Registers.CP0[1].W[0] < (int)Registers.CP0[6].W[0]) {
+			Registers.CP0[1].W[0] += 32 - Registers.CP0[6].W[0];
 		}	
 		//if fake cause set then do not save ????
 
@@ -1234,6 +1246,7 @@ void StartEmulation ( void ) {
 	Timers.CurrentTimerType = -1;
 	Timers.Timer = 0;
 	CurrentFrame = 0;
+	firstFrameWithInterruptsDisabled = 0;
 	CurrentPercent = 0;
 	for (count = 0; count < MaxTimers; count ++) { Timers.Active[count] = FALSE; }
 	ChangeTimer(ViTimer,5000); 
