@@ -335,7 +335,9 @@ void _fastcall r4300i_LWL (void) {
 
 void _fastcall r4300i_LW (void) {
 	DWORD Address =  GPR[Opcode.IMM.base].UW[0] + (short)Opcode.IMM.immediate;	
-	if ((Address & 3) != 0) { ADDRESS_ERROR_EXCEPTION(Address,TRUE); }
+	if ((Address & 3) != 0) {
+		ADDRESS_ERROR_EXCEPTION(Address,TRUE);
+	}
 
 	if (ShowDebugMessages)
 		Log_LW(PROGRAM_COUNTER,Address);
@@ -1182,7 +1184,7 @@ void _fastcall r4300i_COP0_MT (void) {
 void _fastcall r4300i_COP0_DMT(void) {
 	//TODO: check when the required registers are converted to 64 bits
 	if (HaveDebugger && LogOptions.LogCP0changes) {
-		LogMessage("%08X: Writing 0x%lX to %s register (Originally: 0x%08X)", PROGRAM_COUNTER,
+		LogMessage("%08X: Writing 0x%llX to %s register (Originally: 0x%08X)", PROGRAM_COUNTER,
 			GPR[Opcode.BRANCH.rt].UDW, Cop0_Name[Opcode.REG.rd], CP0[Opcode.REG.rd]);
 		if (Opcode.REG.rd == 11) { //Compare
 			LogMessage("%08X: Cause register changed from %08X to %08X", PROGRAM_COUNTER,
