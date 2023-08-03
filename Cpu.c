@@ -564,7 +564,7 @@ void InPermLoop (void) {
 	/* check RDP running */
 	if (Timers.Timer > 0) {
 		COUNT_REGISTER += Timers.Timer + 1;
-		if (CPU_Type == CPU_SyncCores) { SyncRegisters.CP0[9] += Timers.Timer + 1; }
+		if (CPU_Type == CPU_SyncCores) { SyncRegisters.CP0[9].UW[0] += Timers.Timer + 1; }
 		Timers.Timer = -1;
 	}
 	return;
@@ -967,8 +967,8 @@ BOOL Machine_SaveState(void) {
 			}
 		}
 
-		while ((int)Registers.CP0[1] < (int)Registers.CP0[6]) {
-			Registers.CP0[1] += 32 - Registers.CP0[6];
+		while ((int)Registers.CP0[1].W[0] < (int)Registers.CP0[6].W[0]) {
+			Registers.CP0[1].W[0] += 32 - Registers.CP0[6].W[0];
 		}	
 		//if fake cause set then do not save ????
 

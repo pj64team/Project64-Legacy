@@ -77,10 +77,10 @@ char *Cop0_Name[32] = {"Index","Random","EntryLo0","EntryLo1","Context","PageMas
                     "Config","LLAddr","WatchLo","WatchHi","XContext","21","22","23",
                     "24","25","ECC","CacheErr","TagLo","TagHi","ErrEPC","31"};
 
-DWORD PROGRAM_COUNTER, * CP0,*FPCR,*RegRDRAM,*RegSP,*RegDPC,*RegMI,*RegVI,*RegAI,*RegPI,
+DWORD PROGRAM_COUNTER, *FPCR,*RegRDRAM,*RegSP,*RegDPC,*RegMI,*RegVI,*RegAI,*RegPI,
 	*RegRI,*RegSI, HalfLine, RegModValue, ViFieldSerration, LLBit, LLAddr;
 void * FPRDoubleLocation[32], * FPRFloatLocation[32];
-MIPS_DWORD *GPR, *FPR, HI, LO;
+MIPS_DWORD *GPR, *FPR, HI, LO, *CP0;
 N64_REGISTERS Registers;
 int fpuControl;
 

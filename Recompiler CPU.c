@@ -1639,8 +1639,8 @@ void _fastcall FixConstants (BLOCK_SECTION * Section, DWORD Test, int * Changed)
 }
 
 void FixRandomReg (void) {
-	while ((int)Registers.CP0[1] < (int)Registers.CP0[6]) {
-		Registers.CP0[1] += 32 - Registers.CP0[6];
+	while ((int)Registers.CP0[1].W[0] < (int)Registers.CP0[6].W[0]) {
+		Registers.CP0[1].UW[0] += 32 - Registers.CP0[6].UW[0];
 	}
 }
 
