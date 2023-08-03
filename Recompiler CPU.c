@@ -347,7 +347,9 @@ BYTE * CompileDelaySlot(void) {
 	case R4300i_CP0:
 		switch (Opcode.BRANCH.rs) {
 		case R4300i_COP0_MF: Compile_R4300i_COP0_MF(Section); break;
+		case R4300i_COP0_DMF: Compile_R4300i_COP0_DMF(Section); break;
 		case R4300i_COP0_MT: Compile_R4300i_COP0_MT(Section); break;
+		case R4300i_COP0_DMT: Compile_R4300i_COP0_DMT(Section); break;
 		default:
 			if ((Opcode.BRANCH.rs & 0x10) != 0) {
 				switch (Opcode.REG.funct) {
@@ -2287,7 +2289,9 @@ BOOL GenerateX86Code (BLOCK_SECTION * Section, DWORD Test) {
 		case R4300i_CP0:
 			switch (Opcode.BRANCH.rs) {
 			case R4300i_COP0_MF: Compile_R4300i_COP0_MF(Section); break;
+			case R4300i_COP0_DMF: Compile_R4300i_COP0_DMF(Section); break;
 			case R4300i_COP0_MT: Compile_R4300i_COP0_MT(Section); break;
+			case R4300i_COP0_DMT: Compile_R4300i_COP0_DMT(Section); break;
 			default:
 				if ( (Opcode.BRANCH.rs & 0x10 ) != 0 ) {
 					switch( Opcode.REG.funct ) {
