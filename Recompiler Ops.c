@@ -3666,7 +3666,7 @@ void Compile_R4300i_SPECIAL_DMULT (BLOCK_SECTION * Section) {
 	CPU_Message("  %X %s",Section->CompilePC,R4300iOpcodeName(Opcode.Hex,Section->CompilePC));
 
 	if (Opcode.BRANCH.rs != 0) { UnMap_GPR(Section,Opcode.BRANCH.rs,TRUE); }
-	if (Opcode.BRANCH.rs != 0) { UnMap_GPR(Section,Opcode.BRANCH.rt,TRUE); }
+	if (Opcode.BRANCH.rt != 0) { UnMap_GPR(Section,Opcode.BRANCH.rt,TRUE); }
 	Pushad();
 	MoveConstToVariable(Opcode.Hex, &Opcode.Hex, "Opcode.Hex" );
 	Call_Direct(r4300i_SPECIAL_DMULT, "r4300i_SPECIAL_DMULT");
@@ -3745,8 +3745,8 @@ void Compile_R4300i_SPECIAL_DMULTU (BLOCK_SECTION * Section) {
 void Compile_R4300i_SPECIAL_DDIV (BLOCK_SECTION * Section) {
 	CPU_Message("  %X %s",Section->CompilePC,R4300iOpcodeName(Opcode.Hex,Section->CompilePC));
 
-	UnMap_GPR(Section,Opcode.BRANCH.rs,TRUE);
-	UnMap_GPR(Section,Opcode.BRANCH.rt,TRUE);
+	if (Opcode.BRANCH.rs != 0) { UnMap_GPR(Section, Opcode.BRANCH.rs, TRUE); }
+	if (Opcode.BRANCH.rt != 0) { UnMap_GPR(Section, Opcode.BRANCH.rt, TRUE); }
 	Pushad();
 	MoveConstToVariable(Opcode.Hex, &Opcode.Hex, "Opcode.Hex" );
 	Call_Direct(r4300i_SPECIAL_DDIV, "r4300i_SPECIAL_DDIV");
@@ -3756,8 +3756,8 @@ void Compile_R4300i_SPECIAL_DDIV (BLOCK_SECTION * Section) {
 void Compile_R4300i_SPECIAL_DDIVU (BLOCK_SECTION * Section) {
 	CPU_Message("  %X %s",Section->CompilePC,R4300iOpcodeName(Opcode.Hex,Section->CompilePC));
 
-	UnMap_GPR(Section,Opcode.BRANCH.rs,TRUE);
-	UnMap_GPR(Section,Opcode.BRANCH.rt,TRUE);
+	if (Opcode.BRANCH.rs != 0) { UnMap_GPR(Section, Opcode.BRANCH.rs, TRUE); }
+	if (Opcode.BRANCH.rt != 0) { UnMap_GPR(Section, Opcode.BRANCH.rt, TRUE); }
 	Pushad();
 	MoveConstToVariable(Opcode.Hex, &Opcode.Hex, "Opcode.Hex" );
 	Call_Direct(r4300i_SPECIAL_DDIVU, "r4300i_SPECIAL_DDIVU");
