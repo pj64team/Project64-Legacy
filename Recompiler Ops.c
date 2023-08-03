@@ -3554,9 +3554,9 @@ void Compile_R4300i_SPECIAL_DIV (BLOCK_SECTION * Section) {
 		MoveConstToVariable(0, &HI.UW[0], "HI.UW[0]");
 		MoveConstToVariable(0, &HI.UW[1], "HI.UW[1]");
 
-		JmpLabel8("EndDivu", 0);
+		JmpLabel8("EndDiv", 0);
 		Jump[1] = RecompPos - 1;
-		
+
 		CPU_Message("");
 		CPU_Message("      NoExcept:");
 		*((BYTE *)(Jump[0]))=(BYTE)(RecompPos - Jump[0] - 1);
@@ -3590,7 +3590,7 @@ void Compile_R4300i_SPECIAL_DIV (BLOCK_SECTION * Section) {
 
 	if( Jump[1] != NULL ) {
 		CPU_Message("");
-		CPU_Message("      EndDivu:");
+		CPU_Message("      EndDiv:");
 		*((BYTE *)(Jump[1]))=(BYTE)(RecompPos - Jump[1] - 1);
 	}
 }
@@ -3745,8 +3745,9 @@ void Compile_R4300i_SPECIAL_DMULTU (BLOCK_SECTION * Section) {
 void Compile_R4300i_SPECIAL_DDIV (BLOCK_SECTION * Section) {
 	CPU_Message("  %X %s",Section->CompilePC,R4300iOpcodeName(Opcode.Hex,Section->CompilePC));
 
+	if (Opcode.BRANCH.rt == 0) { return; }
 	if (Opcode.BRANCH.rs != 0) { UnMap_GPR(Section, Opcode.BRANCH.rs, TRUE); }
-	if (Opcode.BRANCH.rt != 0) { UnMap_GPR(Section, Opcode.BRANCH.rt, TRUE); }
+	UnMap_GPR(Section, Opcode.BRANCH.rt, TRUE);
 	Pushad();
 	MoveConstToVariable(Opcode.Hex, &Opcode.Hex, "Opcode.Hex" );
 	Call_Direct(r4300i_SPECIAL_DDIV, "r4300i_SPECIAL_DDIV");
@@ -3756,8 +3757,9 @@ void Compile_R4300i_SPECIAL_DDIV (BLOCK_SECTION * Section) {
 void Compile_R4300i_SPECIAL_DDIVU (BLOCK_SECTION * Section) {
 	CPU_Message("  %X %s",Section->CompilePC,R4300iOpcodeName(Opcode.Hex,Section->CompilePC));
 
+	if (Opcode.BRANCH.rt == 0) { return; }
 	if (Opcode.BRANCH.rs != 0) { UnMap_GPR(Section, Opcode.BRANCH.rs, TRUE); }
-	if (Opcode.BRANCH.rt != 0) { UnMap_GPR(Section, Opcode.BRANCH.rt, TRUE); }
+	UnMap_GPR(Section, Opcode.BRANCH.rt, TRUE);
 	Pushad();
 	MoveConstToVariable(Opcode.Hex, &Opcode.Hex, "Opcode.Hex" );
 	Call_Direct(r4300i_SPECIAL_DDIVU, "r4300i_SPECIAL_DDIVU");
