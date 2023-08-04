@@ -736,7 +736,8 @@ void _fastcall r4300i_SPECIAL_JR (void) {
 	NextInstruction = DELAY_SLOT;
 	JumpToLocation = GPR[Opcode.BRANCH.rs].UW[0];
 	if (JumpToLocation & 3) {
-		DoAddressError(TRUE, PROGRAM_COUNTER, FALSE);
+		PROGRAM_COUNTER = JumpToLocation;
+		DoAddressError(FALSE, JumpToLocation, TRUE);
 		NextInstruction = JUMP;
 		JumpToLocation = PROGRAM_COUNTER;
 	}
@@ -746,7 +747,8 @@ void _fastcall r4300i_SPECIAL_JALR (void) {
 	NextInstruction = DELAY_SLOT;
 	JumpToLocation = GPR[Opcode.BRANCH.rs].UW[0];
 	if (JumpToLocation & 3) {
-		DoAddressError(TRUE, PROGRAM_COUNTER, FALSE);
+		PROGRAM_COUNTER = JumpToLocation;
+		DoAddressError(FALSE, JumpToLocation, TRUE);
 		NextInstruction = JUMP;
 		JumpToLocation = PROGRAM_COUNTER;
 	} else {
