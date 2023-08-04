@@ -800,9 +800,13 @@ void _fastcall r4300i_SPECIAL_MULTU (void) {
 }
 
 void _fastcall r4300i_SPECIAL_DIV (void) {
-	if ( GPR[Opcode.BRANCH.rt].UDW != 0 ) {
-		LO.DW = (long long)GPR[Opcode.BRANCH.rs].W[0] / (long long)GPR[Opcode.BRANCH.rt].W[0];
-		HI.DW = (long long)GPR[Opcode.BRANCH.rs].W[0] % (long long)GPR[Opcode.BRANCH.rt].W[0];
+	if (GPR[Opcode.BRANCH.rs].W[0] == INT_MIN && GPR[Opcode.BRANCH.rt].W[0] == -1) {
+		// An overflow exception never occurs. This is the only set of inputs that overflows on x86
+		LO.DW = UINT_MAX / 2 + 1;
+		HI.DW = 0;
+	} else if (GPR[Opcode.BRANCH.rt].UDW != 0) {
+		LO.DW = GPR[Opcode.BRANCH.rs].W[0] / GPR[Opcode.BRANCH.rt].W[0];
+		HI.DW = GPR[Opcode.BRANCH.rs].W[0] % GPR[Opcode.BRANCH.rt].W[0];
 	} else {
 		if (ShowDebugMessages)
 			DisplayError("DIV by 0 ???");
@@ -811,8 +815,8 @@ void _fastcall r4300i_SPECIAL_DIV (void) {
 
 void _fastcall r4300i_SPECIAL_DIVU (void) {
 	if ( GPR[Opcode.BRANCH.rt].UDW != 0 ) {
-		LO.DW = (long long)GPR[Opcode.BRANCH.rs].UW[0] / (long long)GPR[Opcode.BRANCH.rt].UW[0];
-		HI.DW = (long long)GPR[Opcode.BRANCH.rs].UW[0] % (long long)GPR[Opcode.BRANCH.rt].UW[0];
+		LO.DW = GPR[Opcode.BRANCH.rs].UW[0] / GPR[Opcode.BRANCH.rt].UW[0];
+		HI.DW = GPR[Opcode.BRANCH.rs].UW[0] % GPR[Opcode.BRANCH.rt].UW[0];
 	} else {
 		if (ShowDebugMessages)
 			DisplayError("DIVU by 0 ???");

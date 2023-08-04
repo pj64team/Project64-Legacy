@@ -3527,11 +3527,19 @@ void Compile_R4300i_SPECIAL_MULTU (BLOCK_SECTION * Section) {
 }
 
 void Compile_R4300i_SPECIAL_DIV (BLOCK_SECTION * Section) {
-	BYTE *Jump[2];
+	BYTE *Jump[4] = { 0 };
 
 	CPU_Message("  %X %s",Section->CompilePC,R4300iOpcodeName(Opcode.Hex,Section->CompilePC));
 	
 	if (IsConst(Opcode.BRANCH.rt)) {
+		if (MipsRegLo(Opcode.BRANCH.rs) == INT_MIN && MipsRegLo(Opcode.BRANCH.rt) == -1) {
+			// An overflow exception never occurs. This is the only set of inputs that overflows on x86
+			MoveConstToVariable(UINT_MAX / 2 + 1, &LO.UW[0], "LO.UW[0]");
+			MoveConstToVariable(0, &LO.UW[1], "LO.UW[1]");
+			MoveConstToVariable(0, &HI.UW[0], "HI.UW[0]");
+			MoveConstToVariable(0, &HI.UW[1], "HI.UW[1]");
+			return;
+		}
 		if (MipsRegLo(Opcode.BRANCH.rt) == 0) {
 			MoveConstToVariable(0, &LO.UW[0], "LO.UW[0]");
 			MoveConstToVariable(0, &LO.UW[1], "LO.UW[1]");
@@ -3539,27 +3547,47 @@ void Compile_R4300i_SPECIAL_DIV (BLOCK_SECTION * Section) {
 			MoveConstToVariable(0, &HI.UW[1], "HI.UW[1]");
 			return;
 		}
-		Jump[1] = NULL;
 	} else {
-		if (IsMapped(Opcode.BRANCH.rt)) {
-			CompConstToX86reg(MipsRegLo(Opcode.BRANCH.rt),0);
+		// Check for overflow
+		if (IsMapped(Opcode.BRANCH.rs)) {
+			CompConstToX86reg(MipsRegLo(Opcode.BRANCH.rs), INT_MIN);
 		} else {
-			CompConstToVariable(0, &GPR[Opcode.BRANCH.rt].W[0], GPR_NameLo[Opcode.BRANCH.rt]);
+			CompConstToVariable(INT_MIN, &GPR[Opcode.BRANCH.rs].W[0], GPR_NameLo[Opcode.BRANCH.rs]);
 		}
-		JneLabel8("NoExcept", 0);
+		JneLabel8("NoOverflow", 0);
 		Jump[0] = RecompPos - 1;
 
-		MoveConstToVariable(0, &LO.UW[0], "LO.UW[0]");
+		if (IsMapped(Opcode.BRANCH.rt)) {
+			CompConstToX86reg(MipsRegLo(Opcode.BRANCH.rt), -1);
+		} else {
+			CompConstToVariable(-1, &GPR[Opcode.BRANCH.rt].W[0], GPR_NameLo[Opcode.BRANCH.rt]);
+		}
+		JneLabel8("NoOverflow", 0);
+		Jump[1] = RecompPos - 1;
+
+		// Special case handling for overflowing division
+		MoveConstToVariable(UINT_MAX / 2 + 1, &LO.UW[0], "LO.UW[0]");
 		MoveConstToVariable(0, &LO.UW[1], "LO.UW[1]");
 		MoveConstToVariable(0, &HI.UW[0], "HI.UW[0]");
 		MoveConstToVariable(0, &HI.UW[1], "HI.UW[1]");
 
 		JmpLabel8("EndDiv", 0);
-		Jump[1] = RecompPos - 1;
+		Jump[2] = RecompPos - 1;
 
 		CPU_Message("");
-		CPU_Message("      NoExcept:");
-		*((BYTE *)(Jump[0]))=(BYTE)(RecompPos - Jump[0] - 1);
+		CPU_Message("      NoOverflow:");
+		*((BYTE *)(Jump[0])) = (BYTE)(RecompPos - Jump[0] - 1);
+		*((BYTE *)(Jump[1])) = (BYTE)(RecompPos - Jump[1] - 1);
+
+		// Check for divide-by-zero
+		if (IsMapped(Opcode.BRANCH.rt)) {
+			CompConstToX86reg(MipsRegLo(Opcode.BRANCH.rt), 0);
+		} else {
+			CompConstToVariable(0, &GPR[Opcode.BRANCH.rt].W[0], GPR_NameLo[Opcode.BRANCH.rt]);
+		}
+		// The result for divide-by-zero is undefined, so the LO and HI registers do not need to be updated at all.
+		JeLabel8("EndDiv", 0);
+		Jump[3] = RecompPos - 1;
 	}
 	/*	lo = (SD)rs / (SD)rt;
 		hi = (SD)rs % (SD)rt; */
@@ -3579,7 +3607,6 @@ void Compile_R4300i_SPECIAL_DIV (BLOCK_SECTION * Section) {
 	} else {
 		idivX86reg(Map_TempReg(Section,x86_Any,Opcode.BRANCH.rt,FALSE));
 	}
-		
 
 	MoveX86regToVariable(x86_EAX,&LO.UW[0],"LO.UW[0]");
 	MoveX86regToVariable(x86_EDX,&HI.UW[0],"HI.UW[0]");
@@ -3588,10 +3615,11 @@ void Compile_R4300i_SPECIAL_DIV (BLOCK_SECTION * Section) {
 	MoveX86regToVariable(x86_EAX,&LO.UW[1],"LO.UW[1]");
 	MoveX86regToVariable(x86_EDX,&HI.UW[1],"HI.UW[1]");
 
-	if( Jump[1] != NULL ) {
+	if (Jump[2] != NULL && Jump[3] != NULL) {
 		CPU_Message("");
 		CPU_Message("      EndDiv:");
-		*((BYTE *)(Jump[1]))=(BYTE)(RecompPos - Jump[1] - 1);
+		*((BYTE *)(Jump[2])) = (BYTE)(RecompPos - Jump[2] - 1);
+		*((BYTE *)(Jump[3])) = (BYTE)(RecompPos - Jump[3] - 1);
 	}
 }
 
