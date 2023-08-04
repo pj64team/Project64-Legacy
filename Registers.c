@@ -1452,3 +1452,6 @@ void WriteBackRegisters (BLOCK_SECTION * Section) {
 	UnMap_AllFPRs(Section);
 }
 
+BOOL IsSignExtended(MIPS_DWORD v) {
+	return (v.W[0] >> 31) == v.W[1];
+}

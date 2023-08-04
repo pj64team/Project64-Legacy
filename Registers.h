@@ -388,3 +388,5 @@ void UnProtectGPR             ( BLOCK_SECTION * Section, DWORD Reg );
 void UpdateCurrentHalfLine    ( void );
 void UpdateFieldSerration     ( int interlaced );
 void WriteBackRegisters       ( BLOCK_SECTION * Section );
+
+BOOL IsSignExtended(MIPS_DWORD v);
