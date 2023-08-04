@@ -58,9 +58,32 @@ void __cdecl CheckInterrupts ( void ) {
 	}
 }
 
+void DoIntegerOverflow(BOOL DelaySlot) {
+	if (ShowDebugMessages) {
+		if ((STATUS_REGISTER & STATUS_EXL) != 0) {
+			DisplayError("EXL set in AddressError Exception");
+		}
+		if ((STATUS_REGISTER & STATUS_ERL) != 0) {
+			DisplayError("ERL set in AddressError Exception");
+		}
+	}
+	CAUSE_REGISTER = EXC_OV;
+	if (DelaySlot) {
+		CAUSE_REGISTER |= CAUSE_BD;
+		EPC_REGISTER = PROGRAM_COUNTER - 4;
+	} else {
+		EPC_REGISTER = PROGRAM_COUNTER;
+	}
+	STATUS_REGISTER |= STATUS_EXL;
+	PROGRAM_COUNTER = 0x80000180;
+}
+
 void DoAddressError ( BOOL DelaySlot, DWORD BadVaddr, BOOL FromRead) {
 	if (ShowDebugMessages) {
-		DisplayError("AddressError");
+		DisplayError("AddressError while accessing %08X (%s). PC: %08X",
+			BadVaddr,
+			FromRead ? "read" : "write",
+			DelaySlot ? PROGRAM_COUNTER -4 : PROGRAM_COUNTER);
 		if ((STATUS_REGISTER & STATUS_EXL) != 0) {
 			DisplayError("EXL set in AddressError Exception");
 		}

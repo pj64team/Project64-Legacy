@@ -1255,6 +1255,7 @@ int r4300i_CPU_MemoryFilter( DWORD dwExptCode, LPEXCEPTION_POINTERS lpEP) {
 	case 0x41: ReadPos += 2; break;
 	case 0x42: ReadPos += 2; break;
 	case 0x43: ReadPos += 2; break;
+	case 0x44: ReadPos += 3; break;
 	case 0x46: ReadPos += 2; break;
 	case 0x47: ReadPos += 2; break;
 	case 0x80: ReadPos += 5; break;
@@ -1264,9 +1265,9 @@ int r4300i_CPU_MemoryFilter( DWORD dwExptCode, LPEXCEPTION_POINTERS lpEP) {
 	case 0x86: ReadPos += 5; break;
 	case 0x87: ReadPos += 5; break;
 	default:
-		if (ShowDebugMessages)
-			DisplayError("Unknown x86 opcode %X\nlocation %X\nloc: %X\nfgh2", 
-				*(unsigned char *)lpEP->ContextRecord->Eip, lpEP->ContextRecord->Eip, (char *)exRec.ExceptionInformation[1] - (char *)N64MEM);
+		if (ShowDebugMessages) {
+			DisplayError("Unknown x86 opcode %X\n\nEip: %X\nMIPS Address: %X", TypePos, lpEP->ContextRecord->Eip, MemAddress);
+		}
 		return EXCEPTION_CONTINUE_SEARCH;
 	}
 
@@ -1276,46 +1277,37 @@ int r4300i_CPU_MemoryFilter( DWORD dwExptCode, LPEXCEPTION_POINTERS lpEP) {
 		case 0xB6:
 			if (!r4300i_LB_NonMemory(MemAddress,Reg,FALSE)) {
 				if (ShowUnhandledMemory) {
-					DisplayError("Failed to load byte\n\nMIPS Address: %X\nX86 Address",
-						(char *)exRec.ExceptionInformation[1] - (char *)N64MEM,
-						*(unsigned char *)lpEP->ContextRecord->Eip);
+					DisplayError("Failed to load byte\n\nEip: %X\nMIPS Address: %X", lpEP->ContextRecord->Eip, MemAddress);
 				}
 			}
 			lpEP->ContextRecord->Eip = (DWORD)ReadPos;
-			return EXCEPTION_CONTINUE_EXECUTION;		
+			return EXCEPTION_CONTINUE_EXECUTION;
 		case 0xB7:
-			if (!r4300i_LH_NonMemory(MemAddress,Reg,FALSE)) {
+			if (!r4300i_LH_NonMemory(MemAddress, Reg, FALSE)) {
 				if (ShowUnhandledMemory) {
-					DisplayError("Failed to load half word\n\nMIPS Address: %X\nX86 Address",
-						(char *)exRec.ExceptionInformation[1] - (char *)N64MEM,
-						*(unsigned char *)lpEP->ContextRecord->Eip);
+					DisplayError("Failed to load half word\n\nEip: %X\nMIPS Address: %X", lpEP->ContextRecord->Eip, MemAddress);
 				}
 			}
 			lpEP->ContextRecord->Eip = (DWORD)ReadPos;
-			return EXCEPTION_CONTINUE_EXECUTION;		
+			return EXCEPTION_CONTINUE_EXECUTION;
 		case 0xBE:
-			if (!r4300i_LB_NonMemory(MemAddress,Reg,TRUE)) {
+			if (!r4300i_LB_NonMemory(MemAddress, Reg, TRUE)) {
 				if (ShowUnhandledMemory) {
-					DisplayError("Failed to load byte\n\nMIPS Address: %X\nX86 Address",
-						(char *)exRec.ExceptionInformation[1] - (char *)N64MEM,
-						*(unsigned char *)lpEP->ContextRecord->Eip);
+					DisplayError("Failed to load byte\n\nEip: %X\nMIPS Address: %X", lpEP->ContextRecord->Eip, MemAddress);
 				}
 			}
 			lpEP->ContextRecord->Eip = (DWORD)ReadPos;
-			return EXCEPTION_CONTINUE_EXECUTION;		
+			return EXCEPTION_CONTINUE_EXECUTION;
 		case 0xBF:
-			if (!r4300i_LH_NonMemory(MemAddress,Reg,TRUE)) {
+			if (!r4300i_LH_NonMemory(MemAddress, Reg, TRUE)) {
 				if (ShowUnhandledMemory) {
-					DisplayError("Failed to load half word\n\nMIPS Address: %X\nX86 Address",
-						(char *)exRec.ExceptionInformation[1] - (char *)N64MEM,
-						*(unsigned char *)lpEP->ContextRecord->Eip);
+					DisplayError("Failed to load half word\n\nEip: %X\nMIPS Address: %X", lpEP->ContextRecord->Eip, MemAddress);
 				}
 			}
 			lpEP->ContextRecord->Eip = (DWORD)ReadPos;
 			return EXCEPTION_CONTINUE_EXECUTION;		
 		default:
-			DisplayError("Unkown x86 opcode %X\nlocation %X\nloc: %X\nfhfgh2", 
-				*(unsigned char *)lpEP->ContextRecord->Eip, lpEP->ContextRecord->Eip, (char *)exRec.ExceptionInformation[1] - (char *)N64MEM);
+			DisplayError("Unkown x86 opcode %X\n\nEip: %X\nMIPS Address: %X", TypePos, lpEP->ContextRecord->Eip, MemAddress);
 			return EXCEPTION_CONTINUE_SEARCH;
 		}
 		break;
@@ -1324,9 +1316,7 @@ int r4300i_CPU_MemoryFilter( DWORD dwExptCode, LPEXCEPTION_POINTERS lpEP) {
 		case 0x8B:
 			if (!r4300i_LH_NonMemory(MemAddress,Reg,FALSE)) {
 				if (ShowUnhandledMemory) {
-					DisplayError("Failed to half word\n\nMIPS Address: %X\nX86 Address",
-						(char *)exRec.ExceptionInformation[1] - (char *)N64MEM,
-						*(unsigned char *)lpEP->ContextRecord->Eip);
+					DisplayError("Failed to half word\n\nEip: %X\nMIPS Address: %X", lpEP->ContextRecord->Eip, MemAddress);
 				}
 			}
 			lpEP->ContextRecord->Eip = (DWORD)ReadPos;
@@ -1334,8 +1324,7 @@ int r4300i_CPU_MemoryFilter( DWORD dwExptCode, LPEXCEPTION_POINTERS lpEP) {
 		case 0x89:
 			if (!r4300i_SH_NonMemory(MemAddress,*(WORD *)Reg)) {
 				if (ShowUnhandledMemory) {
-					DisplayError("Failed to store half word\n\nMIPS Address: %X\nX86 Address",MemAddress,
-						*(unsigned char *)lpEP->ContextRecord->Eip);
+					DisplayError("Failed to store half word\n\nEip: %X\nMIPS Address: %X", lpEP->ContextRecord->Eip, MemAddress);
 				}
 			}
 			lpEP->ContextRecord->Eip = (DWORD)ReadPos;
@@ -1344,53 +1333,44 @@ int r4300i_CPU_MemoryFilter( DWORD dwExptCode, LPEXCEPTION_POINTERS lpEP) {
 			if (Reg != &lpEP->ContextRecord->Eax) { return EXCEPTION_CONTINUE_SEARCH; }
 			if (!r4300i_SH_NonMemory(MemAddress,*(WORD *)ReadPos)) {
 				if (ShowUnhandledMemory) {
-					DisplayError("Failed to store half word\n\nMIPS Address: %X\nX86 Address",MemAddress,
-						*(unsigned char *)lpEP->ContextRecord->Eip);
+					DisplayError("Failed to store half word\n\nEip: %X\nMIPS Address: %X", lpEP->ContextRecord->Eip, MemAddress);
 				}
 			}
 			lpEP->ContextRecord->Eip = (DWORD)(ReadPos + 2);
 			return EXCEPTION_CONTINUE_EXECUTION;		
 		default:
-			DisplayError("Unkown x86 opcode %X\nlocation %X\nloc: %X\nfhfgh2", 
-				*(unsigned char *)lpEP->ContextRecord->Eip, lpEP->ContextRecord->Eip, (char *)exRec.ExceptionInformation[1] - (char *)N64MEM);
+			DisplayError("Unkown x86 opcode %X\n\nEip: %X\nMIPS Address: %X", TypePos, lpEP->ContextRecord->Eip, MemAddress);
 			return EXCEPTION_CONTINUE_SEARCH;
 		}
 		break;
 	case 0x88: 
 		if (!r4300i_SB_NonMemory(MemAddress,*(BYTE *)Reg)) {
 			if (ShowUnhandledMemory) {
-				DisplayError("Failed to store byte\n\nMIPS Address: %X\nX86 Address",
-					(char *)exRec.ExceptionInformation[1] - (char *)N64MEM,
-					*(unsigned char *)lpEP->ContextRecord->Eip);
+				DisplayError("Failed to store byte\n\nEip: %X\nMIPS Address: %X", lpEP->ContextRecord->Eip, MemAddress);
 			}
 		}
 		lpEP->ContextRecord->Eip = (DWORD)ReadPos;
-		return EXCEPTION_CONTINUE_EXECUTION;		
-	case 0x8A: 
-		if (!r4300i_LB_NonMemory(MemAddress,Reg,FALSE)) {
+		return EXCEPTION_CONTINUE_EXECUTION;
+	case 0x8A:
+		if (!r4300i_LB_NonMemory(MemAddress, Reg, FALSE)) {
 			if (ShowUnhandledMemory) {
-				DisplayError("Failed to load byte\n\nMIPS Address: %X\nX86 Address",
-					(char *)exRec.ExceptionInformation[1] - (char *)N64MEM,
-					*(unsigned char *)lpEP->ContextRecord->Eip);
+				DisplayError("Failed to load byte\n\nEip: %X\nMIPS Address: %X", lpEP->ContextRecord->Eip, MemAddress);
 			}
 		}
 		lpEP->ContextRecord->Eip = (DWORD)ReadPos;
-		return EXCEPTION_CONTINUE_EXECUTION;		
-	case 0x8B: 
-		if (!r4300i_LW_NonMemory(MemAddress,Reg)) {
+		return EXCEPTION_CONTINUE_EXECUTION;
+	case 0x8B:
+		if (!r4300i_LW_NonMemory(MemAddress, Reg)) {
 			if (ShowUnhandledMemory) {
-				DisplayError("Failed to load word\n\nMIPS Address: %X\nX86 Address",
-					(char *)exRec.ExceptionInformation[1] - (char *)N64MEM,
-					*(unsigned char *)lpEP->ContextRecord->Eip);
+				DisplayError("Failed to load word\n\nEip: %X\nMIPS Address: %X", lpEP->ContextRecord->Eip, MemAddress);
 			}
 		}
 		lpEP->ContextRecord->Eip = (DWORD)ReadPos;
-		return EXCEPTION_CONTINUE_EXECUTION;		
+		return EXCEPTION_CONTINUE_EXECUTION;
 	case 0x89:
-		if (!r4300i_SW_NonMemory(MemAddress,*(DWORD *)Reg)) {
+		if (!r4300i_SW_NonMemory(MemAddress, *(DWORD *)Reg)) {
 			if (ShowUnhandledMemory) {
-				DisplayError("Failed to store word\n\nMIPS Address: %X\nX86 Address",MemAddress,
-					*(unsigned char *)lpEP->ContextRecord->Eip);
+				DisplayError("Failed to store word\n\nEip: %X\nMIPS Address: %X", lpEP->ContextRecord->Eip, MemAddress);
 			}
 		}
 		lpEP->ContextRecord->Eip = (DWORD)ReadPos;
@@ -1399,8 +1379,7 @@ int r4300i_CPU_MemoryFilter( DWORD dwExptCode, LPEXCEPTION_POINTERS lpEP) {
 		if (Reg != &lpEP->ContextRecord->Eax) { return EXCEPTION_CONTINUE_SEARCH; }
 		if (!r4300i_SB_NonMemory(MemAddress,*(BYTE *)ReadPos)) {
 			if (ShowUnhandledMemory) {
-				DisplayError("Failed to store byte\n\nMIPS Address: %X\nX86 Address",MemAddress,
-					*(unsigned char *)lpEP->ContextRecord->Eip);
+				DisplayError("Failed to store byte\n\nEip: %X\nMIPS Address: %X", lpEP->ContextRecord->Eip, MemAddress);
 			}
 		}
 		lpEP->ContextRecord->Eip = (DWORD)(ReadPos + 1);
@@ -1409,15 +1388,13 @@ int r4300i_CPU_MemoryFilter( DWORD dwExptCode, LPEXCEPTION_POINTERS lpEP) {
 		if (Reg != &lpEP->ContextRecord->Eax) { return EXCEPTION_CONTINUE_SEARCH; }
 		if (!r4300i_SW_NonMemory(MemAddress,*(DWORD *)ReadPos)) {
 			if (ShowUnhandledMemory) {
-				DisplayError("Failed to store word\n\nMIPS Address: %X\nX86 Address",MemAddress,
-					*(unsigned char *)lpEP->ContextRecord->Eip);
+				DisplayError("Failed to store word\n\nEip: %X\nMIPS Address: %X", lpEP->ContextRecord->Eip, MemAddress);
 			}
 		}
 		lpEP->ContextRecord->Eip = (DWORD)(ReadPos + 4);
 		return EXCEPTION_CONTINUE_EXECUTION;		
 	default:
-		DisplayError("Unkown x86 opcode %X\nlocation %X\nloc: %X\nfhfgh2", 
-			*(unsigned char *)lpEP->ContextRecord->Eip, lpEP->ContextRecord->Eip, (char *)exRec.ExceptionInformation[1] - (char *)N64MEM);
+		DisplayError("Unkown x86 opcode %X\n\nEip: %X\nMIPS Address: %X", TypePos, lpEP->ContextRecord->Eip, MemAddress);
 		return EXCEPTION_CONTINUE_SEARCH;
 	}
 }

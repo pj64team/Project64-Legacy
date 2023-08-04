@@ -301,11 +301,16 @@ BYTE * CompileDelaySlot(void) {
 		case R4300i_SPECIAL_MTLO: Compile_R4300i_SPECIAL_MTLO(Section); break;
 		case R4300i_SPECIAL_MFHI: Compile_R4300i_SPECIAL_MFHI(Section); break;
 		case R4300i_SPECIAL_MTHI: Compile_R4300i_SPECIAL_MTHI(Section); break;
+		case R4300i_SPECIAL_DSLLV: Compile_R4300i_SPECIAL_DSLLV(Section); break;
+		case R4300i_SPECIAL_DSRLV: Compile_R4300i_SPECIAL_DSRLV(Section); break;
+		case R4300i_SPECIAL_DSRAV: Compile_R4300i_SPECIAL_DSRAV(Section); break;
 		case R4300i_SPECIAL_MULT: Compile_R4300i_SPECIAL_MULT(Section); break;
 		case R4300i_SPECIAL_DIV: Compile_R4300i_SPECIAL_DIV(Section); break;
 		case R4300i_SPECIAL_DIVU: Compile_R4300i_SPECIAL_DIVU(Section); break;
 		case R4300i_SPECIAL_MULTU: Compile_R4300i_SPECIAL_MULTU(Section); break;
+		case R4300i_SPECIAL_DMULT: Compile_R4300i_SPECIAL_DMULT(Section); break;
 		case R4300i_SPECIAL_DMULTU: Compile_R4300i_SPECIAL_DMULTU(Section); break;
+		case R4300i_SPECIAL_DDIV: Compile_R4300i_SPECIAL_DDIV(Section); break;
 		case R4300i_SPECIAL_DDIVU: Compile_R4300i_SPECIAL_DDIVU(Section); break;
 		case R4300i_SPECIAL_ADD: Compile_R4300i_SPECIAL_ADD(Section); break;
 		case R4300i_SPECIAL_ADDU: Compile_R4300i_SPECIAL_ADDU(Section); break;
@@ -314,11 +319,18 @@ BYTE * CompileDelaySlot(void) {
 		case R4300i_SPECIAL_AND: Compile_R4300i_SPECIAL_AND(Section); break;
 		case R4300i_SPECIAL_OR: Compile_R4300i_SPECIAL_OR(Section); break;
 		case R4300i_SPECIAL_XOR: Compile_R4300i_SPECIAL_XOR(Section); break;
+		case R4300i_SPECIAL_NOR: Compile_R4300i_SPECIAL_NOR(Section); break;
 		case R4300i_SPECIAL_SLT: Compile_R4300i_SPECIAL_SLT(Section); break;
 		case R4300i_SPECIAL_SLTU: Compile_R4300i_SPECIAL_SLTU(Section); break;
 		case R4300i_SPECIAL_DADD: Compile_R4300i_SPECIAL_DADD(Section); break;
 		case R4300i_SPECIAL_DADDU: Compile_R4300i_SPECIAL_DADDU(Section); break;
+		case R4300i_SPECIAL_DSUB: Compile_R4300i_SPECIAL_DSUB(Section); break;
+		case R4300i_SPECIAL_DSUBU: Compile_R4300i_SPECIAL_DSUBU(Section); break;
+		case R4300i_SPECIAL_DSLL: Compile_R4300i_SPECIAL_DSLL(Section); break;
+		case R4300i_SPECIAL_DSRL: Compile_R4300i_SPECIAL_DSRL(Section); break;
+		case R4300i_SPECIAL_DSRA: Compile_R4300i_SPECIAL_DSRA(Section); break;
 		case R4300i_SPECIAL_DSLL32: Compile_R4300i_SPECIAL_DSLL32(Section); break;
+		case R4300i_SPECIAL_DSRL32: Compile_R4300i_SPECIAL_DSRL32(Section); break;
 		case R4300i_SPECIAL_DSRA32: Compile_R4300i_SPECIAL_DSRA32(Section); break;
 		default:
 			Compile_R4300i_UnknownOpcode(Section); break;
@@ -332,12 +344,35 @@ BYTE * CompileDelaySlot(void) {
 	case R4300i_ORI: Compile_R4300i_ORI(Section); break;
 	case R4300i_XORI: Compile_R4300i_XORI(Section); break;
 	case R4300i_LUI: Compile_R4300i_LUI(Section); break;
+	case R4300i_CP0:
+		switch (Opcode.BRANCH.rs) {
+		case R4300i_COP0_MF: Compile_R4300i_COP0_MF(Section); break;
+		case R4300i_COP0_DMF: Compile_R4300i_COP0_DMF(Section); break;
+		case R4300i_COP0_MT: Compile_R4300i_COP0_MT(Section); break;
+		case R4300i_COP0_DMT: Compile_R4300i_COP0_DMT(Section); break;
+		default:
+			if ((Opcode.BRANCH.rs & 0x10) != 0) {
+				switch (Opcode.REG.funct) {
+				case R4300i_COP0_CO_TLBR: Compile_R4300i_COP0_CO_TLBR(Section); break;
+				case R4300i_COP0_CO_TLBWI: Compile_R4300i_COP0_CO_TLBWI(Section); break;
+				case R4300i_COP0_CO_TLBWR: Compile_R4300i_COP0_CO_TLBWR(Section); break;
+				case R4300i_COP0_CO_TLBP: Compile_R4300i_COP0_CO_TLBP(Section); break;
+				case R4300i_COP0_CO_ERET: Compile_R4300i_COP0_CO_ERET(Section); break;
+				default: Compile_R4300i_UnknownOpcode(Section); break;
+				}
+			} else {
+				Compile_R4300i_UnknownOpcode(Section);
+			}
+		}
+		break;
 	case R4300i_CP1:
 		switch (Opcode.BRANCH.rs) {
+		case R4300i_COP1_MF: Compile_R4300i_COP1_MF(Section); break;
+		case R4300i_COP1_DMF: Compile_R4300i_COP1_DMF(Section); break;
 		case R4300i_COP1_CF: Compile_R4300i_COP1_CF(Section); break;
 		case R4300i_COP1_MT: Compile_R4300i_COP1_MT(Section); break;
+		case R4300i_COP1_DMT: Compile_R4300i_COP1_DMT(Section); break;
 		case R4300i_COP1_CT: Compile_R4300i_COP1_CT(Section); break;
-		case R4300i_COP1_MF: Compile_R4300i_COP1_MF(Section); break;
 		case R4300i_COP1_S: 
 			switch (Opcode.REG.funct) {
 			case R4300i_COP1_FUNCT_ADD: Compile_R4300i_COP1_S_ADD(Section); break;
@@ -348,10 +383,16 @@ BYTE * CompileDelaySlot(void) {
 			case R4300i_COP1_FUNCT_NEG: Compile_R4300i_COP1_S_NEG(Section); break;
 			case R4300i_COP1_FUNCT_SQRT: Compile_R4300i_COP1_S_SQRT(Section); break;
 			case R4300i_COP1_FUNCT_MOV: Compile_R4300i_COP1_S_MOV(Section); break;
-			case R4300i_COP1_FUNCT_CVT_D: Compile_R4300i_COP1_S_CVT_D(Section); break;
+			case R4300i_COP1_FUNCT_TRUNC_L: Compile_R4300i_COP1_S_TRUNC_L(Section); break;
+			case R4300i_COP1_FUNCT_CEIL_L: Compile_R4300i_COP1_S_CEIL_L(Section); break;
+			case R4300i_COP1_FUNCT_FLOOR_L: Compile_R4300i_COP1_S_FLOOR_L(Section); break;
 			case R4300i_COP1_FUNCT_ROUND_W: Compile_R4300i_COP1_S_ROUND_W(Section); break;
 			case R4300i_COP1_FUNCT_TRUNC_W: Compile_R4300i_COP1_S_TRUNC_W(Section); break;
+			case R4300i_COP1_FUNCT_CEIL_W: Compile_R4300i_COP1_S_CEIL_W(Section); break;
 			case R4300i_COP1_FUNCT_FLOOR_W: Compile_R4300i_COP1_S_FLOOR_W(Section); break;
+			case R4300i_COP1_FUNCT_CVT_D: Compile_R4300i_COP1_S_CVT_D(Section); break;
+			case R4300i_COP1_FUNCT_CVT_W: Compile_R4300i_COP1_S_CVT_W(Section); break;
+			case R4300i_COP1_FUNCT_CVT_L: Compile_R4300i_COP1_S_CVT_L(Section); break;
 			case R4300i_COP1_FUNCT_C_F:   case R4300i_COP1_FUNCT_C_UN:
 			case R4300i_COP1_FUNCT_C_EQ:  case R4300i_COP1_FUNCT_C_UEQ:
 			case R4300i_COP1_FUNCT_C_OLT: case R4300i_COP1_FUNCT_C_ULT:
@@ -375,9 +416,16 @@ BYTE * CompileDelaySlot(void) {
 			case R4300i_COP1_FUNCT_NEG: Compile_R4300i_COP1_D_NEG(Section); break;
 			case R4300i_COP1_FUNCT_SQRT: Compile_R4300i_COP1_D_SQRT(Section); break;
 			case R4300i_COP1_FUNCT_MOV: Compile_R4300i_COP1_D_MOV(Section); break;
+			case R4300i_COP1_FUNCT_TRUNC_L: Compile_R4300i_COP1_D_TRUNC_L(Section); break;
+			case R4300i_COP1_FUNCT_CEIL_L: Compile_R4300i_COP1_D_CEIL_L(Section); break;
+			case R4300i_COP1_FUNCT_FLOOR_L: Compile_R4300i_COP1_D_FLOOR_L(Section); break;
+			case R4300i_COP1_FUNCT_ROUND_W: Compile_R4300i_COP1_D_ROUND_W(Section); break;
 			case R4300i_COP1_FUNCT_TRUNC_W: Compile_R4300i_COP1_D_TRUNC_W(Section); break;
+			case R4300i_COP1_FUNCT_CEIL_W: Compile_R4300i_COP1_D_CEIL_W(Section); break;
+			case R4300i_COP1_FUNCT_FLOOR_W: Compile_R4300i_COP1_D_FLOOR_W(Section); break;
 			case R4300i_COP1_FUNCT_CVT_S: Compile_R4300i_COP1_D_CVT_S(Section); break;
 			case R4300i_COP1_FUNCT_CVT_W: Compile_R4300i_COP1_D_CVT_W(Section); break;
+			case R4300i_COP1_FUNCT_CVT_L: Compile_R4300i_COP1_D_CVT_L(Section); break;
 			case R4300i_COP1_FUNCT_C_F:   case R4300i_COP1_FUNCT_C_UN:
 			case R4300i_COP1_FUNCT_C_EQ:  case R4300i_COP1_FUNCT_C_UEQ:
 			case R4300i_COP1_FUNCT_C_OLT: case R4300i_COP1_FUNCT_C_ULT:
@@ -399,22 +447,42 @@ BYTE * CompileDelaySlot(void) {
 				Compile_R4300i_UnknownOpcode(Section); break;
 			}
 			break;
+		case R4300i_COP1_L:
+			switch (Opcode.REG.funct) {
+			case R4300i_COP1_FUNCT_CVT_S: Compile_R4300i_COP1_L_CVT_S(Section); break;
+			case R4300i_COP1_FUNCT_CVT_D: Compile_R4300i_COP1_L_CVT_D(Section); break;
+			default:
+				Compile_R4300i_UnknownOpcode(Section); break;
+			}
+			break;
 		default:
 			Compile_R4300i_UnknownOpcode(Section); break;
 		}
 		break;
+	case R4300i_DADDI: Compile_R4300i_DADDI(Section); break;
+	case R4300i_DADDIU: Compile_R4300i_DADDIU(Section); break;
+	case R4300i_LDL: Compile_R4300i_LDL(Section); break;
+	case R4300i_LDR: Compile_R4300i_LDR(Section); break;
 	case R4300i_LB: Compile_R4300i_LB(Section); break;
 	case R4300i_LH: Compile_R4300i_LH(Section); break;
+	case R4300i_LWL: Compile_R4300i_LWL(Section); break;
 	case R4300i_LW: Compile_R4300i_LW(Section); break;
 	case R4300i_LBU: Compile_R4300i_LBU(Section); break;
 	case R4300i_LHU: Compile_R4300i_LHU(Section); break;
+	case R4300i_LWR: Compile_R4300i_LWR(Section); break;
+	case R4300i_LWU: Compile_R4300i_LWU(Section); break;
 	case R4300i_SB: Compile_R4300i_SB(Section); break;
 	case R4300i_SH: Compile_R4300i_SH(Section); break;
+	case R4300i_SWL: Compile_R4300i_SWL(Section); break;
 	case R4300i_SW: Compile_R4300i_SW(Section); break;
 	case R4300i_SWR: Compile_R4300i_SWR(Section); break;
+	case R4300i_SDL: Compile_R4300i_SDL(Section); break;
+	case R4300i_SDR: Compile_R4300i_SDR(Section); break;
 	case R4300i_CACHE: Compile_R4300i_CACHE(Section); break;
+	case R4300i_LL: Compile_R4300i_LL(Section); break;
 	case R4300i_LWC1: Compile_R4300i_LWC1(Section); break;
 	case R4300i_LDC1: Compile_R4300i_LDC1(Section); break;
+	case R4300i_SC: Compile_R4300i_SC(Section); break;
 	case R4300i_LD: Compile_R4300i_LD(Section); break;
 	case R4300i_SWC1: Compile_R4300i_SWC1(Section); break;
 	case R4300i_SDC1: Compile_R4300i_SDC1(Section); break;
@@ -2221,7 +2289,9 @@ BOOL GenerateX86Code (BLOCK_SECTION * Section, DWORD Test) {
 		case R4300i_CP0:
 			switch (Opcode.BRANCH.rs) {
 			case R4300i_COP0_MF: Compile_R4300i_COP0_MF(Section); break;
+			case R4300i_COP0_DMF: Compile_R4300i_COP0_DMF(Section); break;
 			case R4300i_COP0_MT: Compile_R4300i_COP0_MT(Section); break;
+			case R4300i_COP0_DMT: Compile_R4300i_COP0_DMT(Section); break;
 			default:
 				if ( (Opcode.BRANCH.rs & 0x10 ) != 0 ) {
 					switch( Opcode.REG.funct ) {
@@ -2345,6 +2415,7 @@ BOOL GenerateX86Code (BLOCK_SECTION * Section, DWORD Test) {
 		case R4300i_BNEL: Compile_R4300i_BranchLikely(Section,BNE_Compare,FALSE); break;
 		case R4300i_BGTZL:Compile_R4300i_BranchLikely(Section,BGTZ_Compare,FALSE); break;
 		case R4300i_BLEZL:Compile_R4300i_BranchLikely(Section,BLEZ_Compare,FALSE); break;
+		case R4300i_DADDI: Compile_R4300i_DADDI(Section); break;
 		case R4300i_DADDIU: Compile_R4300i_DADDIU(Section); break;
 		case R4300i_LDL: Compile_R4300i_LDL(Section); break;
 		case R4300i_LDR: Compile_R4300i_LDR(Section); break;
@@ -2425,7 +2496,6 @@ BOOL GenerateX86Code (BLOCK_SECTION * Section, DWORD Test) {
 			break;
 		case DELAY_SLOT:
 			NextInstruction = DELAY_SLOT_DONE;
-			//BlockCycleCount += CountPerOp;
 			BlockCycleCount += CPOAdjust;
 			BlockRandomModifier -= 1;
 			Section->CompilePC -= 4; 

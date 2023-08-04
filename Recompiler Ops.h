@@ -56,6 +56,7 @@ void Compile_R4300i_ANDI           ( BLOCK_SECTION * Section );
 void Compile_R4300i_ORI            ( BLOCK_SECTION * Section );
 void Compile_R4300i_XORI           ( BLOCK_SECTION * Section );
 void Compile_R4300i_LUI            ( BLOCK_SECTION * Section );
+void Compile_R4300i_DADDI          ( BLOCK_SECTION * Section );
 void Compile_R4300i_DADDIU         ( BLOCK_SECTION * Section );
 void Compile_R4300i_LDL            ( BLOCK_SECTION * Section );
 void Compile_R4300i_LDR            ( BLOCK_SECTION * Section );

@@ -139,7 +139,7 @@ void BuildInterpreter (void ) {
 	R4300i_Opcode[49] = r4300i_LWC1;
 	R4300i_Opcode[50] = R4300i_UnknownOpcode;
 	R4300i_Opcode[51] = R4300i_UnknownOpcode;
-	R4300i_Opcode[52] = R4300i_UnknownOpcode;
+	R4300i_Opcode[52] = R4300i_UnknownOpcode; // TODO: LLD
 	R4300i_Opcode[53] = r4300i_LDC1;
 	R4300i_Opcode[54] = R4300i_UnknownOpcode;
 	R4300i_Opcode[55] = r4300i_LD;
@@ -147,7 +147,7 @@ void BuildInterpreter (void ) {
 	R4300i_Opcode[57] = r4300i_SWC1;
 	R4300i_Opcode[58] = R4300i_UnknownOpcode;
 	R4300i_Opcode[59] = R4300i_UnknownOpcode;
-	R4300i_Opcode[60] = R4300i_UnknownOpcode;
+	R4300i_Opcode[60] = R4300i_UnknownOpcode; // TODO: SCD
 	R4300i_Opcode[61] = r4300i_SDC1;
 	R4300i_Opcode[62] = R4300i_UnknownOpcode;
 	R4300i_Opcode[63] = r4300i_SD;
