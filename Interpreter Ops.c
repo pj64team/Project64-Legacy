@@ -815,8 +815,8 @@ void _fastcall r4300i_SPECIAL_DIV (void) {
 
 void _fastcall r4300i_SPECIAL_DIVU (void) {
 	if ( GPR[Opcode.BRANCH.rt].UDW != 0 ) {
-		LO.DW = GPR[Opcode.BRANCH.rs].UW[0] / GPR[Opcode.BRANCH.rt].UW[0];
-		HI.DW = GPR[Opcode.BRANCH.rs].UW[0] % GPR[Opcode.BRANCH.rt].UW[0];
+		LO.DW = (long)(GPR[Opcode.BRANCH.rs].UW[0] / GPR[Opcode.BRANCH.rt].UW[0]);
+		HI.DW = (long)(GPR[Opcode.BRANCH.rs].UW[0] % GPR[Opcode.BRANCH.rt].UW[0]);
 	} else {
 		if (ShowDebugMessages)
 			DisplayError("DIVU by 0 ???");
