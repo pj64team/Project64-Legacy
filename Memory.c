@@ -883,7 +883,7 @@ void Compile_SW_Register ( int x86Reg, DWORD Addr ) {
 		case 0x04300000: 
 			MoveX86regToVariable(x86Reg,&RegModValue,"RegModValue");
 			Pushad(); 
-			Call_Direct(ChangeMiIntrMask,"ChangeMiModeReg");
+			Call_Direct(ChangeMiModeReg,"ChangeMiModeReg");
 			Popad();
 			break;
 		case 0x0430000C: 
