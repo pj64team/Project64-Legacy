@@ -77,10 +77,10 @@ char *Cop0_Name[32] = {"Index","Random","EntryLo0","EntryLo1","Context","PageMas
                     "Config","LLAddr","WatchLo","WatchHi","XContext","21","22","23",
                     "24","25","ECC","CacheErr","TagLo","TagHi","ErrEPC","31"};
 
-DWORD PROGRAM_COUNTER, * CP0,*FPCR,*RegRDRAM,*RegSP,*RegDPC,*RegMI,*RegVI,*RegAI,*RegPI,
+DWORD PROGRAM_COUNTER, *FPCR,*RegRDRAM,*RegSP,*RegDPC,*RegMI,*RegVI,*RegAI,*RegPI,
 	*RegRI,*RegSI, HalfLine, RegModValue, ViFieldSerration, LLBit, LLAddr;
 void * FPRDoubleLocation[32], * FPRFloatLocation[32];
-MIPS_DWORD *GPR, *FPR, HI, LO;
+MIPS_DWORD *GPR, *FPR, HI, LO, *CP0;
 N64_REGISTERS Registers;
 int fpuControl;
 
@@ -347,9 +347,9 @@ void InitalizeR4300iRegisters (int UsePif, int Country, enum CIC_CHIP CIC_Chip) 
 	EPC_REGISTER       = 0xFFFFFFFF;
 	BAD_VADDR_REGISTER = 0xFFFFFFFF;
 	ERROREPC_REGISTER  = 0xFFFFFFFF;
-	CONFIG_REGISTER     = 0x0006E463;
+	CONFIG_REGISTER     = 0x7006E463;
 	REVISION_REGISTER   = 0x00000511;
-	STATUS_REGISTER     = 0x241000E0;
+	STATUS_REGISTER     = 0x34000000;
 	SetFpuLocations();
 	if (UsePif) {
 		PROGRAM_COUNTER = 0xBFC00000;			

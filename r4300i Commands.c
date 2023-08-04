@@ -1382,8 +1382,14 @@ char * R4300iOpcodeName ( DWORD OpCode, DWORD PC ) {
 		case R4300i_COP0_MF:
 			sprintf(CommandName,"mfc0\t%s, %s",GPR_Name[command.BRANCH.rt], Cop0_Name[command.REG.rd]);
 			break;
+		case R4300i_COP0_DMF:
+			sprintf(CommandName, "dmfc0\t%s, %s", GPR_Name[command.BRANCH.rt], Cop0_Name[command.REG.rd]);
+			break;
 		case R4300i_COP0_MT:
 			sprintf(CommandName,"mtc0\t%s, %s",GPR_Name[command.BRANCH.rt], Cop0_Name[command.REG.rd]);
+			break;
+		case R4300i_COP0_DMT:
+			sprintf(CommandName, "dmtc0\t%s, %s", GPR_Name[command.BRANCH.rt], Cop0_Name[command.REG.rd]);
 			break;
 		default:
 			if ( (command.BRANCH.rs & 0x10 ) != 0 ) {

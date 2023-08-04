@@ -220,31 +220,31 @@ void PaintR4300iCP0Panel (HWND hWnd) {
 		GetStockObject(DEFAULT_GUI_FONT) );
 	OldBkMode = SetBkMode( ps.hdc, TRANSPARENT );
 
-	TextOut( ps.hdc, 55,49,"Index:",6);
-	TextOut( ps.hdc, 55,73,"Random:",7);
-	TextOut( ps.hdc, 55,97,"EntryLo0:",9);
-	TextOut( ps.hdc, 55,121,"EntryLo1:",9);
-	TextOut( ps.hdc, 55,145,"Context:",8);
-	TextOut( ps.hdc, 55,169,"PageMask:",9);
-	TextOut( ps.hdc, 55,193,"Wired:",6);
-	TextOut( ps.hdc, 55,217,"BadVaddr:",9);
-	TextOut( ps.hdc, 55,241,"Count:",6);
-	TextOut( ps.hdc, 260,49,"EntryHi:",8);
-	TextOut( ps.hdc, 260,73,"Compare:",8);
-	TextOut( ps.hdc, 260,97,"Status:",7);
-	TextOut( ps.hdc, 260,121,"Cause:",6);
-	TextOut( ps.hdc, 260,145,"EPC:",4);
-	TextOut( ps.hdc, 260,169,"PRId:",5);
-	TextOut( ps.hdc, 260,193,"Config:",7);
-	TextOut( ps.hdc, 260,217,"LLAddr:",7);
-	TextOut( ps.hdc, 455,49,"WatchLo:",8);
-	TextOut( ps.hdc, 455,73,"WatchHi:",8);
-	TextOut( ps.hdc, 455,97,"XContext:",9);
-	TextOut( ps.hdc, 455,121,"Parity Error:",13);
-	TextOut( ps.hdc, 455,145,"Cache Error:",12);
-	TextOut( ps.hdc, 455,169,"TagLo:",6);
-	TextOut( ps.hdc, 455,193,"TagHi:",6);
-	TextOut( ps.hdc, 455,217,"ErrorEPC:",9);
+	TextOut( ps.hdc, 20,49,"Index:",6);
+	TextOut( ps.hdc, 20,73,"Random:",7);
+	TextOut( ps.hdc, 20,97,"EntryLo0:",9);
+	TextOut( ps.hdc, 20,121,"EntryLo1:",9);
+	TextOut( ps.hdc, 20,145,"Context:",8);
+	TextOut( ps.hdc, 20,169,"PageMask:",9);
+	TextOut( ps.hdc, 20,193,"Wired:",6);
+	TextOut( ps.hdc, 20,217,"BadVaddr:",9);
+	TextOut( ps.hdc, 20,241,"Count:",6);
+	TextOut( ps.hdc, 225,49,"EntryHi:",8);
+	TextOut( ps.hdc, 225,73,"Compare:",8);
+	TextOut( ps.hdc, 225,97,"Status:",7);
+	TextOut( ps.hdc, 225,121,"Cause:",6);
+	TextOut( ps.hdc, 225,145,"EPC:",4);
+	TextOut( ps.hdc, 225,169,"PRId:",5);
+	TextOut( ps.hdc, 225,193,"Config:",7);
+	TextOut( ps.hdc, 225,217,"LLAddr:",7);
+	TextOut( ps.hdc, 435,49,"WatchLo:",8);
+	TextOut( ps.hdc, 435,73,"WatchHi:",8);
+	TextOut( ps.hdc, 435,97,"XContext:",9);
+	TextOut( ps.hdc, 435,121,"Parity Error:",13);
+	TextOut( ps.hdc, 435,145,"Cache Error:",12);
+	TextOut( ps.hdc, 435,169,"TagLo:",6);
+	TextOut( ps.hdc, 435,193,"TagHi:",6);
+	TextOut( ps.hdc, 435,217,"ErrorEPC:",9);
 		
 	SelectObject( ps.hdc,hOldFont );
 	SetBkMode( ps.hdc, OldBkMode );
@@ -734,7 +734,7 @@ void SetupR4300iCP0Panel (HWND hDlg) {
 	for (count = 0; count < 10;count ++) {
 		if (count == 7) { continue; }
 		hCP0[count] = CreateWindowEx(WS_EX_CLIENTEDGE,"EDIT","", WS_CHILD | 
-			ES_READONLY | WS_BORDER | WS_TABSTOP,130,top,80,19, 
+			ES_READONLY | WS_BORDER | WS_TABSTOP,90,top,135,19, 
 			hDlg,0,hInst, NULL );
 		SendMessage(hCP0[count],WM_SETFONT, (WPARAM)GetStockObject(DEFAULT_GUI_FONT),0);
 		top += 24;
@@ -743,7 +743,7 @@ void SetupR4300iCP0Panel (HWND hDlg) {
 	top = 53;
 	for (count = 0; count < 8;count ++) {
 		hCP0[count + 10] = CreateWindowEx(WS_EX_CLIENTEDGE,"EDIT","", WS_CHILD | 
-			ES_READONLY | WS_BORDER | WS_TABSTOP,330,top,80,19, 
+			ES_READONLY | WS_BORDER | WS_TABSTOP,300,top,135,19, 
 			hDlg,0,hInst, NULL );
 		SendMessage(hCP0[count + 10],WM_SETFONT, (WPARAM)GetStockObject(DEFAULT_GUI_FONT),0);
 		top += 24;
@@ -753,7 +753,7 @@ void SetupR4300iCP0Panel (HWND hDlg) {
 	for (count = 0; count < 13;count ++) {
 		if (count >= 3 && count <= 7 ) { continue; }
 		hCP0[count + 18] = CreateWindowEx(WS_EX_CLIENTEDGE,"EDIT","", WS_CHILD | 
-			ES_READONLY | WS_BORDER | WS_TABSTOP,535,top,80,19, 
+			ES_READONLY | WS_BORDER | WS_TABSTOP,510,top,135,19, 
 			hDlg,0,hInst, NULL );
 		SendMessage(hCP0[count + 18],WM_SETFONT, (WPARAM)GetStockObject(DEFAULT_GUI_FONT),0);
 		top += 24;
@@ -1079,7 +1079,13 @@ void __cdecl UpdateCurrentR4300iRegisterPanel ( void ) {
 		case ControlProcessor0:
 			for (count = 0; count < 32;count ++) {
 				GetWindowText(hCP0[count],OldWinText,60);
-				sprintf( RegisterValue," 0x%08X",CP0[count] );
+				switch (count) {
+				case 20: //XContext
+					sprintf(RegisterValue, " 0x%08X - %08X", CP0[count].W[1], CP0[count].W[0]);
+					break;
+				default:
+					sprintf(RegisterValue, " 0x%08X", CP0[count].W[0]);
+				}
 				if ( strcmp( RegisterValue, OldWinText) != 0 ) {
 					SetWindowText(hCP0[count],RegisterValue);
 				}
