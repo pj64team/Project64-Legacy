@@ -431,7 +431,12 @@ void _fastcall r4300i_SH (void) {
 		if (ShowTLBMisses) {
 			DisplayError("SH TLB: %X", Address);
 		}
-		TLB_WRITE_EXCEPTION(Address);
+		// TODO: This check lets Rat Attack boot on the interpreter.
+		// Figure out why this game accesses invalid memory.
+		// And if it really does on hardware, how does it boot?
+		if (Address >= 0x1000) {
+			TLB_WRITE_EXCEPTION(Address);
+		}
 	}
 }
 
@@ -474,7 +479,12 @@ void _fastcall r4300i_SW (void) {
 		if (ShowTLBMisses) {
 			DisplayError("SW TLB: %X", Address);
 		}
-		TLB_WRITE_EXCEPTION(Address);
+		// TODO: This check lets Rat Attack boot on the interpreter.
+		// Figure out why this game accesses invalid memory.
+		// And if it really does on hardware, how does it boot?
+		if (Address >= 0x1000) {
+			TLB_WRITE_EXCEPTION(Address);
+		}
 	}
 }
 
