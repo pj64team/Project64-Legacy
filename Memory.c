@@ -156,18 +156,15 @@ int Allocate_Memory ( void ) {
 	return TRUE;
 }
 
-void Compile_LB ( int Reg, DWORD Addr, BOOL SignExtend) {
+BOOL Compile_LB ( int Reg, DWORD Addr, BOOL SignExtend) {
 	char VarName[100];
 
 	if (!TranslateVaddr(&Addr)) {
-		MoveConstToX86reg(0,Reg);
-		CPU_Message("Compile_LB\nFailed to translate address %X",Addr);
-		if (ShowUnhandledMemory) { DisplayError("Compile_LB\nFailed to translate address %X",Addr); }
-		return;
+		return FALSE;
 	}
 
 	switch (Addr & 0xFFF00000) {
-	case 0x00000000: 
+	case 0x00000000:
 	case 0x00100000: 
 	case 0x00200000: 
 	case 0x00300000: 
@@ -175,7 +172,10 @@ void Compile_LB ( int Reg, DWORD Addr, BOOL SignExtend) {
 	case 0x00500000: 
 	case 0x00600000: 
 	case 0x00700000: 
-	case 0x10000000: 
+	// TODO: This is most certainly not enough! It only covers 1 MB PI ROM!
+	// Also, this doesn't appear to emulate byte accesses to PI correctly.
+	// See: https://github.com/n64dev/cen64/issues/86#issuecomment-493314371
+	case 0x10000000:
 		sprintf(VarName,"N64MEM + %X",Addr);
 		if (SignExtend) {
 			MoveSxVariableToX86regByte(Addr + N64MEM,VarName,Reg); 
@@ -185,22 +185,22 @@ void Compile_LB ( int Reg, DWORD Addr, BOOL SignExtend) {
 		break;
 	default:
 		MoveConstToX86reg(0,Reg);
+		CPU_Message("Compile_LB\nFailed to compile address: %X", Addr);
 		if (ShowUnhandledMemory) { DisplayError("Compile_LB\nFailed to compile address: %X",Addr); }
 	}
+
+	return TRUE;
 }
 
-void Compile_LH ( int Reg, DWORD Addr, BOOL SignExtend) {
+BOOL Compile_LH ( int Reg, DWORD Addr, BOOL SignExtend) {
 	char VarName[100];
 
 	if (!TranslateVaddr(&Addr)) {
-		MoveConstToX86reg(0,Reg);
-		CPU_Message("Compile_LH\nFailed to translate address %X",Addr);
-		if (ShowUnhandledMemory) { DisplayError("Compile_LH\nFailed to translate address %X",Addr); }
-		return;
+		return FALSE;
 	}
 
 	switch (Addr & 0xFFF00000) {
-	case 0x00000000: 
+	case 0x00000000:
 	case 0x00100000: 
 	case 0x00200000: 
 	case 0x00300000: 
@@ -208,7 +208,10 @@ void Compile_LH ( int Reg, DWORD Addr, BOOL SignExtend) {
 	case 0x00500000: 
 	case 0x00600000: 
 	case 0x00700000: 
-	case 0x10000000: 
+	// TODO: This is most certainly not enough! It only covers 1 MB PI ROM!
+	// Also, this doesn't appear to emulate half-word accesses to PI correctly.
+	// See: https://github.com/n64dev/cen64/issues/86#issuecomment-493314371
+	case 0x10000000:
 		sprintf(VarName,"N64MEM + %X",Addr);
 		if (SignExtend) {
 			MoveSxVariableToX86regHalf(Addr + N64MEM,VarName,Reg); 
@@ -218,17 +221,18 @@ void Compile_LH ( int Reg, DWORD Addr, BOOL SignExtend) {
 		break;
 	default:
 		MoveConstToX86reg(0,Reg);
+		CPU_Message("Compile_LH\nFailed to compile address: %X", Addr);
 		if (ShowUnhandledMemory) { DisplayError("Compile_LH\nFailed to compile address: %X",Addr); }
 	}
+
+	return TRUE;
 }
 
-void Compile_LW ( int Reg, DWORD Addr ) {
+BOOL Compile_LW(int Reg, DWORD Addr) {
 	char VarName[100];
 
 	if (!TranslateVaddr(&Addr)) {
-		MoveConstToX86reg(0,Reg);
-		CPU_Message("Compile_LW\nFailed to translate address %X",Addr);
-		if (ShowUnhandledMemory) { DisplayError("Compile_LW\nFailed to translate address %X",Addr); }
+		return FALSE;
 	}
 
 	switch (Addr & 0xFFF00000) {
@@ -241,7 +245,8 @@ void Compile_LW ( int Reg, DWORD Addr ) {
 	case 0x00600000: 
 	case 0x00700000: 
 	case 0x06000000:  // Added for 64DD IPL
-	case 0x10000000: 
+	// TODO: This is most certainly not enough! It only covers 2 MB PI ROM!
+	case 0x10000000:
 	case 0x10200000:  // Same as 0x10000000, added for Game Boy 64 by McBain & Snake (POM '98) (PD)
  		sprintf(VarName,"N64MEM + %X",Addr);
 		MoveVariableToX86reg(Addr + N64MEM,VarName,Reg); 
@@ -259,7 +264,8 @@ void Compile_LW ( int Reg, DWORD Addr ) {
 		case 0x04080000: MoveVariableToX86reg(&SP_PC_REG,"SP_PC_REG",Reg); break;
 		default:
 			MoveConstToX86reg(0,Reg);
-			if (ShowUnhandledMemory) { DisplayError("Compile_LW\nFailed to translate address: %X",Addr); }
+			CPU_Message("Compile_LW\nFailed to compile address: %X", Addr);
+			if (ShowUnhandledMemory) { DisplayError("Compile_LW\nFailed to compile address: %X",Addr); }
 		}
 		break;
 	case 0x04100000:
@@ -270,7 +276,8 @@ void Compile_LW ( int Reg, DWORD Addr ) {
 			case 0x04100018: MoveVariableToX86reg(&DPC_PIPEBUSY_REG,"DPC_PIPEBUSY_REG",Reg); break;
 			case 0x0410001C: MoveVariableToX86reg(&DPC_TMEM_REG,"DPC_TMEM_REG",Reg); break;
 			default:
-				if (ShowUnhandledMemory) { DisplayError("Compile_LW\nFailed to translate address: %X",Addr); }
+				CPU_Message("Compile_LW\nFailed to compile address: %X", Addr);
+				if (ShowUnhandledMemory) { DisplayError("Compile_LW\nFailed to compile address: %X",Addr); }
 				sprintf(VarName,"N64MEM + %X",Addr);
 				MoveVariableToX86reg(Addr + N64MEM,VarName,Reg); 
 				break;
@@ -284,7 +291,8 @@ void Compile_LW ( int Reg, DWORD Addr ) {
 		case 0x0430000C: MoveVariableToX86reg(&MI_INTR_MASK_REG,"MI_INTR_MASK_REG",Reg); break;
 		default:
 			MoveConstToX86reg(0,Reg);
-			if (ShowUnhandledMemory) { DisplayError("Compile_LW\nFailed to translate address: %X",Addr); }
+			CPU_Message("Compile_LW\nFailed to compile address: %X", Addr);
+			if (ShowUnhandledMemory) { DisplayError("Compile_LW\nFailed to compile address: %X",Addr); }
 		}
 		break;
 	case 0x04400000: 
@@ -296,8 +304,9 @@ void Compile_LW ( int Reg, DWORD Addr ) {
 			MoveVariableToX86reg(&HalfLine,"HalfLine",Reg);
 			break;
 		default:
+			CPU_Message("Compile_LW\nFailed to compile address: %X", Addr);
 			MoveConstToX86reg(0,Reg);
-			if (ShowUnhandledMemory) { DisplayError("Compile_LW\nFailed to translate address: %X",Addr); }
+			if (ShowUnhandledMemory) { DisplayError("Compile_LW\nFailed to compile address: %X",Addr); }
 		}
 		break;
 	case 0x04500000: /* AI registers */
@@ -316,7 +325,8 @@ void Compile_LW ( int Reg, DWORD Addr ) {
 		case 0x0450000C: MoveVariableToX86reg(&AI_STATUS_REG,"AI_STATUS_REG",Reg); break;
 		default:
 			MoveConstToX86reg(0,Reg);
-			if (ShowUnhandledMemory) { DisplayError("Compile_LW\nFailed to translate address: %X",Addr); }
+			CPU_Message("Compile_LW\nFailed to compile address: %X", Addr);
+			if (ShowUnhandledMemory) { DisplayError("Compile_LW\nFailed to compile address: %X",Addr); }
 		}
 		break;
 	case 0x04600000:
@@ -333,7 +343,8 @@ void Compile_LW ( int Reg, DWORD Addr ) {
 		case 0x04600030: MoveVariableToX86reg(&PI_BSD_DOM2_RLS_REG,"PI_BSD_DOM2_RLS_REG",Reg); break;
 		default:
 			MoveConstToX86reg(0,Reg);
-			if (ShowUnhandledMemory) { DisplayError("Compile_LW\nFailed to translate address: %X",Addr); }
+			CPU_Message("Compile_LW\nFailed to compile address: %X", Addr);
+			if (ShowUnhandledMemory) { DisplayError("Compile_LW\nFailed to compile address: %X",Addr); }
 		}
 		break;
 	case 0x04700000:
@@ -342,7 +353,8 @@ void Compile_LW ( int Reg, DWORD Addr ) {
 		case 0x04700010: MoveVariableToX86reg(&RI_REFRESH_REG,"RI_REFRESH_REG",Reg); break;
 		default:
 			MoveConstToX86reg(0,Reg);
-			if (ShowUnhandledMemory) { DisplayError("Compile_LW\nFailed to translate address: %X",Addr); }
+			CPU_Message("Compile_LW\nFailed to compile address: %X", Addr);
+			if (ShowUnhandledMemory) { DisplayError("Compile_LW\nFailed to compile address: %X",Addr); }
 		}
 		break;
 	case 0x04800000:
@@ -350,12 +362,14 @@ void Compile_LW ( int Reg, DWORD Addr ) {
 		case 0x04800018: MoveVariableToX86reg(&SI_STATUS_REG,"SI_STATUS_REG",Reg); break;
 		default:
 			MoveConstToX86reg(0,Reg);
-			if (ShowUnhandledMemory) { DisplayError("Compile_LW\nFailed to translate address: %X",Addr); }
+			CPU_Message("Compile_LW\nFailed to compile address: %X", Addr);
+			if (ShowUnhandledMemory) { DisplayError("Compile_LW\nFailed to compile address: %X",Addr); }
 		}
 		break;
 	case 0x05000000:
 		MoveConstToX86reg(0,Reg);
-		if (ShowUnhandledMemory) { DisplayError("Compile_LW\nFailed to translate address: %X",Addr); }
+		CPU_Message("Compile_LW\nFailed to compile address: %X", Addr);
+		if (ShowUnhandledMemory) { DisplayError("Compile_LW\nFailed to compile address: %X",Addr); }
 		break;
 	case 0x1FC00000:
 		sprintf(VarName,"N64MEM + %X",Addr);
@@ -363,24 +377,24 @@ void Compile_LW ( int Reg, DWORD Addr ) {
 		break;
 	default:
 		MoveConstToX86reg(((Addr & 0xFFFF) << 16) | (Addr & 0xFFFF),Reg);
-		if (ShowUnhandledMemory) { 
-			CPU_Message("Compile_LW\nFailed to translate address: %X",Addr); 
-			DisplayError("Compile_LW\nFailed to translate address: %X",Addr); 
+		CPU_Message("Compile_LW\nFailed to compile address: %X", Addr);
+		if (ShowUnhandledMemory) {
+			DisplayError("Compile_LW\nFailed to compile address: %X",Addr);
 		}
 	}
+
+	return TRUE;
 }
 
-void Compile_SB_Const ( BYTE Value, DWORD Addr ) {
+BOOL Compile_SB_Const ( BYTE Value, DWORD Addr ) {
 	char VarName[100];
 
 	if (!TranslateVaddr(&Addr)) {
-		CPU_Message("Compile_SB\nFailed to translate address %X",Addr);
-		if (ShowUnhandledMemory) { DisplayError("Compile_SB\nFailed to translate address %X",Addr); }
-		return;
+		return FALSE;
 	}
 
 	switch (Addr & 0xFFF00000) {
-	case 0x00000000: 
+	case 0x00000000:
 	case 0x00100000: 
 	case 0x00200000: 
 	case 0x00300000: 
@@ -392,21 +406,22 @@ void Compile_SB_Const ( BYTE Value, DWORD Addr ) {
 		MoveConstByteToVariable(Value,Addr + N64MEM,VarName); 
 		break;
 	default:
+		CPU_Message("Compile_SB_Const\ntrying to store in %X?", Addr);
 		if (ShowUnhandledMemory) { DisplayError("Compile_SB_Const\ntrying to store %X in %X?",Value,Addr); }
 	}
+
+	return TRUE;
 }
 
-void Compile_SB_Register ( int x86Reg, DWORD Addr ) {
+BOOL Compile_SB_Register ( int x86Reg, DWORD Addr ) {
 	char VarName[100];
 
 	if (!TranslateVaddr(&Addr)) {
-		CPU_Message("Compile_SB\nFailed to translate address %X",Addr);
-		if (ShowUnhandledMemory) { DisplayError("Compile_SB\nFailed to translate address %X",Addr); }
-		return;
+		return FALSE;
 	}
 
 	switch (Addr & 0xFFF00000) {
-	case 0x00000000: 
+	case 0x00000000:
 	case 0x00100000: 
 	case 0x00200000: 
 	case 0x00300000: 
@@ -418,21 +433,22 @@ void Compile_SB_Register ( int x86Reg, DWORD Addr ) {
 		MoveX86regByteToVariable(x86Reg,Addr + N64MEM,VarName); 
 		break;
 	default:
+		CPU_Message("Compile_SB_Register\ntrying to store in %X?", Addr);
 		if (ShowUnhandledMemory) { DisplayError("Compile_SB_Register\ntrying to store in %X?",Addr); }
 	}
+
+	return TRUE;
 }
 
-void Compile_SH_Const ( WORD Value, DWORD Addr ) {
+BOOL Compile_SH_Const ( WORD Value, DWORD Addr ) {
 	char VarName[100];
 
 	if (!TranslateVaddr(&Addr)) {
-		CPU_Message("Compile_SH\nFailed to translate address %X",Addr);
-		if (ShowUnhandledMemory) { DisplayError("Compile_SH\nFailed to translate address %X",Addr); }
-		return;
+		return FALSE;
 	}
 
 	switch (Addr & 0xFFF00000) {
-	case 0x00000000: 
+	case 0x00000000:
 	case 0x00100000: 
 	case 0x00200000: 
 	case 0x00300000: 
@@ -444,21 +460,22 @@ void Compile_SH_Const ( WORD Value, DWORD Addr ) {
 		MoveConstHalfToVariable(Value,Addr + N64MEM,VarName); 
 		break;
 	default:
+		CPU_Message("Compile_SH_Const\ntrying to store in %X?", Addr);
 		if (ShowUnhandledMemory) { DisplayError("Compile_SH_Const\ntrying to store %X in %X?",Value,Addr); }
 	}
+
+	return TRUE;
 }
 
-void Compile_SH_Register ( int x86Reg, DWORD Addr ) {
+BOOL Compile_SH_Register ( int x86Reg, DWORD Addr ) {
 	char VarName[100];
 
 	if (!TranslateVaddr(&Addr)) {
-		CPU_Message("Compile_SH\nFailed to translate address %X",Addr);
-		if (ShowUnhandledMemory) { DisplayError("Compile_SH\nFailed to translate address %X",Addr); }
-		return;
+		return FALSE;
 	}
 
 	switch (Addr & 0xFFF00000) {
-	case 0x00000000: 
+	case 0x00000000:
 	case 0x00100000: 
 	case 0x00200000: 
 	case 0x00300000: 
@@ -470,22 +487,23 @@ void Compile_SH_Register ( int x86Reg, DWORD Addr ) {
 		MoveX86regHalfToVariable(x86Reg,Addr + N64MEM,VarName); 
 		break;
 	default:
+		CPU_Message("Compile_SH_Register\ntrying to store in %X?", Addr);
 		if (ShowUnhandledMemory) { DisplayError("Compile_SH_Register\ntrying to store in %X?",Addr); }
 	}
+
+	return TRUE;
 }
 
-void Compile_SW_Const ( DWORD Value, DWORD Addr ) {
+BOOL Compile_SW_Const ( DWORD Value, DWORD Addr ) {
 	char VarName[100];
 	BYTE * Jump;
 
 	if (!TranslateVaddr(&Addr)) {
-		CPU_Message("Compile_SW\nFailed to translate address %X",Addr);
-		if (ShowUnhandledMemory) { DisplayError("Compile_SW\nFailed to translate address %X",Addr); }
-		return;
+		return FALSE;
 	}
 
 	switch (Addr & 0xFFF00000) {
-	case 0x00000000: 
+	case 0x00000000:
 	case 0x00100000: 
 	case 0x00200000: 
 	case 0x00300000: 
@@ -801,20 +819,20 @@ void Compile_SW_Const ( DWORD Value, DWORD Addr ) {
 	default:
 		if (ShowUnhandledMemory) { DisplayError("Compile_SW_Const\ntrying to store %X in %X?",Value,Addr); }
 	}
+
+	return TRUE;
 }
 
-void Compile_SW_Register ( int x86Reg, DWORD Addr ) {
+BOOL Compile_SW_Register ( int x86Reg, DWORD Addr ) {
 	char VarName[100];
 	BYTE * Jump;
 
 	if (!TranslateVaddr(&Addr)) {
-		CPU_Message("Compile_SW_Register\nFailed to translate address %X",Addr);
-		if (ShowUnhandledMemory) { DisplayError("Compile_SW_Register\nFailed to translate address %X",Addr); }
-		return;
+		return FALSE;
 	}
 
 	switch (Addr & 0xFFF00000) {
-	case 0x00000000: 
+	case 0x00000000:
 	case 0x00100000: 
 	case 0x00200000: 
 	case 0x00300000: 
@@ -1083,6 +1101,8 @@ void Compile_SW_Register ( int x86Reg, DWORD Addr ) {
 		CPU_Message("    Should be moving %s in to %X ?!?",x86_Name(x86Reg),Addr);
 		if (ShowUnhandledMemory) { DisplayError("Compile_SW_Register\ntrying to store in %X?",Addr); }
 	}
+
+	return TRUE;
 }
 
 int r4300i_Command_MemoryFilter( DWORD dwExptCode, LPEXCEPTION_POINTERS lpEP) {
