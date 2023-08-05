@@ -570,6 +570,7 @@ void InPermLoop (void) {
 	return;
 
 InterruptsDisabled:
+	RefreshScreen();
 	if (firstFrameWithInterruptsDisabled == 0) {
 		firstFrameWithInterruptsDisabled = CurrentFrame;
 		return;
@@ -581,7 +582,6 @@ InterruptsDisabled:
 		firstFrameWithInterruptsDisabled = 0;
 	}
 
-	if (UpdateScreen != NULL) { UpdateScreen(); }
 	CurrentFrame = 0;
 	CurrentPercent = 0;
 	DisplayFPS();
