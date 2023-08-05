@@ -2002,6 +2002,7 @@ CPU_Message("PermLoop ***");
 		} else {
 			char Label[100];
 
+			sprintf(Label, "Section_%d", TargetSection[count]->SectionID);
 			CPU_Message("Section_%d (from %d):",TargetSection[count]->SectionID,Section->SectionID);
 			SetJump32(JumpInfo[count]->LinkLocation,RecompPos);
 			JumpInfo[count]->LinkLocation = NULL;
