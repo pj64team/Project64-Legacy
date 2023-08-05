@@ -65,15 +65,15 @@ BOOL r4300i_SW_VAddr             ( DWORD VAddr, DWORD Value );
 BOOL r4300i_SW_VAddr_NonCPU      ( DWORD VAddr, DWORD Value );
 
 /* Recompiler Memory Functions */
-void Compile_LB                  ( int Reg, DWORD Addr, BOOL SignExtend );
-void Compile_LH                  ( int Reg, DWORD Addr, BOOL SignExtend );
-void Compile_LW                  ( int Reg, DWORD Addr );
-void Compile_SB_Const            ( BYTE Value, DWORD Addr );
-void Compile_SB_Register         ( int x86Reg, DWORD Addr );
-void Compile_SH_Const            ( WORD Value, DWORD Addr );
-void Compile_SH_Register         ( int x86Reg, DWORD Addr );
-void Compile_SW_Const            ( DWORD Value, DWORD Addr );
-void Compile_SW_Register         ( int x86Reg, DWORD Addr );
+BOOL Compile_LB                  ( int Reg, DWORD Addr, BOOL SignExtend );
+BOOL Compile_LH                  ( int Reg, DWORD Addr, BOOL SignExtend );
+BOOL Compile_LW                  ( int Reg, DWORD Addr );
+BOOL Compile_SB_Const            ( BYTE Value, DWORD Addr );
+BOOL Compile_SB_Register         ( int x86Reg, DWORD Addr );
+BOOL Compile_SH_Const            ( WORD Value, DWORD Addr );
+BOOL Compile_SH_Register         ( int x86Reg, DWORD Addr );
+BOOL Compile_SW_Const            ( DWORD Value, DWORD Addr );
+BOOL Compile_SW_Register         ( int x86Reg, DWORD Addr );
 void ResetMemoryStack            ( BLOCK_SECTION * Section );
 void ResetRecompCode             ( void );
 
