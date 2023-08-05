@@ -252,7 +252,7 @@ void _fastcall r4300i_LDL (void) {
 	
 	Address.UDW = GPR[Opcode.IMM.base].UDW + (short)Opcode.IMM.immediate;
 	if (!IsSignExtended(Address)) {
-		ADDRESS_ERROR_EXCEPTION(Address.UW[0], TRUE);
+		ADDRESS_ERROR_EXCEPTION(Address.UDW, TRUE);
 		return;
 	}
 	Offset  = Address.UW[0] & 7;
@@ -281,7 +281,7 @@ void _fastcall r4300i_LDR (void) {
 	
 	Address.UDW = GPR[Opcode.IMM.base].UDW + (short)Opcode.IMM.immediate;
 	if (!IsSignExtended(Address)) {
-		ADDRESS_ERROR_EXCEPTION(Address.UW[0], TRUE);
+		ADDRESS_ERROR_EXCEPTION(Address.UDW, TRUE);
 		return;
 	}
 	Offset  = Address.UW[0] & 7;
@@ -301,7 +301,7 @@ void _fastcall r4300i_LB (void) {
 	MIPS_DWORD Address;
 	Address.UDW = GPR[Opcode.IMM.base].UDW + (short)Opcode.IMM.immediate;
 	if (!IsSignExtended(Address)) {
-		ADDRESS_ERROR_EXCEPTION(Address.UW[0], TRUE);
+		ADDRESS_ERROR_EXCEPTION(Address.UDW, TRUE);
 		return;
 	}
 	if (Opcode.BRANCH.rt == 0) { return; }
@@ -319,7 +319,7 @@ void _fastcall r4300i_LH (void) {
 	MIPS_DWORD Address;
 	Address.UDW = GPR[Opcode.IMM.base].UDW + (short)Opcode.IMM.immediate;
 	if ((Address.UW[0] & 1) != 0 || !IsSignExtended(Address)) {
-		ADDRESS_ERROR_EXCEPTION(Address.UW[0],TRUE);
+		ADDRESS_ERROR_EXCEPTION(Address.UDW,TRUE);
 		return;
 	}
 	if (!r4300i_LH_VAddr(Address.UW[0],&GPR[Opcode.BRANCH.rt].UHW[0])) {
@@ -341,7 +341,7 @@ void _fastcall r4300i_LWL (void) {
 	
 	Address.UDW = GPR[Opcode.IMM.base].UDW + (short)Opcode.IMM.immediate;
 	if (!IsSignExtended(Address)) {
-		ADDRESS_ERROR_EXCEPTION(Address.UW[0], TRUE);
+		ADDRESS_ERROR_EXCEPTION(Address.UDW, TRUE);
 		return;
 	}
 	Offset  = Address.UW[0] & 3;
@@ -361,7 +361,7 @@ void _fastcall r4300i_LW (void) {
 	MIPS_DWORD Address;
 	Address.UDW = GPR[Opcode.IMM.base].UDW + (short)Opcode.IMM.immediate;
 	if ((Address.UW[0] & 3) != 0 || !IsSignExtended(Address)) {
-		ADDRESS_ERROR_EXCEPTION(Address.UW[0],TRUE);
+		ADDRESS_ERROR_EXCEPTION(Address.UDW,TRUE);
 	}
 
 	if (ShowDebugMessages)
@@ -383,7 +383,7 @@ void _fastcall r4300i_LBU (void) {
 	MIPS_DWORD Address;
 	Address.UDW = GPR[Opcode.IMM.base].UDW + (short)Opcode.IMM.immediate;
 	if (!IsSignExtended(Address)) {
-		ADDRESS_ERROR_EXCEPTION(Address.UW[0], TRUE);
+		ADDRESS_ERROR_EXCEPTION(Address.UDW, TRUE);
 		return;
 	}
 	if (!r4300i_LB_VAddr(Address.UW[0],&GPR[Opcode.BRANCH.rt].UB[0])) {
@@ -400,7 +400,7 @@ void _fastcall r4300i_LHU (void) {
 	MIPS_DWORD Address;
 	Address.UDW = GPR[Opcode.IMM.base].UDW + (short)Opcode.IMM.immediate;
 	if ((Address.UW[0] & 1) != 0 || !IsSignExtended(Address)) {
-		ADDRESS_ERROR_EXCEPTION(Address.UW[0],TRUE);
+		ADDRESS_ERROR_EXCEPTION(Address.UDW,TRUE);
 		return;
 	}
 	if (!r4300i_LH_VAddr(Address.UW[0],&GPR[Opcode.BRANCH.rt].UHW[0])) {
@@ -422,7 +422,7 @@ void _fastcall r4300i_LWR (void) {
 	
 	Address.UDW = GPR[Opcode.IMM.base].UDW + (short)Opcode.IMM.immediate;
 	if (!IsSignExtended(Address)) {
-		ADDRESS_ERROR_EXCEPTION(Address.UW[0], TRUE);
+		ADDRESS_ERROR_EXCEPTION(Address.UDW, TRUE);
 		return;
 	}
 	Offset  = Address.UW[0] & 3;
@@ -442,7 +442,7 @@ void _fastcall r4300i_LWU (void) {
 	MIPS_DWORD Address;
 	Address.UDW = GPR[Opcode.IMM.base].UDW + (short)Opcode.IMM.immediate;
 	if ((Address.UW[0] & 3) != 0 || !IsSignExtended(Address)) {
-		ADDRESS_ERROR_EXCEPTION(Address.UW[0],TRUE);
+		ADDRESS_ERROR_EXCEPTION(Address.UDW,TRUE);
 		return;
 	}
 	if (Opcode.BRANCH.rt == 0) { return; }
@@ -461,7 +461,7 @@ void _fastcall r4300i_SB (void) {
 	MIPS_DWORD Address;
 	Address.UDW = GPR[Opcode.IMM.base].UDW + (short)Opcode.IMM.immediate;
 	if (!IsSignExtended(Address)) {
-		ADDRESS_ERROR_EXCEPTION(Address.UW[0],FALSE);
+		ADDRESS_ERROR_EXCEPTION(Address.UDW,FALSE);
 		return;
 	}
 	if (!r4300i_SB_VAddr(Address.UW[0],GPR[Opcode.BRANCH.rt].UB[0])) {
@@ -476,7 +476,7 @@ void _fastcall r4300i_SH (void) {
 	MIPS_DWORD Address;
 	Address.UDW = GPR[Opcode.IMM.base].UDW + (short)Opcode.IMM.immediate;
 	if ((Address.UW[0] & 1) != 0 || !IsSignExtended(Address)) {
-		ADDRESS_ERROR_EXCEPTION(Address.UW[0],FALSE);
+		ADDRESS_ERROR_EXCEPTION(Address.UDW,FALSE);
 		return;
 	}
 	if (!r4300i_SH_VAddr(Address.UW[0],GPR[Opcode.BRANCH.rt].UHW[0])) {
@@ -496,7 +496,7 @@ void _fastcall r4300i_SWL (void) {
 
 	Address.UDW = GPR[Opcode.IMM.base].UDW + (short)Opcode.IMM.immediate;
 	if (!IsSignExtended(Address)) {
-		ADDRESS_ERROR_EXCEPTION(Address.UW[0], FALSE);
+		ADDRESS_ERROR_EXCEPTION(Address.UDW, FALSE);
 		return;
 	}
 	Offset  = Address.UW[0] & 3;
@@ -524,7 +524,7 @@ void _fastcall r4300i_SW (void) {
 	MIPS_DWORD Address;
 	Address.UDW = GPR[Opcode.IMM.base].UDW + (short)Opcode.IMM.immediate;
 	if ((Address.UW[0] & 3) != 0 || !IsSignExtended(Address)) {
-		ADDRESS_ERROR_EXCEPTION(Address.UW[0],FALSE);
+		ADDRESS_ERROR_EXCEPTION(Address.UDW,FALSE);
 		return;
 	}
 
@@ -556,7 +556,7 @@ void _fastcall r4300i_SDL (void) {
 	
 	Address.UDW = GPR[Opcode.IMM.base].UDW + (short)Opcode.IMM.immediate;
 	if (!IsSignExtended(Address)) {
-		ADDRESS_ERROR_EXCEPTION(Address.UW[0], FALSE);
+		ADDRESS_ERROR_EXCEPTION(Address.UDW, FALSE);
 		return;
 	}
 	Offset  = Address.UW[0] & 7;
@@ -597,7 +597,7 @@ void _fastcall r4300i_SDR (void) {
 	
 	Address.UDW = GPR[Opcode.IMM.base].UDW + (short)Opcode.IMM.immediate;
 	if (!IsSignExtended(Address)) {
-		ADDRESS_ERROR_EXCEPTION(Address.UW[0], FALSE);
+		ADDRESS_ERROR_EXCEPTION(Address.UDW, FALSE);
 		return;
 	}
 	Offset  = Address.UW[0] & 7;
@@ -629,7 +629,7 @@ void _fastcall r4300i_SWR (void) {
 	
 	Address.UDW = GPR[Opcode.IMM.base].UDW + (short)Opcode.IMM.immediate;
 	if (!IsSignExtended(Address)) {
-		ADDRESS_ERROR_EXCEPTION(Address.UW[0], FALSE);
+		ADDRESS_ERROR_EXCEPTION(Address.UDW, FALSE);
 		return;
 	}
 	Offset  = Address.UW[0] & 3;
@@ -662,7 +662,7 @@ void _fastcall r4300i_LL (void) {
 	MIPS_DWORD Address;
 	Address.UDW = GPR[Opcode.IMM.base].UDW + (short)Opcode.IMM.immediate;
 	if ((Address.UW[0] & 3) != 0 || !IsSignExtended(Address)) {
-		ADDRESS_ERROR_EXCEPTION(Address.UW[0],TRUE);
+		ADDRESS_ERROR_EXCEPTION(Address.UDW,TRUE);
 		return;
 	}
 
@@ -685,7 +685,7 @@ void _fastcall r4300i_LWC1 (void) {
 	Address.UDW = GPR[Opcode.IMM.base].UDW + (short)Opcode.IMM.immediate;
 	TEST_COP1_USABLE_EXCEPTION
 	if ((Address.UW[0] & 3) != 0 || !IsSignExtended(Address)) {
-		ADDRESS_ERROR_EXCEPTION(Address.UW[0],TRUE);
+		ADDRESS_ERROR_EXCEPTION(Address.UDW,TRUE);
 		return;
 	}
 	if (!r4300i_LW_VAddr(Address.UW[0],&*(DWORD *)FPRFloatLocation[Opcode.FP.ft])) {
@@ -700,7 +700,7 @@ void _fastcall r4300i_SC (void) {
 	MIPS_DWORD Address;
 	Address.UDW = GPR[Opcode.IMM.base].UDW + (short)Opcode.IMM.immediate;
 	if ((Address.UW[0] & 3) != 0 || !IsSignExtended(Address)) {
-		ADDRESS_ERROR_EXCEPTION(Address.UW[0],FALSE);
+		ADDRESS_ERROR_EXCEPTION(Address.UDW,FALSE);
 		return;
 	}
 
@@ -722,7 +722,7 @@ void _fastcall r4300i_LD (void) {
 	MIPS_DWORD Address;
 	Address.UDW = GPR[Opcode.IMM.base].UDW + (short)Opcode.IMM.immediate;
 	if ((Address.UW[0] & 7) != 0 || !IsSignExtended(Address)) {
-		ADDRESS_ERROR_EXCEPTION(Address.UW[0],TRUE);
+		ADDRESS_ERROR_EXCEPTION(Address.UDW,TRUE);
 		return;
 	}
 	if (!r4300i_LD_VAddr(Address.UW[0],&GPR[Opcode.BRANCH.rt].UDW)) {
@@ -745,7 +745,7 @@ void _fastcall r4300i_LDC1 (void) {
 
 	TEST_COP1_USABLE_EXCEPTION
 	if ((Address.UW[0] & 7) != 0 || !IsSignExtended(Address)) {
-		ADDRESS_ERROR_EXCEPTION(Address.UW[0],TRUE);
+		ADDRESS_ERROR_EXCEPTION(Address.UDW,TRUE);
 		return;
 	}
 	if (!r4300i_LD_VAddr(Address.UW[0],&*(unsigned __int64 *)FPRDoubleLocation[Opcode.FP.ft])) {
@@ -761,7 +761,7 @@ void _fastcall r4300i_SWC1 (void) {
 	Address.UDW = GPR[Opcode.IMM.base].UDW + (short)Opcode.IMM.immediate;
 	TEST_COP1_USABLE_EXCEPTION
 	if ((Address.UW[0] & 3) != 0 || !IsSignExtended(Address)) {
-		ADDRESS_ERROR_EXCEPTION(Address.UW[0],FALSE);
+		ADDRESS_ERROR_EXCEPTION(Address.UDW,FALSE);
 		return;
 	}
 
@@ -779,7 +779,7 @@ void _fastcall r4300i_SDC1 (void) {
 
 	TEST_COP1_USABLE_EXCEPTION
 	if ((Address.UW[0] & 7) != 0 || !IsSignExtended(Address)) {
-		ADDRESS_ERROR_EXCEPTION(Address.UW[0],FALSE);
+		ADDRESS_ERROR_EXCEPTION(Address.UDW,FALSE);
 		return;
 	}
 	if (!r4300i_SD_VAddr(Address.UW[0],*(__int64 *)FPRDoubleLocation[Opcode.FP.ft])) {
@@ -794,7 +794,7 @@ void _fastcall r4300i_SD (void) {
 	MIPS_DWORD Address;
 	Address.UDW = GPR[Opcode.IMM.base].UDW + (short)Opcode.IMM.immediate;
 	if ((Address.UW[0] & 7) != 0 || !IsSignExtended(Address)) {
-		ADDRESS_ERROR_EXCEPTION(Address.UW[0],FALSE);
+		ADDRESS_ERROR_EXCEPTION(Address.UDW,FALSE);
 		return;
 	}
 	if (!r4300i_SD_VAddr(Address.UW[0],GPR[Opcode.BRANCH.rt].UDW)) {
@@ -835,7 +835,7 @@ void _fastcall r4300i_SPECIAL_JR (void) {
 	JumpToLocation = GPR[Opcode.BRANCH.rs].UW[0];
 	if (JumpToLocation & 3) {
 		PROGRAM_COUNTER = JumpToLocation;
-		DoAddressError(FALSE, JumpToLocation, TRUE);
+		DoAddressError(FALSE, GPR[Opcode.BRANCH.rs].UDW, TRUE);
 		NextInstruction = JUMP;
 		JumpToLocation = PROGRAM_COUNTER;
 	}
@@ -846,7 +846,7 @@ void _fastcall r4300i_SPECIAL_JALR (void) {
 	JumpToLocation = GPR[Opcode.BRANCH.rs].UW[0];
 	if (JumpToLocation & 3) {
 		PROGRAM_COUNTER = JumpToLocation;
-		DoAddressError(FALSE, JumpToLocation, TRUE);
+		DoAddressError(FALSE, GPR[Opcode.BRANCH.rs].UDW, TRUE);
 		NextInstruction = JUMP;
 		JumpToLocation = PROGRAM_COUNTER;
 	} else {
@@ -1224,6 +1224,7 @@ void _fastcall r4300i_COP0_MF (void) {
 void _fastcall r4300i_COP0_DMF(void) {
 	if (HaveDebugger && LogOptions.LogCP0reads) {
 		switch (Opcode.REG.rd) {
+		case 8: //BadVAddr
 		case 20: //XContext:
 			LogMessage("%08X: R4300i Read from %s (0x%016llX)", PROGRAM_COUNTER,
 				Cop0_Name[Opcode.REG.rd], CP0[Opcode.REG.rd].UDW);
@@ -1234,6 +1235,7 @@ void _fastcall r4300i_COP0_DMF(void) {
 		}
 	}
 	switch (Opcode.REG.rd) {
+	case 8: //BadVAddr
 	case 20: //XContext
 		GPR[Opcode.BRANCH.rt].DW = CP0[Opcode.REG.rd].DW;
 		break;

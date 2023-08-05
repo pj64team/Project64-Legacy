@@ -78,9 +78,9 @@ void DoIntegerOverflow(BOOL DelaySlot) {
 	PROGRAM_COUNTER = 0x80000180;
 }
 
-void DoAddressError ( BOOL DelaySlot, DWORD BadVaddr, BOOL FromRead) {
+void DoAddressError ( BOOL DelaySlot, QWORD BadVaddr, BOOL FromRead) {
 	if (ShowDebugMessages) {
-		DisplayError("AddressError while accessing %08X (%s). PC: %08X",
+		DisplayError("AddressError while accessing %016llX (%s). PC: %08X",
 			BadVaddr,
 			FromRead ? "read" : "write",
 			DelaySlot ? PROGRAM_COUNTER -4 : PROGRAM_COUNTER);
