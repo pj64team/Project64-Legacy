@@ -295,7 +295,7 @@ BOOL CALLBACK DefaultOptionsProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lPa
 
 			indx = SendMessage(GetDlgItem(hDlg, IDC_ABL), CB_GETCURSEL, 0, 0);
 			SystemABL = SendMessage(GetDlgItem(hDlg, IDC_ABL), CB_GETITEMDATA, indx, 0);
-			sprintf(String, "%d", SystemABL);
+			sprintf(String, "%s", SystemABL ? STR_TRUE : STR_FALSE);
 			Settings_Write(APPS_NAME, STR_COREDEFAULTS, STR_ABL, String);
 		}
 		break;
