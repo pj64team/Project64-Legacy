@@ -4746,13 +4746,14 @@ void Compile_R4300i_SPECIAL_DADD (BLOCK_SECTION * Section) {
 			MipsRegState(Opcode.REG.rd) = STATE_CONST_64;
 		}
 	} else {
+		ProtectGPR(Section, Opcode.BRANCH.rt);
 		Map_GPR_64bit(Section,Opcode.REG.rd,Opcode.BRANCH.rs);
 		if (IsConst(Opcode.BRANCH.rt)) {
 			AddConstToX86Reg(MipsRegLo(Opcode.REG.rd),MipsRegLo(Opcode.BRANCH.rt));
 			AddConstToX86Reg(MipsRegHi(Opcode.REG.rd),MipsRegHi(Opcode.BRANCH.rt));
 		} else if (IsMapped(Opcode.BRANCH.rt)) {
+			ProtectGPR(Section, Opcode.REG.rd);
 			int HiReg = Is64Bit(Opcode.BRANCH.rt)?MipsRegHi(Opcode.BRANCH.rt):Map_TempReg(Section,x86_Any,Opcode.BRANCH.rt,TRUE);
-			ProtectGPR(Section,Opcode.BRANCH.rt);
 			AddX86RegToX86Reg(MipsRegLo(Opcode.REG.rd),MipsRegLo(Opcode.BRANCH.rt));
 			AdcX86RegToX86Reg(MipsRegHi(Opcode.REG.rd),HiReg);
 		} else {
@@ -4779,13 +4780,14 @@ void Compile_R4300i_SPECIAL_DADDU (BLOCK_SECTION * Section) {
 			MipsRegState(Opcode.REG.rd) = STATE_CONST_64;
 		}
 	} else {
+		ProtectGPR(Section, Opcode.BRANCH.rt);
 		Map_GPR_64bit(Section,Opcode.REG.rd,Opcode.BRANCH.rs);
 		if (IsConst(Opcode.BRANCH.rt)) {
 			AddConstToX86Reg(MipsRegLo(Opcode.REG.rd),MipsRegLo(Opcode.BRANCH.rt));
 			AddConstToX86Reg(MipsRegHi(Opcode.REG.rd),MipsRegHi(Opcode.BRANCH.rt));
 		} else if (IsMapped(Opcode.BRANCH.rt)) {
+			ProtectGPR(Section, Opcode.REG.rd);
 			int HiReg = Is64Bit(Opcode.BRANCH.rt)?MipsRegHi(Opcode.BRANCH.rt):Map_TempReg(Section,x86_Any,Opcode.BRANCH.rt,TRUE);
-			ProtectGPR(Section,Opcode.BRANCH.rt);
 			AddX86RegToX86Reg(MipsRegLo(Opcode.REG.rd),MipsRegLo(Opcode.BRANCH.rt));
 			AdcX86RegToX86Reg(MipsRegHi(Opcode.REG.rd),HiReg);
 		} else {
@@ -4812,6 +4814,7 @@ void Compile_R4300i_SPECIAL_DSUB (BLOCK_SECTION * Section) {
 			MipsRegState(Opcode.REG.rd) = STATE_CONST_64;
 		}
 	} else {
+		ProtectGPR(Section, Opcode.BRANCH.rt);
 		if (Opcode.REG.rd == Opcode.BRANCH.rt) {
 			int HiReg = Map_TempReg(Section,x86_Any,Opcode.BRANCH.rt,TRUE);
 			int LoReg = Map_TempReg(Section,x86_Any,Opcode.BRANCH.rt,FALSE);
@@ -4825,8 +4828,8 @@ void Compile_R4300i_SPECIAL_DSUB (BLOCK_SECTION * Section) {
 			SubConstFromX86Reg(MipsRegLo(Opcode.REG.rd),MipsRegLo(Opcode.BRANCH.rt));
 			SbbConstFromX86Reg(MipsRegHi(Opcode.REG.rd),MipsRegHi(Opcode.BRANCH.rt));
 		} else if (IsMapped(Opcode.BRANCH.rt)) {
+			ProtectGPR(Section, Opcode.REG.rd);
 			int HiReg = Is64Bit(Opcode.BRANCH.rt)?MipsRegHi(Opcode.BRANCH.rt):Map_TempReg(Section,x86_Any,Opcode.BRANCH.rt,TRUE);
-			ProtectGPR(Section,Opcode.BRANCH.rt);
 			SubX86RegToX86Reg(MipsRegLo(Opcode.REG.rd),MipsRegLo(Opcode.BRANCH.rt));
 			SbbX86RegToX86Reg(MipsRegHi(Opcode.REG.rd),HiReg);
 		} else {
@@ -4853,6 +4856,7 @@ void Compile_R4300i_SPECIAL_DSUBU (BLOCK_SECTION * Section) {
 			MipsRegState(Opcode.REG.rd) = STATE_CONST_64;
 		}
 	} else {
+		ProtectGPR(Section, Opcode.BRANCH.rt);
 		if (Opcode.REG.rd == Opcode.BRANCH.rt) {
 			int HiReg = Map_TempReg(Section,x86_Any,Opcode.BRANCH.rt,TRUE);
 			int LoReg = Map_TempReg(Section,x86_Any,Opcode.BRANCH.rt,FALSE);
@@ -4866,8 +4870,8 @@ void Compile_R4300i_SPECIAL_DSUBU (BLOCK_SECTION * Section) {
 			SubConstFromX86Reg(MipsRegLo(Opcode.REG.rd),MipsRegLo(Opcode.BRANCH.rt));
 			SbbConstFromX86Reg(MipsRegHi(Opcode.REG.rd),MipsRegHi(Opcode.BRANCH.rt));
 		} else if (IsMapped(Opcode.BRANCH.rt)) {
+			ProtectGPR(Section, Opcode.REG.rd);
 			int HiReg = Is64Bit(Opcode.BRANCH.rt)?MipsRegHi(Opcode.BRANCH.rt):Map_TempReg(Section,x86_Any,Opcode.BRANCH.rt,TRUE);
-			ProtectGPR(Section,Opcode.BRANCH.rt);
 			SubX86RegToX86Reg(MipsRegLo(Opcode.REG.rd),MipsRegLo(Opcode.BRANCH.rt));
 			SbbX86RegToX86Reg(MipsRegHi(Opcode.REG.rd),HiReg);
 		} else {
@@ -4975,6 +4979,7 @@ void Compile_R4300i_SPECIAL_DSLL32 (BLOCK_SECTION * Section) {
 		}
 		XorX86RegToX86Reg(MipsRegLo(Opcode.REG.rd),MipsRegLo(Opcode.REG.rd));
 	} else {
+		ProtectGPR(Section, Opcode.BRANCH.rt);
 		Map_GPR_64bit(Section,Opcode.REG.rd,-1);
 		MoveVariableToX86reg(&GPR[Opcode.BRANCH.rt],GPR_NameHi[Opcode.BRANCH.rt],MipsRegHi(Opcode.REG.rd));
 		if ((BYTE)Opcode.REG.sa != 0) {
@@ -5011,6 +5016,7 @@ void Compile_R4300i_SPECIAL_DSRL32 (BLOCK_SECTION * Section) {
 			Compile_R4300i_UnknownOpcode(Section);
 		}
 	} else {
+		ProtectGPR(Section, Opcode.BRANCH.rt);
 		Map_GPR_32bit(Section,Opcode.REG.rd,FALSE,-1);
 		MoveVariableToX86reg(&GPR[Opcode.BRANCH.rt].UW[1],GPR_NameLo[Opcode.BRANCH.rt],MipsRegLo(Opcode.REG.rd));
 		if ((BYTE)Opcode.REG.sa != 0) {
@@ -5046,6 +5052,7 @@ void Compile_R4300i_SPECIAL_DSRA32 (BLOCK_SECTION * Section) {
 			Compile_R4300i_UnknownOpcode(Section);
 		}
 	} else {
+		ProtectGPR(Section, Opcode.BRANCH.rt);
 		Map_GPR_32bit(Section,Opcode.REG.rd,TRUE,-1);
 		MoveVariableToX86reg(&GPR[Opcode.BRANCH.rt].UW[1],GPR_NameLo[Opcode.BRANCH.rt],MipsRegLo(Opcode.REG.rd));
 		if ((BYTE)Opcode.REG.sa != 0) {
@@ -5066,6 +5073,7 @@ void Compile_R4300i_COP0_MF(BLOCK_SECTION * Section) {
 		SubConstFromVariable(BlockCycleCount,&Timers.Timer,"Timer");
 		BlockCycleCount = 0;
 	}
+	ProtectGPR(Section, Opcode.REG.rd);
 	Map_GPR_32bit(Section,Opcode.BRANCH.rt,TRUE,-1);
 	MoveVariableToX86reg(&CP0[Opcode.REG.rd],Cop0_Name[Opcode.REG.rd],MipsRegLo(Opcode.BRANCH.rt));
 }
@@ -5081,6 +5089,7 @@ void Compile_R4300i_COP0_DMF(BLOCK_SECTION * Section) {
 		SubConstFromVariable(BlockCycleCount, &Timers.Timer, "Timer");
 		BlockCycleCount = 0;
 	}
+	ProtectGPR(Section, Opcode.REG.rd);
 	Map_GPR_64bit(Section, Opcode.BRANCH.rt, -1);
 	MoveVariableToX86reg(&CP0[Opcode.REG.rd], Cop0_Name[Opcode.REG.rd], MipsRegLo(Opcode.BRANCH.rt));
 	MoveX86RegToX86Reg(MipsRegLo(Opcode.BRANCH.rt), MipsRegHi(Opcode.BRANCH.rt));
@@ -5137,6 +5146,7 @@ void Compile_R4300i_COP0_MT (BLOCK_SECTION * Section) {
 		}
 		break;
 	case 12: //Status
+		ProtectGPR(Section, Opcode.BRANCH.rt);
 		OldStatusReg = Map_TempReg(Section,x86_Any,-1,FALSE);
 		MoveVariableToX86reg(&CP0[Opcode.REG.rd],Cop0_Name[Opcode.REG.rd],OldStatusReg);
 		if (IsConst(Opcode.BRANCH.rt)) {
@@ -5244,6 +5254,7 @@ void Compile_R4300i_COP0_DMT(BLOCK_SECTION * Section) {
 		}
 		break;
 	case 12: //Status
+		ProtectGPR(Section, Opcode.BRANCH.rt);
 		OldStatusReg = Map_TempReg(Section,x86_Any,-1,FALSE);
 		MoveVariableToX86reg(&CP0[Opcode.REG.rd],Cop0_Name[Opcode.REG.rd],OldStatusReg);
 		if (IsConst(Opcode.BRANCH.rt)) {
