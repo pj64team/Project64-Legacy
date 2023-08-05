@@ -1919,7 +1919,7 @@ void Compile_R4300i_LWR (BLOCK_SECTION * Section) {
 	AddX86RegToX86Reg(MipsRegLo(Opcode.BRANCH.rt),TempReg1);
 }
 
-void Compile_R4300i_LWU (BLOCK_SECTION * Section) {			//added by Witten
+void Compile_R4300i_LWU (BLOCK_SECTION * Section) {
 	DWORD TempReg1, TempReg2;
 
 	CPU_Message("  %X %s",Section->CompilePC,R4300iOpcodeName(Opcode.Hex,Section->CompilePC));
@@ -1928,42 +1928,65 @@ void Compile_R4300i_LWU (BLOCK_SECTION * Section) {			//added by Witten
 
 	if (IsConst(Opcode.IMM.base)) { 
 		DWORD Address = (MipsRegLo(Opcode.IMM.base) + (short)Opcode.BRANCH.offset);
-		Map_GPR_32bit(Section,Opcode.BRANCH.rt,FALSE,0);
+		Map_GPR_32bit(Section,Opcode.BRANCH.rt,FALSE,-1);
 		Compile_LW(MipsRegLo(Opcode.BRANCH.rt),Address);
 		return;
 	}
-	if (IsMapped(Opcode.BRANCH.rt)) { ProtectGPR(Section,Opcode.BRANCH.rt); }
-	if (IsMapped(Opcode.IMM.base)) { 
-		ProtectGPR(Section,Opcode.IMM.base);
-		if (Opcode.BRANCH.offset != 0) {
-			TempReg1 = Map_TempReg(Section,x86_Any,-1,FALSE);
-			LeaSourceAndOffset(TempReg1,MipsRegLo(Opcode.IMM.base),(short)Opcode.BRANCH.offset);
-		} else {
-			TempReg1 = Map_TempReg(Section,x86_Any,Opcode.IMM.base,FALSE);
-		}
-	} else {
-		TempReg1 = Map_TempReg(Section,x86_Any,Opcode.IMM.base,FALSE);
-		if (Opcode.IMM.immediate == 0) { 
-		} else if (Opcode.IMM.immediate == 1) {
-			IncX86reg(TempReg1);
-		} else if (Opcode.IMM.immediate == 0xFFFF) {			
-			DecX86reg(TempReg1);
-		} else {
-			AddConstToX86Reg(TempReg1,(short)Opcode.IMM.immediate);
-		}
-	}
 	if (UseTlb) {
-		TempReg2 = Map_TempReg(Section,x86_Any,-1,FALSE);
+		if (IsMapped(Opcode.BRANCH.rt)) { ProtectGPR(Section,Opcode.BRANCH.rt); }
+		if (IsMapped(Opcode.IMM.base) && Opcode.BRANCH.offset == 0) {
+			ProtectGPR(Section, Opcode.IMM.base);
+			TempReg1 = MipsRegLo(Opcode.IMM.base);
+		} else {
+			if (IsMapped(Opcode.IMM.base)) {
+				ProtectGPR(Section, Opcode.IMM.base);
+				if (Opcode.BRANCH.offset != 0) {
+					TempReg1 = Map_TempReg(Section, x86_Any, -1, FALSE);
+					LeaSourceAndOffset(TempReg1, MipsRegLo(Opcode.IMM.base), (short)Opcode.BRANCH.offset);
+				} else {
+					TempReg1 = Map_TempReg(Section, x86_Any, Opcode.IMM.base, FALSE);
+				}
+			} else {
+				TempReg1 = Map_TempReg(Section, x86_Any, Opcode.IMM.base, FALSE);
+				if (Opcode.IMM.immediate == 0) {
+				} else if (Opcode.IMM.immediate == 1) {
+					IncX86reg(TempReg1);
+				} else if (Opcode.IMM.immediate == 0xFFFF) {
+					DecX86reg(TempReg1);
+				} else {
+					AddConstToX86Reg(TempReg1, (short)Opcode.IMM.immediate);
+				}
+			}
+		}
+		TempReg2 = Map_TempReg(Section, x86_Any, -1, FALSE);
 		MoveX86RegToX86Reg(TempReg1, TempReg2);
-		ShiftRightUnsignImmed(TempReg2,12);
-		MoveVariableDispToX86Reg(TLB_ReadMap,"TLB_ReadMap",TempReg2,TempReg2,4);
-		CompileReadTLBMiss(Section,TempReg1,TempReg2);
-		Map_GPR_32bit(Section,Opcode.BRANCH.rt,FALSE,-1);
-		MoveZxHalfX86regPointerToX86reg(TempReg1, TempReg2,MipsRegLo(Opcode.BRANCH.rt));
+		ShiftRightUnsignImmed(TempReg2, 12);
+		MoveVariableDispToX86Reg(TLB_ReadMap, "TLB_ReadMap", TempReg2, TempReg2, 4);
+		CompileReadTLBMiss(Section,TempReg1, TempReg2);
+		Map_GPR_32bit(Section,Opcode.BRANCH.rt, FALSE, -1);
+		MoveX86regPointerToX86reg(TempReg1, TempReg2, MipsRegLo(Opcode.BRANCH.rt));
 	} else {
-		AndConstToX86Reg(TempReg1,0x1FFFFFFF);
-		Map_GPR_32bit(Section,Opcode.BRANCH.rt,TRUE,-1);
-		MoveZxN64MemToX86regHalf(MipsRegLo(Opcode.BRANCH.rt), TempReg1);
+		if (IsMapped(Opcode.IMM.base)) {
+			ProtectGPR(Section, Opcode.IMM.base);
+			if (Opcode.BRANCH.offset != 0) {
+				Map_GPR_32bit(Section, Opcode.BRANCH.rt, FALSE, -1);
+				LeaSourceAndOffset(MipsRegLo(Opcode.BRANCH.rt), MipsRegLo(Opcode.IMM.base), (short)Opcode.BRANCH.offset);
+			} else {
+				Map_GPR_32bit(Section, Opcode.BRANCH.rt, FALSE, Opcode.IMM.base);
+			}
+		} else {
+			Map_GPR_32bit(Section, Opcode.BRANCH.rt, FALSE, Opcode.IMM.base);
+			if (Opcode.IMM.immediate == 0) {
+			} else if (Opcode.IMM.immediate == 1) {
+				IncX86reg(MipsRegLo(Opcode.BRANCH.rt));
+			} else if (Opcode.IMM.immediate == 0xFFFF) {
+				DecX86reg(MipsRegLo(Opcode.BRANCH.rt));
+			} else {
+				AddConstToX86Reg(MipsRegLo(Opcode.BRANCH.rt), (short)Opcode.IMM.immediate);
+			}
+		}
+		AndConstToX86Reg(MipsRegLo(Opcode.BRANCH.rt), 0x1FFFFFFF);
+		MoveN64MemToX86reg(MipsRegLo(Opcode.BRANCH.rt), MipsRegLo(Opcode.BRANCH.rt));
 	}
 }
 
