@@ -570,6 +570,7 @@ void InPermLoop (void) {
 	return;
 
 InterruptsDisabled:
+	RefreshScreen();
 	if (firstFrameWithInterruptsDisabled == 0) {
 		firstFrameWithInterruptsDisabled = CurrentFrame;
 		return;
@@ -581,7 +582,6 @@ InterruptsDisabled:
 		firstFrameWithInterruptsDisabled = 0;
 	}
 
-	if (UpdateScreen != NULL) { UpdateScreen(); }
 	CurrentFrame = 0;
 	CurrentPercent = 0;
 	DisplayFPS();
@@ -1267,6 +1267,7 @@ void StartEmulation ( void ) {
 
 	if (inFullScreen) {
 		ResetAudio(hMainWindow);
+		SetupPlugins(hMainWindow);
 	}
 
 	switch (CPU_Type) {
