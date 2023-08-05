@@ -2700,6 +2700,7 @@ BOOL InheritParentInfo (BLOCK_SECTION * Section) {
 	JumpInfo->FallThrough   = FALSE;
 
 	//Fix up initial state
+	WriteBackRegisters(Section);
 	UnMap_AllFPRs(Section);
 	for (count = 0;count < NoOfParents;count++) {
 		int count2, count3, MemoryStackPos;
