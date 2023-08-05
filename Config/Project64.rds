@@ -19,7 +19,7 @@
 // Note that Project64 automatically prefixes "http://"
 
 Author=PJ64LegacyTeam
-Date=16th July 2023 Version: 1
+Date=5th August 2023 Version: 1
 Homepage=www.project64-legacy.com
 Version=Project64 1.6.2 (Legacy)
 
@@ -249,7 +249,6 @@ Name=007 - The World is Not Enough (U) (Prototype - 2020 release)
 CPU Type=Recompiler
 Cheat0=800811D8 0005 // Cheat fixes the password required at boot
 Cheat1=D0081150 0002,A0130AE2 0000 // Disables all missions on Start Screen
-Cheat2=81096084 4765,81096086 6E74,81096088 7320,81095EE0 4765,81095EE2 6E74,81095EE4 7320 // Creates Gents Menu
 Counter Factor=2
 Emulate AI
 ExpansionPak
@@ -262,7 +261,6 @@ Status=Prototype
 Name=007 - The World Is Not Enough (U) (Prototype - 2020 release) [f1]
 CPU Type=Default
 Cheat0=D0081150 0002,A0130AE2 0000 // Disables all missions on Start Screen
-Cheat1=81096084 4765,81096086 6E74,81096088 7320,81095EE0 4765,81095EE2 6E74,81095EE4 7320 // Creates Gents Menu
 Counter Factor=Default
 ExpansionPak
 Linking=Global
@@ -274,7 +272,6 @@ Status=Prototype
 Name=007 - The World Is Not Enough (E) (Prototype - 2020 release) [f1]
 CPU Type=Default
 Cheat0=D0081150 0002,A0130AE2 0000 // Disables all missions on Start Screen
-Cheat1=81096084 4765,81096086 6E74,81096088 7320,81095EE0 4765,81095EE2 6E74,81095EE4 7320 // Creates Gents Menu
 Counter Factor=Default
 ExpansionPak
 Linking=Global
@@ -286,7 +283,6 @@ Status=Prototype
 Name=007 - The World Is Not Enough (A) (Prototype - 2020 release) [f1]
 CPU Type=Default
 Cheat0=D0081150 0002,A0130AE2 0000 // Disables all missions on Start Screen
-Cheat1=81096084 4765,81096086 6E74,81096088 7320,81095EE0 4765,81095EE2 6E74,81095EE4 7320 // Creates Gents Menu
 Counter Factor=Default
 ExpansionPak
 Linking=Global
@@ -298,8 +294,6 @@ Status=Prototype
 Name=007 - The World is Not Enough (U) (Prototype)
 CPU Type=Recompiler
 Cheat0=D00AF0B0 0002,A011E15A 0000 // Disables all missions on Start Screen
-Cheat1=810D6AF8 4765,810D6AFA 6E74,810D6AFC 7320,810D6B00 4765,810D6B02 6E74,810D6B04 7320 // Creates Gents Menu
-Cheat2=810CDF54 4765,810CDF56 6E74,810CDF58 2020,810D637C 4765,810D637E 6E74,810D6380 2020,810D67C4 4765,810D67C4 6E74,810D67C4 2020,810D68E0 4765,810D68E2 6E74,810D68E4 2020,810D68D6 2047,810D68D8 656E,810D68DA 7420,810D68C6 2047,810D68C8 656E,810D68CA 7420 // All Agent replaced by Gent
 Counter Factor=2
 Emulate AI
 ExpansionPak
@@ -312,8 +306,6 @@ Status=Prototype
 Name=007 - The World is Not Enough (E) (Prototype)
 CPU Type=Recompiler
 Cheat0=D00AF0B0 0002,A011E15A 0000 // Disables all missions on Start Screen
-Cheat1=810D6AF8 4765,810D6AFA 6E74,810D6AFC 7320,810D6B00 4765,810D6B02 6E74,810D6B04 7320 // Creates Gents Menu
-Cheat2=810CDF54 4765,810CDF56 6E74,810CDF58 2020,810D637C 4765,810D637E 6E74,810D6380 2020,810D67C4 4765,810D67C4 6E74,810D67C4 2020,810D68E0 4765,810D68E2 6E74,810D68E4 2020,810D68D6 2047,810D68D8 656E,810D68DA 7420,810D68C6 2047,810D68C8 656E,810D68CA 7420 // All Agent replaced by Gent
 Counter Factor=2
 Emulate AI
 ExpansionPak
@@ -326,8 +318,6 @@ Status=Prototype
 Name=007 - The World is Not Enough (A) (Prototype)
 CPU Type=Recompiler
 Cheat0=D00AF0B0 0002,A011E15A 0000 // Disables all missions on Start Screen
-Cheat1=810D6AF8 4765,810D6AFA 6E74,810D6AFC 7320,810D6B00 4765,810D6B02 6E74,810D6B04 7320 // Creates Gents Menu
-Cheat2=810CDF54 4765,810CDF56 6E74,810CDF58 2020,810D637C 4765,810D637E 6E74,810D6380 2020,810D67C4 4765,810D67C4 6E74,810D67C4 2020,810D68E0 4765,810D68E2 6E74,810D68E4 2020,810D68D6 2047,810D68D8 656E,810D68DA 7420,810D68C6 2047,810D68C8 656E,810D68CA 7420 // All Agent replaced by Gent
 Counter Factor=2
 Emulate AI
 ExpansionPak
@@ -2801,6 +2791,7 @@ Status=Use GLideN64 Video
 Name=F1 Racing Championship (U) (M5) [f1] (NTSC)
 CPU Type=Recompiler
 Cheat0=80000303 0000 //Sets Video Region to PAL
+Core Note=NTSC
 Counter Factor=2
 ExpansionPak
 Linking=Global
@@ -3726,14 +3717,15 @@ Status=Compatible
 
 [AF9DCC15-1A723D88-C:45]
 Name=Indiana Jones and the Infernal Machine (U)
-CPU Type=Interpreter
+CPU Type=Recompiler
 Counter Factor=2
+Disable Reg Cache
 ExpansionPak
-Linking=Global
+Linking=On
 Plugin Note=[video] Use GlideN64
 Save Type=First Save Type
-Self-modifying code Method=Protected Memory
-Status=Interpreter only
+Self-modifying code Method=Check Memory Advance
+Status=Use GLideN64 Video
 Use Large Buffer
 
 [E436467A-82DE8F9B-C:45]
@@ -4237,7 +4229,7 @@ Core Note=Interpreter Only For Azi Legacy Sound
 Counter Factor=2
 Delay RDP
 Emulate AI
-Linking=Global
+Linking=On
 Plugin Note=[video] errors:menu snowflakes
 Save Type=First Save Type
 Self-modifying code Method=Check Memory & cache
@@ -4301,10 +4293,10 @@ Status=Compatible
 
 [E3D6A795-2A1C5D3C-C:50]
 Name=Knockout Kings 2000 (E)
-CPU Type=Interpreter
+CPU Type=Recompiler
 Core Note=Unstable (see GameFAQ)
 Counter Factor=2
-Linking=Global
+Linking=On
 Save Type=First Save Type
 Self-modifying code Method=Protected Memory
 Status=Interpreter only
@@ -4314,7 +4306,7 @@ Name=Knockout Kings 2000 (U)
 CPU Type=Interpreter
 Core Note=Unstable (see GameFAQ)
 Counter Factor=2
-Linking=Global
+Linking=On
 Save Type=First Save Type
 Self-modifying code Method=Protected Memory
 Status=Interpreter only
@@ -5774,7 +5766,7 @@ Delay SI
 Emulate AI
 Linking=Global
 Save Type=First Save Type
-Self-modifying code Method=Protected Memory
+Self-modifying code Method=Check Memory Advance
 Status=Compatible
 
 [CD3C3CDF-317793FA-C:4A]
@@ -6745,7 +6737,7 @@ Status=Interpreter only
 
 [0304C48E-AC4001B8-C:45]
 Name=Rat Attack (U) (M6)
-CPU Type=Interpreter
+CPU Type=Recompiler
 Core Note=recomp fails on multiplayer, needs TLB, also video issues
 Counter Factor=2
 Disable TLB
@@ -7738,24 +7730,24 @@ Status=Use GLideN64 Video
 [EAE6ACE2-020B4384-C:50]
 Name=Star Wars Episode I - Battle for Naboo (E)
 CPU Type=Recompiler
-Counter Factor=3
+Counter Factor=1
 ExpansionPak
-Linking=Global
+Linking=On
 Plugin Note=[video] Use GlideN64
 Save Type=First Save Type
 Self-modifying code Method=Check Memory & cache
-Status=Interpreter only
+Status=Use GLideN64 Video
 
 [3D02989B-D4A381E2-C:45]
 Name=Star Wars Episode I - Battle for Naboo (U)
 CPU Type=Recompiler
-Counter Factor=2
+Counter Factor=1
 ExpansionPak
-Linking=Global
+Linking=On
 Plugin Note=[video] Use GlideN64
 Save Type=First Save Type
 Self-modifying code Method=Check Memory & cache
-Status=Interpreter only
+Status=Use GLideN64 Video
 
 [53ED2DC4-06258002-C:50]
 Name=Star Wars Episode I - Racer (E) (M3)
@@ -7836,12 +7828,12 @@ Status=Compatible
 [9510D8D7-35100DD2-C:45]
 Name=Stunt Racer 64 (U)
 Audio Signal
-CPU Type=Interpreter
+CPU Type=Recompiler
 Counter Factor=2
-Linking=Off
+Linking=On
 Save Type=First Save Type
 Self-modifying code Method=Check Memory Advance
-Status=Interpreter only
+Status=Use GLideN64 Video
 //Cheat0=81036274 0000,81036276 0000//jal 800970F0 osRecvMesg #14
 
 
@@ -8980,7 +8972,7 @@ Core Note=Interpreter Only For Azi Legacy Sound
 Counter Factor=2
 Delay RDP
 Emulate AI
-Linking=Global
+Linking=On
 Plugin Note=[video] errors:menu snowflakes
 Save Type=First Save Type
 Self-modifying code Method=Check Memory & cache
@@ -13435,11 +13427,11 @@ CPU Type=Recompiler
 Counter Factor=2
 Disable Reg Cache
 ExpansionPak
-Linking=Global
+Linking=On
 Plugin Note=[video] Use GlideN64
 Save Type=First Save Type
-Self-modifying code Method=Protected Memory
-Status=Interpreter only
+Self-modifying code Method=Check Memory Advance
+Status=Compatible
 
 [C6CE0AAA-D117F019-C:4A]
 Name=J.League Tactics Soccer (J) (V1.1)
@@ -15026,16 +15018,15 @@ Status=Unknown
 
 [8B0E9A08-B9A9B85A-C:00]
 Name=Mario Kart 64 (CHN)
-CPU Type=Interpreter
+CPU Type=Recompiler
 Core Note=No native save support
 Counter Factor=2
-Disable Reg Cache
 Disable TLB
 ExpansionPak
-Linking=Off
+Linking=On
 Save Type=First Save Type
 Self-modifying code Method=Check Memory Advance
-Status=Interpreter only
+Status=Compatible
 
 [F1B77784-FA24A650-C:00]
 Name=Mario Kart 64 (CHN) (v5) (iQue)
@@ -15096,23 +15087,22 @@ Status=Compatible
 
 [782D10F5-345AE6FC-C:00]
 Name=Sin and Punishment (CHN)
-CPU Type=Interpreter
+CPU Type=Recompiler
 Core Note=No native save support
 Counter Factor=2
-Linking=Global
+Linking=On
 Save Type=First Save Type
 Self-modifying code Method=Check Memory & cache
-Status=Interpreter only
+Status=Use GLideN64 Video
 
 [7331A7C7-B5C2937C-C:43]
 Name=Sin and Punishment (CHN) [SaveFix]
-CPU Type=Interpreter
-Core Note=No native save support
+CPU Type=Recompiler
 Counter Factor=2
-Linking=Global
+Linking=On
 Save Type=First Save Type
-Self-modifying code Method=Check Memory & cache
-Status=Interpreter only
+Self-modifying code Method=Check Memory Advance
+Status=Use GLideN64 Video
 
 [79D25B51-2350B06E-C:00]
 Name=Starfox 64 (CHN)
@@ -15170,30 +15160,28 @@ WaitMult=5000000
 [76F623A0-4BF72D22-C:43]
 Name=Super Smash Bros. (CHN) [SaveFix]
 CPU Type=Recompiler
-Core Note=No native save support
 Counter Factor=2
 DlistWait=1
 ExpansionPak
-Linking=Off
+Linking=On
 Save Type=First Save Type
 Self-modifying code Method=Check Memory & cache
-Status=Interpreter only
+Status=Compatible
 WaitMult=5000000
 
 [B1E1E07B-051269DD-C:00]
 Name=The Legend of Zelda - Ocarina of Time (CHN) (iQue)
-CPU Type=Interpreter
+CPU Type=Recompiler
 Cheat0=810B35E4 8000  //Game Fix From Hang (Gent)
 Cheat1=D1096280 27BD,81096280 0802,D1096282 FFE8,81096282 5de5,D1096284 00A0,81096284 0000,D1096286 402D,81096286 0000 // Game Save Fix (Neko)
 Core Note=No native save support
 Counter Factor=2
 Disable TLB
 ExpansionPak
-Linking=Off
-Plugin Note=GFX Subscreen/Inventory JaboD3D
+Linking=On
 Save Type=First Save Type
 Self-modifying code Method=Check Memory Advance
-Status=Interpreter only
+Status=Compatible
 //WaitMult=5000
 
 [B1E1E07B-051269DD-C:45]
@@ -15214,45 +15202,40 @@ Status=Interpreter only
 
 [3D81FB3E-BD843E34-C:00]
 Name=The Legend of Zelda - Ocarina of Time (TWN) (iQue)
-CPU Type=Interpreter
+CPU Type=Recompiler
 Cheat0=810B3244 8000  //Game Fix From Hang (Gent)
 Cheat1=D1095ED0 27BD,81095ED0 0802,D1095ED2 FFE8,81095ED2 5CF9,D1095ED4 00A0,81095ED4 0000,D1095ED6 402D,81095ED6 0000 // Game Save Fix (Neko)
 Core Note=No native save support
 Counter Factor=2
 Disable TLB
 ExpansionPak
-Linking=Off
-Plugin Note=GFX Subscreen/Inventory JaboD3D
+Linking=On
 Save Type=First Save Type
 Self-modifying code Method=Check Memory Advance
-Status=Interpreter only
+Status=Compatible
 //DlistWait=2
 
 [059B1E1C-EBE44F04-C:43]
 Name=The Legend of Zelda Ocarina of Time (CHN) [Gent SaveFix]
-CPU Type=Interpreter
+CPU Type=Recompiler
 //Cheat0=810B35E4 8000  //Game Fix From Hang (Gent)
-Core Note=No native save support
 Counter Factor=2
 Disable TLB
-Linking=Off
-Plugin Note=GFX Subscreen/Inventory JaboD3D
+Linking=On
 Save Type=First Save Type
 Self-modifying code Method=Check Memory Advance
-Status=Interpreter only
+Status=Compatible
 //WaitMult=5000
 
 [AE775EA4-B5712EE9-C:43]
 Name=The Legend of Zelda Ocarina of Time (CHN) [Zonkitty SaveFix]
 CPU Type=Recompiler
-Core Note=No native save support
 Counter Factor=2
 Disable TLB
-Linking=Off
-Plugin Note=GFX Subscreen/Inventory JaboD3D
+Linking=On
 Save Type=First Save Type
 Self-modifying code Method=Check Memory Advance
-Status=Interpreter only
+Status=Compatible
 //WaitMult=5000
 
 [4D270209-EE8D8D0E-C:57]
@@ -15322,204 +15305,204 @@ Status=Issues (core)
 //------ iQue Manuals ---------
 
 [72B5A4EB-7381C174-C:00]
-Name=Dr. Mario 64 (CHN) (v2) (iQue) (Manual)
-CPU Type=Interpreter
-Counter Factor=Default
+Name=Mario Yisheng (China) (v2) (iQue) (Manual)
+CPU Type=Recompiler
+Counter Factor=2
 ExpansionPak
-Linking=Global
+Linking=On
 Save Type=First Save Type
-Self-modifying code Method=Default
-Status=Interpreter only
+Self-modifying code Method=Check Memory Advance
+Status=Compatible
 
 [FFA32687-660E0DE3-C:00]
-Name=Dr. Mario 64 (CHN) (v4) (iQue) (Manual)
-CPU Type=Interpreter
+Name=Mario Yisheng (China) (v4) (iQue) (Manual)
+CPU Type=Recompiler
 Counter Factor=Default
 ExpansionPak
-Linking=Global
+Linking=On
 Save Type=First Save Type
-Self-modifying code Method=Default
-Status=Interpreter only
+Self-modifying code Method=Check Memory Advance
+Status=Compatible
 
 [A94B1D6C-48D92E4F-C:00]
-Name=Excitebike 64 (CHN) (iQue) (Manual)
-CPU Type=Interpreter
+Name=Yueye Motuo (China) (iQue) (Manual)
+CPU Type=Recompiler
 Counter Factor=Default
 ExpansionPak
-Linking=Global
+Linking=On
 Save Type=First Save Type
-Self-modifying code Method=Default
-Status=Interpreter only
+Self-modifying code Method=Check Memory Advance
+Status=Compatible
 
 [F66AEAD7-2B5C7E9D-C:00]
-Name=F-Zero X (CHN) (v2) (iQue) (Manual)
-CPU Type=Interpreter
-Counter Factor=Default
+Name=F-Zero X - Weilai Saiche (China) (v2) (iQue) (Manual)
+CPU Type=Recompiler
+Counter Factor=2
 ExpansionPak
-Linking=Global
+Linking=On
 Save Type=First Save Type
-Self-modifying code Method=Default
-Status=Interpreter only
+Self-modifying code Method=Check Memory Advance
+Status=Compatible
 
 [5910C368-1FEB2056-C:00]
-Name=F-Zero X (CHN) (v4) (iQue) (Manual)
-CPU Type=Interpreter
+Name=F-Zero X - Weilai Saiche (China) (v4) (iQue) (Manual)
+CPU Type=Recompiler
 Counter Factor=Default
 ExpansionPak
-Linking=Global
+Linking=On
 Save Type=First Save Type
-Self-modifying code Method=Default
-Status=Interpreter only
+Self-modifying code Method=Check Memory Advance
+Status=Compatible
 
 [FD66AA0D-7AEBFFCC-C:00]
-Name=Mario Kart 64 (CHN) (v2) (iQue) (Manual)
-CPU Type=Interpreter
-Counter Factor=Default
+Name=Mario Kadingche (China) (v2) (iQue) (Manual)
+CPU Type=Recompiler
+Counter Factor=2
 ExpansionPak
-Linking=Global
+Linking=On
 Save Type=First Save Type
-Self-modifying code Method=Default
-Status=Interpreter only
+Self-modifying code Method=Check Memory Advance
+Status=Compatible
 
 [C8655259-82D5C847-C:00]
-Name=Mario Kart 64 (CHN) (v6) (iQue) (Manual)
-CPU Type=Interpreter
-Counter Factor=Default
+Name=Mario Kadingche (China) (v6) (iQue) (Manual)
+CPU Type=Recompiler
+Counter Factor=2
 ExpansionPak
-Linking=Global
+Linking=On
 Save Type=First Save Type
-Self-modifying code Method=Default
-Status=Interpreter only
+Self-modifying code Method=Check Memory Advance
+Status=Compatible
 
 [5280E46E-A0B06370-C:00]
-Name=Paper Mario (CHN) (v2) (iQue) (Manual)
-CPU Type=Interpreter
+Name=Zhi Pian Mario (China) (v2) (iQue) (Manual)
+CPU Type=Recompiler
 Counter Factor=Default
 ExpansionPak
-Linking=Global
+Linking=On
 Save Type=First Save Type
-Self-modifying code Method=Default
-Status=Interpreter only
+Self-modifying code Method=Check Memory Advance
+Status=Compatible
 
 [87876AA3-2CF9681C-C:00]
-Name=Paper Mario (CHN) (v4) (iQue) (Manual)
-CPU Type=Interpreter
+Name=Zhi Pian Mario (China) (v4) (iQue) (Manual)
+CPU Type=Recompiler
 Counter Factor=Default
 ExpansionPak
-Linking=Global
+Linking=On
 Save Type=First Save Type
-Self-modifying code Method=Default
-Status=Interpreter only
+Self-modifying code Method=Check Memory Advance
+Status=Compatible
 
 [077FBAAC-6FDC3205-C:00]
-Name=Sin and Punishment (CHN) (iQue) (Manual)
-CPU Type=Interpreter
+Name=Zui yu Fa - Diqiu de Jicheng Zhe (China) (Manual)
+CPU Type=Recompiler
 Counter Factor=Default
 ExpansionPak
-Linking=Global
+Linking=On
 Save Type=First Save Type
-Self-modifying code Method=Default
-Status=Interpreter only
+Self-modifying code Method=Check Memory Advance
+Status=Compatible
 
 [F2DA40A0-E88BE2EA-C:00]
-Name=Star Fox 64 (CHN) (v4) (iQue) (Manual)
-CPU Type=Interpreter
+Name=Xingji Huohu (China) (v4) (iQue) (Manual)
+CPU Type=Recompiler
 Counter Factor=Default
 ExpansionPak
-Linking=Global
+Linking=On
 Save Type=First Save Type
-Self-modifying code Method=Default
-Status=Interpreter only
+Self-modifying code Method=Check Memory Advance
+Status=Compatible
 
 [FA092E43-16A5F906-C:00]
-Name=Super Mario 64 (CHN) (v6) (iQue) (Manual)
-CPU Type=Interpreter
-Counter Factor=Default
+Name=Shen You Mario (China) (v6) (iQue) (Manual)
+CPU Type=Recompiler
+Counter Factor=2
 ExpansionPak
-Linking=Global
+Linking=On
 Save Type=First Save Type
-Self-modifying code Method=Default
-Status=Interpreter only
+Self-modifying code Method=Check Memory Advance
+Status=Compatible
 
 [9C7455C0-0748EE8F-C:00]
-Name=Super Smash Bros. (CHN) (iQue) (Manual)
-CPU Type=Interpreter
-Counter Factor=Default
+Name=Rentiantang Mingxing - Daluan Dou (China) (iQue) (Manual)
+CPU Type=Recompiler
+Counter Factor=2
 ExpansionPak
-Linking=Global
+Linking=On
 Save Type=First Save Type
-Self-modifying code Method=Default
-Status=Interpreter only
+Self-modifying code Method=Check Memory Advance
+Status=Compatible
 
 [78417E0A-6C219B6A-C:00]
-Name=The Legend of Zelda: Ocarina of Time (CHN) (v2) (iQue) (Manual)
-CPU Type=Interpreter
-Counter Factor=Default
+Name=Zelda Chuanshuo Shiguang Zhi Di (China) (v2) (iQue) (Manual)
+CPU Type=Recompiler
+Counter Factor=2
 ExpansionPak
-Linking=Global
+Linking=On
 Save Type=First Save Type
-Self-modifying code Method=Default
-Status=Interpreter only
+Self-modifying code Method=Check Memory Advance
+Status=Compatible
 
 [DAB6C90B-84DDD48C-C:00]
-Name=The Legend of Zelda: Ocarina of Time (CHN) (v4) (iQue) (Manual)
-CPU Type=Interpreter
+Name=Zelda Chuanshuo Shiguang Zhi Di (China) (v4) (iQue) (Manual)
+CPU Type=Recompiler
 Counter Factor=Default
 ExpansionPak
-Linking=Global
+Linking=On
 Save Type=First Save Type
-Self-modifying code Method=Default
-Status=Interpreter only
+Self-modifying code Method=Check Memory Advance
+Status=Compatible
 
 [D4EE015F-054BC598-C:00]
-Name=Wave Race 64 (CHN) (v2) (iQue) (Manual)
-CPU Type=Interpreter
+Name=Shuishang Motuo (China) (v2) (iQue) (Manual)
+CPU Type=Recompiler
 Counter Factor=Default
 ExpansionPak
-Linking=Global
+Linking=On
 Save Type=First Save Type
-Self-modifying code Method=Default
-Status=Interpreter only
+Self-modifying code Method=Check Memory Advance
+Status=Compatible
 
 [A593B580-A964D77D-C:00]
-Name=Wave Race 64 (CHN) (v4) (iQue) (Manual)
-CPU Type=Interpreter
+Name=Shuishang Motuo (China) (v4) (iQue) (Manual)
+CPU Type=Recompiler
 Counter Factor=Default
 ExpansionPak
-Linking=Global
+Linking=On
 Save Type=First Save Type
-Self-modifying code Method=Default
-Status=Interpreter only
+Self-modifying code Method=Check Memory Advance
+Status=Compatible
 
 [49E37D1F-B73DE5A8-C:00]
-Name=Yoshi's Story (CHN) (v2) (iQue) (Manual)
-CPU Type=Interpreter
-Counter Factor=Default
+Name=Yaoxi Gushi (China) (v2) (iQue) (Manual)
+CPU Type=Recompiler
+Counter Factor=2
 ExpansionPak
-Linking=Global
+Linking=On
 Save Type=First Save Type
-Self-modifying code Method=Default
-Status=Interpreter only
+Self-modifying code Method=Check Memory Advance
+Status=Compatible
 
 [38E2B1A2-7A02B129-C:00]
-Name=Yoshi's Story (CHN) (v4) (iQue) (Manual)
-CPU Type=Interpreter
-Counter Factor=Default
+Name=Yaoxi Gushi (China) (v4) (iQue) (Manual)
+CPU Type=Recompiler
+Counter Factor=2
 ExpansionPak
-Linking=Global
+Linking=On
 Save Type=First Save Type
-Self-modifying code Method=Default
-Status=Interpreter only
+Self-modifying code Method=Check Memory Advance
+Status=Compatible
 
 [8142EE17-9CC64A31-C:00]
-Name=Yoshi's Story (CHN) (v6) (iQue) (Manual)
-CPU Type=Interpreter
+Name=Yaoxi Gushi (China) (v6) (iQue) (Manual)
+CPU Type=Recompiler
 Counter Factor=Default
 ExpansionPak
-Linking=Global
+Linking=On
 Save Type=First Save Type
-Self-modifying code Method=Default
-Status=Interpreter only
+Self-modifying code Method=Check Memory Advance
+Status=Compatible
 
 //
 //-------- NTSC to PAL Region Games --------
@@ -16110,10 +16093,10 @@ Status=Compatible
 [2DE258DF-5A419597-C:50]
 Name=Stunt Racer 64 (E) [NTSC-Convert]
 Audio Signal
-CPU Type=Interpreter
+CPU Type=Recompiler
 Counter Factor=2
 ExpansionPak
-Linking=Off
+Linking=On
 Save Type=First Save Type
 Self-modifying code Method=Check Memory Advance
 Status=Interpreter only
@@ -16247,12 +16230,12 @@ Status=Compatible
 
 [E1B71595-95B3BA0F-C:00]
 Name=Telocation: Gemini 64
-CPU Type=Interpreter
+CPU Type=Recompiler
 Counter Factor=2
-Linking=Global
+Linking=On
 Save Type=First Save Type
 Self-modifying code Method=Check Memory & cache
-Status=Interpreter only
+Status=Compatible
 
 [E9675D3A-84A5F92E-C:00]
 Name=Kumi-Daiko Beatoff 64
@@ -17708,11 +17691,11 @@ Status=Interpreter only
 [CE72E06C-82E0B2EC-C:00]
 Name=Spritemap (PD)
 CPU Type=Interpreter
-Counter Factor=1
+Counter Factor=2
 ExpansionPak
-Linking=Global
+Linking=On
 Save Type=First Save Type
-Self-modifying code Method=Default
+Self-modifying code Method=Check Memory Advance
 Status=Interpreter only
 
 [D06080CD-1F73F9FE-C:20]
@@ -17840,6 +17823,24 @@ Status=Issues (plugin)
 
 //------ Homebrew --------
 
+[7AABCF07-73F39DA2-C:20]
+Name=Dead Ritual (Home Brew)
+CPU Type=Recompiler
+Counter Factor=1
+Linking=Global
+Save Type=First Save Type
+Self-modifying code Method=Check Memory Advance
+
+[176EFEA7-A704929E-C:20]
+Name=Mission Lost Control (PD by NAN)
+CPU Type=Interpreter
+Counter Factor=2
+ExpansionPak
+Linking=Global
+Save Type=First Save Type
+Self-modifying code Method=Check Memory Advance
+Status=Compatible
+
 [470112E9-53C66CB4-C:41]
 Name=XENO CRISIS 64 (JU)
 CPU Type=Recompiler
@@ -17857,14 +17858,6 @@ Linking=Global
 Save Type=First Save Type
 Self-modifying code Method=Check Memory Advance
 Status=Use GLideN64 HLE Video
-
-[7AABCF07-73F39DA2-C:20]
-Name=Dead Ritual (Home Brew)
-CPU Type=Recompiler
-Counter Factor=1
-Linking=Global
-Save Type=First Save Type
-Self-modifying code Method=Check Memory Advance
 
 //------ Nintendo LodgeNet 64 (Gateway System) --------
 
@@ -18206,22 +18199,5 @@ Status=Compatible
 //
 
 
-[176EFEA7-A704929E-C:20]
-Name=Mission Lost Control (PD by NAN)
-CPU Type=Interpreter
-Counter Factor=2
-ExpansionPak
-Linking=Global
-Save Type=First Save Type
-Self-modifying code Method=Check Memory Advance
 
-[8CBEE2AC-3A60A8F3-C:50]
-Name=STARFOX64 (E)
-CPU Type=Recompiler
-Cheat0=80000303 0000 //Sets Video Region to PAL
-Counter Factor=2
-Disable TLB
-Linking=Global
-Save Type=First Save Type
-Self-modifying code Method=Protected Memory
-Status=Compatible
+
