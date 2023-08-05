@@ -1267,6 +1267,7 @@ void StartEmulation ( void ) {
 
 	if (inFullScreen) {
 		ResetAudio(hMainWindow);
+		SetupPlugins(hMainWindow);
 	}
 
 	switch (CPU_Type) {
