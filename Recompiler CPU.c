@@ -2002,6 +2002,7 @@ CPU_Message("PermLoop ***");
 		} else {
 			char Label[100];
 
+			sprintf(Label, "Section_%d", TargetSection[count]->SectionID);
 			CPU_Message("Section_%d (from %d):",TargetSection[count]->SectionID,Section->SectionID);
 			SetJump32(JumpInfo[count]->LinkLocation,RecompPos);
 			JumpInfo[count]->LinkLocation = NULL;
@@ -2700,6 +2701,7 @@ BOOL InheritParentInfo (BLOCK_SECTION * Section) {
 	JumpInfo->FallThrough   = FALSE;
 
 	//Fix up initial state
+	WriteBackRegisters(Section);
 	UnMap_AllFPRs(Section);
 	for (count = 0;count < NoOfParents;count++) {
 		int count2, count3, MemoryStackPos;

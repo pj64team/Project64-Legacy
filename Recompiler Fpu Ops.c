@@ -71,13 +71,17 @@ void Compile_R4300i_LWC1 (BLOCK_SECTION * Section) {
 		DWORD Address = MipsRegLo(Opcode.IMM.base) + (short)Opcode.IMM.immediate;
 
 		TempReg1 = Map_TempReg(Section,x86_Any,-1,FALSE);
-		Compile_LW(TempReg1,Address);
+		if (Compile_LW(TempReg1, Address)) {
+			TempReg2 = Map_TempReg(Section, x86_Any, -1, FALSE);
+			sprintf(Name, "FPRFloatLocation[%d]", Opcode.FP.ft);
+			MoveVariableToX86reg(&FPRFloatLocation[Opcode.FP.ft], Name, TempReg2);
+			MoveX86regToX86Pointer(TempReg1, TempReg2);
+			return;
+		}
 
-		TempReg2 = Map_TempReg(Section,x86_Any,-1,FALSE);
-		sprintf(Name,"FPRFloatLocation[%d]",Opcode.FP.ft);
-		MoveVariableToX86reg(&FPRFloatLocation[Opcode.FP.ft],Name,TempReg2);
-		MoveX86regToX86Pointer(TempReg1,TempReg2);
-		return;
+		// Deoptimization: Address translation for a constant virtual address failed.
+		// Unmap the base register to force it to be loaded from memory by the following codegen.
+		UnMap_GPR(Section, Opcode.IMM.base, TRUE);
 	}
 	if (IsMapped(Opcode.IMM.base) && Opcode.IMM.immediate == 0) { 
 		if (UseTlb) {
@@ -138,19 +142,23 @@ void Compile_R4300i_LDC1 (BLOCK_SECTION * Section) {
 	if (IsConst(Opcode.IMM.base)) { 
 		DWORD Address = MipsRegLo(Opcode.IMM.base) + (short)Opcode.IMM.immediate;
 		TempReg1 = Map_TempReg(Section,x86_Any,-1,FALSE);
-		Compile_LW(TempReg1,Address);
+		if (Compile_LW(TempReg1, Address)) {
+			TempReg2 = Map_TempReg(Section, x86_Any, -1, FALSE);
+			sprintf(Name, "FPRDoubleLocation[%d]", Opcode.FP.ft);
+			MoveVariableToX86reg(&FPRDoubleLocation[Opcode.FP.ft], Name, TempReg2);
+			AddConstToX86Reg(TempReg2, 4);
+			MoveX86regToX86Pointer(TempReg1, TempReg2);
 
-		TempReg2 = Map_TempReg(Section,x86_Any,-1,FALSE);
-		sprintf(Name,"FPRDoubleLocation[%d]",Opcode.FP.ft);
-		MoveVariableToX86reg(&FPRDoubleLocation[Opcode.FP.ft],Name,TempReg2);
-		AddConstToX86Reg(TempReg2,4);
-		MoveX86regToX86Pointer(TempReg1,TempReg2);
+			Compile_LW(TempReg1, Address + 4);
+			sprintf(Name, "FPRFloatLocation[%d]", Opcode.FP.ft);
+			MoveVariableToX86reg(&FPRDoubleLocation[Opcode.FP.ft], Name, TempReg2);
+			MoveX86regToX86Pointer(TempReg1, TempReg2);
+			return;
+		}
 
-		Compile_LW(TempReg1,Address + 4);
-		sprintf(Name,"FPRFloatLocation[%d]",Opcode.FP.ft);
-		MoveVariableToX86reg(&FPRDoubleLocation[Opcode.FP.ft],Name,TempReg2);
-		MoveX86regToX86Pointer(TempReg1,TempReg2);
-		return;
+		// Deoptimization: Address translation for a constant virtual address failed.
+		// Unmap the base register to force it to be loaded from memory by the following codegen.
+		UnMap_GPR(Section, Opcode.IMM.base, TRUE);
 	}
 	if (IsMapped(Opcode.IMM.base) && Opcode.IMM.immediate == 0) { 
 		if (UseTlb) {

@@ -17,7 +17,7 @@
 // Note that Project64 automatically prefixes "http://"
 
 Author=PJ64LegacyTeam
-Date=16th July 2023 Version: 1
+Date=5th August 2023 Version: 1
 Homepage=www.project64-legacy.com
 Version=Project64 1.6.2 (Legacy)
 
@@ -1925,7 +1925,7 @@ Cheat17_N=[Doom]Brightness Note
 Cheat18="Have All\Weapons",50000A04 0000,81063B2A 0001
 Cheat19="Infinite\Ammo All Weapons",50000404 0000,81063B52 013C
 Cheat20="Have All\Keys",50000504 0000,81063AFE FFFF
-Cheat21="Enable Cheat Menu",8005B043 0001
+Cheat21="Enable Cheat Menu",8005B5A3 0001
 
 //----
 
@@ -9289,11 +9289,29 @@ Cheat1="Infinite\Health",8102E6B4 0000,8102E6B6 0000
 Cheat1_N=All Levels and for Both Characters
 Cheat2="Infinite\Items",50000D02 0000,810A4BAE 0009
 Cheat2_N=This gives you All Items and Infinite use of for All Levels and for Both Characters
-Cheat3="Unlock In-Game Cheats",D00B96E5 0000,800B96E5 0001,D00B96E6 0000,800B96E6 0020,800B9703 00FF
-Cheat4="Level Select",D00978B1 0000,810978B0 00??
-Cheat4_O=$00 Chelsea,$01 Spitafields,$02 Thames Tunnel,$03 Sewer Snake,$04 India Docks,$05 Highgate Cemetery,$06 Hampstead Heath,$07 Queenhite Docks,$08 City,$09 Smithfield,$0A Snowman,$0B Regent's,$0C London Zoo,$0D St. Marilebone,$0E Bloomsbury,$0F Pimlico,$10 Jose Manuel,$11 Westminister,$12 Westminister II,$13 The Roofs,$14 Map
-Cheat5="[Brightness]",810B96EC ????
-Cheat5_O=$0000 Off,$7FFF Very Well Lit Up,$8000 Very Dark
+Cheat3="Level Select",D00978B1 0000,810978B0 00??
+Cheat3_O=$00 Chelsea,$01 Spitafields,$02 Thames Tunnel,$03 Sewer Snake,$04 India Docks,$05 Highgate Cemetery,$06 Hampstead Heath,$07 Queenhite Docks,$08 City,$09 Smithfield,$0A Snowman,$0B Regent's,$0C London Zoo,$0D St. Marilebone,$0E Bloomsbury,$0F Pimlico,$10 Jose Manuel,$11 Westminister,$12 Westminister II,$13 The Roofs,$14 Map
+Cheat4="[Brightness]",810B96EC ????
+Cheat4_O=$0000 Off,$7FFF Very Well Lit Up,$8000 Very Dark
+Cheat5="Cheat Menu Options\Unlimited",80096A75 00??
+Cheat5_O=On-Off
+Cheat6="Cheat Menu Options\Debug",80096B39 00??
+Cheat6_O=On-Off
+Cheat7="Cheat Menu Options\Team Greatings",80096B1D 00??
+Cheat7_O=On-Off
+Cheat8="Cheat Menu Options\Play Blur",80096B01 00??
+Cheat8_O=On-Off
+Cheat9="Cheat Menu Options\Disable Combos",80096AE5 00??
+Cheat9_O=On-Off
+Cheat10="Cheat Menu Options\Play Monster",80096AC9 00??
+Cheat10_O=On-Off
+Cheat11="Cheat Menu Options\Cut Body",80096AAD 00??
+Cheat11_O=On-Off
+Cheat12="Cheat Menu Options\Reduce",80096A91 00??
+Cheat12_O=On-Off
+Cheat13="Unlock In-Game Cheats",D00B96E5 0000,800B96E5 0009,D00B96E6 0000,800B96E6 0020,800B9703 00FF,80096AF4 0004,80096B2C 0004,80096B64 0024
+Cheat13_N=Enable before you Start the game or the effect will not work correctly. When enabled, it includes all the hideen Cheats that are now also enabled thanks to Parasyte (The Magician)
+On-Off=$00 Off,$01 On
 
 //----
 
@@ -10023,7 +10041,7 @@ Cheat0="Have\All\Crates",810C70F8 7FFF,810C70FA FFFF,810C70FC FFFF,810C70FE FFFF
 Cheat1="All Masks",891F1210 8780
 Cheat1_N=Press GS To Activate All Masks
 Cheat2="Start with Full Health",811BC64C 001E
-Cheat3="Have\All\Levels",811F1200 FFFF,811F1202 FFFF,811F1203 03E7
+Cheat3="Have\All\Levels",811F1200 FFFF,811F1202 FFFF,811F1204 03E7
 Cheat4="Have\All\Yellow Lums",50006401 0000,800C7108 00FF,50001901 0000,800C70BD 00FF,811F1182 0005,50005702 0000,811F1188 FFFF
 Cheat5="Have\All\Pirate Cages",801F1142 0050,811F11F0 FFFF,811F11F2 FFFF,811F11F4 FFFF,811F11F6 FFFF,811F11F8 00FF,811F11FA FFFF
 Cheat6="Open Map",810C70F0 FFFF,810C70F2 FFFF
@@ -14122,6 +14140,30 @@ Cheat8="Unlock Titan Difficulty Level",810BF752 0001
 
 [2337D8E8-6B8E7CEC-C:45]
 Name=Yoshi's Story (U)
+Cheat0="Infinite\Health",50000804 0000,800F8DB7 00??
+Cheat0_N=[YoshisStory]All Yoshis
+Cheat0_O=[YoshisStory]Health
+Cheat1="Infinite\Eggs (Once You Get One)",8103E89C 2400
+Cheat1_N=[YoshisStory]All Yoshis
+Cheat2="Infinite\Lives",800F8DF7 00FF
+Cheat2_N=[YoshisStory]All Yoshis
+Cheat3="Press F9 To Have All Fruit",880F89D3 001E
+Cheat4="Enable All Levels (Trial Mode)",810F8E5C FFFF,810F8E5E FFFF
+
+[8B2E13A7-7B9F6CA0-C:45]
+Name=Yoshi's Story (U) (M2) (6102)
+Cheat0="Infinite\Health",50000804 0000,800F8DB7 00??
+Cheat0_N=[YoshisStory]All Yoshis
+Cheat0_O=[YoshisStory]Health
+Cheat1="Infinite\Eggs (Once You Get One)",8103E89C 2400
+Cheat1_N=[YoshisStory]All Yoshis
+Cheat2="Infinite\Lives",800F8DF7 00FF
+Cheat2_N=[YoshisStory]All Yoshis
+Cheat3="Press F9 To Have All Fruit",880F89D3 001E
+Cheat4="Enable All Levels (Trial Mode)",810F8E5C FFFF,810F8E5E FFFF
+
+[333C4B54-0D8EB81C-C:50]
+Name=Yoshi's Story (E) (M2) (6102) [NTSC-PAL]
 Cheat0="Infinite\Health",50000804 0000,800F8DB7 00??
 Cheat0_N=[YoshisStory]All Yoshis
 Cheat0_O=[YoshisStory]Health
@@ -27425,6 +27467,21 @@ Cheat4="Enable All Levels (Trial Mode)",810F919C FFFF,810F919E FFFF
 
 //------ Homebrew --------
 
+[A256E7AF-E1B21BF4-C:45]
+Name=TANDEM TROUBLE (U) (Home Brew)
+Cheat0="Press A to Levitate",D00FD2E4 0080,8106E17C 41F1
+Cheat1="0 Deaths",8106E422 0000
+
+[7AABCF07-73F39DA2-C:20]
+Name=Dead Ritual (Home Brew)
+Cheat0="Infinite Health",8007DEC3 0064
+Cheat1="Have\No Weapon Slot 1",8007DCD0 00FF
+Cheat1_N=This allows you to toggle an empty hand rather than always having a weapon enabled
+Cheat2="Have\Pistol & Infinite Ammo",8107DCDA 03E7
+Cheat3="Have\Riffle & Infinite Ammo",8107DCE2 03E7,8107DCE6 03E7
+Cheat4="Have\Shotgun & Infinite Ammo",8107DCEA 03E7,8107DCEE 03E7
+Cheat5="Have\Machine Gun & Infinite Ammo",8107DCF2 03E7,8107DCF6 03E7
+
 [470112E9-53C66CB4-C:41]
 Name=XENO CRISIS 64 (JU)
 Cheat0="Infinite\Continues",80157793 0063
@@ -27445,7 +27502,7 @@ Cheat10_O=$01 Normal Speed,$02 Medium Speed,$03 Max Speed
 Cheat11="Weapon Select\Player 1",80157E00 00??
 Cheat11_N=This will give you the selected weapon. Do not use Rocket Launcher with Any Boos as it will lead to game freeze or crash.
 Cheat11_O=$00 Assault Riffle (Default),$01 Flamethrower,$02 Rocket Launcher,$03 Spread Shot,$04 Homing,$05 Laser,$06 Rebound,$07 Shotgun,$08 Vulcan,$09 BFG
-Cheat12="Press F9 for Gent's Mega Score\Player 1",891577A8 03E7,891577AA 03E7,891577AC 03E7
+Cheat12="Press F9 for Gent's Mega Score\Player 1",891577AA FFFF,891577AC FFFF
 Cheat13="Always Have S Ranking\Player 1",80158B31 0000
 Cheat14="Infinite\Max Health\Player 2",80157890 0007,80158B69 0063
 Cheat15="Infinite\Max Ammo\Player 2",80157E55 0063
@@ -27519,7 +27576,7 @@ Cheat10_O=$01 Normal Speed,$02 Medium Speed,$03 Max Speed
 Cheat11="Weapon Select\Player 1",80157E00 00??
 Cheat11_N=This will give you the selected weapon. Do not use Rocket Launcher with Any Boos as it will lead to game freeze or crash.
 Cheat11_O=$00 Assault Riffle (Default),$01 Flamethrower,$02 Rocket Launcher,$03 Spread Shot,$04 Homing,$05 Laser,$06 Rebound,$07 Shotgun,$08 Vulcan,$09 BFG
-Cheat12="Press F9 for Gent's Mega Score\Player 1",891577A8 03E7,891577AA 03E7,891577AC 03E7
+Cheat12="Press F9 for Gent's Mega Score\Player 1",891577AA FFFF,891577AC FFFF
 Cheat13="Always Have S Ranking\Player 1",80158B31 0000
 Cheat14="Infinite\Max Health\Player 2",80157890 0007,80158B69 0063
 Cheat15="Infinite\Max Ammo\Player 2",80157E55 0063
@@ -27576,17 +27633,5 @@ Cheat41_N=This Enables and Displays the Developer Cheat and Backer Menus
 //End Of File----------> Anything under here was put in by you <--------------------------------
 
 
-[A256E7AF-E1B21BF4-C:45]
-Name=TANDEM TROUBLE (U)
-Cheat0="Press A to Levitate",D00FD2E4 0080,8106E17C 41F1
-Cheat1="0 Deaths",8106E422 0000
 
-[7AABCF07-73F39DA2-C:20]
-Name=Dead Ritual (Home Brew)
-Cheat0="Infinite Health",8007DEC3 0064
-Cheat1="Have\No Weapon Slot 1",8007DCD0 00FF
-Cheat1_N=This allows you to toggle an empty hand rather than always having a weapon enabled
-Cheat2="Have\Pistol & Infinite Ammo",8107DCDA 03E7
-Cheat3="Have\Riffle & Infinite Ammo",8107DCE2 03E7,8107DCE6 03E7
-Cheat4="Have\Shotgun & Infinite Ammo",8107DCEA 03E7,8107DCEE 03E7
-Cheat5="Have\Machine Gun & Infinite Ammo",8107DCF2 03E7,8107DCF6 03E7
+

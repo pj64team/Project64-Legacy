@@ -1047,6 +1047,7 @@ void SelectRomDir(void) {
 	BROWSEINFO bi = { 0 };	// Initialization to 0 prevents XP crash
 	
 	TerminateAudioThread();
+	SetupPlugins(hMainWindow);
 
 	Settings_GetDirectory(RomDir, RomDirectory, sizeof(RomDirectory));
 

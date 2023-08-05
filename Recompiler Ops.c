@@ -1508,8 +1508,13 @@ void Compile_R4300i_LB (BLOCK_SECTION * Section) {
 	if (IsConst(Opcode.IMM.base)) { 
 		DWORD Address = (MipsRegLo(Opcode.IMM.base) + (short)Opcode.IMM.immediate) ^ 3;
 		Map_GPR_32bit(Section,Opcode.BRANCH.rt,TRUE,0);
-		Compile_LB(MipsRegLo(Opcode.BRANCH.rt),Address,TRUE);
-		return;
+		if (Compile_LB(MipsRegLo(Opcode.BRANCH.rt), Address, TRUE)) {
+			return;
+		}
+
+		// Deoptimization: Address translation for a constant virtual address failed.
+		// Unmap the base register to force it to be loaded from memory by the following codegen.
+		UnMap_GPR(Section, Opcode.IMM.base, TRUE);
 	}
 	if (IsMapped(Opcode.BRANCH.rt)) { ProtectGPR(Section,Opcode.BRANCH.rt); }
 	if (IsMapped(Opcode.IMM.base)) { 
@@ -1605,19 +1610,24 @@ void Compile_R4300i_LWL (BLOCK_SECTION * Section) {
 
 	if (Opcode.BRANCH.rt == 0) return;
 
-	if (IsConst(Opcode.IMM.base)) { 
+	if (IsConst(Opcode.IMM.base)) {
 		DWORD Address, Value;
-		
-		Address = MipsRegLo(Opcode.IMM.base) + (short)Opcode.IMM.immediate;
-		Offset  = Address & 3;
 
-		Map_GPR_32bit(Section,Opcode.BRANCH.rt,TRUE,Opcode.BRANCH.rt);
-		Value = Map_TempReg(Section,x86_Any,-1,FALSE);
-		Compile_LW(Value,(Address & ~3));
-		AndConstToX86Reg(MipsRegLo(Opcode.BRANCH.rt),LWL_MASK[Offset]);
-		ShiftLeftSignImmed(Value,(BYTE)LWL_SHIFT[Offset]);
-		AddX86RegToX86Reg(MipsRegLo(Opcode.BRANCH.rt),Value);
-		return;
+		Address = MipsRegLo(Opcode.IMM.base) + (short)Opcode.IMM.immediate;
+		Offset = Address & 3;
+
+		Map_GPR_32bit(Section, Opcode.BRANCH.rt, TRUE, Opcode.BRANCH.rt);
+		Value = Map_TempReg(Section, x86_Any, -1, FALSE);
+		if (Compile_LW(Value, (Address & ~3))) {
+			AndConstToX86Reg(MipsRegLo(Opcode.BRANCH.rt), LWL_MASK[Offset]);
+			ShiftLeftSignImmed(Value, (BYTE)LWL_SHIFT[Offset]);
+			AddX86RegToX86Reg(MipsRegLo(Opcode.BRANCH.rt), Value);
+			return;
+		}
+
+		// Deoptimization: Address translation for a constant virtual address failed.
+		// Unmap the base register to force it to be loaded from memory by the following codegen.
+		UnMap_GPR(Section, Opcode.IMM.base, TRUE);
 	}
 
 	shift = Map_TempReg(Section,x86_ECX,-1,FALSE);
@@ -1686,8 +1696,13 @@ void Compile_R4300i_LW (BLOCK_SECTION * Section) {
 		if (IsConst(Opcode.IMM.base)) { 
 			DWORD Address = MipsRegLo(Opcode.IMM.base) + (short)Opcode.BRANCH.offset;
 			Map_GPR_32bit(Section,Opcode.BRANCH.rt,TRUE,-1);
-			Compile_LW(MipsRegLo(Opcode.BRANCH.rt),Address);
-			return;
+			if (Compile_LW(MipsRegLo(Opcode.BRANCH.rt), Address)) {
+				return;
+			}
+
+			// Deoptimization: Address translation for a constant virtual address failed.
+			// Unmap the base register to force it to be loaded from memory by the following codegen.
+			UnMap_GPR(Section, Opcode.IMM.base, TRUE);
 		}
 		if (UseTlb) {	
 			if (IsMapped(Opcode.BRANCH.rt)) { ProtectGPR(Section,Opcode.BRANCH.rt); }
@@ -1758,8 +1773,13 @@ void Compile_R4300i_LBU (BLOCK_SECTION * Section) {
 	if (IsConst(Opcode.IMM.base)) { 
 		DWORD Address = (MipsRegLo(Opcode.IMM.base) + (short)Opcode.BRANCH.offset) ^ 3;
 		Map_GPR_32bit(Section,Opcode.BRANCH.rt,FALSE,0);
-		Compile_LB(MipsRegLo(Opcode.BRANCH.rt),Address,FALSE);
-		return;
+		if (Compile_LB(MipsRegLo(Opcode.BRANCH.rt), Address, FALSE)) {
+			return;
+		}
+
+		// Deoptimization: Address translation for a constant virtual address failed.
+		// Unmap the base register to force it to be loaded from memory by the following codegen.
+		UnMap_GPR(Section, Opcode.IMM.base, TRUE);
 	}
 	if (IsMapped(Opcode.BRANCH.rt)) { ProtectGPR(Section,Opcode.BRANCH.rt); }
 	if (IsMapped(Opcode.IMM.base)) { 
@@ -1863,11 +1883,16 @@ void Compile_R4300i_LWR (BLOCK_SECTION * Section) {
 
 		Map_GPR_32bit(Section,Opcode.BRANCH.rt,TRUE,Opcode.BRANCH.rt);
 		Value = Map_TempReg(Section,x86_Any,-1,FALSE);
-		Compile_LW(Value,(Address & ~3));
-		AndConstToX86Reg(MipsRegLo(Opcode.BRANCH.rt),LWR_MASK[Offset]);
-		ShiftRightUnsignImmed(Value,(BYTE)LWR_SHIFT[Offset]);
-		AddX86RegToX86Reg(MipsRegLo(Opcode.BRANCH.rt),Value);
-		return;
+		if (Compile_LW(Value, (Address & ~3))) {
+			AndConstToX86Reg(MipsRegLo(Opcode.BRANCH.rt), LWR_MASK[Offset]);
+			ShiftRightUnsignImmed(Value, (BYTE)LWR_SHIFT[Offset]);
+			AddX86RegToX86Reg(MipsRegLo(Opcode.BRANCH.rt), Value);
+			return;
+		}
+
+		// Deoptimization: Address translation for a constant virtual address failed.
+		// Unmap the base register to force it to be loaded from memory by the following codegen.
+		UnMap_GPR(Section, Opcode.IMM.base, TRUE);
 	}
 
 	shift = Map_TempReg(Section,x86_ECX,-1,FALSE);
@@ -1919,7 +1944,7 @@ void Compile_R4300i_LWR (BLOCK_SECTION * Section) {
 	AddX86RegToX86Reg(MipsRegLo(Opcode.BRANCH.rt),TempReg1);
 }
 
-void Compile_R4300i_LWU (BLOCK_SECTION * Section) {			//added by Witten
+void Compile_R4300i_LWU (BLOCK_SECTION * Section) {
 	DWORD TempReg1, TempReg2;
 
 	CPU_Message("  %X %s",Section->CompilePC,R4300iOpcodeName(Opcode.Hex,Section->CompilePC));
@@ -1928,42 +1953,70 @@ void Compile_R4300i_LWU (BLOCK_SECTION * Section) {			//added by Witten
 
 	if (IsConst(Opcode.IMM.base)) { 
 		DWORD Address = (MipsRegLo(Opcode.IMM.base) + (short)Opcode.BRANCH.offset);
-		Map_GPR_32bit(Section,Opcode.BRANCH.rt,FALSE,0);
-		Compile_LW(MipsRegLo(Opcode.BRANCH.rt),Address);
-		return;
-	}
-	if (IsMapped(Opcode.BRANCH.rt)) { ProtectGPR(Section,Opcode.BRANCH.rt); }
-	if (IsMapped(Opcode.IMM.base)) { 
-		ProtectGPR(Section,Opcode.IMM.base);
-		if (Opcode.BRANCH.offset != 0) {
-			TempReg1 = Map_TempReg(Section,x86_Any,-1,FALSE);
-			LeaSourceAndOffset(TempReg1,MipsRegLo(Opcode.IMM.base),(short)Opcode.BRANCH.offset);
-		} else {
-			TempReg1 = Map_TempReg(Section,x86_Any,Opcode.IMM.base,FALSE);
+		Map_GPR_32bit(Section,Opcode.BRANCH.rt,FALSE,-1);
+		if (Compile_LW(MipsRegLo(Opcode.BRANCH.rt), Address)) {
+			return;
 		}
-	} else {
-		TempReg1 = Map_TempReg(Section,x86_Any,Opcode.IMM.base,FALSE);
-		if (Opcode.IMM.immediate == 0) { 
-		} else if (Opcode.IMM.immediate == 1) {
-			IncX86reg(TempReg1);
-		} else if (Opcode.IMM.immediate == 0xFFFF) {			
-			DecX86reg(TempReg1);
-		} else {
-			AddConstToX86Reg(TempReg1,(short)Opcode.IMM.immediate);
-		}
+
+		// Deoptimization: Address translation for a constant virtual address failed.
+		// Unmap the base register to force it to be loaded from memory by the following codegen.
+		UnMap_GPR(Section, Opcode.IMM.base, TRUE);
 	}
 	if (UseTlb) {
-		TempReg2 = Map_TempReg(Section,x86_Any,-1,FALSE);
+		if (IsMapped(Opcode.BRANCH.rt)) { ProtectGPR(Section,Opcode.BRANCH.rt); }
+		if (IsMapped(Opcode.IMM.base) && Opcode.BRANCH.offset == 0) {
+			ProtectGPR(Section, Opcode.IMM.base);
+			TempReg1 = MipsRegLo(Opcode.IMM.base);
+		} else {
+			if (IsMapped(Opcode.IMM.base)) {
+				ProtectGPR(Section, Opcode.IMM.base);
+				if (Opcode.BRANCH.offset != 0) {
+					TempReg1 = Map_TempReg(Section, x86_Any, -1, FALSE);
+					LeaSourceAndOffset(TempReg1, MipsRegLo(Opcode.IMM.base), (short)Opcode.BRANCH.offset);
+				} else {
+					TempReg1 = Map_TempReg(Section, x86_Any, Opcode.IMM.base, FALSE);
+				}
+			} else {
+				TempReg1 = Map_TempReg(Section, x86_Any, Opcode.IMM.base, FALSE);
+				if (Opcode.IMM.immediate == 0) {
+				} else if (Opcode.IMM.immediate == 1) {
+					IncX86reg(TempReg1);
+				} else if (Opcode.IMM.immediate == 0xFFFF) {
+					DecX86reg(TempReg1);
+				} else {
+					AddConstToX86Reg(TempReg1, (short)Opcode.IMM.immediate);
+				}
+			}
+		}
+		TempReg2 = Map_TempReg(Section, x86_Any, -1, FALSE);
 		MoveX86RegToX86Reg(TempReg1, TempReg2);
-		ShiftRightUnsignImmed(TempReg2,12);
-		MoveVariableDispToX86Reg(TLB_ReadMap,"TLB_ReadMap",TempReg2,TempReg2,4);
-		CompileReadTLBMiss(Section,TempReg1,TempReg2);
-		Map_GPR_32bit(Section,Opcode.BRANCH.rt,FALSE,-1);
-		MoveZxHalfX86regPointerToX86reg(TempReg1, TempReg2,MipsRegLo(Opcode.BRANCH.rt));
+		ShiftRightUnsignImmed(TempReg2, 12);
+		MoveVariableDispToX86Reg(TLB_ReadMap, "TLB_ReadMap", TempReg2, TempReg2, 4);
+		CompileReadTLBMiss(Section,TempReg1, TempReg2);
+		Map_GPR_32bit(Section,Opcode.BRANCH.rt, FALSE, -1);
+		MoveX86regPointerToX86reg(TempReg1, TempReg2, MipsRegLo(Opcode.BRANCH.rt));
 	} else {
-		AndConstToX86Reg(TempReg1,0x1FFFFFFF);
-		Map_GPR_32bit(Section,Opcode.BRANCH.rt,TRUE,-1);
-		MoveZxN64MemToX86regHalf(MipsRegLo(Opcode.BRANCH.rt), TempReg1);
+		if (IsMapped(Opcode.IMM.base)) {
+			ProtectGPR(Section, Opcode.IMM.base);
+			if (Opcode.BRANCH.offset != 0) {
+				Map_GPR_32bit(Section, Opcode.BRANCH.rt, FALSE, -1);
+				LeaSourceAndOffset(MipsRegLo(Opcode.BRANCH.rt), MipsRegLo(Opcode.IMM.base), (short)Opcode.BRANCH.offset);
+			} else {
+				Map_GPR_32bit(Section, Opcode.BRANCH.rt, FALSE, Opcode.IMM.base);
+			}
+		} else {
+			Map_GPR_32bit(Section, Opcode.BRANCH.rt, FALSE, Opcode.IMM.base);
+			if (Opcode.IMM.immediate == 0) {
+			} else if (Opcode.IMM.immediate == 1) {
+				IncX86reg(MipsRegLo(Opcode.BRANCH.rt));
+			} else if (Opcode.IMM.immediate == 0xFFFF) {
+				DecX86reg(MipsRegLo(Opcode.BRANCH.rt));
+			} else {
+				AddConstToX86Reg(MipsRegLo(Opcode.BRANCH.rt), (short)Opcode.IMM.immediate);
+			}
+		}
+		AndConstToX86Reg(MipsRegLo(Opcode.BRANCH.rt), 0x1FFFFFFF);
+		MoveN64MemToX86reg(MipsRegLo(Opcode.BRANCH.rt), MipsRegLo(Opcode.BRANCH.rt));
 	}
 }
 
@@ -1976,13 +2029,22 @@ void Compile_R4300i_SB (BLOCK_SECTION * Section){
 		DWORD Address = (MipsRegLo(Opcode.IMM.base) + (short)Opcode.BRANCH.offset) ^ 3;
 		
 		if (IsConst(Opcode.BRANCH.rt)) {
-			Compile_SB_Const((BYTE)MipsRegLo(Opcode.BRANCH.rt), Address);
+			if (Compile_SB_Const((BYTE)MipsRegLo(Opcode.BRANCH.rt), Address)) {
+				return;
+			}
 		} else if (IsMapped(Opcode.BRANCH.rt) && Is8BitReg(MipsRegLo(Opcode.BRANCH.rt))) {
-			Compile_SB_Register(MipsRegLo(Opcode.BRANCH.rt), Address);
+			if (Compile_SB_Register(MipsRegLo(Opcode.BRANCH.rt), Address)) {
+				return;
+			}
 		} else {
-			Compile_SB_Register(Map_TempReg(Section,x86_Any8Bit,Opcode.BRANCH.rt,FALSE), Address);
+			if (Compile_SB_Register(Map_TempReg(Section, x86_Any8Bit, Opcode.BRANCH.rt, FALSE), Address)) {
+				return;
+			}
 		}
-		return;
+
+		// Deoptimization: Address translation for a constant virtual address failed.
+		// Unmap the base register to force it to be loaded from memory by the following codegen.
+		UnMap_GPR(Section, Opcode.IMM.base, TRUE);
 	}
 	if (IsMapped(Opcode.BRANCH.rt)) { ProtectGPR(Section,Opcode.BRANCH.rt); }
 	if (IsMapped(Opcode.IMM.base)) { 
@@ -2047,13 +2109,22 @@ void Compile_R4300i_SH (BLOCK_SECTION * Section){
 		DWORD Address = (MipsRegLo(Opcode.IMM.base) + (short)Opcode.BRANCH.offset) ^ 2;
 		
 		if (IsConst(Opcode.BRANCH.rt)) {
-			Compile_SH_Const((WORD)MipsRegLo(Opcode.BRANCH.rt), Address);
+			if (Compile_SH_Const((WORD)MipsRegLo(Opcode.BRANCH.rt), Address)) {
+				return;
+			}
 		} else if (IsMapped(Opcode.BRANCH.rt)) {
-			Compile_SH_Register(MipsRegLo(Opcode.BRANCH.rt), Address);
+			if (Compile_SH_Register(MipsRegLo(Opcode.BRANCH.rt), Address)) {
+				return;
+			}
 		} else {
-			Compile_SH_Register(Map_TempReg(Section,x86_Any,Opcode.BRANCH.rt,FALSE), Address);
+			if (Compile_SH_Register(Map_TempReg(Section, x86_Any, Opcode.BRANCH.rt, FALSE), Address)) {
+				return;
+			}
 		}
-		return;
+
+		// Deoptimization: Address translation for a constant virtual address failed.
+		// Unmap the base register to force it to be loaded from memory by the following codegen.
+		UnMap_GPR(Section, Opcode.IMM.base, TRUE);
 	}
 	if (IsMapped(Opcode.BRANCH.rt)) { ProtectGPR(Section,Opcode.BRANCH.rt); }
 	if (IsMapped(Opcode.IMM.base)) { 
@@ -2118,13 +2189,18 @@ void Compile_R4300i_SWL (BLOCK_SECTION * Section) {
 		Offset  = Address & 3;
 		
 		Value = Map_TempReg(Section,x86_Any,-1,FALSE);
-		Compile_LW(Value,(Address & ~3));
-		AndConstToX86Reg(Value,SWL_MASK[Offset]);
-		TempReg1 = Map_TempReg(Section,x86_Any,Opcode.BRANCH.rt,FALSE);
-		ShiftRightUnsignImmed(TempReg1,(BYTE)SWL_SHIFT[Offset]);		
-		AddX86RegToX86Reg(Value,TempReg1);		
-		Compile_SW_Register(Value, (Address & ~3));
-		return;
+		if (Compile_LW(Value, (Address & ~3))) {
+			AndConstToX86Reg(Value, SWL_MASK[Offset]);
+			TempReg1 = Map_TempReg(Section, x86_Any, Opcode.BRANCH.rt, FALSE);
+			ShiftRightUnsignImmed(TempReg1, (BYTE)SWL_SHIFT[Offset]);
+			AddX86RegToX86Reg(Value, TempReg1);
+			Compile_SW_Register(Value, (Address & ~3));
+			return;
+		}
+
+		// Deoptimization: Address translation for a constant virtual address failed.
+		// Unmap the base register to force it to be loaded from memory by the following codegen.
+		UnMap_GPR(Section, Opcode.IMM.base, TRUE);
 	}
 	shift = Map_TempReg(Section,x86_ECX,-1,FALSE);
 	if (IsMapped(Opcode.IMM.base)) { 
@@ -2288,13 +2364,18 @@ void Compile_R4300i_SWR (BLOCK_SECTION * Section) {
 		Offset  = Address & 3;
 		
 		Value = Map_TempReg(Section,x86_Any,-1,FALSE);
-		Compile_LW(Value,(Address & ~3));
-		AndConstToX86Reg(Value,SWR_MASK[Offset]);
-		TempReg1 = Map_TempReg(Section,x86_Any,Opcode.BRANCH.rt,FALSE);
-		ShiftLeftSignImmed(TempReg1,(BYTE)SWR_SHIFT[Offset]);		
-		AddX86RegToX86Reg(Value,TempReg1);		
-		Compile_SW_Register(Value, (Address & ~3));
-		return;
+		if (Compile_LW(Value, (Address & ~3))) {
+			AndConstToX86Reg(Value, SWR_MASK[Offset]);
+			TempReg1 = Map_TempReg(Section, x86_Any, Opcode.BRANCH.rt, FALSE);
+			ShiftLeftSignImmed(TempReg1, (BYTE)SWR_SHIFT[Offset]);
+			AddX86RegToX86Reg(Value, TempReg1);
+			Compile_SW_Register(Value, (Address & ~3));
+			return;
+		}
+
+		// Deoptimization: Address translation for a constant virtual address failed.
+		// Unmap the base register to force it to be loaded from memory by the following codegen.
+		UnMap_GPR(Section, Opcode.IMM.base, TRUE);
 	}
 	shift = Map_TempReg(Section,x86_ECX,-1,FALSE);
 	if (IsMapped(Opcode.IMM.base)) { 
@@ -2459,11 +2540,16 @@ void Compile_R4300i_LL (BLOCK_SECTION * Section) {
 	if (IsConst(Opcode.IMM.base)) { 
 		DWORD Address = MipsRegLo(Opcode.IMM.base) + (short)Opcode.BRANCH.offset;
 		Map_GPR_32bit(Section,Opcode.BRANCH.rt,TRUE,-1);
-		Compile_LW(MipsRegLo(Opcode.BRANCH.rt),Address);
-		MoveConstToVariable(1,&LLBit,"LLBit");
-		TranslateVaddr(&Address);
-		MoveConstToVariable(Address,&LLAddr,"LLAddr");
-		return;
+		if (Compile_LW(MipsRegLo(Opcode.BRANCH.rt), Address)) {
+			MoveConstToVariable(1, &LLBit, "LLBit");
+			TranslateVaddr(&Address);
+			MoveConstToVariable(Address, &LLAddr, "LLAddr");
+			return;
+		}
+
+		// Deoptimization: Address translation for a constant virtual address failed.
+		// Unmap the base register to force it to be loaded from memory by the following codegen.
+		UnMap_GPR(Section, Opcode.IMM.base, TRUE);
 	}
 	if (UseTlb) {	
 		if (IsMapped(Opcode.BRANCH.rt)) { ProtectGPR(Section,Opcode.BRANCH.rt); }
@@ -2618,10 +2704,15 @@ void Compile_R4300i_LD (BLOCK_SECTION * Section) {
 	if (IsConst(Opcode.IMM.base)) { 
 		DWORD Address = MipsRegLo(Opcode.IMM.base) + (short)Opcode.BRANCH.offset;
 		Map_GPR_64bit(Section,Opcode.BRANCH.rt,-1);
-		Compile_LW(MipsRegHi(Opcode.BRANCH.rt),Address);
-		Compile_LW(MipsRegLo(Opcode.BRANCH.rt),Address + 4);
-		if (SPHack && Opcode.BRANCH.rt == 29) { ResetMemoryStack(Section); }
-		return;
+		if (Compile_LW(MipsRegHi(Opcode.BRANCH.rt), Address)) {
+			Compile_LW(MipsRegLo(Opcode.BRANCH.rt), Address + 4);
+			if (SPHack && Opcode.BRANCH.rt == 29) { ResetMemoryStack(Section); }
+			return;
+		}
+
+		// Deoptimization: Address translation for a constant virtual address failed.
+		// Unmap the base register to force it to be loaded from memory by the following codegen.
+		UnMap_GPR(Section, Opcode.IMM.base, TRUE);
 	}
 	if (IsMapped(Opcode.BRANCH.rt)) { ProtectGPR(Section,Opcode.BRANCH.rt); }
 	if (IsMapped(Opcode.IMM.base) && Opcode.BRANCH.offset == 0) { 
@@ -3527,11 +3618,19 @@ void Compile_R4300i_SPECIAL_MULTU (BLOCK_SECTION * Section) {
 }
 
 void Compile_R4300i_SPECIAL_DIV (BLOCK_SECTION * Section) {
-	BYTE *Jump[2];
+	BYTE *Jump[4] = { 0 };
 
 	CPU_Message("  %X %s",Section->CompilePC,R4300iOpcodeName(Opcode.Hex,Section->CompilePC));
 	
 	if (IsConst(Opcode.BRANCH.rt)) {
+		if (MipsRegLo(Opcode.BRANCH.rs) == INT_MIN && MipsRegLo(Opcode.BRANCH.rt) == -1) {
+			// An overflow exception never occurs. This is the only set of inputs that overflows on x86
+			MoveConstToVariable(UINT_MAX / 2 + 1, &LO.UW[0], "LO.UW[0]");
+			MoveConstToVariable(0, &LO.UW[1], "LO.UW[1]");
+			MoveConstToVariable(0, &HI.UW[0], "HI.UW[0]");
+			MoveConstToVariable(0, &HI.UW[1], "HI.UW[1]");
+			return;
+		}
 		if (MipsRegLo(Opcode.BRANCH.rt) == 0) {
 			MoveConstToVariable(0, &LO.UW[0], "LO.UW[0]");
 			MoveConstToVariable(0, &LO.UW[1], "LO.UW[1]");
@@ -3539,27 +3638,47 @@ void Compile_R4300i_SPECIAL_DIV (BLOCK_SECTION * Section) {
 			MoveConstToVariable(0, &HI.UW[1], "HI.UW[1]");
 			return;
 		}
-		Jump[1] = NULL;
 	} else {
-		if (IsMapped(Opcode.BRANCH.rt)) {
-			CompConstToX86reg(MipsRegLo(Opcode.BRANCH.rt),0);
+		// Check for overflow
+		if (IsMapped(Opcode.BRANCH.rs)) {
+			CompConstToX86reg(MipsRegLo(Opcode.BRANCH.rs), INT_MIN);
 		} else {
-			CompConstToVariable(0, &GPR[Opcode.BRANCH.rt].W[0], GPR_NameLo[Opcode.BRANCH.rt]);
+			CompConstToVariable(INT_MIN, &GPR[Opcode.BRANCH.rs].W[0], GPR_NameLo[Opcode.BRANCH.rs]);
 		}
-		JneLabel8("NoExcept", 0);
+		JneLabel8("NoOverflow", 0);
 		Jump[0] = RecompPos - 1;
 
-		MoveConstToVariable(0, &LO.UW[0], "LO.UW[0]");
+		if (IsMapped(Opcode.BRANCH.rt)) {
+			CompConstToX86reg(MipsRegLo(Opcode.BRANCH.rt), -1);
+		} else {
+			CompConstToVariable(-1, &GPR[Opcode.BRANCH.rt].W[0], GPR_NameLo[Opcode.BRANCH.rt]);
+		}
+		JneLabel8("NoOverflow", 0);
+		Jump[1] = RecompPos - 1;
+
+		// Special case handling for overflowing division
+		MoveConstToVariable(UINT_MAX / 2 + 1, &LO.UW[0], "LO.UW[0]");
 		MoveConstToVariable(0, &LO.UW[1], "LO.UW[1]");
 		MoveConstToVariable(0, &HI.UW[0], "HI.UW[0]");
 		MoveConstToVariable(0, &HI.UW[1], "HI.UW[1]");
 
 		JmpLabel8("EndDiv", 0);
-		Jump[1] = RecompPos - 1;
+		Jump[2] = RecompPos - 1;
 
 		CPU_Message("");
-		CPU_Message("      NoExcept:");
-		*((BYTE *)(Jump[0]))=(BYTE)(RecompPos - Jump[0] - 1);
+		CPU_Message("      NoOverflow:");
+		*((BYTE *)(Jump[0])) = (BYTE)(RecompPos - Jump[0] - 1);
+		*((BYTE *)(Jump[1])) = (BYTE)(RecompPos - Jump[1] - 1);
+
+		// Check for divide-by-zero
+		if (IsMapped(Opcode.BRANCH.rt)) {
+			CompConstToX86reg(MipsRegLo(Opcode.BRANCH.rt), 0);
+		} else {
+			CompConstToVariable(0, &GPR[Opcode.BRANCH.rt].W[0], GPR_NameLo[Opcode.BRANCH.rt]);
+		}
+		// The result for divide-by-zero is undefined, so the LO and HI registers do not need to be updated at all.
+		JeLabel8("EndDiv", 0);
+		Jump[3] = RecompPos - 1;
 	}
 	/*	lo = (SD)rs / (SD)rt;
 		hi = (SD)rs % (SD)rt; */
@@ -3579,7 +3698,6 @@ void Compile_R4300i_SPECIAL_DIV (BLOCK_SECTION * Section) {
 	} else {
 		idivX86reg(Map_TempReg(Section,x86_Any,Opcode.BRANCH.rt,FALSE));
 	}
-		
 
 	MoveX86regToVariable(x86_EAX,&LO.UW[0],"LO.UW[0]");
 	MoveX86regToVariable(x86_EDX,&HI.UW[0],"HI.UW[0]");
@@ -3588,10 +3706,11 @@ void Compile_R4300i_SPECIAL_DIV (BLOCK_SECTION * Section) {
 	MoveX86regToVariable(x86_EAX,&LO.UW[1],"LO.UW[1]");
 	MoveX86regToVariable(x86_EDX,&HI.UW[1],"HI.UW[1]");
 
-	if( Jump[1] != NULL ) {
+	if (Jump[2] != NULL && Jump[3] != NULL) {
 		CPU_Message("");
 		CPU_Message("      EndDiv:");
-		*((BYTE *)(Jump[1]))=(BYTE)(RecompPos - Jump[1] - 1);
+		*((BYTE *)(Jump[2])) = (BYTE)(RecompPos - Jump[2] - 1);
+		*((BYTE *)(Jump[3])) = (BYTE)(RecompPos - Jump[3] - 1);
 	}
 }
 
@@ -4695,13 +4814,14 @@ void Compile_R4300i_SPECIAL_DADD (BLOCK_SECTION * Section) {
 			MipsRegState(Opcode.REG.rd) = STATE_CONST_64;
 		}
 	} else {
+		ProtectGPR(Section, Opcode.BRANCH.rt);
 		Map_GPR_64bit(Section,Opcode.REG.rd,Opcode.BRANCH.rs);
 		if (IsConst(Opcode.BRANCH.rt)) {
 			AddConstToX86Reg(MipsRegLo(Opcode.REG.rd),MipsRegLo(Opcode.BRANCH.rt));
 			AddConstToX86Reg(MipsRegHi(Opcode.REG.rd),MipsRegHi(Opcode.BRANCH.rt));
 		} else if (IsMapped(Opcode.BRANCH.rt)) {
+			ProtectGPR(Section, Opcode.REG.rd);
 			int HiReg = Is64Bit(Opcode.BRANCH.rt)?MipsRegHi(Opcode.BRANCH.rt):Map_TempReg(Section,x86_Any,Opcode.BRANCH.rt,TRUE);
-			ProtectGPR(Section,Opcode.BRANCH.rt);
 			AddX86RegToX86Reg(MipsRegLo(Opcode.REG.rd),MipsRegLo(Opcode.BRANCH.rt));
 			AdcX86RegToX86Reg(MipsRegHi(Opcode.REG.rd),HiReg);
 		} else {
@@ -4728,13 +4848,14 @@ void Compile_R4300i_SPECIAL_DADDU (BLOCK_SECTION * Section) {
 			MipsRegState(Opcode.REG.rd) = STATE_CONST_64;
 		}
 	} else {
+		ProtectGPR(Section, Opcode.BRANCH.rt);
 		Map_GPR_64bit(Section,Opcode.REG.rd,Opcode.BRANCH.rs);
 		if (IsConst(Opcode.BRANCH.rt)) {
 			AddConstToX86Reg(MipsRegLo(Opcode.REG.rd),MipsRegLo(Opcode.BRANCH.rt));
 			AddConstToX86Reg(MipsRegHi(Opcode.REG.rd),MipsRegHi(Opcode.BRANCH.rt));
 		} else if (IsMapped(Opcode.BRANCH.rt)) {
+			ProtectGPR(Section, Opcode.REG.rd);
 			int HiReg = Is64Bit(Opcode.BRANCH.rt)?MipsRegHi(Opcode.BRANCH.rt):Map_TempReg(Section,x86_Any,Opcode.BRANCH.rt,TRUE);
-			ProtectGPR(Section,Opcode.BRANCH.rt);
 			AddX86RegToX86Reg(MipsRegLo(Opcode.REG.rd),MipsRegLo(Opcode.BRANCH.rt));
 			AdcX86RegToX86Reg(MipsRegHi(Opcode.REG.rd),HiReg);
 		} else {
@@ -4761,6 +4882,7 @@ void Compile_R4300i_SPECIAL_DSUB (BLOCK_SECTION * Section) {
 			MipsRegState(Opcode.REG.rd) = STATE_CONST_64;
 		}
 	} else {
+		ProtectGPR(Section, Opcode.BRANCH.rt);
 		if (Opcode.REG.rd == Opcode.BRANCH.rt) {
 			int HiReg = Map_TempReg(Section,x86_Any,Opcode.BRANCH.rt,TRUE);
 			int LoReg = Map_TempReg(Section,x86_Any,Opcode.BRANCH.rt,FALSE);
@@ -4774,8 +4896,8 @@ void Compile_R4300i_SPECIAL_DSUB (BLOCK_SECTION * Section) {
 			SubConstFromX86Reg(MipsRegLo(Opcode.REG.rd),MipsRegLo(Opcode.BRANCH.rt));
 			SbbConstFromX86Reg(MipsRegHi(Opcode.REG.rd),MipsRegHi(Opcode.BRANCH.rt));
 		} else if (IsMapped(Opcode.BRANCH.rt)) {
+			ProtectGPR(Section, Opcode.REG.rd);
 			int HiReg = Is64Bit(Opcode.BRANCH.rt)?MipsRegHi(Opcode.BRANCH.rt):Map_TempReg(Section,x86_Any,Opcode.BRANCH.rt,TRUE);
-			ProtectGPR(Section,Opcode.BRANCH.rt);
 			SubX86RegToX86Reg(MipsRegLo(Opcode.REG.rd),MipsRegLo(Opcode.BRANCH.rt));
 			SbbX86RegToX86Reg(MipsRegHi(Opcode.REG.rd),HiReg);
 		} else {
@@ -4802,6 +4924,7 @@ void Compile_R4300i_SPECIAL_DSUBU (BLOCK_SECTION * Section) {
 			MipsRegState(Opcode.REG.rd) = STATE_CONST_64;
 		}
 	} else {
+		ProtectGPR(Section, Opcode.BRANCH.rt);
 		if (Opcode.REG.rd == Opcode.BRANCH.rt) {
 			int HiReg = Map_TempReg(Section,x86_Any,Opcode.BRANCH.rt,TRUE);
 			int LoReg = Map_TempReg(Section,x86_Any,Opcode.BRANCH.rt,FALSE);
@@ -4815,8 +4938,8 @@ void Compile_R4300i_SPECIAL_DSUBU (BLOCK_SECTION * Section) {
 			SubConstFromX86Reg(MipsRegLo(Opcode.REG.rd),MipsRegLo(Opcode.BRANCH.rt));
 			SbbConstFromX86Reg(MipsRegHi(Opcode.REG.rd),MipsRegHi(Opcode.BRANCH.rt));
 		} else if (IsMapped(Opcode.BRANCH.rt)) {
+			ProtectGPR(Section, Opcode.REG.rd);
 			int HiReg = Is64Bit(Opcode.BRANCH.rt)?MipsRegHi(Opcode.BRANCH.rt):Map_TempReg(Section,x86_Any,Opcode.BRANCH.rt,TRUE);
-			ProtectGPR(Section,Opcode.BRANCH.rt);
 			SubX86RegToX86Reg(MipsRegLo(Opcode.REG.rd),MipsRegLo(Opcode.BRANCH.rt));
 			SbbX86RegToX86Reg(MipsRegHi(Opcode.REG.rd),HiReg);
 		} else {
@@ -4924,6 +5047,7 @@ void Compile_R4300i_SPECIAL_DSLL32 (BLOCK_SECTION * Section) {
 		}
 		XorX86RegToX86Reg(MipsRegLo(Opcode.REG.rd),MipsRegLo(Opcode.REG.rd));
 	} else {
+		ProtectGPR(Section, Opcode.BRANCH.rt);
 		Map_GPR_64bit(Section,Opcode.REG.rd,-1);
 		MoveVariableToX86reg(&GPR[Opcode.BRANCH.rt],GPR_NameHi[Opcode.BRANCH.rt],MipsRegHi(Opcode.REG.rd));
 		if ((BYTE)Opcode.REG.sa != 0) {
@@ -4960,6 +5084,7 @@ void Compile_R4300i_SPECIAL_DSRL32 (BLOCK_SECTION * Section) {
 			Compile_R4300i_UnknownOpcode(Section);
 		}
 	} else {
+		ProtectGPR(Section, Opcode.BRANCH.rt);
 		Map_GPR_32bit(Section,Opcode.REG.rd,FALSE,-1);
 		MoveVariableToX86reg(&GPR[Opcode.BRANCH.rt].UW[1],GPR_NameLo[Opcode.BRANCH.rt],MipsRegLo(Opcode.REG.rd));
 		if ((BYTE)Opcode.REG.sa != 0) {
@@ -4995,6 +5120,7 @@ void Compile_R4300i_SPECIAL_DSRA32 (BLOCK_SECTION * Section) {
 			Compile_R4300i_UnknownOpcode(Section);
 		}
 	} else {
+		ProtectGPR(Section, Opcode.BRANCH.rt);
 		Map_GPR_32bit(Section,Opcode.REG.rd,TRUE,-1);
 		MoveVariableToX86reg(&GPR[Opcode.BRANCH.rt].UW[1],GPR_NameLo[Opcode.BRANCH.rt],MipsRegLo(Opcode.REG.rd));
 		if ((BYTE)Opcode.REG.sa != 0) {
@@ -5015,6 +5141,7 @@ void Compile_R4300i_COP0_MF(BLOCK_SECTION * Section) {
 		SubConstFromVariable(BlockCycleCount,&Timers.Timer,"Timer");
 		BlockCycleCount = 0;
 	}
+	ProtectGPR(Section, Opcode.REG.rd);
 	Map_GPR_32bit(Section,Opcode.BRANCH.rt,TRUE,-1);
 	MoveVariableToX86reg(&CP0[Opcode.REG.rd],Cop0_Name[Opcode.REG.rd],MipsRegLo(Opcode.BRANCH.rt));
 }
@@ -5030,6 +5157,7 @@ void Compile_R4300i_COP0_DMF(BLOCK_SECTION * Section) {
 		SubConstFromVariable(BlockCycleCount, &Timers.Timer, "Timer");
 		BlockCycleCount = 0;
 	}
+	ProtectGPR(Section, Opcode.REG.rd);
 	Map_GPR_64bit(Section, Opcode.BRANCH.rt, -1);
 	MoveVariableToX86reg(&CP0[Opcode.REG.rd], Cop0_Name[Opcode.REG.rd], MipsRegLo(Opcode.BRANCH.rt));
 	MoveX86RegToX86Reg(MipsRegLo(Opcode.BRANCH.rt), MipsRegHi(Opcode.BRANCH.rt));
@@ -5086,6 +5214,7 @@ void Compile_R4300i_COP0_MT (BLOCK_SECTION * Section) {
 		}
 		break;
 	case 12: //Status
+		ProtectGPR(Section, Opcode.BRANCH.rt);
 		OldStatusReg = Map_TempReg(Section,x86_Any,-1,FALSE);
 		MoveVariableToX86reg(&CP0[Opcode.REG.rd],Cop0_Name[Opcode.REG.rd],OldStatusReg);
 		if (IsConst(Opcode.BRANCH.rt)) {
@@ -5193,6 +5322,7 @@ void Compile_R4300i_COP0_DMT(BLOCK_SECTION * Section) {
 		}
 		break;
 	case 12: //Status
+		ProtectGPR(Section, Opcode.BRANCH.rt);
 		OldStatusReg = Map_TempReg(Section,x86_Any,-1,FALSE);
 		MoveVariableToX86reg(&CP0[Opcode.REG.rd],Cop0_Name[Opcode.REG.rd],OldStatusReg);
 		if (IsConst(Opcode.BRANCH.rt)) {
