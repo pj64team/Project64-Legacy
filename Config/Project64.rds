@@ -19,7 +19,7 @@
 // Note that Project64 automatically prefixes "http://"
 
 Author=PJ64LegacyTeam
-Date=5th August 2023 Version: 1
+Date=6th August 2023 Version: 1
 Homepage=www.project64-legacy.com
 Version=Project64 1.6.2 (Legacy)
 
@@ -3719,9 +3719,8 @@ Status=Compatible
 Name=Indiana Jones and the Infernal Machine (U)
 CPU Type=Recompiler
 Counter Factor=2
-Disable Reg Cache
 ExpansionPak
-Linking=On
+Linking=Off
 Plugin Note=[video] Use GlideN64
 Save Type=First Save Type
 Self-modifying code Method=Check Memory Advance
@@ -13425,13 +13424,13 @@ Use Large Buffer
 Name=Indiana Jones and the Infernal Machine (E) (Prototype)
 CPU Type=Recompiler
 Counter Factor=2
-Disable Reg Cache
 ExpansionPak
-Linking=On
+Linking=Off
 Plugin Note=[video] Use GlideN64
 Save Type=First Save Type
 Self-modifying code Method=Check Memory Advance
-Status=Compatible
+Status=Use GLideN64 Video
+Use Large Buffer
 
 [C6CE0AAA-D117F019-C:4A]
 Name=J.League Tactics Soccer (J) (V1.1)
