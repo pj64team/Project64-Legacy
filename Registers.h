@@ -30,7 +30,7 @@
 #define CONTEXT_REGISTER		CP0[4].UW[0]
 #define PAGE_MASK_REGISTER		CP0[5].UW[0]
 #define WIRED_REGISTER			CP0[6].UW[0]
-#define BAD_VADDR_REGISTER		CP0[8].UW[0]
+#define BAD_VADDR_REGISTER		CP0[8].UDW
 #define COUNT_REGISTER			CP0[9].UW[0]
 #define ENTRYHI_REGISTER		CP0[10].UW[0]
 #define COMPARE_REGISTER		CP0[11].UW[0]
@@ -388,3 +388,5 @@ void UnProtectGPR             ( BLOCK_SECTION * Section, DWORD Reg );
 void UpdateCurrentHalfLine    ( void );
 void UpdateFieldSerration     ( int interlaced );
 void WriteBackRegisters       ( BLOCK_SECTION * Section );
+
+BOOL IsSignExtended(MIPS_DWORD v);

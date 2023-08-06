@@ -67,7 +67,7 @@
 void __cdecl AiCheckInterrupts			( void );
 void __cdecl CheckInterrupts			( void );
 void DoIntegerOverflow					( BOOL DelaySlot );
-void DoAddressError						( BOOL DelaySlot, DWORD BadVaddr, BOOL FromRead );
+void DoAddressError						( BOOL DelaySlot, QWORD BadVaddr, BOOL FromRead );
 void _fastcall DoCopUnusableException	( BOOL DelaySlot, int Coprocessor );
 void DoIntrException					( BOOL DelaySlot );
 void _fastcall DoTLBMiss				( BOOL DelaySlot, DWORD BadVaddr, BOOL FromRead );
