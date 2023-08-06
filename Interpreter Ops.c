@@ -49,16 +49,20 @@ int RoundingModel = _RC_NEAR;
 	}
 
 #define TLB_READ_EXCEPTION(Address) \
-	DoTLBMiss(NextInstruction == JUMP, Address, TRUE);\
-	NextInstruction = JUMP;\
-	JumpToLocation = PROGRAM_COUNTER;\
-	return;
+	if (UseTlb) { \
+		DoTLBMiss(NextInstruction == JUMP, Address, TRUE);\
+		NextInstruction = JUMP;\
+		JumpToLocation = PROGRAM_COUNTER;\
+		return; \
+	}
 
 #define TLB_WRITE_EXCEPTION(Address) \
-	DoTLBMiss(NextInstruction == JUMP, Address, FALSE);\
-	NextInstruction = JUMP;\
-	JumpToLocation = PROGRAM_COUNTER;\
-	return;
+	if (UseTlb) { \
+		DoTLBMiss(NextInstruction == JUMP, Address, FALSE);\
+		NextInstruction = JUMP;\
+		JumpToLocation = PROGRAM_COUNTER;\
+		return; \
+	}
 
 /************************* OpCode functions *************************/
 void _fastcall r4300i_J (void) {
