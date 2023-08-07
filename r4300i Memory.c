@@ -134,22 +134,18 @@ void __cdecl Create_Memory_Window ( int Child ) {
 
 		// Create a default font that matches the system theme
 		NONCLIENTMETRICS metrics = { 0 };
-<<<<<<< HEAD
+
 #if (_WIN32_WINNT >= _WIN32_WINNT_WIN8)
-=======
->>>>>>> 69b6ba4 (Memory editor (#24))
 		metrics.cbSize = sizeof(NONCLIENTMETRICS);
 		if (!IsWindowsVistaOrGreater()) {
 			// NOTE: This is for compatibility with Windows XP.
 			metrics.cbSize -= sizeof(metrics.iPaddedBorderWidth);
 		}
-<<<<<<< HEAD
 #else
 		// NOTE: This is for compatibility with Windows XP.
 		metrics.cbSize -= sizeof(metrics.iPaddedBorderWidth);
 #endif
-=======
->>>>>>> 69b6ba4 (Memory editor (#24))
+
 		SystemParametersInfo(SPI_GETNONCLIENTMETRICS, sizeof(NONCLIENTMETRICS), &metrics, 0);
 		hDefaultFont = CreateFontIndirect(&metrics.lfMessageFont);
 
