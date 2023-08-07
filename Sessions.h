@@ -1,9 +1,9 @@
 /*
- * Project 64 - A Nintendo 64 emulator.
+ * Project 64 Legacy - A Nintendo 64 emulator.
  *
  * (c) Copyright 2023 parasyte (jay@kodewerx.org)
  *
- * pj64 homepage: www.pj64.net
+ * Project64 Legacy Homepage: www.project64-legacy.com
  *
  * Permission to use, copy, modify and distribute Project64 in both binary and
  * source form, for non-commercial purposes, is hereby granted without fee,
