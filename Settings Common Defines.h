@@ -5,7 +5,6 @@
 #define RDN_NAME "Project64.rdn"
 #define RDI_NAME "Project64.rdi"
 #define CDB_NAME "Project64.cdb"
-#define CHTDEV_NAME "Project64.chtdev"
 #define LNG_NAME "Project64.lng"
 #define ROC_NAME "Project64.roc"
 #define APPS_NAME "Project64.apps"
