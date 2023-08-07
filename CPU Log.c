@@ -60,10 +60,10 @@ void Start_x86_Log (void) {
 		CREATE_ALWAYS,FILE_ATTRIBUTE_NORMAL | FILE_FLAG_SEQUENTIAL_SCAN, NULL);
 	if (hCPULogFile == INVALID_HANDLE_VALUE) {
 		DWORD error_code = GetLastError();
-		TCHAR *error = NULL;
+		LPSTR error = NULL;
 		FormatMessage(
 			FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS,
-			NULL, error_code, 0, &error, 0, NULL
+			NULL, error_code, 0, (LPSTR)&error, 0, NULL
 		);
 		if (error != NULL) {
 			DisplayError("Unable to create CPUoutput.log file:\n%s", error);
