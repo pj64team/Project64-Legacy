@@ -36,9 +36,6 @@
     <Filter Include="Header Files\CPU Header\Save Chips headers">
       <UniqueIdentifier>{88d6d629-3384-4395-90e7-65353ef87f57}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\Zlib Header">
-      <UniqueIdentifier>{31849a03-28d6-477f-bb84-61ef4162340f}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Header Files\Plugin Header">
       <UniqueIdentifier>{19a75cb1-af13-43a4-9405-f28bedb8f8ea}</UniqueIdentifier>
     </Filter>
@@ -69,6 +66,9 @@
     </Filter>
     <Filter Include="Source Files\Compression Source">
       <UniqueIdentifier>{500c7cae-17df-494b-9fa1-36a78c46255a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Compression Headers">
+      <UniqueIdentifier>{31849a03-28d6-477f-bb84-61ef4162340f}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -398,9 +398,6 @@
     <ClInclude Include="Language.h">
       <Filter>Header Files\Lang Header</Filter>
     </ClInclude>
-    <ClInclude Include="MemTest.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="n64_cic_nus_6105.h">
       <Filter>Header Files\General Header</Filter>
     </ClInclude>
@@ -431,66 +428,6 @@
     <ClInclude Include="Settings Api.h">
       <Filter>Header Files\General Header\Settings Api 2</Filter>
     </ClInclude>
-    <ClInclude Include="Settings Common Defines.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="FileHandler.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Compression\unzip.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Compression\zconf.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Compression\zip.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Compression\zlib.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Compression\ioapi.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Compression\crc32.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Compression\inflate.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Compression\zutil.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Compression\inftrees.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Compression\gzguts.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Compression\inffast.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Compression\inffixed.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Compression\deflate.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Compression\trees.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="CheatSearch_Dev.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="CheatSearch_Search.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Cheats_Preprocessor.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="xxhash64.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="WatchPoints.h">
       <Filter>Header Files\Debugger Headers</Filter>
     </ClInclude>
@@ -500,11 +437,74 @@
     <ClInclude Include="cbor-lite\codec-fp.h">
       <Filter>Header Files\cbor-lite Headers</Filter>
     </ClInclude>
+    <ClInclude Include="Cheats_Preprocessor.h">
+      <Filter>Header Files\General Header</Filter>
+    </ClInclude>
+    <ClInclude Include="CheatSearch_Dev.h">
+      <Filter>Header Files\General Header</Filter>
+    </ClInclude>
+    <ClInclude Include="CheatSearch_Search.h">
+      <Filter>Header Files\General Header</Filter>
+    </ClInclude>
+    <ClInclude Include="Compression\crc32.h">
+      <Filter>Header Files\Compression Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Compression\deflate.h">
+      <Filter>Header Files\Compression Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Compression\gzguts.h">
+      <Filter>Header Files\Compression Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Compression\inffast.h">
+      <Filter>Header Files\Compression Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Compression\inffixed.h">
+      <Filter>Header Files\Compression Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Compression\inflate.h">
+      <Filter>Header Files\Compression Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Compression\inftrees.h">
+      <Filter>Header Files\Compression Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Compression\ioapi.h">
+      <Filter>Header Files\Compression Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Compression\trees.h">
+      <Filter>Header Files\Compression Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Compression\unzip.h">
+      <Filter>Header Files\Compression Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Compression\zconf.h">
+      <Filter>Header Files\Compression Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Compression\zip.h">
+      <Filter>Header Files\Compression Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Compression\zlib.h">
+      <Filter>Header Files\Compression Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Compression\zutil.h">
+      <Filter>Header Files\Compression Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="FileHandler.h">
+      <Filter>Header Files\General Header</Filter>
+    </ClInclude>
     <ClInclude Include="SessionMemBookmarks.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\General Header</Filter>
     </ClInclude>
     <ClInclude Include="Sessions.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\General Header</Filter>
+    </ClInclude>
+    <ClInclude Include="Settings Common Defines.h">
+      <Filter>Header Files\General Header</Filter>
+    </ClInclude>
+    <ClInclude Include="MemTest.h">
+      <Filter>Header Files\General Header</Filter>
+    </ClInclude>
+    <ClInclude Include="xxhash64.h">
+      <Filter>Header Files\General Header</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
