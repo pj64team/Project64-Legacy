@@ -24,7 +24,7 @@
  *
  */
 
-// Required for WIndows XP build profile
+// Required for Windows XP build profile
 #ifndef _WIN32_WINNT_WIN8
 #define _WIN32_WINNT_WIN8 0x0602
 #endif
