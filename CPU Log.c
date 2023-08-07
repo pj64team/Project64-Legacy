@@ -58,7 +58,22 @@ void Start_x86_Log (void) {
 	if (hCPULogFile) { Stop_x86_Log(); }
 	hCPULogFile = CreateFile(LogFileName,GENERIC_WRITE, FILE_SHARE_READ|FILE_SHARE_WRITE,NULL,
 		CREATE_ALWAYS,FILE_ATTRIBUTE_NORMAL | FILE_FLAG_SEQUENTIAL_SCAN, NULL);
-	SetFilePointer(hCPULogFile,0,NULL,FILE_BEGIN);
+	if (hCPULogFile == INVALID_HANDLE_VALUE) {
+		DWORD error_code = GetLastError();
+		LPSTR error = NULL;
+		FormatMessage(
+			FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS,
+			NULL, error_code, 0, (LPSTR)&error, 0, NULL
+		);
+		if (error != NULL) {
+			DisplayError("Unable to create CPUoutput.log file:\n%s", error);
+			LocalFree(error);
+		} else {
+			DisplayError("Unable to create CPUoutput.log file:\nNo extra information is available");
+		}
+	} else {
+		SetFilePointer(hCPULogFile, 0, NULL, FILE_BEGIN);
+	}
 }
 
 void Stop_x86_Log (void) {
@@ -67,4 +82,4 @@ void Stop_x86_Log (void) {
 		hCPULogFile = NULL;
 	}
 }
-#endif 
+#endif
