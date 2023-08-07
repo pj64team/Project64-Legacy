@@ -63,9 +63,14 @@ void Start_x86_Log (void) {
 		TCHAR *error = NULL;
 		FormatMessage(
 			FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS,
-			NULL, error_code, 0, &error, 1, NULL
+			NULL, error_code, 0, &error, 0, NULL
 		);
-		DisplayError("Unable to create CPUoutput.log file:\n%s", error);
+		if (error != NULL) {
+			DisplayError("Unable to create CPUoutput.log file:\n%s", error);
+			LocalFree(error);
+		} else {
+			DisplayError("Unable to create CPUoutput.log file:\nNo extra information is available");
+		}
 	} else {
 		SetFilePointer(hCPULogFile, 0, NULL, FILE_BEGIN);
 	}
