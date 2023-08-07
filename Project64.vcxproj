@@ -102,7 +102,7 @@
       <ObjectFileName>.\Debug\</ObjectFileName>
       <ProgramDataBaseFileName>.\Debug\</ProgramDataBaseFileName>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
-      <ExceptionHandling>false</ExceptionHandling>
+      <ExceptionHandling>Sync</ExceptionHandling>
       <CompileAs>Default</CompileAs>
       <TreatWarningAsError>false</TreatWarningAsError>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
@@ -285,6 +285,7 @@
     <ClCompile Include="r4300i Registers.c" />
     <ClCompile Include="Real-Time Clock.c" />
     <ClCompile Include="RomTools_Common.cpp" />
+    <ClCompile Include="Sessions.cpp" />
     <ClCompile Include="Settings Api.c" />
     <ClCompile Include="TLB Display.c" />
     <ClCompile Include="Cheat.c" />
@@ -321,6 +322,8 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BreakPoints.h" />
+    <ClInclude Include="cbor-lite\codec-fp.h" />
+    <ClInclude Include="cbor-lite\codec.h" />
     <ClInclude Include="CheatSearch.h" />
     <ClInclude Include="CheatSearch_Dev.h" />
     <ClInclude Include="CheatSearch_Input.h" />
@@ -354,6 +357,8 @@
     <ClInclude Include="Real-Time Clock.h" />
     <ClInclude Include="resource_cheat.h" />
     <ClInclude Include="RomTools_Common.h" />
+    <ClInclude Include="SessionMemBookmarks.h" />
+    <ClInclude Include="Sessions.h" />
     <ClInclude Include="Settings Api.h" />
     <ClInclude Include="Settings Common Defines.h" />
     <ClInclude Include="tlb Display.h" />
