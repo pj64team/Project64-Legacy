@@ -24,9 +24,17 @@
  *
  */
 
+// Required for WIndows XP build profile
+#ifndef _WIN32_WINNT_WIN8
+#define _WIN32_WINNT_WIN8 0x0602
+#endif
+
 #include <windows.h>
 #include <windowsx.h>
+// VersionHelpers only exists in SDK 8.0 and newer!
+#if (_WIN32_WINNT >= _WIN32_WINNT_WIN8)
 #include <versionhelpers.h>
+#endif
 #include <commctrl.h>
 #include <stdio.h>
 #include "main.h"
@@ -124,11 +132,16 @@ void __cdecl Create_Memory_Window ( int Child ) {
 
 		// Create a default font that matches the system theme
 		NONCLIENTMETRICS metrics = { 0 };
+#if (_WIN32_WINNT >= _WIN32_WINNT_WIN8)
 		metrics.cbSize = sizeof(NONCLIENTMETRICS);
 		if (!IsWindowsVistaOrGreater()) {
 			// NOTE: This is for compatibility with Windows XP.
 			metrics.cbSize -= sizeof(metrics.iPaddedBorderWidth);
 		}
+#else
+		// NOTE: This is for compatibility with Windows XP.
+		metrics.cbSize -= sizeof(metrics.iPaddedBorderWidth);
+#endif
 		SystemParametersInfo(SPI_GETNONCLIENTMETRICS, sizeof(NONCLIENTMETRICS), &metrics, 0);
 		hDefaultFont = CreateFontIndirect(&metrics.lfMessageFont);
 
