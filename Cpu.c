@@ -209,6 +209,10 @@ void CloseCpu (void) {
 		}
 	} while (hCPU != NULL);
 
+#ifdef Log_x86Code
+	Stop_x86_Log();
+#endif
+
 	CPURunning = FALSE;
 	VirtualProtect(N64MEM,RdramSize,PAGE_READWRITE,&OldProtect);
 	VirtualProtect(N64MEM + 0x04000000,0x2000,PAGE_READWRITE,&OldProtect);

@@ -58,7 +58,17 @@ void Start_x86_Log (void) {
 	if (hCPULogFile) { Stop_x86_Log(); }
 	hCPULogFile = CreateFile(LogFileName,GENERIC_WRITE, FILE_SHARE_READ|FILE_SHARE_WRITE,NULL,
 		CREATE_ALWAYS,FILE_ATTRIBUTE_NORMAL | FILE_FLAG_SEQUENTIAL_SCAN, NULL);
-	SetFilePointer(hCPULogFile,0,NULL,FILE_BEGIN);
+	if (hCPULogFile == INVALID_HANDLE_VALUE) {
+		DWORD error_code = GetLastError();
+		TCHAR *error = NULL;
+		FormatMessage(
+			FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS,
+			NULL, error_code, 0, &error, 1, NULL
+		);
+		DisplayError("Unable to create CPUoutput.log file:\n%s", error);
+	} else {
+		SetFilePointer(hCPULogFile, 0, NULL, FILE_BEGIN);
+	}
 }
 
 void Stop_x86_Log (void) {
@@ -67,4 +77,4 @@ void Stop_x86_Log (void) {
 		hCPULogFile = NULL;
 	}
 }
-#endif 
+#endif
