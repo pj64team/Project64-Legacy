@@ -257,6 +257,11 @@ void FileStuff::RemoveSetting(char* id, char* setting) {
 	if (del_start != entry->data.end()) {
 		entry->data.erase(del_start, entry->data.end());
 	}
+
+	// Remove entry if it is empty
+	if (entry->data.empty()) {
+		RemoveEntry(id);
+	}
 }
 
 void FileStuff::RemoveEntry(char* id) {
