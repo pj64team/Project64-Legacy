@@ -481,7 +481,7 @@ BOOL CheatActive(char* Name) {
 /********************************************************************************************
   CheatCodeExProc
 
-  Purpose: Message handler for
+  Purpose: Message handler for ... who knows! Git blame me, I dare you! ROFL
   Parameters:
   Returns:
 

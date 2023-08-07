@@ -11,9 +11,6 @@
     <Filter Include="Source Files\General Source">
       <UniqueIdentifier>{b794c654-9162-402c-98d3-eaf1a7435642}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\Zlib Source">
-      <UniqueIdentifier>{500c7cae-17df-494b-9fa1-36a78c46255a}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source Files\Plugin Source">
       <UniqueIdentifier>{2ca13adb-0ac4-4e5f-98d2-bc5f5d51d6fb}</UniqueIdentifier>
     </Filter>
@@ -61,9 +58,6 @@
     <Filter Include="Source Files\CPU Source\Save Chips">
       <UniqueIdentifier>{578ac748-582b-44bf-90ed-775c3c974d74}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\General Source\Settings Api 2">
-      <UniqueIdentifier>{46a311cd-c148-4272-818a-86090b12be1b}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Header Files\General Header\Settings Api 2">
       <UniqueIdentifier>{f467e0bd-d869-492c-930a-09d9cbf98618}</UniqueIdentifier>
     </Filter>
@@ -72,6 +66,9 @@
     </Filter>
     <Filter Include="Header Files\cbor-lite Headers">
       <UniqueIdentifier>{c59b946f-43e7-4676-8b2b-840d70c41937}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Compression Source">
+      <UniqueIdentifier>{500c7cae-17df-494b-9fa1-36a78c46255a}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -210,80 +207,80 @@
     <ClCompile Include="CheatSearch_Input.c">
       <Filter>Source Files\General Source</Filter>
     </ClCompile>
-    <ClCompile Include="Settings Api.c">
-      <Filter>Source Files\General Source\Settings Api 2</Filter>
-    </ClCompile>
-    <ClCompile Include="FileHandler.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Compression\unzip.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Compression\zip.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Compression\ioapi.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Compression\crc32.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Compression\inflate.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Compression\zutil.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Compression\inftrees.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Compression\inffast.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Compression\deflate.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Compression\compress.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Compression\gzclose.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Compression\gzlib.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Compression\gzread.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Compression\gzwrite.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Compression\infback.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Compression\trees.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Compression\uncompr.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Compression\adler32.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="CheatSearch_Dev.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="CheatSearch_Search.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Cheats_Preprocessor.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="WatchPoints.cpp">
       <Filter>Source Files\Debugger Source</Filter>
     </ClCompile>
+    <ClCompile Include="Compression\adler32.c">
+      <Filter>Source Files\Compression Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Compression\compress.c">
+      <Filter>Source Files\Compression Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Compression\crc32.c">
+      <Filter>Source Files\Compression Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Compression\deflate.c">
+      <Filter>Source Files\Compression Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Compression\gzclose.c">
+      <Filter>Source Files\Compression Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Compression\gzlib.c">
+      <Filter>Source Files\Compression Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Compression\gzread.c">
+      <Filter>Source Files\Compression Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Compression\gzwrite.c">
+      <Filter>Source Files\Compression Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Compression\infback.c">
+      <Filter>Source Files\Compression Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Compression\inffast.c">
+      <Filter>Source Files\Compression Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Compression\inflate.c">
+      <Filter>Source Files\Compression Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Compression\inftrees.c">
+      <Filter>Source Files\Compression Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Compression\ioapi.c">
+      <Filter>Source Files\Compression Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Compression\uncompr.c">
+      <Filter>Source Files\Compression Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Compression\unzip.c">
+      <Filter>Source Files\Compression Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Compression\zip.c">
+      <Filter>Source Files\Compression Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Compression\zutil.c">
+      <Filter>Source Files\Compression Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Cheats_Preprocessor.c">
+      <Filter>Source Files\General Source</Filter>
+    </ClCompile>
+    <ClCompile Include="CheatSearch_Dev.c">
+      <Filter>Source Files\General Source</Filter>
+    </ClCompile>
+    <ClCompile Include="CheatSearch_Search.c">
+      <Filter>Source Files\General Source</Filter>
+    </ClCompile>
+    <ClCompile Include="FileHandler.cpp">
+      <Filter>Source Files\General Source</Filter>
+    </ClCompile>
     <ClCompile Include="Sessions.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\General Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Compression\trees.c">
+      <Filter>Source Files\Compression Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Settings Api.c">
+      <Filter>Source Files\General Source</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -539,9 +536,6 @@
     <None Include=".editorconfig" />
   </ItemGroup>
   <ItemGroup>
-    <Library Include="Compression\zlibstat.lib" />
-  </ItemGroup>
-  <ItemGroup>
     <Image Include="PJ64_2.bmp">
       <Filter>Resource Files</Filter>
     </Image>
@@ -551,5 +545,10 @@
   </ItemGroup>
   <ItemGroup>
     <Text Include="About.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Library Include="Compression\zlibstat.lib">
+      <Filter>Lib Files</Filter>
+    </Library>
   </ItemGroup>
 </Project>
