@@ -36,6 +36,59 @@ IDB_BITMAP3             BITMAP                  "PJ64_3.bmp"
 
 IDR_ABOUT_TXT           TEXT                    "About.txt"
 
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Dialog
+//
+
+IDD_MEM_BOOKMARK_EDIT DIALOGEX 0, 0, 239, 105
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Edit Bookmark"
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    DEFPUSHBUTTON   "OK",IDOK,127,84,50,14
+    PUSHBUTTON      "Cancel",IDCANCEL,182,84,50,14
+    EDITTEXT        IDC_NAME,61,7,171,12,ES_MULTILINE | ES_AUTOHSCROLL
+    EDITTEXT        IDC_START,62,23,170,12,ES_AUTOHSCROLL
+    EDITTEXT        IDC_END,62,39,170,12,ES_AUTOHSCROLL
+    CONTROL         "Virtual Address",IDC_BOOKMARK_VADDR,"Button",BS_AUTORADIOBUTTON,62,54,170,10
+    CONTROL         "Physical Address",IDC_BOOKMARK_PADDR,"Button",BS_AUTORADIOBUTTON,62,66,170,10
+    LTEXT           "Name:",IDC_STATIC,7,9,49,11,0,WS_EX_RIGHT
+    LTEXT           "Start Address:",IDC_STATIC,7,24,49,11,0,WS_EX_RIGHT
+    LTEXT           "End Address:",IDC_STATIC,7,40,49,11,0,WS_EX_RIGHT
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// DESIGNINFO
+//
+
+#ifdef APSTUDIO_INVOKED
+GUIDELINES DESIGNINFO
+BEGIN
+    IDD_MEM_BOOKMARK_EDIT, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 232
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 98
+    END
+END
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// AFX_DIALOG_LAYOUT
+//
+
+IDD_MEM_BOOKMARK_EDIT AFX_DIALOG_LAYOUT
+BEGIN
+    0
+END
+
 #endif    // English (United States) resources
 /////////////////////////////////////////////////////////////////////////////
 
@@ -746,6 +799,57 @@ END
 
 /////////////////////////////////////////////////////////////////////////////
 //
+// AFX_DIALOG_LAYOUT
+//
+
+IDD_Settings_Rom AFX_DIALOG_LAYOUT
+BEGIN
+    0
+END
+
+IDD_Settings_Options AFX_DIALOG_LAYOUT
+BEGIN
+    0
+END
+
+IDD_Cheats_CodeEx AFX_DIALOG_LAYOUT
+BEGIN
+    0
+END
+
+IDD_About AFX_DIALOG_LAYOUT
+BEGIN
+    0
+END
+
+MEMORY AFX_DIALOG_LAYOUT
+BEGIN
+    0
+END
+
+ROM_INFO_DIALOG AFX_DIALOG_LAYOUT
+BEGIN
+    0
+END
+
+IDD_Debugger_MemDump AFX_DIALOG_LAYOUT
+BEGIN
+    0
+END
+
+BLANK AFX_DIALOG_LAYOUT
+BEGIN
+    0
+END
+
+IDD_TLB AFX_DIALOG_LAYOUT
+BEGIN
+    0
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
 // Icon
 //
 
@@ -798,7 +902,7 @@ BEGIN
         MENUITEM "&Save\tF5",                   ID_CPU_SAVE, GRAYED
         MENUITEM "Save As...\tCtrl+S",          ID_CPU_SAVEAS, GRAYED
         MENUITEM "&Restore\tF7",                ID_CPU_RESTORE, GRAYED
-        MENUITEM "Restore From\tCtrl+L",             ID_CPU_LOAD, GRAYED
+        MENUITEM "Restore From\tCtrl+L",        ID_CPU_LOAD, GRAYED
         MENUITEM SEPARATOR
         POPUP "Current Save S&tate", GRAYED
         BEGIN
@@ -813,8 +917,6 @@ BEGIN
             MENUITEM "Slot 7\t7",                   ID_CURRENTSAVE_7
             MENUITEM "Slot 8\t8",                   ID_CURRENTSAVE_8
             MENUITEM "Slot 9\t9",                   ID_CURRENTSAVE_9
-            // Removed this as we now have 0 to 9 - Gent
-           // MENUITEM "Slot 10\t0",                  ID_CURRENTSAVE_0
         END
         MENUITEM SEPARATOR
         MENUITEM "Cheats...\tCtrl+C",           ID_OPTIONS_CHEATS, GRAYED
@@ -981,8 +1083,6 @@ BEGIN
     VK_F1,          ID_CPU_RESET,           VIRTKEY, NOINVERT
     VK_F7,          ID_CPU_RESTORE,         VIRTKEY, NOINVERT
     VK_F5,          ID_CPU_SAVE,            VIRTKEY, NOINVERT
-            // Removed this as we now have 0 to 9 - Gent
-  // "0",            ID_CURRENTSAVE_0,       VIRTKEY, NOINVERT
     "1",            ID_CURRENTSAVE_1,       VIRTKEY, NOINVERT
     "2",            ID_CURRENTSAVE_2,       VIRTKEY, NOINVERT
     "3",            ID_CURRENTSAVE_3,       VIRTKEY, NOINVERT
@@ -1000,57 +1100,6 @@ BEGIN
     VK_F3,          ID_SYSTEM_GENERATEBITMAP, VIRTKEY, NOINVERT
     VK_F9,          ID_SYSTEM_GSBUTTON,     VIRTKEY, NOINVERT
     VK_F4,          ID_SYSTEM_LIMITFPS,     VIRTKEY, NOINVERT
-END
-
-
-/////////////////////////////////////////////////////////////////////////////
-//
-// AFX_DIALOG_LAYOUT
-//
-
-IDD_Settings_Rom AFX_DIALOG_LAYOUT
-BEGIN
-    0
-END
-
-IDD_Settings_Options AFX_DIALOG_LAYOUT
-BEGIN
-    0
-END
-
-IDD_Cheats_CodeEx AFX_DIALOG_LAYOUT
-BEGIN
-    0
-END
-
-IDD_About AFX_DIALOG_LAYOUT
-BEGIN
-    0
-END
-
-MEMORY AFX_DIALOG_LAYOUT
-BEGIN
-    0
-END
-
-ROM_INFO_DIALOG AFX_DIALOG_LAYOUT
-BEGIN
-    0
-END
-
-IDD_Debugger_MemDump AFX_DIALOG_LAYOUT
-BEGIN
-    0
-END
-
-BLANK AFX_DIALOG_LAYOUT
-BEGIN
-    0
-END
-
-IDD_TLB AFX_DIALOG_LAYOUT
-BEGIN
-    0
 END
 
 #endif    // English (Australia) resources
