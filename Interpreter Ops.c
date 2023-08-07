@@ -939,6 +939,8 @@ void _fastcall r4300i_SPECIAL_DIVU (void) {
 		LO.DW = (long)(GPR[Opcode.BRANCH.rs].UW[0] / GPR[Opcode.BRANCH.rt].UW[0]);
 		HI.DW = (long)(GPR[Opcode.BRANCH.rs].UW[0] % GPR[Opcode.BRANCH.rt].UW[0]);
 	} else {
+		LO.DW = -1;
+		HI.DW = GPR[Opcode.BRANCH.rs].W[0];
 		if (ShowDebugMessages)
 			DisplayError("DIVU by 0 ???");
 	}
@@ -975,6 +977,13 @@ void _fastcall r4300i_SPECIAL_DDIV (void) {
 		LO.DW = GPR[Opcode.BRANCH.rs].DW / GPR[Opcode.BRANCH.rt].DW;
 		HI.DW = GPR[Opcode.BRANCH.rs].DW % GPR[Opcode.BRANCH.rt].DW;
 	} else {
+		if (GPR[Opcode.BRANCH.rs].DW < 0) {
+			LO.DW = 1;
+		}
+		else {
+			LO.DW = -1;
+		}
+		HI.DW = GPR[Opcode.BRANCH.rs].DW;
 		if (ShowDebugMessages)
 			DisplayError("DDIV by 0 ???");
 	}
@@ -985,6 +994,8 @@ void _fastcall r4300i_SPECIAL_DDIVU (void) {
 		LO.UDW = GPR[Opcode.BRANCH.rs].UDW / GPR[Opcode.BRANCH.rt].UDW;
 		HI.UDW = GPR[Opcode.BRANCH.rs].UDW % GPR[Opcode.BRANCH.rt].UDW;
 	} else {
+		LO.DW = -1;
+		HI.DW = GPR[Opcode.BRANCH.rs].DW;
 		if (ShowDebugMessages)
 			DisplayError("DDIVU by 0 ???");
 	}
