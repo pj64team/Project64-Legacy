@@ -64,12 +64,15 @@
     <Filter Include="Header Files\cbor-lite Headers">
       <UniqueIdentifier>{c59b946f-43e7-4676-8b2b-840d70c41937}</UniqueIdentifier>
     </Filter>
+<<<<<<< HEAD
     <Filter Include="Source Files\Compression Source">
       <UniqueIdentifier>{500c7cae-17df-494b-9fa1-36a78c46255a}</UniqueIdentifier>
     </Filter>
     <Filter Include="Header Files\Compression Headers">
       <UniqueIdentifier>{31849a03-28d6-477f-bb84-61ef4162340f}</UniqueIdentifier>
     </Filter>
+=======
+>>>>>>> 69b6ba4 (Memory editor (#24))
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="BreakPoints.c">
@@ -437,6 +440,7 @@
     <ClInclude Include="cbor-lite\codec-fp.h">
       <Filter>Header Files\cbor-lite Headers</Filter>
     </ClInclude>
+<<<<<<< HEAD
     <ClInclude Include="Cheats_Preprocessor.h">
       <Filter>Header Files\General Header</Filter>
     </ClInclude>
@@ -505,6 +509,13 @@
     </ClInclude>
     <ClInclude Include="xxhash64.h">
       <Filter>Header Files\General Header</Filter>
+=======
+    <ClInclude Include="SessionMemBookmarks.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Sessions.h">
+      <Filter>Header Files</Filter>
+>>>>>>> 69b6ba4 (Memory editor (#24))
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
