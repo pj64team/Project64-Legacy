@@ -215,6 +215,8 @@ void Cheats_Delete(CHEAT* cheat) {
 	}
 
 	// To do! Remove this hack once the file handler has been updated to do delayed/timed writes
+	// See "very hacky" comment in FileHandler.cpp:WriteHandler() for some context.
+	// I guess adding a Flush() function was just too much to ask?
 	Settings_Delete(CDB_NAME, Identifier, "Cheat9000");
 
 	// Remove the cheat from the APPS file
@@ -226,7 +228,7 @@ void Cheats_Delete(CHEAT* cheat) {
 	if (!tmp)
 		return;
 	snprintf(tmp, length, CHT_EXT_O, cheat->name);
-	Settings_Delete(APPS_NAME, Identifier, cheat->name);
+	Settings_Delete(APPS_NAME, Identifier, tmp);
 }
 
 
