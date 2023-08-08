@@ -1476,6 +1476,24 @@ int r4300i_LH_NonMemory ( DWORD PAddr, DWORD * Value, int SignExtend ) {
 		return TRUE;
 	}
 
+	if (PAddr >= 0x10000000 && PAddr < 0x1FC00000) {
+		if ((PAddr - 0x10000000) < RomFileSize) {
+			//DisplayError("LH: %X", PAddr);
+			if ((PAddr & 3) == 0) {
+				*Value = *(WORD*)&ROM[(PAddr - 0x10000000 + 6)]; // this is a bug happening on real hardware: read next aligned word
+			}
+			else {
+				*Value = *(WORD*)&ROM[PAddr - 0x10000000];
+			}
+			return TRUE;
+		}
+		else {
+			*Value = PAddr & 0xFFFF;
+			*Value = (*Value << 16) | *Value;
+			return FALSE;
+		}
+	}
+
 	switch (PAddr & 0xFFF00000) {
 	default:
 		* Value = 0;
@@ -1544,7 +1562,7 @@ int r4300i_LW_NonMemory ( DWORD PAddr, DWORD * Value ) {
 		}
 	}
 
-	if (PAddr >= 0x10000000 && PAddr < 0x16000000) {
+	if (PAddr >= 0x10000000 && PAddr < 0x1FC00000) {
 		if (WrittenToRom) { 
 			*Value = WroteToRom;
 			//LogMessage("%X: Read crap from Rom %X from %X",PROGRAM_COUNTER,*Value,PAddr);
