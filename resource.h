@@ -74,6 +74,7 @@
 #define IDC_ROM_HEADER                  1042
 #define IDC_UNKOWN                      1043
 #define IDC_RI_REG                      1044
+#define IDC_UNKOWN2                     1044
 #define IDC_SI_REG                      1045
 #define IDC_RDRAM                       1046
 #define IDC_SP_REG                      1047
@@ -270,6 +271,7 @@
 #define IDC_BOOKMARK_VADDR              1261
 #define IDC_BOOKMARK_PADDR              1262
 #define IDC_START                       1263
+#define IDC_ISVIEWER                    1264
 #define ID_FILE_OPEN_ROM                40001
 #define ID_FILE_ROM_INFO                40002
 #define ID_FILE_EXIT                    40005
@@ -302,8 +304,6 @@
 #define ID_CPU_SAVE                     40109
 #define ID_CPU_RESTORE                  40110
 #define ID_CURRENTSAVE_DEFAULT          40112
-// Removed this as we now have 0 to 9 - Gent
-//#define ID_CURRENTSAVE_0                40113
 #define ID_CURRENTSAVE_1                40114
 #define ID_CURRENTSAVE_2                40115
 #define ID_CURRENTSAVE_3                40116
@@ -351,9 +351,9 @@
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        185
+#define _APS_NEXT_RESOURCE_VALUE        186
 #define _APS_NEXT_COMMAND_VALUE         40175
-#define _APS_NEXT_CONTROL_VALUE         1264
+#define _APS_NEXT_CONTROL_VALUE         1265
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif
