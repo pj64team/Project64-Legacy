@@ -1428,7 +1428,8 @@ int r4300i_CPU_MemoryFilter( DWORD dwExptCode, LPEXCEPTION_POINTERS lpEP) {
 }
 
 int r4300i_LB_NonMemory ( DWORD PAddr, DWORD * Value, BOOL SignExtend ) {
-	if (PAddr >= 0x10000000 && PAddr < 0x13FF0000) {
+	if (PAddr >= 0x10000000 && PAddr < 0x13FF0000 ||
+		PAddr >= 0x14000000 && PAddr < 0X1FC00000) {
 		if (WrittenToRom) { return FALSE; }
 		if ((PAddr & 2) == 0) { PAddr = (PAddr + 4) ^ 2; }
 		if ((PAddr - 0x10000000) < RomFileSize) {
@@ -1484,7 +1485,8 @@ int r4300i_LH_NonMemory ( DWORD PAddr, DWORD * Value, int SignExtend ) {
 		return TRUE;
 	}
 
-	if (PAddr >= 0x10000000 && PAddr < 0x13FF0000) {
+	if (PAddr >= 0x10000000 && PAddr < 0x13FF0000 ||
+		PAddr >= 0x14000000 && PAddr < 0X1FC00000) {
 		if ((PAddr - 0x10000000) < RomFileSize) {
 			if ((PAddr & 3) == 0) {
 				*Value = *(WORD*)&ROM[(PAddr - 0x10000000 + 6)]; // this is a bug happening on real hardware: read next aligned word
@@ -1569,7 +1571,8 @@ int r4300i_LW_NonMemory ( DWORD PAddr, DWORD * Value ) {
 		}
 	}
 
-	if (PAddr >= 0x10000000 && PAddr < 0x13FF0000) {
+	if (PAddr >= 0x10000000 && PAddr < 0x13FF0000 ||
+		PAddr >= 0x14000000 && PAddr < 0X1FC00000) {
 		if (WrittenToRom) { 
 			*Value = WroteToRom;
 			//LogMessage("%X: Read crap from Rom %X from %X",PROGRAM_COUNTER,*Value,PAddr);
@@ -1802,7 +1805,6 @@ BOOL r4300i_LW_VAddr_NonCPU ( DWORD VAddr, DWORD * Value ) {
 }
 
 int r4300i_SB_NonMemory ( DWORD PAddr, BYTE Value ) {
-	LogMessage("Hello2:%X", PAddr);
 	switch (PAddr & 0xFFF00000) {
 	case 0x00000000:
 	case 0x00100000:
@@ -1928,7 +1930,8 @@ BOOL r4300i_SH_VAddr_NonCPU ( DWORD VAddr, WORD Value ) {
 }
 
 int r4300i_SW_NonMemory ( DWORD PAddr, DWORD Value ) {
-	if (PAddr >= 0x10000000 && PAddr < 0x13FF0000) {
+	if (PAddr >= 0x10000000 && PAddr < 0x13FF0000 ||
+		PAddr >= 0x14000000 && PAddr < 0X1FC00000) {
 		if (!WrittenToRom) {
 			WrittenToRom = TRUE;
 			WroteToRom = Value;
