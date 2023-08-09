@@ -41,6 +41,10 @@ BOOL WrittenToRom;
 DWORD WroteToRom;
 DWORD TempValue;
 
+BYTE ISViewerBuffer[0x200];
+BYTE ISViewerTempBuffer[0x1000+0x200+1];
+DWORD ISViewerTempBufferLength;
+
 int Allocate_ROM ( void ) {	
 #ifdef ROM_IN_MAPSPACE
 	if (ROM != NULL) { 	VirtualFree( ROM, 0x0F000000 , MEM_DECOMMIT); }
@@ -152,6 +156,10 @@ int Allocate_Memory ( void ) {
 //		DisplayError(GS(MSG_MEM_ALLOC_ERROR));
 //		return FALSE;
 //	}
+
+	memset(ISViewerBuffer, 0, sizeof(ISViewerBuffer));
+	memset(ISViewerTempBuffer, 0, sizeof(ISViewerTempBuffer));
+	ISViewerTempBufferLength = 0;
 
 	return TRUE;
 }
@@ -1794,6 +1802,7 @@ BOOL r4300i_LW_VAddr_NonCPU ( DWORD VAddr, DWORD * Value ) {
 }
 
 int r4300i_SB_NonMemory ( DWORD PAddr, BYTE Value ) {
+	LogMessage("Hello2:%X", PAddr);
 	switch (PAddr & 0xFFF00000) {
 	case 0x00000000:
 	case 0x00100000:
@@ -1825,6 +1834,11 @@ int r4300i_SB_NonMemory ( DWORD PAddr, BYTE Value ) {
 			N64_Blocks.NoOfRDRamBlocks[(PAddr & 0x00FFFFF0) >> 12] = 0;
 			memset(JumpTable+((PAddr & 0xFFFFF000) >> 2),0,0x1000);
 			*(DelaySlotTable + ((PAddr & 0xFFFFF000) >> 12)) = NULL;
+		}
+		break;
+	case 0x13F00000:
+		if (PAddr >= 0x13FF0020 && PAddr < 0x13FF0220) {
+			ISViewerBuffer[PAddr - 0x13FF0020] = Value;
 		}
 		break;
 	default:
@@ -2291,6 +2305,25 @@ int r4300i_SW_NonMemory ( DWORD PAddr, DWORD Value ) {
 		if (SaveUsing == Auto) { SaveUsing = FlashRam; }
 		if (SaveUsing != FlashRam) { return TRUE; }
 		WriteToFlashCommand(Value);
+		break;
+	case 0x13F00000:
+		if (PAddr == 0x13FF0014) {
+			if (Value < 0x221 && HaveDebugger && LogOptions.LogISViewer) {
+				for (DWORD i = 0; i < Value; ++i) {
+					ISViewerTempBuffer[ISViewerTempBufferLength++] = ISViewerBuffer[i];
+				}
+				if (ISViewerTempBuffer[ISViewerTempBufferLength - 1] == '\n' || ISViewerTempBufferLength > 0x1000) {
+					LogMessage("ISViewer:%s", ISViewerTempBuffer);
+					memset(ISViewerTempBuffer, 0, sizeof(ISViewerTempBuffer));
+					ISViewerTempBufferLength = 0;
+				}
+			}
+		} else if (PAddr >= 0x13FF0020 && PAddr < 0x13FF0220) {
+			ISViewerBuffer[PAddr - 0x13FF0020 + 0] = (Value >> 24) & 0XFF;
+			ISViewerBuffer[PAddr - 0x13FF0020 + 1] = (Value >> 16) & 0XFF;
+			ISViewerBuffer[PAddr - 0x13FF0020 + 2] = (Value >>  8) & 0XFF;
+			ISViewerBuffer[PAddr - 0x13FF0020 + 3] = (Value >>  0) & 0XFF;
+		}
 		break;
 	case 0x1FC00000:
 		if (PAddr < 0x1FC007C0) {
