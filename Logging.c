@@ -129,6 +129,7 @@ void LoadLogOptions (LOG_OPTIONS * LogOptions, BOOL AlwaysFill) {
 			LoadLogSetting(hKeyResults,"Log Cache Operations",&LogOptions->LogCache);
 			LoadLogSetting(hKeyResults,"Log Rom Header",&LogOptions->LogRomHeader);
 			LoadLogSetting(hKeyResults,"Log Unknown access",&LogOptions->LogUnknown);
+			LoadLogSetting(hKeyResults,"Log IS-Viewer",&LogOptions->LogISViewer);
 			return;
 		}
 	}
@@ -160,6 +161,7 @@ void LoadLogOptions (LOG_OPTIONS * LogOptions, BOOL AlwaysFill) {
 	LogOptions->LogTLB               = FALSE;
 	LogOptions->LogRomHeader         = FALSE;
 	LogOptions->LogUnknown           = FALSE;
+	LogOptions->LogISViewer          = FALSE;
 }
 
 void LoadLogSetting (HKEY hKey,char * String, BOOL * Value) {
@@ -185,6 +187,7 @@ LRESULT CALLBACK LogGeneralProc (HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lPa
 		if (TempOptions.LogTLB)        { CheckDlgButton(hDlg,IDC_TLB,BST_CHECKED); }
 		if (TempOptions.LogRomHeader)  { CheckDlgButton(hDlg,IDC_ROM_HEADER,BST_CHECKED); }
 		if (TempOptions.LogUnknown)    { CheckDlgButton(hDlg,IDC_UNKOWN,BST_CHECKED); }
+		if (TempOptions.LogISViewer)   { CheckDlgButton(hDlg,IDC_ISVIEWER,BST_CHECKED); }
 		break;
 	case WM_NOTIFY:
 		if (((NMHDR FAR *) lParam)->code != PSN_APPLY) { break; }
@@ -196,6 +199,7 @@ LRESULT CALLBACK LogGeneralProc (HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lPa
 		TempOptions.LogTLB        = IsDlgButtonChecked(hDlg,IDC_TLB) == BST_CHECKED?TRUE:FALSE;
 		TempOptions.LogRomHeader  = IsDlgButtonChecked(hDlg,IDC_ROM_HEADER) == BST_CHECKED?TRUE:FALSE;
 		TempOptions.LogUnknown    = IsDlgButtonChecked(hDlg,IDC_UNKOWN) == BST_CHECKED?TRUE:FALSE;
+		TempOptions.LogISViewer   = IsDlgButtonChecked(hDlg, IDC_ISVIEWER) == BST_CHECKED?TRUE:FALSE;
 		break;
 	default:
 		return FALSE;
@@ -699,6 +703,7 @@ void SaveLogOptions (LOG_OPTIONS* LogOptions) {
 	SaveLogSetting(hKeyResults,"Log Cache Operations", LogOptions->LogCache);
 	SaveLogSetting(hKeyResults,"Log Rom Header", LogOptions->LogRomHeader);
 	SaveLogSetting(hKeyResults,"Log Unknown access", LogOptions->LogUnknown);
+	SaveLogSetting(hKeyResults,"Log IS-Viewer", LogOptions->LogISViewer);
 	
 	RegCloseKey(hKeyResults);
 }

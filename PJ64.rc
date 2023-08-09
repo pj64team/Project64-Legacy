@@ -273,15 +273,16 @@ STYLE DS_SETFONT | DS_FIXEDSYS | DS_CONTROL | WS_CHILD
 EXSTYLE WS_EX_CONTROLPARENT
 FONT 8, "MS Shell Dlg", 0, 0, 0x1
 BEGIN
-    GROUPBOX        "",IDC_STATIC,5,6,188,141
-    CONTROL         "Include changes of CP0 registers",IDC_CP0_WRITE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,22,25,143,9
-    CONTROL         "Include Reading from CP0 registers",IDC_CP0_READ,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,22,39,143,9
-    CONTROL         "Include cache operations",IDC_CACHE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,22,53,143,9
-    CONTROL         "Include Exceptions",IDC_EXCEPTIONS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,22,67,143,9
-    CONTROL         "Do not log interrupts",IDC_INTERRUPTS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,32,80,116,9
-    CONTROL         "Include TLB modifications",IDC_TLB,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,22,95,143,9
-    CONTROL         "Include Read from Rom Header",IDC_ROM_HEADER,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,22,109,143,9
-    CONTROL         "Include unkown Memory accesses",IDC_UNKOWN,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,22,123,143,9
+    GROUPBOX        "",IDC_STATIC,7,7,188,141
+    CONTROL         "Include changes of CP0 registers",IDC_CP0_WRITE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,23,19,143,9
+    CONTROL         "Include Reading from CP0 registers",IDC_CP0_READ,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,23,33,143,9
+    CONTROL         "Include cache operations",IDC_CACHE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,23,47,143,9
+    CONTROL         "Include Exceptions",IDC_EXCEPTIONS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,23,61,143,9
+    CONTROL         "Do not log interrupts",IDC_INTERRUPTS,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,33,74,116,9
+    CONTROL         "Include TLB modifications",IDC_TLB,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,23,89,143,9
+    CONTROL         "Include Read from Rom Header",IDC_ROM_HEADER,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,23,103,143,9
+    CONTROL         "Include unkown Memory accesses",IDC_UNKOWN,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,23,117,143,9
+    CONTROL         "Include IS-Viewer logs",IDC_ISVIEWER,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,23,131,143,9
 END
 
 IDD_Settings_Directory DIALOGEX 0, 0, 231, 206
@@ -843,6 +844,11 @@ BEGIN
 END
 
 IDD_TLB AFX_DIALOG_LAYOUT
+BEGIN
+    0
+END
+
+IDD_Logging_General AFX_DIALOG_LAYOUT
 BEGIN
     0
 END

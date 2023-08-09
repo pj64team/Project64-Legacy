@@ -55,6 +55,7 @@ typedef struct {
 	BOOL	LogCache;
 	BOOL	LogRomHeader;
 	BOOL	LogUnknown;
+	BOOL    LogISViewer;
 } LOG_OPTIONS;
 
 extern LOG_OPTIONS LogOptions;
