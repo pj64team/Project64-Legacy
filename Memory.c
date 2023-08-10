@@ -1113,53 +1113,6 @@ BOOL Compile_SW_Register ( int x86Reg, DWORD Addr ) {
 	return TRUE;
 }
 
-int r4300i_Command_MemoryFilter( DWORD dwExptCode, LPEXCEPTION_POINTERS lpEP) {
-	DWORD MemAddress = (char *)lpEP->ExceptionRecord->ExceptionInformation[1] - (char *)N64MEM;
-    EXCEPTION_RECORD exRec;
-
-	if (dwExptCode != EXCEPTION_ACCESS_VIOLATION) {
-		return EXCEPTION_CONTINUE_SEARCH;
-	}
-	exRec = *lpEP->ExceptionRecord;
-
-    if ((int)((char *)lpEP->ExceptionRecord->ExceptionInformation[1] - N64MEM) < 0) {
-		return EXCEPTION_CONTINUE_SEARCH;
-	}
-    if ((int)((char *)lpEP->ExceptionRecord->ExceptionInformation[1] - N64MEM) > 0x1FFFFFFF) {
-		return EXCEPTION_CONTINUE_SEARCH;
-	}
-
-	switch(*(unsigned char *)lpEP->ContextRecord->Eip) {
-	case 0x8B:
-		switch(*(unsigned char *)(lpEP->ContextRecord->Eip + 1)) {
-		case 0x04:
-			lpEP->ContextRecord->Eip += 3;
-			r4300i_LW_NonMemory((char *)exRec.ExceptionInformation[1] - (char *)N64MEM,
-				&lpEP->ContextRecord->Eax);
-			return EXCEPTION_CONTINUE_EXECUTION;
-			break;
-		case 0x0C:
-			lpEP->ContextRecord->Eip += 3;
-			r4300i_LW_NonMemory((char *)exRec.ExceptionInformation[1] - (char *)N64MEM,
-				&lpEP->ContextRecord->Ecx);
-			return EXCEPTION_CONTINUE_EXECUTION;
-			break;
-		default:
-			DisplayError("Unknown x86 opcode %X\nlocation %X\nN64mem loc: %X", 
-				*(unsigned char *)lpEP->ContextRecord->Eip, lpEP->ContextRecord->Eip, (char *)N64MEM);
-			//return EXCEPTION_EXECUTE_HANDLER;
-			return EXCEPTION_CONTINUE_SEARCH;
-		}
-		break;
-	default:
-		DisplayError("Unknown x86 opcode %X\nlocation %X\nN64mem loc: %X\nAddress: %X\nr4300i: CPU Memory Filter", 
-			*(unsigned char *)lpEP->ContextRecord->Eip, lpEP->ContextRecord->Eip, (char *)N64MEM, 
-			(char *)exRec.ExceptionInformation[1] - (char *)N64MEM);
-		//return EXCEPTION_EXECUTE_HANDLER;
-		return EXCEPTION_CONTINUE_SEARCH;
-	}
-}
-
 int r4300i_CPU_MemoryFilter( DWORD dwExptCode, LPEXCEPTION_POINTERS lpEP) {
 	DWORD MemAddress = (char *)lpEP->ExceptionRecord->ExceptionInformation[1] - (char *)N64MEM;
     EXCEPTION_RECORD exRec;
@@ -1461,9 +1414,25 @@ BOOL r4300i_LB_VAddr ( DWORD VAddr, BYTE * Value ) {
 	return TRUE;
 }
 
-BOOL r4300i_LB_VAddr_NonCPU ( DWORD VAddr, BYTE * Value ) {
+BOOL r4300i_LB_VAddr_NonCPU(DWORD VAddr, BYTE *Value) {
 	if (TLB_ReadMap[VAddr >> 12] == 0) { return FALSE; }
-	*Value = *(BYTE *)(TLB_ReadMap[VAddr >> 12] + (VAddr ^ 3));
+
+	DWORD PAddr = (DWORD)TLB_ReadMap[VAddr >> 12] + VAddr - (DWORD)N64MEM;
+
+	// DRAM, DMEM, and IMEM can all be accessed directly through the host's virtual memory.
+	//
+	// ROM can also be accessed through virtual memory when ROM_IN_MAPSPACE is enabled.
+	// But using memory mapped files would be better. Which is a very different thing
+	// from allocating virtual memory and copying the ROM into it.
+	if (PAddr < RdramSize || (PAddr >= 0x04000000 && PAddr < 0x04002000)) {
+		*Value = *(BYTE *)(TLB_ReadMap[VAddr >> 12] + (VAddr ^ 3));
+	} else {
+		DWORD DValue = 0;
+		if (!r4300i_LB_NonMemory(PAddr, &DValue, FALSE)) {
+			return FALSE;
+		}
+		*Value = (BYTE)DValue;
+	}
 	return TRUE;
 }
 
@@ -1521,7 +1490,23 @@ BOOL r4300i_LH_VAddr ( DWORD VAddr, WORD * Value ) {
 
 BOOL r4300i_LH_VAddr_NonCPU ( DWORD VAddr, WORD * Value ) {
 	if (TLB_ReadMap[VAddr >> 12] == 0) { return FALSE; }
-	*Value = *(WORD *)(TLB_ReadMap[VAddr >> 12] + (VAddr ^ 2));
+
+	DWORD PAddr = (DWORD)TLB_ReadMap[VAddr >> 12] + VAddr - (DWORD)N64MEM;
+
+	// DRAM, DMEM, and IMEM can all be accessed directly through the host's virtual memory.
+	//
+	// ROM can also be accessed through virtual memory when ROM_IN_MAPSPACE is enabled.
+	// But using memory mapped files would be better. Which is a very different thing
+	// from allocating virtual memory and copying the ROM into it.
+	if (PAddr < RdramSize || (PAddr >= 0x04000000 && PAddr < 0x04002000)) {
+		*Value = *(WORD *)(TLB_ReadMap[VAddr >> 12] + (VAddr ^ 2));
+	} else {
+		DWORD DValue = 0;
+		if (!r4300i_LH_NonMemory(PAddr, &DValue, FALSE)) {
+			return FALSE;
+		}
+		*Value = (WORD)DValue;
+	}
 	return TRUE;
 }
 
@@ -1786,10 +1771,6 @@ int r4300i_LW_NonMemory ( DWORD PAddr, DWORD * Value ) {
 	return TRUE;
 }
 
-void r4300i_LW_PAddr ( DWORD PAddr, DWORD * Value ) {
-	*Value = *(DWORD *)(N64MEM+PAddr);
-}
-
 BOOL r4300i_LW_VAddr ( DWORD VAddr, DWORD * Value ) {
 	CheckForWatchPoint(VAddr, WP_READ, sizeof(DWORD));
 
@@ -1800,7 +1781,21 @@ BOOL r4300i_LW_VAddr ( DWORD VAddr, DWORD * Value ) {
 
 BOOL r4300i_LW_VAddr_NonCPU ( DWORD VAddr, DWORD * Value ) {
 	if (TLB_ReadMap[VAddr >> 12] == 0) { return FALSE; }
-	*Value = *(DWORD *)(TLB_ReadMap[VAddr >> 12] + VAddr);
+
+	DWORD PAddr = (DWORD)TLB_ReadMap[VAddr >> 12] + VAddr - (DWORD)N64MEM;
+
+	// DRAM, DMEM, and IMEM can all be accessed directly through the host's virtual memory.
+	//
+	// ROM can also be accessed through virtual memory when ROM_IN_MAPSPACE is enabled.
+	// But using memory mapped files would be better. Which is a very different thing
+	// from allocating virtual memory and copying the ROM into it.
+	if (PAddr < RdramSize || (PAddr >= 0x04000000 && PAddr < 0x04002000)) {
+		*Value = *(DWORD *)(TLB_ReadMap[VAddr >> 12] + VAddr);
+	} else if (!r4300i_LW_NonMemory(PAddr, Value)) {
+		// TODO: Returning false here is the right thing to do.
+		// But it changes the behavior of the memory editor when viewing MMIO registers.
+		//return FALSE;
+	}
 	return TRUE;
 }
 

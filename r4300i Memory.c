@@ -240,60 +240,55 @@ void Insert_MemoryLineDump (unsigned int location, int InsertPos, BOOL ShowDiff)
 	row->Location = location;
 	sprintf(row->LocationStr, "0x%08X", location);
 
-	__try {
-		if (SendMessage(hVAddr, BM_GETSTATE, 0, 0) & BST_CHECKED) {
-			for (int count = 0; count < 4; count++) {
-				if (r4300i_LW_VAddr_NonCPU(location, &word.UW)) {
-					for (int i = 0; i < 4; i++) {
-						Update_Data_Column_With_WatchPoint(row, location, word, count * 4 + i, i, ShowDiff);
-					}
-					sprintf(&row->AsciiStr[count * 4], "%c%c%c%c",
-						word.UB[3] < ' ' || word.UB[3] > '~' ? '.' : word.UB[3],
-						word.UB[2] < ' ' || word.UB[2] > '~' ? '.' : word.UB[2],
-						word.UB[1] < ' ' || word.UB[1] > '~' ? '.' : word.UB[1],
-						word.UB[0] < ' ' || word.UB[0] > '~' ? '.' : word.UB[0]);
-				} else {
-					for (int i = 0; i < 4; i++) {
-						int index = count * 4 + i;
-
-						strcpy(row->HexStr[index], "**");
-						row->OldData[index] = 0xff;
-						row->Fonts[index] = GetStockObject(ANSI_FIXED_FONT);
-						row->TextColors[index] = RGB(0, 0, 0);
-					}
-					strcpy(&row->AsciiStr[count * 4], "****");
+	if (SendMessage(hVAddr, BM_GETSTATE, 0, 0) & BST_CHECKED) {
+		for (int count = 0; count < 4; count++) {
+			if (r4300i_LW_VAddr_NonCPU(location, &word.UW)) {
+				for (int i = 0; i < 4; i++) {
+					Update_Data_Column_With_WatchPoint(row, location, word, count * 4 + i, i, ShowDiff);
 				}
-				location += 4;
-			}
-		} else {
-			for (int count = 0; count < 4; count++) {
-				if (location < 0x1FFFFFFC) {
-					r4300i_LW_PAddr(location, &word.UW);
-					for (int i = 0; i < 4; i++) {
-						Update_Data_Column(row, word, count * 4 + i, i, ShowDiff);
-					}
-					sprintf(&row->AsciiStr[count * 4], "%c%c%c%c",
-						word.UB[3] < ' ' || word.UB[3] > '~' ? '.' : word.UB[3],
-						word.UB[2] < ' ' || word.UB[2] > '~' ? '.' : word.UB[2],
-						word.UB[1] < ' ' || word.UB[1] > '~' ? '.' : word.UB[1],
-						word.UB[0] < ' ' || word.UB[0] > '~' ? '.' : word.UB[0]);
-				} else {
-					for (int i = 0; i < 4; i++) {
-						int index = count * 4 + i;
+				sprintf(&row->AsciiStr[count * 4], "%c%c%c%c",
+					word.UB[3] < ' ' || word.UB[3] > '~' ? '.' : word.UB[3],
+					word.UB[2] < ' ' || word.UB[2] > '~' ? '.' : word.UB[2],
+					word.UB[1] < ' ' || word.UB[1] > '~' ? '.' : word.UB[1],
+					word.UB[0] < ' ' || word.UB[0] > '~' ? '.' : word.UB[0]);
+			} else {
+				for (int i = 0; i < 4; i++) {
+					int index = count * 4 + i;
 
-						strcpy(row->HexStr[index], "**");
-						row->OldData[index] = 0xff;
-						row->Fonts[index] = GetStockObject(ANSI_FIXED_FONT);
-						row->TextColors[index] = RGB(0, 0, 0);
-					}
-					strcpy(&row->AsciiStr[count * 4], "****");
+					strcpy(row->HexStr[index], "**");
+					row->OldData[index] = 0xff;
+					row->Fonts[index] = GetStockObject(ANSI_FIXED_FONT);
+					row->TextColors[index] = RGB(0, 0, 0);
 				}
-				location += 4;
+				strcpy(&row->AsciiStr[count * 4], "****");
 			}
+			location += 4;
 		}
-	} __except( r4300i_Command_MemoryFilter( GetExceptionCode(), GetExceptionInformation()) ) {
-		DisplayError(GS(MSG_UNKNOWN_MEM_ACTION));
-		PostQuitMessage(0);
+	} else {
+		for (int count = 0; count < 4; count++) {
+			if (location <= 0x1FFFFFFC) {
+				r4300i_LW_NonMemory(location, &word.UW);
+				for (int i = 0; i < 4; i++) {
+					Update_Data_Column(row, word, count * 4 + i, i, ShowDiff);
+				}
+				sprintf(&row->AsciiStr[count * 4], "%c%c%c%c",
+					word.UB[3] < ' ' || word.UB[3] > '~' ? '.' : word.UB[3],
+					word.UB[2] < ' ' || word.UB[2] > '~' ? '.' : word.UB[2],
+					word.UB[1] < ' ' || word.UB[1] > '~' ? '.' : word.UB[1],
+					word.UB[0] < ' ' || word.UB[0] > '~' ? '.' : word.UB[0]);
+			} else {
+				for (int i = 0; i < 4; i++) {
+					int index = count * 4 + i;
+
+					strcpy(row->HexStr[index], "**");
+					row->OldData[index] = 0xff;
+					row->Fonts[index] = GetStockObject(ANSI_FIXED_FONT);
+					row->TextColors[index] = RGB(0, 0, 0);
+				}
+				strcpy(&row->AsciiStr[count * 4], "****");
+			}
+			location += 4;
+		}
 	}
 }
 
@@ -307,70 +302,65 @@ void Write_MemoryLineDump(char *output, unsigned int location) {
 	char ascii[17] = { 0 };
 	char *b = bytes;
 	char *a = ascii;
-	__try {
-		if (SendMessage(hVAddr, BM_GETSTATE, 0, 0) & BST_CHECKED) {
-			for (int count = 0; count < 4; count++) {
-				if (r4300i_LW_VAddr_NonCPU(location, &word.UW)) {
-					for (int i = 0; i < 4; i++) {
-						if (selection.enabled && (selection.range[0] > location + i || selection.range[1] < location + i)) {
-							strcpy(b, "   ");
-							strcpy(a, " ");
-						} else {
-							sprintf(b, "%02X ", word.UB[3 - i]);
-							sprintf(a, "%c", (word.UB[3 - i] < ' ' || word.UB[3 - i] > '~') ? '.' : word.UB[3 - i]);
-						}
-						b += 3;
-						a++;
+	if (SendMessage(hVAddr, BM_GETSTATE, 0, 0) & BST_CHECKED) {
+		for (int count = 0; count < 4; count++) {
+			if (r4300i_LW_VAddr_NonCPU(location, &word.UW)) {
+				for (int i = 0; i < 4; i++) {
+					if (selection.enabled && (selection.range[0] > location + i || selection.range[1] < location + i)) {
+						strcpy(b, "   ");
+						strcpy(a, " ");
+					} else {
+						sprintf(b, "%02X ", word.UB[3 - i]);
+						sprintf(a, "%c", (word.UB[3 - i] < ' ' || word.UB[3 - i] > '~') ? '.' : word.UB[3 - i]);
 					}
-				} else {
-					for (int i = 0; i < 4; i++) {
-						if (selection.enabled && (selection.range[0] > location + i || selection.range[1] < location + i)) {
-							strcpy(b, "   ");
-							strcpy(a, " ");
-						} else {
-							strcpy(b, "** ");
-							strcpy(a, "*");
-						}
-						b += 3;
-						a++;
-					}
+					b += 3;
+					a++;
 				}
-				location += 4;
-			}
-		} else {
-			for (int count = 0; count < 4; count++) {
-				if (location < 0x1FFFFFFC) {
-					r4300i_LW_PAddr(location, &word.UW);
-					for (int i = 0; i < 4; i++) {
-						if (selection.enabled && (selection.range[0] > location + i || selection.range[1] < location + i)) {
-							strcpy(b, "   ");
-							strcpy(a, " ");
-						} else {
-							sprintf(b, "%02X ", word.UB[3 - i]);
-							sprintf(a, "%c", (word.UB[3 - i] < ' ' || word.UB[3 - i] > '~') ? '.' : word.UB[3 - i]);
-						}
-						b += 3;
-						a++;
+			} else {
+				for (int i = 0; i < 4; i++) {
+					if (selection.enabled && (selection.range[0] > location + i || selection.range[1] < location + i)) {
+						strcpy(b, "   ");
+						strcpy(a, " ");
+					} else {
+						strcpy(b, "** ");
+						strcpy(a, "*");
 					}
-				} else {
-					for (int i = 0; i < 4; i++) {
-						if (selection.enabled && (selection.range[0] > location + i || selection.range[1] < location + i)) {
-							strcpy(b, "   ");
-							strcpy(a, " ");
-						} else {
-							strcpy(b, "** ");
-							strcpy(a, "*");
-						}
-						b += 3;
-						a++;
-					}
+					b += 3;
+					a++;
 				}
-				location += 4;
 			}
+			location += 4;
 		}
-	} __except( r4300i_Command_MemoryFilter( GetExceptionCode(), GetExceptionInformation()) ) {
-		DisplayError(GS(MSG_UNKNOWN_MEM_ACTION));
-		PostQuitMessage(0);
+	} else {
+		for (int count = 0; count < 4; count++) {
+			if (location <= 0x1FFFFFFC) {
+				r4300i_LW_NonMemory(location, &word.UW);
+				for (int i = 0; i < 4; i++) {
+					if (selection.enabled && (selection.range[0] > location + i || selection.range[1] < location + i)) {
+						strcpy(b, "   ");
+						strcpy(a, " ");
+					} else {
+						sprintf(b, "%02X ", word.UB[3 - i]);
+						sprintf(a, "%c", (word.UB[3 - i] < ' ' || word.UB[3 - i] > '~') ? '.' : word.UB[3 - i]);
+					}
+					b += 3;
+					a++;
+				}
+			} else {
+				for (int i = 0; i < 4; i++) {
+					if (selection.enabled && (selection.range[0] > location + i || selection.range[1] < location + i)) {
+						strcpy(b, "   ");
+						strcpy(a, " ");
+					} else {
+						strcpy(b, "** ");
+						strcpy(a, "*");
+					}
+					b += 3;
+					a++;
+				}
+			}
+			location += 4;
+		}
 	}
 
 	sprintf(output, "%s %s\r\n", bytes, ascii);

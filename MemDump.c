@@ -335,15 +335,10 @@ void DumpPCAndDisassembled (HWND hDlg, DWORD startAddress, DWORD endAddress) {
 		location = startAddress - startAddress % 4;
 		while (location < endAddress) {
 			validOpCode = TRUE;
-			__try {
-				if (!r4300i_LW_VAddr_NonCPU(location, &OpCode)) {
-					fprintf(pFile, " 0x%08X\tCould not resolve address\n", location);
-					validOpCode = FALSE;
-				}
-			} __except( r4300i_Command_MemoryFilter( GetExceptionCode(), GetExceptionInformation()) ) {
-				DisplayError(GS(MSG_UNKNOWN_MEM_ACTION));
-				ExitThread(0);
-			}	
+			if (!r4300i_LW_VAddr_NonCPU(location, &OpCode)) {
+				fprintf(pFile, " 0x%08X\tCould not resolve address\n", location);
+				validOpCode = FALSE;
+			}
 
 			if (validOpCode) {
 				if (CPU_Type == CPU_Recompiler && SelfModCheck == ModCode_ChangeMemory) {
