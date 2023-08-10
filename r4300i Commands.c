@@ -165,24 +165,19 @@ int DisplayR4300iCommand (DWORD location, int InsertPos) {
 	}
 
 	Redraw = FALSE;
-	__try {
-		if (!r4300i_LW_VAddr_NonCPU(location, &OpCode)) {
-			r4300iCommandLine[InsertPos].Location = location;
-			r4300iCommandLine[InsertPos].status = 0;
-			sprintf(r4300iCommandLine[InsertPos].String," 0x%08X\tCould not resolve address",location);
-			if ( SendMessage(hList,LB_GETCOUNT,0,0) <= InsertPos) {
-				SendMessage(hList,LB_INSERTSTRING,(WPARAM)InsertPos, (LPARAM)location); 
-			} else {
-				RECT ItemRC;
-				SendMessage(hList, LB_GETITEMRECT, (WPARAM)InsertPos, (LPARAM)&ItemRC);
-				RedrawWindow(hList, &ItemRC, NULL, RDW_INVALIDATE);
-			}
-			return LinesUsed;
+	if (!r4300i_LW_VAddr_NonCPU(location, &OpCode)) {
+		r4300iCommandLine[InsertPos].Location = location;
+		r4300iCommandLine[InsertPos].status = 0;
+		sprintf(r4300iCommandLine[InsertPos].String," 0x%08X\tCould not resolve address",location);
+		if ( SendMessage(hList,LB_GETCOUNT,0,0) <= InsertPos) {
+			SendMessage(hList,LB_INSERTSTRING,(WPARAM)InsertPos, (LPARAM)location); 
+		} else {
+			RECT ItemRC;
+			SendMessage(hList, LB_GETITEMRECT, (WPARAM)InsertPos, (LPARAM)&ItemRC);
+			RedrawWindow(hList, &ItemRC, NULL, RDW_INVALIDATE);
 		}
-	} __except( r4300i_Command_MemoryFilter( GetExceptionCode(), GetExceptionInformation()) ) {
-		DisplayError(GS(MSG_UNKNOWN_MEM_ACTION));
-		ExitThread(0);
-	}					
+		return LinesUsed;
+	}
 	if (SelfModCheck == ModCode_ChangeMemory) {
 		if ( (OpCode >> 16) == 0x7C7C) {
 			OpCode = OrigMem[(OpCode & 0xFFFF)].OriginalValue;
@@ -225,15 +220,9 @@ int WriteR4300iCommand(char *commands, DWORD location) {
 		}
 	}
 
-	__try {
-		if (!r4300i_LW_VAddr_NonCPU(location, &OpCode)) {
-			res += sprintf(commands, "0x%08X  Could not resolve address\r\n", location);
-			return res;
-		}
-	}
-	__except (r4300i_Command_MemoryFilter(GetExceptionCode(), GetExceptionInformation())) {
-		DisplayError(GS(MSG_UNKNOWN_MEM_ACTION));
-		ExitThread(0);
+	if (!r4300i_LW_VAddr_NonCPU(location, &OpCode)) {
+		res += sprintf(commands, "0x%08X  Could not resolve address\r\n", location);
+		return res;
 	}
 	if (SelfModCheck == ModCode_ChangeMemory) {
 		if ((OpCode >> 16) == 0x7C7C) {
