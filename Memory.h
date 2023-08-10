@@ -38,7 +38,6 @@ int  Allocate_Memory             ( void );
 void Release_Memory              ( void );
 
 /* CPU memory functions */
-int  r4300i_Command_MemoryFilter ( DWORD dwExptCode, LPEXCEPTION_POINTERS lpEP );
 int  r4300i_CPU_MemoryFilter     ( DWORD dwExptCode, LPEXCEPTION_POINTERS lpEP );
 int  r4300i_LB_NonMemory         ( DWORD PAddr, DWORD * Value, BOOL SignExtend );
 BOOL r4300i_LB_VAddr             ( DWORD VAddr, BYTE * Value );
