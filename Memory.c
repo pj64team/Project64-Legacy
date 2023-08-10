@@ -1398,7 +1398,11 @@ int r4300i_LB_NonMemory ( DWORD PAddr, DWORD * Value, BOOL SignExtend ) {
 	checkValueWrittenToRomDecay();
 	if (PAddr >= 0x10000000 && PAddr < 0x13FF0000 ||
 		PAddr >= 0x14000000 && PAddr < 0X1FC00000) {
-		if (WrittenToRom) { return FALSE; }
+		if (WrittenToRom) {
+			*Value = WroteToRom >> 24;
+			WrittenToRom = FALSE;
+			return TRUE;
+		}
 		if ((PAddr & 2) == 0) { PAddr = (PAddr + 4) ^ 2; }
 		if ((PAddr - 0x10000000) < RomFileSize) {
 			if (SignExtend) {
