@@ -38,6 +38,7 @@ void ** JumpTable, ** DelaySlotTable;
 BYTE *RecompCode, *RecompPos;
 
 BOOL WrittenToRom;
+DWORD WrittenToRomCount;
 DWORD WroteToRom;
 DWORD TempValue;
 
@@ -67,6 +68,7 @@ int Allocate_ROM ( void ) {
 	if (ROM != NULL) { 	VirtualFree( ROM, 0 , MEM_RELEASE); }
 	ROM = (BYTE *)VirtualAlloc(NULL,RomFileSize,MEM_RESERVE|MEM_COMMIT|MEM_TOP_DOWN,PAGE_READWRITE);
 	WrittenToRom = FALSE;
+	WrittenToRomCount = 0;
 	return ROM == NULL?FALSE:TRUE;
 #endif
 }
@@ -1380,7 +1382,20 @@ int r4300i_CPU_MemoryFilter( DWORD dwExptCode, LPEXCEPTION_POINTERS lpEP) {
 	}
 }
 
+static void checkValueWrittenToRomDecay() {
+	if (WrittenToRom) {
+		DWORD diff = COUNT_REGISTER - WrittenToRomCount;
+		if (COUNT_REGISTER < WrittenToRomCount) {
+			diff = COUNT_REGISTER + (0XFFFFFFFF - WrittenToRomCount) + 1;
+		}
+		if (diff > 3*70*CountPerOp) {
+			WrittenToRom = FALSE;
+		}
+	}
+}
+
 int r4300i_LB_NonMemory ( DWORD PAddr, DWORD * Value, BOOL SignExtend ) {
+	checkValueWrittenToRomDecay();
 	if (PAddr >= 0x10000000 && PAddr < 0x13FF0000 ||
 		PAddr >= 0x14000000 && PAddr < 0X1FC00000) {
 		if (WrittenToRom) { return FALSE; }
@@ -1446,7 +1461,8 @@ BOOL r4300i_LD_VAddr ( DWORD VAddr, unsigned _int64 * Value ) {
 }
 
 int r4300i_LH_NonMemory ( DWORD PAddr, DWORD * Value, int SignExtend ) {
-	
+	checkValueWrittenToRomDecay();
+
 	if (PAddr < 0x03F00000) {
 		if (PAddr < RdramSize)
 			*Value = *(WORD *)(RDRAM + PAddr);
@@ -1511,6 +1527,8 @@ BOOL r4300i_LH_VAddr_NonCPU ( DWORD VAddr, WORD * Value ) {
 }
 
 int r4300i_LW_NonMemory ( DWORD PAddr, DWORD * Value ) {
+	checkValueWrittenToRomDecay();
+
 #ifdef CFB_READ
 	if (PAddr >= CFBStart && PAddr < CFBEnd) {
 		DWORD OldProtect;
@@ -1800,6 +1818,22 @@ BOOL r4300i_LW_VAddr_NonCPU ( DWORD VAddr, DWORD * Value ) {
 }
 
 int r4300i_SB_NonMemory ( DWORD PAddr, BYTE Value ) {
+	if (PAddr >= 0x10000000 && PAddr < 0x13FF0000 ||
+		PAddr >= 0x14000000 && PAddr < 0X1FC00000) {
+		if (!WrittenToRom) {
+			WrittenToRom = TRUE;
+			WrittenToRomCount = COUNT_REGISTER;
+			WroteToRom = Value;
+#ifdef ROM_IN_MAPSPACE
+			{
+				DWORD OldProtect;
+				VirtualProtect(ROM, RomFileSize, PAGE_NOACCESS, &OldProtect);
+			}
+#endif
+			//LogMessage("%X: Wrote To Rom %X from %X",PROGRAM_COUNTER,Value,PAddr);
+		}
+		return TRUE;
+	}
 	switch (PAddr & 0xFFF00000) {
 	case 0x00000000:
 	case 0x00100000:
@@ -1860,6 +1894,22 @@ BOOL r4300i_SB_VAddr_NonCPU ( DWORD VAddr, BYTE Value ) {
 }
 
 int r4300i_SH_NonMemory ( DWORD PAddr, WORD Value ) {
+	if (PAddr >= 0x10000000 && PAddr < 0x13FF0000 ||
+		PAddr >= 0x14000000 && PAddr < 0X1FC00000) {
+		if (!WrittenToRom) {
+			WrittenToRom = TRUE;
+			WrittenToRomCount = COUNT_REGISTER;
+			WroteToRom = Value;
+#ifdef ROM_IN_MAPSPACE
+			{
+				DWORD OldProtect;
+				VirtualProtect(ROM, RomFileSize, PAGE_NOACCESS, &OldProtect);
+			}
+#endif
+			//LogMessage("%X: Wrote To Rom %X from %X",PROGRAM_COUNTER,Value,PAddr);
+		}
+		return TRUE;
+	}
 	switch (PAddr & 0xFFF00000) {
 	case 0x00000000:
 	case 0x00100000:
@@ -1929,6 +1979,7 @@ int r4300i_SW_NonMemory ( DWORD PAddr, DWORD Value ) {
 		PAddr >= 0x14000000 && PAddr < 0X1FC00000) {
 		if (!WrittenToRom) {
 			WrittenToRom = TRUE;
+			WrittenToRomCount = COUNT_REGISTER;
 			WroteToRom = Value;
 #ifdef ROM_IN_MAPSPACE
 			{
