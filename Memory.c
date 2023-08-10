@@ -1832,7 +1832,7 @@ int r4300i_SB_NonMemory ( DWORD PAddr, BYTE Value ) {
 		if (!WrittenToRom) {
 			WrittenToRom = TRUE;
 			WrittenToRomCount = COUNT_REGISTER;
-			WroteToRom = Value;
+			WroteToRom = Value << 24;
 #ifdef ROM_IN_MAPSPACE
 			{
 				DWORD OldProtect;
