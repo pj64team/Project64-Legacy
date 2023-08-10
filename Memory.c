@@ -1476,6 +1476,11 @@ int r4300i_LH_NonMemory ( DWORD PAddr, DWORD * Value, int SignExtend ) {
 
 	if (PAddr >= 0x10000000 && PAddr < 0x13FF0000 ||
 		PAddr >= 0x14000000 && PAddr < 0X1FC00000) {
+		if (WrittenToRom) {
+			*Value = WroteToRom >> 16;
+			WrittenToRom = FALSE;
+			return TRUE;
+		}
 		if ((PAddr - 0x10000000) < RomFileSize) {
 			if ((PAddr & 3) == 0) {
 				*Value = *(WORD*)&ROM[(PAddr - 0x10000000 + 6)]; // this is a bug happening on real hardware: read next aligned word
