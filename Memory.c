@@ -1392,6 +1392,7 @@ static void checkValueWrittenToRomDecay() {
 		}
 		if (diff > 3*70*CountPerOp) {
 			WrittenToRom = FALSE;
+			PI_STATUS_REG &= ~PI_STATUS_IO_BUSY;
 		}
 	}
 }
@@ -1403,6 +1404,7 @@ int r4300i_LB_NonMemory ( DWORD PAddr, DWORD * Value, BOOL SignExtend ) {
 		if (WrittenToRom) {
 			*Value = WroteToRom >> 24;
 			WrittenToRom = FALSE;
+			PI_STATUS_REG &= ~PI_STATUS_IO_BUSY;
 			return TRUE;
 		}
 		if ((PAddr & 2) == 0) { PAddr = (PAddr + 4) ^ 2; }
@@ -1481,6 +1483,7 @@ int r4300i_LH_NonMemory ( DWORD PAddr, DWORD * Value, int SignExtend ) {
 		if (WrittenToRom) {
 			*Value = WroteToRom >> 16;
 			WrittenToRom = FALSE;
+			PI_STATUS_REG &= ~PI_STATUS_IO_BUSY;
 			return TRUE;
 		}
 		if ((PAddr - 0x10000000) < RomFileSize) {
@@ -1591,6 +1594,7 @@ int r4300i_LW_NonMemory ( DWORD PAddr, DWORD * Value ) {
 			*Value = WroteToRom;
 			//LogMessage("%X: Read crap from Rom %X from %X",PROGRAM_COUNTER,*Value,PAddr);
 			WrittenToRom = FALSE;
+			PI_STATUS_REG &= ~PI_STATUS_IO_BUSY;
 #ifdef ROM_IN_MAPSPACE
 			{
 				DWORD OldProtect;
@@ -1835,6 +1839,7 @@ int r4300i_SB_NonMemory ( DWORD PAddr, BYTE Value ) {
 			WrittenToRom = TRUE;
 			WrittenToRomCount = COUNT_REGISTER;
 			WroteToRom = RegisterCurrentlyWritten->UW[0] << (8 * (PAddr & 3));
+			PI_STATUS_REG |= PI_STATUS_IO_BUSY;
 #ifdef ROM_IN_MAPSPACE
 			{
 				DWORD OldProtect;
@@ -1912,6 +1917,7 @@ int r4300i_SH_NonMemory ( DWORD PAddr, WORD Value ) {
 			WrittenToRom = TRUE;
 			WrittenToRomCount = COUNT_REGISTER;
 			WroteToRom = Value << 16;
+			PI_STATUS_REG |= PI_STATUS_IO_BUSY;
 #ifdef ROM_IN_MAPSPACE
 			{
 				DWORD OldProtect;
@@ -1993,6 +1999,7 @@ int r4300i_SW_NonMemory ( DWORD PAddr, DWORD Value ) {
 			WrittenToRom = TRUE;
 			WrittenToRomCount = COUNT_REGISTER;
 			WroteToRom = Value;
+			PI_STATUS_REG |= PI_STATUS_IO_BUSY;
 #ifdef ROM_IN_MAPSPACE
 			{
 				DWORD OldProtect;
