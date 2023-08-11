@@ -9,22 +9,25 @@
 
 void CountryCodeToString(char string[], BYTE Country, int length) {
 	switch (Country) {
-	case '7': strncpy(string, "Beta", length); break;
+	case '7': strncpy(string, "Prototype", length); break;
 	case 'A': strncpy(string, "NTSC", length); break;
 	case 'B': strncpy(string, "Brazil", length); break;
 	case 'C': strncpy(string, "China", length); break;
 	case 'D': strncpy(string, "Germany", length); break;
-	case 'E': strncpy(string, "USA", length); break;
+	case 'E': strncpy(string, "North America", length); break;
 	case 'F': strncpy(string, "France", length); break;
-	case 'G': strncpy(string, "Gateway (NTSC)", length); break;
+	case 'G': strncpy(string, "NTSC (Gateway 64)", length); break;
+	case 'H': strncpy(string, "Netherlands", length); break;
 	case 'I': strncpy(string, "Italy", length); break;
 	case 'J': strncpy(string, "Japan", length); break;
-	case 'L': strncpy(string, "Lodgenet (PAL)", length); break;
+	case 'K': strncpy(string, "South Korea", length); break;
+	case 'L': strncpy(string, "PAL (Gateway 64)", length); break;
 	case 'P': strncpy(string, "Europe", length); break;
 	case 'S': strncpy(string, "Spain", length); break;
 	case 'U': strncpy(string, "Australia", length); break;
 	case 'X': strncpy(string, "PAL", length); break;
 	case 'Y': strncpy(string, "PAL", length); break;
+	case 'Z': strncpy(string, "NTSC", length); break;
 	case ' ': strncpy(string, "None (PD by NAN)", length); break;
 	case 0: strncpy(string, "None (PD)", length); break;
 	default:
@@ -36,20 +39,25 @@ void CountryCodeToString(char string[], BYTE Country, int length) {
 
 void CountryCodeToShortString(char string[], BYTE Country, int length) {
 	switch (Country) {
-	case '7': strncpy(string, "(Beta)", length); break;
+	case '7': strncpy(string, "(Prototype)", length); break;
 	case 'A': strncpy(string, "(NTSC)", length); break;
 	case 'B': strncpy(string, "(B)", length); break;
 	case 'C': strncpy(string, "(C)", length); break;
 	case 'D': strncpy(string, "(G)", length); break;
 	case 'E': strncpy(string, "(U)", length); break;
 	case 'F': strncpy(string, "(F)", length); break;
+	case 'G': strncpy(string, "(NTSC)", length); break;
+	case 'H': strncpy(string, "(NL)", length); break;
 	case 'I': strncpy(string, "(I)", length); break;
 	case 'J': strncpy(string, "(J)", length); break;
+	case 'K': strncpy(string, "(K)", length); break;
+	case 'L': strncpy(string, "(PAL)", length); break;
 	case 'P': strncpy(string, "(E)", length); break;
 	case 'S': strncpy(string, "(S)", length); break;
 	case 'U': strncpy(string, "(A)", length); break;
 	case 'X': strncpy(string, "(PAL)", length); break;
 	case 'Y': strncpy(string, "(PAL)", length); break;
+	case 'Z': strncpy(string, "(NTSC)", length); break;
 	case ' ': strncpy(string, "(PD by NAN)", length); break;
 	case 0: strncpy(string, "(PD)", length); break;
 	default:
@@ -68,25 +76,28 @@ int GetRomRegion(BYTE* RomData) {
 int GetRomRegionByCode(BYTE CountryCode) {
 	switch (CountryCode) {
 	case 'D': // Germany
-	case 'F': // French
-	case 'I': // Italian
+	case 'F': // France
+	case 'H': // Netherlands
+	case 'I': // Italy
 	case 'P': // Europe
-	case 'L': // Lodgenet (PAL)
-	case 'S': // Spanish
+	case 'L': // Gateway 64 (PAL)
+	case 'S': // Spain
 	case 'U': // Australia
 	case 'X': // PAL
 	case 'Y': // PAL
 		return PAL_Region;
 
-	case '7':	// Beta
-	case 'A':	// NTSC (Only 1080 JU?)
-	case 'B':	// Brazil
-	case 'C':	// China
-	case 'E':	// USA
-	case 'G':       // Gateway (NTSC)
-	case 'J':	// Japan
-	case ' ':	// PD
-	case 0:		// PD
+	case '7': // Prototype
+	case 'A': // NTSC (Only 1080 JU?)
+	case 'B': // Brazil
+	case 'C': // China
+	case 'E': // North America
+	case 'G': // Gateway 64 (NTSC)
+	case 'J': // Japan
+	case 'K': // South Korea
+	case 'Z': // NTSC
+	case ' ': // PD
+	case 0:   // PD
 		return NTSC_Region;
 
 	default:
