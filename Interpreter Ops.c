@@ -468,7 +468,7 @@ void _fastcall r4300i_SB (void) {
 		ADDRESS_ERROR_EXCEPTION(Address.UDW,FALSE);
 		return;
 	}
-	if (!r4300i_SB_VAddr(Address.UW[0],GPR[Opcode.BRANCH.rt].UB[0])) {
+	if (!r4300i_SB_VAddr(Address.UW[0],&GPR[Opcode.BRANCH.rt])) {
 		if (ShowTLBMisses) {
 			DisplayError("SB TLB: %X", Address.UW[0]);
 		}

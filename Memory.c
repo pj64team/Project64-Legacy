@@ -36,8 +36,10 @@ DWORD *TLB_ReadMap, *TLB_WriteMap, RdramSize, SystemRdramSize;
 BYTE *N64MEM, *RDRAM, *DMEM, *IMEM, *ROM;
 void ** JumpTable, ** DelaySlotTable;
 BYTE *RecompCode, *RecompPos;
+MIPS_DWORD* RegisterCurrentlyWritten;
 
 BOOL WrittenToRom;
+DWORD WrittenToRomCount;
 DWORD WroteToRom;
 DWORD TempValue;
 
@@ -67,6 +69,7 @@ int Allocate_ROM ( void ) {
 	if (ROM != NULL) { 	VirtualFree( ROM, 0 , MEM_RELEASE); }
 	ROM = (BYTE *)VirtualAlloc(NULL,RomFileSize,MEM_RESERVE|MEM_COMMIT|MEM_TOP_DOWN,PAGE_READWRITE);
 	WrittenToRom = FALSE;
+	WrittenToRomCount = 0;
 	return ROM == NULL?FALSE:TRUE;
 #endif
 }
@@ -160,6 +163,7 @@ int Allocate_Memory ( void ) {
 	memset(ISViewerBuffer, 0, sizeof(ISViewerBuffer));
 	memset(ISViewerTempBuffer, 0, sizeof(ISViewerTempBuffer));
 	ISViewerTempBufferLength = 0;
+	RegisterCurrentlyWritten = NULL;
 
 	return TRUE;
 }
@@ -1380,10 +1384,29 @@ int r4300i_CPU_MemoryFilter( DWORD dwExptCode, LPEXCEPTION_POINTERS lpEP) {
 	}
 }
 
+static void checkValueWrittenToRomDecay() {
+	if (WrittenToRom) {
+		DWORD diff = COUNT_REGISTER - WrittenToRomCount;
+		if (COUNT_REGISTER < WrittenToRomCount) {
+			diff = COUNT_REGISTER + (0XFFFFFFFF - WrittenToRomCount) + 1;
+		}
+		if (diff > 3*70*CountPerOp) {
+			WrittenToRom = FALSE;
+			PI_STATUS_REG &= ~PI_STATUS_IO_BUSY;
+		}
+	}
+}
+
 int r4300i_LB_NonMemory ( DWORD PAddr, DWORD * Value, BOOL SignExtend ) {
+	checkValueWrittenToRomDecay();
 	if (PAddr >= 0x10000000 && PAddr < 0x13FF0000 ||
 		PAddr >= 0x14000000 && PAddr < 0X1FC00000) {
-		if (WrittenToRom) { return FALSE; }
+		if (WrittenToRom) {
+			*Value = WroteToRom >> 24;
+			WrittenToRom = FALSE;
+			PI_STATUS_REG &= ~PI_STATUS_IO_BUSY;
+			return TRUE;
+		}
 		if ((PAddr & 2) == 0) { PAddr = (PAddr + 4) ^ 2; }
 		if ((PAddr - 0x10000000) < RomFileSize) {
 			if (SignExtend) {
@@ -1446,7 +1469,8 @@ BOOL r4300i_LD_VAddr ( DWORD VAddr, unsigned _int64 * Value ) {
 }
 
 int r4300i_LH_NonMemory ( DWORD PAddr, DWORD * Value, int SignExtend ) {
-	
+	checkValueWrittenToRomDecay();
+
 	if (PAddr < 0x03F00000) {
 		if (PAddr < RdramSize)
 			*Value = *(WORD *)(RDRAM + PAddr);
@@ -1456,6 +1480,12 @@ int r4300i_LH_NonMemory ( DWORD PAddr, DWORD * Value, int SignExtend ) {
 
 	if (PAddr >= 0x10000000 && PAddr < 0x13FF0000 ||
 		PAddr >= 0x14000000 && PAddr < 0X1FC00000) {
+		if (WrittenToRom) {
+			*Value = WroteToRom >> 16;
+			WrittenToRom = FALSE;
+			PI_STATUS_REG &= ~PI_STATUS_IO_BUSY;
+			return TRUE;
+		}
 		if ((PAddr - 0x10000000) < RomFileSize) {
 			if ((PAddr & 3) == 0) {
 				*Value = *(WORD*)&ROM[(PAddr - 0x10000000 + 6)]; // this is a bug happening on real hardware: read next aligned word
@@ -1511,6 +1541,8 @@ BOOL r4300i_LH_VAddr_NonCPU ( DWORD VAddr, WORD * Value ) {
 }
 
 int r4300i_LW_NonMemory ( DWORD PAddr, DWORD * Value ) {
+	checkValueWrittenToRomDecay();
+
 #ifdef CFB_READ
 	if (PAddr >= CFBStart && PAddr < CFBEnd) {
 		DWORD OldProtect;
@@ -1562,6 +1594,7 @@ int r4300i_LW_NonMemory ( DWORD PAddr, DWORD * Value ) {
 			*Value = WroteToRom;
 			//LogMessage("%X: Read crap from Rom %X from %X",PROGRAM_COUNTER,*Value,PAddr);
 			WrittenToRom = FALSE;
+			PI_STATUS_REG &= ~PI_STATUS_IO_BUSY;
 #ifdef ROM_IN_MAPSPACE
 			{
 				DWORD OldProtect;
@@ -1800,6 +1833,23 @@ BOOL r4300i_LW_VAddr_NonCPU ( DWORD VAddr, DWORD * Value ) {
 }
 
 int r4300i_SB_NonMemory ( DWORD PAddr, BYTE Value ) {
+	if (PAddr >= 0x10000000 && PAddr < 0x13FF0000 ||
+		PAddr >= 0x14000000 && PAddr < 0X1FC00000) {
+		if (!WrittenToRom) {
+			WrittenToRom = TRUE;
+			WrittenToRomCount = COUNT_REGISTER;
+			WroteToRom = RegisterCurrentlyWritten->UW[0] << (8 * (PAddr & 3));
+			PI_STATUS_REG |= PI_STATUS_IO_BUSY;
+#ifdef ROM_IN_MAPSPACE
+			{
+				DWORD OldProtect;
+				VirtualProtect(ROM, RomFileSize, PAGE_NOACCESS, &OldProtect);
+			}
+#endif
+			//LogMessage("%X: Wrote To Rom %X from %X",PROGRAM_COUNTER,Value,PAddr);
+		}
+		return TRUE;
+	}
 	switch (PAddr & 0xFFF00000) {
 	case 0x00000000:
 	case 0x00100000:
@@ -1845,11 +1895,12 @@ int r4300i_SB_NonMemory ( DWORD PAddr, BYTE Value ) {
 	return TRUE;
 }
 
-BOOL r4300i_SB_VAddr ( DWORD VAddr, BYTE Value ) {
+BOOL r4300i_SB_VAddr ( DWORD VAddr, MIPS_DWORD* Value ) {
 	CheckForWatchPoint(VAddr, WP_WRITE, sizeof(BYTE));
 
 	if (TLB_WriteMap[VAddr >> 12] == 0) { return FALSE; }
-	*(BYTE *)(TLB_WriteMap[VAddr >> 12] + (VAddr ^ 3)) = Value;
+	RegisterCurrentlyWritten = Value;
+	*(BYTE *)(TLB_WriteMap[VAddr >> 12] + (VAddr ^ 3)) = Value->UB[0];
 	return TRUE;
 }
 
@@ -1860,6 +1911,23 @@ BOOL r4300i_SB_VAddr_NonCPU ( DWORD VAddr, BYTE Value ) {
 }
 
 int r4300i_SH_NonMemory ( DWORD PAddr, WORD Value ) {
+	if (PAddr >= 0x10000000 && PAddr < 0x13FF0000 ||
+		PAddr >= 0x14000000 && PAddr < 0X1FC00000) {
+		if (!WrittenToRom) {
+			WrittenToRom = TRUE;
+			WrittenToRomCount = COUNT_REGISTER;
+			WroteToRom = Value << 16;
+			PI_STATUS_REG |= PI_STATUS_IO_BUSY;
+#ifdef ROM_IN_MAPSPACE
+			{
+				DWORD OldProtect;
+				VirtualProtect(ROM, RomFileSize, PAGE_NOACCESS, &OldProtect);
+			}
+#endif
+			//LogMessage("%X: Wrote To Rom %X from %X",PROGRAM_COUNTER,Value,PAddr);
+		}
+		return TRUE;
+	}
 	switch (PAddr & 0xFFF00000) {
 	case 0x00000000:
 	case 0x00100000:
@@ -1929,7 +1997,9 @@ int r4300i_SW_NonMemory ( DWORD PAddr, DWORD Value ) {
 		PAddr >= 0x14000000 && PAddr < 0X1FC00000) {
 		if (!WrittenToRom) {
 			WrittenToRom = TRUE;
+			WrittenToRomCount = COUNT_REGISTER;
 			WroteToRom = Value;
+			PI_STATUS_REG |= PI_STATUS_IO_BUSY;
 #ifdef ROM_IN_MAPSPACE
 			{
 				DWORD OldProtect;
