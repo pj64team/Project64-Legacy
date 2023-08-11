@@ -1055,6 +1055,7 @@ void __cdecl UpdateCurrentR4300iRegisterPanel ( void ) {
 			for (count = 0; count < 32;count ++) {
 				GetWindowText(hCP0[count],OldWinText,60);
 				switch (count) {
+				case 4: //Context
 				case 8: //BadVAddr
 				case 20: //XContext
 					sprintf(RegisterValue, " 0x%08X - %08X", CP0[count].W[1], CP0[count].W[0]);

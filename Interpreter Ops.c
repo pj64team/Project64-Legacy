@@ -1250,6 +1250,7 @@ void _fastcall r4300i_COP0_MF (void) {
 void _fastcall r4300i_COP0_DMF(void) {
 	if (HaveDebugger && LogOptions.LogCP0reads) {
 		switch (Opcode.REG.rd) {
+		case 4: //Context
 		case 8: //BadVAddr
 		case 20: //XContext:
 			LogMessage("%08X: R4300i Read from %s (0x%016llX)", PROGRAM_COUNTER,
@@ -1261,6 +1262,7 @@ void _fastcall r4300i_COP0_DMF(void) {
 		}
 	}
 	switch (Opcode.REG.rd) {
+	case 4: //Context
 	case 8: //BadVAddr
 	case 20: //XContext
 		GPR[Opcode.BRANCH.rt].DW = CP0[Opcode.REG.rd].DW;
@@ -1296,7 +1298,8 @@ void _fastcall r4300i_COP0_MT (void) {
 		CP0[Opcode.REG.rd].UW[0] = GPR[Opcode.BRANCH.rt].UW[0];
 		break;
 	case 4: //Context
-		CP0[Opcode.REG.rd].UW[0] = GPR[Opcode.BRANCH.rt].UW[0] & 0xFF800000;
+		//CP0[Opcode.REG.rd].UW[0] = (CP0[Opcode.REG.rd].UW[0] & 0x7FFFFF) | (GPR[Opcode.BRANCH.rt].UW[0] & 0xFF800000);
+		CP0[Opcode.REG.rd].DW = (CP0[Opcode.REG.rd].W[0] & 0x7FFFFF) | (GPR[Opcode.BRANCH.rt].W[0] & 0xFF800000);
 		break;
 	case 9: //Count
 		CP0[Opcode.REG.rd].UW[0] = GPR[Opcode.BRANCH.rt].UW[0];
@@ -1364,7 +1367,7 @@ void _fastcall r4300i_COP0_DMT(void) {
 		CP0[Opcode.REG.rd].UW[0] = GPR[Opcode.BRANCH.rt].UW[0];
 		break;
 	case 4: //Context
-		CP0[Opcode.REG.rd].UW[0] = GPR[Opcode.BRANCH.rt].UW[0] & 0xFF800000;
+		CP0[Opcode.REG.rd].UDW = (CP0[Opcode.REG.rd].UDW & 0x7FFFFFLL) | (GPR[Opcode.BRANCH.rt].UDW & 0xFFFFFFFFFF800000LL);
 		break;
 	case 20: //XContext
 		CP0[Opcode.REG.rd].UDW = GPR[Opcode.BRANCH.rt].UDW;
