@@ -36,6 +36,7 @@ DWORD *TLB_ReadMap, *TLB_WriteMap, RdramSize, SystemRdramSize;
 BYTE *N64MEM, *RDRAM, *DMEM, *IMEM, *ROM;
 void ** JumpTable, ** DelaySlotTable;
 BYTE *RecompCode, *RecompPos;
+MIPS_DWORD* RegisterCurrentlyWritten;
 
 BOOL WrittenToRom;
 DWORD WrittenToRomCount;
@@ -162,6 +163,7 @@ int Allocate_Memory ( void ) {
 	memset(ISViewerBuffer, 0, sizeof(ISViewerBuffer));
 	memset(ISViewerTempBuffer, 0, sizeof(ISViewerTempBuffer));
 	ISViewerTempBufferLength = 0;
+	RegisterCurrentlyWritten = NULL;
 
 	return TRUE;
 }
@@ -1832,7 +1834,7 @@ int r4300i_SB_NonMemory ( DWORD PAddr, BYTE Value ) {
 		if (!WrittenToRom) {
 			WrittenToRom = TRUE;
 			WrittenToRomCount = COUNT_REGISTER;
-			WroteToRom = Value << 24;
+			WroteToRom = RegisterCurrentlyWritten->UW[0] << (8 * (PAddr & 3));
 #ifdef ROM_IN_MAPSPACE
 			{
 				DWORD OldProtect;
@@ -1888,11 +1890,12 @@ int r4300i_SB_NonMemory ( DWORD PAddr, BYTE Value ) {
 	return TRUE;
 }
 
-BOOL r4300i_SB_VAddr ( DWORD VAddr, BYTE Value ) {
+BOOL r4300i_SB_VAddr ( DWORD VAddr, MIPS_DWORD* Value ) {
 	CheckForWatchPoint(VAddr, WP_WRITE, sizeof(BYTE));
 
 	if (TLB_WriteMap[VAddr >> 12] == 0) { return FALSE; }
-	*(BYTE *)(TLB_WriteMap[VAddr >> 12] + (VAddr ^ 3)) = Value;
+	RegisterCurrentlyWritten = Value;
+	*(BYTE *)(TLB_WriteMap[VAddr >> 12] + (VAddr ^ 3)) = Value->UB[0];
 	return TRUE;
 }
 
