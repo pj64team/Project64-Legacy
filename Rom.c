@@ -108,7 +108,7 @@ BOOL CreateTempRomFile(void) {
 	char temp_path[_MAX_PATH + 1] = { 0 };
 	char temp_file[_MAX_PATH + 1] = { 0 };
 
-	if (GetTempPath2(_MAX_PATH, temp_path) == 0) {
+	if (GetTempPath(_MAX_PATH, temp_path) == 0) {
 		free(ROM);
 		ROM = NULL;
 		return FALSE;
