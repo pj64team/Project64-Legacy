@@ -1103,6 +1103,7 @@ LRESULT CALLBACK Main_Proc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
 					}
 
 					CloseCpu();
+					CloseTempRomFile();
 					hMenu = GetMenu(hMainWindow);
 					EnableMenuItem(hMenu, ID_FILE_STARTEMULATION, MFS_ENABLED | MF_BYCOMMAND);
 					if (DrawScreen != NULL) 

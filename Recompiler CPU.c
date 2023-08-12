@@ -174,11 +174,9 @@ BYTE * Compiler4300iBlock(void) {
 	} else if (StartAddress >= 0x1FC00000 && StartAddress <= 0x1FC00800) {
 		CPU_Message("====== PIF ROM: block ======");
 	} else {
-#ifndef ROM_IN_MAPSPACE
 		if (ShowDebugMessages)
 			DisplayError("Ummm... Where does this block go");
 		ExitThread(0);			
-#endif
 	}
 	CPU_Message("x86 code at: %X",BlockInfo.CompiledLocation);
 	CPU_Message("Start of Block: %X",BlockInfo.StartVAddr );
@@ -262,11 +260,9 @@ BYTE * CompileDelaySlot(void) {
 	} else if (StartAddress >= 0x1FC00000 && StartAddress <= 0x1FC00800) {
 		CPU_Message("====== PIF ROM: Delay Slot ======");
 	} else {
-#ifndef ROM_IN_MAPSPACE
 		if (ShowDebugMessages)
 			DisplayError("Ummm... Where does this block go");
 		ExitThread(0);
-#endif
 	}
 	MarkCodeBlock(StartAddress);
 	CPU_Message("x86 code at: %X",Block);
@@ -2943,12 +2939,10 @@ void MarkCodeBlock (DWORD PAddr) {
 	} else if (PAddr >= 0x1FC00000 && PAddr <= 0x1FC00800) {
 		N64_Blocks.NoOfPifRomBlocks += 1;
 	} else {
-#ifndef ROM_IN_MAPSPACE
 		if (ShowDebugMessages)
 			DisplayError("Ummm... Which code block should be marked on\nPC = 0x%08X\nRdramSize: %X",PAddr,RdramSize);
 
 		ExitThread(0);
-#endif
 	}
 }
 
