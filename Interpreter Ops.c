@@ -1297,7 +1297,8 @@ void _fastcall r4300i_COP0_MT (void) {
 		CP0[Opcode.REG.rd].UW[0] = GPR[Opcode.BRANCH.rt].UW[0];
 		break;
 	case 4: //Context
-		CP0[Opcode.REG.rd].DW = (CP0[Opcode.REG.rd].W[0] & 0x7FFFFF) | (GPR[Opcode.BRANCH.rt].W[0] & 0xFF800000);
+		CP0[Opcode.REG.rd].DW = (long)((CP0[Opcode.REG.rd].W[0] & 0x7FFFFF) | (GPR[Opcode.BRANCH.rt].W[0] & 0xFF800000));
+		LogMessage("After writing context: %llX", CP0[Opcode.REG.rd].DW);
 		break;
 	case 6: //Wired
 		CP0[Opcode.REG.rd].UW[0] = GPR[Opcode.BRANCH.rt].UW[0] & 0x3F;
