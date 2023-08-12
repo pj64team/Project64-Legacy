@@ -179,12 +179,6 @@ void PI_DMA_WRITE (void) {
 	}
 	
 	if ( PI_CART_ADDR_REG >= 0x06000000 && PI_CART_ADDR_REG < 0x08000000) {
-#ifdef ROM_IN_MAPSPACE
-		if (WrittenToRom) { 
-			DWORD OldProtect;
-			VirtualProtect(ROM,RomFileSize,PAGE_READONLY, &OldProtect);
-		}
-#endif
 		PI_CART_ADDR_REG -= 0x06000000;
 		if (PI_CART_ADDR_REG + PI_WR_LEN_REG + 1 < RomFileSize) {
 			for (i = 0; i < PI_WR_LEN_REG + 1; i ++) {
@@ -221,12 +215,6 @@ void PI_DMA_WRITE (void) {
 	}
 
 	if ( PI_CART_ADDR_REG >= 0x10000000 && PI_CART_ADDR_REG <= 0x1FBFFFFF) {
-#ifdef ROM_IN_MAPSPACE
-		if (WrittenToRom) { 
-			DWORD OldProtect;
-			VirtualProtect(ROM,RomFileSize,PAGE_READONLY, &OldProtect);
-		}
-#endif
 		PI_CART_ADDR_REG -= 0x10000000;
 		if (PI_CART_ADDR_REG + PI_WR_LEN_REG + 1 < RomFileSize) {
 			for (i = 0; i < PI_WR_LEN_REG + 1; i ++) {

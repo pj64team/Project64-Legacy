@@ -49,6 +49,8 @@ char CurrentFileName[MAX_PATH + 1] = { "" }, RomName[MAX_PATH + 1] = { "" }, Rom
 char LastRoms[10][MAX_PATH + 1], LastDirs[10][MAX_PATH + 1];
 BYTE RomHeader[0x1000];
 DWORD PrevCRC1, PrevCRC2;
+HANDLE hRomFile = NULL;
+HANDLE hRomMapping = NULL;
 
 BOOL IsValidRomImage(BYTE Test[4]);
 
@@ -98,6 +100,90 @@ void AddRecentFile(HWND hWnd, char* addition) {
 		SaveRecentFiles();
 	}
 	SetupMenu(hMainWindow);
+}
+
+// Create a temporary file for the unzipped/byte-swapped/patched ROM. Takes ownership of the `ROM` global.
+// The temporary file can be closed and deleted with `CloseTempRomFile()`
+BOOL CreateTempRomFile(void) {
+	char temp_path[_MAX_PATH + 1] = { 0 };
+	char temp_file[_MAX_PATH + 1] = { 0 };
+
+	if (GetTempPath2(_MAX_PATH, temp_path) == 0) {
+		free(ROM);
+		ROM = NULL;
+		return FALSE;
+	}
+
+	if (GetTempFileName(temp_path, "PJ64", 1, temp_file) == 0) {
+		free(ROM);
+		ROM = NULL;
+		return FALSE;
+	}
+
+	// Create the file and write ROM to it
+	hRomFile = CreateFile(temp_file, GENERIC_WRITE, 0, NULL, CREATE_ALWAYS,
+		FILE_ATTRIBUTE_NORMAL | FILE_ATTRIBUTE_TEMPORARY, NULL);
+	if (hRomFile == INVALID_HANDLE_VALUE) {
+		free(ROM);
+		ROM = NULL;
+		return FALSE;
+	}
+
+	DWORD bytes_written = 0;
+	if (WriteFile(hRomFile, ROM, RomFileSize, &bytes_written, NULL) == FALSE) {
+		free(ROM);
+		ROM = NULL;
+		CloseHandle(hRomFile);
+		DeleteFile(temp_file);
+		return FALSE;
+	}
+	free(ROM);
+	ROM = NULL;
+	if (bytes_written != RomFileSize) {
+		CloseHandle(hRomFile);
+		DeleteFile(temp_file);
+		return FALSE;
+	}
+
+	// Reopen the file read-only
+	CloseHandle(hRomFile);
+	hRomFile = CreateFile(temp_file, GENERIC_READ, 0, NULL, OPEN_EXISTING,
+		FILE_ATTRIBUTE_NORMAL | FILE_ATTRIBUTE_TEMPORARY | FILE_FLAG_DELETE_ON_CLOSE | FILE_FLAG_RANDOM_ACCESS, NULL);
+	if (hRomFile == INVALID_HANDLE_VALUE) {
+		CloseHandle(hRomFile);
+		DeleteFile(temp_file);
+		return FALSE;
+	}
+
+	// Map the file into memory
+	hRomMapping = CreateFileMapping(hRomFile, NULL, PAGE_READONLY, 0, 0, NULL);
+	if (hRomMapping == NULL) {
+		CloseHandle(hRomFile);
+		return FALSE;
+	}
+
+	ROM = MapViewOfFile(hRomMapping, FILE_MAP_READ, 0, 0, 0);
+	if (ROM == NULL) {
+		CloseHandle(hRomMapping);
+		CloseHandle(hRomFile);
+		return FALSE;
+	}
+
+	return TRUE;
+}
+
+// Close the temporary ROM file.
+// The file will be deleted automatically by the system when closed.
+void CloseTempRomFile(void) {
+	if (ROM != NULL && hRomFile != NULL && hRomMapping != NULL) {
+		UnmapViewOfFile(ROM);
+		CloseHandle(hRomMapping);
+		CloseHandle(hRomFile);
+
+		ROM = NULL;
+		hRomMapping = NULL;
+		hRomFile = NULL;
+	}
 }
 
 void ByteSwapRom(BYTE* Rom, DWORD RomLen) {
@@ -828,6 +914,7 @@ DWORD WINAPI OpenChosenFile(LPVOID lpArgs) {
 					Sleep(10); // Adjusted down to 10ms from 100ms
 				}
 				if ((int)RomFileSize != len) {
+					free(ROM);
 					unzCloseCurrentFile(file);
 					unzClose(file);
 					switch (len) {
@@ -845,6 +932,7 @@ DWORD WINAPI OpenChosenFile(LPVOID lpArgs) {
 					return 0;
 				}
 				if (unzCloseCurrentFile(file) == UNZ_CRCERROR) {
+					free(ROM);
 					unzClose(file);
 					DisplayError(GS(MSG_FAIL_OPEN_ZIP));
 					EnableOpenMenuItems();
@@ -861,6 +949,7 @@ DWORD WINAPI OpenChosenFile(LPVOID lpArgs) {
 			}
 		}
 		if (FoundRom == FALSE) {
+			free(ROM);
 			DisplayError(GS(MSG_FAIL_OPEN_ZIP));
 			unzClose(file);
 			EnableOpenMenuItems();
@@ -876,7 +965,7 @@ DWORD WINAPI OpenChosenFile(LPVOID lpArgs) {
 		HANDLE hFile;
 
 		hFile = CreateFile(CurrentFileName, GENERIC_READ, FILE_SHARE_READ, NULL,
-			OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL | FILE_FLAG_RANDOM_ACCESS,
+			OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL,
 			NULL);
 
 		if (hFile == INVALID_HANDLE_VALUE) {
@@ -917,6 +1006,7 @@ DWORD WINAPI OpenChosenFile(LPVOID lpArgs) {
 			if (dwToRead > ReadFromRomSection) { dwToRead = ReadFromRomSection; }
 
 			if (!ReadFile(hFile, &ROM[count], dwToRead, &dwRead, NULL)) {
+				free(ROM);
 				CloseHandle(hFile);
 				SendMessage(hStatusWnd, SB_SETTEXT, 0, (LPARAM)"");
 				DisplayError(GS(MSG_FAIL_OPEN_IMAGE));
@@ -932,6 +1022,7 @@ DWORD WINAPI OpenChosenFile(LPVOID lpArgs) {
 		dwRead = TotalRead;
 
 		if (RomFileSize != dwRead) {
+			free(ROM);
 			CloseHandle(hFile);
 			SendMessage(hStatusWnd, SB_SETTEXT, 0, (LPARAM)"");
 			DisplayError(GS(MSG_FAIL_OPEN_IMAGE));
@@ -959,12 +1050,14 @@ DWORD WINAPI OpenChosenFile(LPVOID lpArgs) {
 		ROM[0x67f] = 0;
 	}
 
-#ifdef ROM_IN_MAPSPACE
-	{
-		DWORD OldProtect;
-		VirtualProtect(ROM, RomFileSize, PAGE_READONLY, &OldProtect);
+	// Write unzipped/byte-swapped/patched ROM to a temporary file
+	if (CreateTempRomFile() == FALSE) {
+		SendMessage(hStatusWnd, SB_SETTEXT, 0, (LPARAM)"");
+		DisplayError(GS(MSG_FAIL_CREATE_TEMP));
+		EnableOpenMenuItems();
+		ShowRomList(hMainWindow);
 	}
-#endif
+
 	SendMessage(hStatusWnd, SB_SETTEXT, 0, (LPARAM)"");
 	if (HaveDebugger && AutoLoadMapFile) {
 		char* p;

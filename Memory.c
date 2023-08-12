@@ -48,30 +48,10 @@ BYTE ISViewerTempBuffer[0x1000+0x200+1];
 DWORD ISViewerTempBufferLength;
 
 int Allocate_ROM ( void ) {	
-#ifdef ROM_IN_MAPSPACE
-	if (ROM != NULL) { 	VirtualFree( ROM, 0x0F000000 , MEM_DECOMMIT); }
-	if(VirtualAlloc(N64MEM + 0x10000000, RomFileSize, MEM_COMMIT, PAGE_READWRITE)==NULL) {
-		ROM = NULL;
-		DisplayError(GS(MSG_MEM_ALLOC_ERROR));
-		return FALSE;
-	}
-//	if(VirtualAlloc((BYTE *)JumpTable + 0x10000000, RomFileSize, MEM_COMMIT, PAGE_READWRITE)==NULL) {
-//		DisplayError(GS(MSG_MEM_ALLOC_ERROR));
-//		return FALSE;
-//	}
-	if (VirtualAlloc((BYTE *)DelaySlotTable + (0x10000000 >> 0xA), (RomFileSize >> 0xA), MEM_COMMIT, PAGE_READWRITE)==NULL) {
-		DisplayError(GS(MSG_MEM_ALLOC_ERROR));
-		return FALSE;
-	}
-	ROM  = (unsigned char *)(N64MEM+0x10000000);
-	return TRUE;
-#else
-	if (ROM != NULL) { 	VirtualFree( ROM, 0 , MEM_RELEASE); }
-	ROM = (BYTE *)VirtualAlloc(NULL,RomFileSize,MEM_RESERVE|MEM_COMMIT|MEM_TOP_DOWN,PAGE_READWRITE);
+	ROM = (BYTE *)malloc(RomFileSize);
 	WrittenToRom = FALSE;
 	WrittenToRomCount = 0;
-	return ROM == NULL?FALSE:TRUE;
-#endif
+	return ROM == NULL ? FALSE : TRUE;
 }
 
 int Allocate_Memory ( void ) {	
@@ -1443,10 +1423,6 @@ BOOL r4300i_LB_VAddr_NonCPU(DWORD VAddr, BYTE *Value) {
 	DWORD PAddr = (DWORD)TLB_ReadMap[VAddr >> 12] + VAddr - (DWORD)N64MEM;
 
 	// DRAM, DMEM, and IMEM can all be accessed directly through the host's virtual memory.
-	//
-	// ROM can also be accessed through virtual memory when ROM_IN_MAPSPACE is enabled.
-	// But using memory mapped files would be better. Which is a very different thing
-	// from allocating virtual memory and copying the ROM into it.
 	if (PAddr < RdramSize || (PAddr >= 0x04000000 && PAddr < 0x04002000)) {
 		*Value = *(BYTE *)(TLB_ReadMap[VAddr >> 12] + (VAddr ^ 3));
 	} else {
@@ -1524,10 +1500,6 @@ BOOL r4300i_LH_VAddr_NonCPU ( DWORD VAddr, WORD * Value ) {
 	DWORD PAddr = (DWORD)TLB_ReadMap[VAddr >> 12] + VAddr - (DWORD)N64MEM;
 
 	// DRAM, DMEM, and IMEM can all be accessed directly through the host's virtual memory.
-	//
-	// ROM can also be accessed through virtual memory when ROM_IN_MAPSPACE is enabled.
-	// But using memory mapped files would be better. Which is a very different thing
-	// from allocating virtual memory and copying the ROM into it.
 	if (PAddr < RdramSize || (PAddr >= 0x04000000 && PAddr < 0x04002000)) {
 		*Value = *(WORD *)(TLB_ReadMap[VAddr >> 12] + (VAddr ^ 2));
 	} else {
@@ -1570,12 +1542,6 @@ int r4300i_LW_NonMemory ( DWORD PAddr, DWORD * Value ) {
 		if (WrittenToRom) { 
 			*Value = WroteToRom;
 			WrittenToRom = FALSE;
-#ifdef ROM_IN_MAPSPACE
-			{
-				DWORD OldProtect;
-				VirtualProtect(ROM, RomFileSize, PAGE_READONLY, &OldProtect);
-			}
-#endif
 			return TRUE;
 		}
 		if ((PAddr - 0x06000000) < RomFileSize) {
@@ -1595,12 +1561,6 @@ int r4300i_LW_NonMemory ( DWORD PAddr, DWORD * Value ) {
 			//LogMessage("%X: Read crap from Rom %X from %X",PROGRAM_COUNTER,*Value,PAddr);
 			WrittenToRom = FALSE;
 			PI_STATUS_REG &= ~PI_STATUS_IO_BUSY;
-#ifdef ROM_IN_MAPSPACE
-			{
-				DWORD OldProtect;
-				VirtualProtect(ROM,RomFileSize,PAGE_READONLY, &OldProtect);
-			}
-#endif
 			return TRUE;
 		}
 		if ((PAddr - 0x10000000) < RomFileSize) {
@@ -1818,10 +1778,6 @@ BOOL r4300i_LW_VAddr_NonCPU ( DWORD VAddr, DWORD * Value ) {
 	DWORD PAddr = (DWORD)TLB_ReadMap[VAddr >> 12] + VAddr - (DWORD)N64MEM;
 
 	// DRAM, DMEM, and IMEM can all be accessed directly through the host's virtual memory.
-	//
-	// ROM can also be accessed through virtual memory when ROM_IN_MAPSPACE is enabled.
-	// But using memory mapped files would be better. Which is a very different thing
-	// from allocating virtual memory and copying the ROM into it.
 	if (PAddr < RdramSize || (PAddr >= 0x04000000 && PAddr < 0x04002000)) {
 		*Value = *(DWORD *)(TLB_ReadMap[VAddr >> 12] + VAddr);
 	} else if (!r4300i_LW_NonMemory(PAddr, Value)) {
@@ -1840,12 +1796,6 @@ int r4300i_SB_NonMemory ( DWORD PAddr, BYTE Value ) {
 			WrittenToRomCount = COUNT_REGISTER;
 			WroteToRom = RegisterCurrentlyWritten->UW[0] << (8 * (PAddr & 3));
 			PI_STATUS_REG |= PI_STATUS_IO_BUSY;
-#ifdef ROM_IN_MAPSPACE
-			{
-				DWORD OldProtect;
-				VirtualProtect(ROM, RomFileSize, PAGE_NOACCESS, &OldProtect);
-			}
-#endif
 			//LogMessage("%X: Wrote To Rom %X from %X",PROGRAM_COUNTER,Value,PAddr);
 		}
 		return TRUE;
@@ -1918,12 +1868,6 @@ int r4300i_SH_NonMemory ( DWORD PAddr, WORD Value ) {
 			WrittenToRomCount = COUNT_REGISTER;
 			WroteToRom = Value << 16;
 			PI_STATUS_REG |= PI_STATUS_IO_BUSY;
-#ifdef ROM_IN_MAPSPACE
-			{
-				DWORD OldProtect;
-				VirtualProtect(ROM, RomFileSize, PAGE_NOACCESS, &OldProtect);
-			}
-#endif
 			//LogMessage("%X: Wrote To Rom %X from %X",PROGRAM_COUNTER,Value,PAddr);
 		}
 		return TRUE;
@@ -2000,12 +1944,6 @@ int r4300i_SW_NonMemory ( DWORD PAddr, DWORD Value ) {
 			WrittenToRomCount = COUNT_REGISTER;
 			WroteToRom = Value;
 			PI_STATUS_REG |= PI_STATUS_IO_BUSY;
-#ifdef ROM_IN_MAPSPACE
-			{
-				DWORD OldProtect;
-				VirtualProtect(ROM, RomFileSize, PAGE_NOACCESS, &OldProtect);
-			}
-#endif
 			//LogMessage("%X: Wrote To Rom %X from %X",PROGRAM_COUNTER,Value,PAddr);
 		}
 		return TRUE;
@@ -2434,7 +2372,7 @@ BOOL r4300i_SW_VAddr_NonCPU ( DWORD VAddr, DWORD Value ) {
 void Release_Memory ( void ) {
 	FreeSyncMemory();
 	if (OrigMem != NULL) { VirtualFree(OrigMem,0,MEM_RELEASE); }
-	if (ROM != NULL) { 	VirtualFree( ROM, 0 , MEM_RELEASE); }
+	CloseTempRomFile();
 	VirtualFree( TLB_ReadMap, 0 , MEM_RELEASE);
 	VirtualFree( TLB_WriteMap, 0 , MEM_RELEASE);
 	VirtualFree( N64MEM, 0 , MEM_RELEASE);

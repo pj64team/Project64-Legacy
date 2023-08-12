@@ -427,3 +427,4 @@ char * GS               ( int StringID );
 #define MSG_CHEAT_NAME_IN_USE   2043
 #define MSG_MAX_CHEATS          2044
 #define MSG_NO_GAME_INFORMATION	2045
+#define MSG_FAIL_CREATE_TEMP	2046
