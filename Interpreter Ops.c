@@ -1374,7 +1374,7 @@ void _fastcall r4300i_COP0_DMT(void) {
 		CP0[Opcode.REG.rd].UW[0] = GPR[Opcode.BRANCH.rt].UW[0] & 0x3F;
 		break;
 	case 20: //XContext
-		CP0[Opcode.REG.rd].UDW = GPR[Opcode.BRANCH.rt].UDW;
+		CP0[Opcode.REG.rd].UDW = (CP0[Opcode.REG.rd].UDW & 0x1FFFFFFFFLL) | (GPR[Opcode.BRANCH.rt].UDW & 0xFFFFFFFE00000000LL);
 		break;
 	case 9: //Count
 		CP0[Opcode.REG.rd].UW[0] = GPR[Opcode.BRANCH.rt].UW[0];
