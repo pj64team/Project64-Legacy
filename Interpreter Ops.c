@@ -31,7 +31,7 @@
 #include "cpu.h"
 #include "debugger.h"
 
-#define STOP_ON_UNKNOWN_OPCODE
+//#define STOP_ON_UNKNOWN_OPCODE
 
 int RoundingModel = _RC_NEAR;
 
@@ -1256,6 +1256,7 @@ void _fastcall r4300i_COP0_DMF(void) {
 		case 8: //BadVAddr
 		case 14: //EPC
 		case 20: //XContext:
+		case 30: //ErrEPC
 			LogMessage("%08X: R4300i Read from %s (0x%016llX)", PROGRAM_COUNTER,
 				Cop0_Name[Opcode.REG.rd], CP0[Opcode.REG.rd].UDW);
 			break;
@@ -1269,6 +1270,7 @@ void _fastcall r4300i_COP0_DMF(void) {
 	case 8: //BadVAddr
 	case 14: //EPC
 	case 20: //XContext
+	case 30: //ErrEPC
 		GPR[Opcode.BRANCH.rt].DW = CP0[Opcode.REG.rd].DW;
 		break;
 	default:
@@ -1296,7 +1298,6 @@ void _fastcall r4300i_COP0_MT (void) {
 	case 19: //WatchHi
 	case 28: //Tag lo
 	case 29: //Tag Hi
-	case 30: //ErrEPC
 		CP0[Opcode.REG.rd].UW[0] = GPR[Opcode.BRANCH.rt].UW[0];
 		break;
 	case 4: //Context
@@ -1340,6 +1341,9 @@ void _fastcall r4300i_COP0_MT (void) {
 	case 20: //XContext
 		CP0[Opcode.REG.rd].UDW = ((CP0[Opcode.REG.rd].UDW & 0x1FFFFFFFFLL) | (((long long)GPR[Opcode.BRANCH.rt].W[0]) & 0xFFFFFFFE00000000LL));
 		break;
+	case 30: //ErrEPC
+		CP0[Opcode.REG.rd].DW = GPR[Opcode.BRANCH.rt].W[0];
+		break;
 	default:
 		R4300i_UnknownOpcode();
 	}
@@ -1376,7 +1380,6 @@ void _fastcall r4300i_COP0_DMT(void) {
 	case 19: //WatchHi
 	case 28: //Tag lo
 	case 29: //Tag Hi
-	case 30: //ErrEPC
 		CP0[Opcode.REG.rd].UW[0] = GPR[Opcode.BRANCH.rt].UW[0];
 		break;
 	case 4: //Context
@@ -1420,6 +1423,9 @@ void _fastcall r4300i_COP0_DMT(void) {
 		break;
 	case 20: //XContext
 		CP0[Opcode.REG.rd].UDW = (CP0[Opcode.REG.rd].UDW & 0x1FFFFFFFFLL) | (GPR[Opcode.BRANCH.rt].UDW & 0xFFFFFFFE00000000LL);
+		break;
+	case 30: //ErrEPC
+		CP0[Opcode.REG.rd].DW = GPR[Opcode.BRANCH.rt].DW;
 		break;
 	default:
 		R4300i_UnknownOpcode();
