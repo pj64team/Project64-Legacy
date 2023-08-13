@@ -31,7 +31,7 @@
 #include "cpu.h"
 #include "debugger.h"
 
-//#define STOP_ON_UNKNOWN_OPCODE
+#define STOP_ON_UNKNOWN_OPCODE
 
 int RoundingModel = _RC_NEAR;
 
@@ -1254,6 +1254,7 @@ void _fastcall r4300i_COP0_DMF(void) {
 		switch (Opcode.REG.rd) {
 		case 4: //Context
 		case 8: //BadVAddr
+		case 14: //EPC
 		case 20: //XContext:
 			LogMessage("%08X: R4300i Read from %s (0x%016llX)", PROGRAM_COUNTER,
 				Cop0_Name[Opcode.REG.rd], CP0[Opcode.REG.rd].UDW);
@@ -1266,6 +1267,7 @@ void _fastcall r4300i_COP0_DMF(void) {
 	switch (Opcode.REG.rd) {
 	case 4: //Context
 	case 8: //BadVAddr
+	case 14: //EPC
 	case 20: //XContext
 		GPR[Opcode.BRANCH.rt].DW = CP0[Opcode.REG.rd].DW;
 		break;
@@ -1289,7 +1291,6 @@ void _fastcall r4300i_COP0_MT (void) {
 	case 3: //EntryLo1
 	case 5: //PageMask
 	case 10: //Entry Hi
-	case 14: //EPC
 	case 16: //Config
 	case 18: //WatchLo
 	case 19: //WatchHi
@@ -1333,6 +1334,9 @@ void _fastcall r4300i_COP0_MT (void) {
 		if (ShowDebugMessages)
 			if ((GPR[Opcode.BRANCH.rt].UW[0] & 0x300) != 0 ){ DisplayError("Set IP0 or IP1"); }
 		break;
+	case 14: //EPC
+		CP0[Opcode.REG.rd].DW = GPR[Opcode.BRANCH.rt].W[0];
+		break;
 	case 20: //XContext
 		CP0[Opcode.REG.rd].UDW = ((CP0[Opcode.REG.rd].UDW & 0x1FFFFFFFFLL) | (((long long)GPR[Opcode.BRANCH.rt].W[0]) & 0xFFFFFFFE00000000LL));
 		break;
@@ -1349,6 +1353,9 @@ void _fastcall r4300i_COP0_DMT(void) {
 			LogMessage("%08X: Cause register changed from %08X to %08X", PROGRAM_COUNTER,
 				CAUSE_REGISTER, (CAUSE_REGISTER & ~CAUSE_IP7));
 			break;
+		case 4: //Context
+		case 8: //BadVAddr
+		case 14: //EPC
 		case 20: //XContext:
 			LogMessage("%08X: Writing 0x%llX to %s register (Originally: 0x%016llX)", PROGRAM_COUNTER,
 				GPR[Opcode.BRANCH.rt].UDW, Cop0_Name[Opcode.REG.rd], CP0[Opcode.REG.rd].UDW);
@@ -1364,7 +1371,6 @@ void _fastcall r4300i_COP0_DMT(void) {
 	case 3: //EntryLo1
 	case 5: //PageMask
 	case 10: //Entry Hi
-	case 14: //EPC
 	case 16: //Config
 	case 18: //WatchLo
 	case 19: //WatchHi
@@ -1408,6 +1414,9 @@ void _fastcall r4300i_COP0_DMT(void) {
 		CP0[Opcode.REG.rd].UW[0] &= 0xFFFFCFF;
 		if (ShowDebugMessages)
 			if ((GPR[Opcode.BRANCH.rt].UW[0] & 0x300) != 0) { DisplayError("Set IP0 or IP1"); }
+		break;
+	case 14: //EPC
+		CP0[Opcode.REG.rd].DW = GPR[Opcode.BRANCH.rt].DW;
 		break;
 	case 20: //XContext
 		CP0[Opcode.REG.rd].UDW = (CP0[Opcode.REG.rd].UDW & 0x1FFFFFFFFLL) | (GPR[Opcode.BRANCH.rt].UDW & 0xFFFFFFFE00000000LL);

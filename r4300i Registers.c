@@ -1057,6 +1057,7 @@ void __cdecl UpdateCurrentR4300iRegisterPanel ( void ) {
 				switch (count) {
 				case 4: //Context
 				case 8: //BadVAddr
+				case 14: //EPC
 				case 20: //XContext
 					sprintf(RegisterValue, " 0x%08X - %08X", CP0[count].W[1], CP0[count].W[0]);
 					break;
