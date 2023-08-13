@@ -1304,6 +1304,8 @@ void _fastcall r4300i_COP0_MT (void) {
 	case 6: //Wired
 		CP0[Opcode.REG.rd].UW[0] = GPR[Opcode.BRANCH.rt].UW[0] & 0x3F;
 		break;
+	case 8: //BadVAddr
+		break;
 	case 9: //Count
 		CP0[Opcode.REG.rd].UW[0] = GPR[Opcode.BRANCH.rt].UW[0];
 		ChangeCompareTimer();
@@ -1376,6 +1378,8 @@ void _fastcall r4300i_COP0_DMT(void) {
 		break;
 	case 6: //Wired
 		CP0[Opcode.REG.rd].UW[0] = GPR[Opcode.BRANCH.rt].UW[0] & 0x3F;
+		break;
+	case 8: //BadVAddr
 		break;
 	case 9: //Count
 		CP0[Opcode.REG.rd].UW[0] = GPR[Opcode.BRANCH.rt].UW[0];
