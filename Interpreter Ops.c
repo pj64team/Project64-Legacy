@@ -31,6 +31,8 @@
 #include "cpu.h"
 #include "debugger.h"
 
+//#define STOP_ON_UNKNOWN_OPCODE
+
 int RoundingModel = _RC_NEAR;
 
 #define ADDRESS_ERROR_EXCEPTION(Address,FromRead) \
@@ -1298,7 +1300,6 @@ void _fastcall r4300i_COP0_MT (void) {
 		break;
 	case 4: //Context
 		CP0[Opcode.REG.rd].DW = (long)((CP0[Opcode.REG.rd].W[0] & 0x7FFFFF) | (GPR[Opcode.BRANCH.rt].W[0] & 0xFF800000));
-		LogMessage("After writing context: %llX", CP0[Opcode.REG.rd].DW);
 		break;
 	case 6: //Wired
 		CP0[Opcode.REG.rd].UW[0] = GPR[Opcode.BRANCH.rt].UW[0] & 0x3F;
@@ -1329,6 +1330,9 @@ void _fastcall r4300i_COP0_MT (void) {
 		CP0[Opcode.REG.rd].UW[0] &= 0xFFFFCFF;
 		if (ShowDebugMessages)
 			if ((GPR[Opcode.BRANCH.rt].UW[0] & 0x300) != 0 ){ DisplayError("Set IP0 or IP1"); }
+		break;
+	case 20: //XContext
+		CP0[Opcode.REG.rd].UDW = ((CP0[Opcode.REG.rd].UDW & 0x1FFFFFFFFLL) | (((long long)GPR[Opcode.BRANCH.rt].W[0]) & 0xFFFFFFFE00000000LL));
 		break;
 	default:
 		R4300i_UnknownOpcode();
@@ -1373,9 +1377,6 @@ void _fastcall r4300i_COP0_DMT(void) {
 	case 6: //Wired
 		CP0[Opcode.REG.rd].UW[0] = GPR[Opcode.BRANCH.rt].UW[0] & 0x3F;
 		break;
-	case 20: //XContext
-		CP0[Opcode.REG.rd].UDW = (CP0[Opcode.REG.rd].UDW & 0x1FFFFFFFFLL) | (GPR[Opcode.BRANCH.rt].UDW & 0xFFFFFFFE00000000LL);
-		break;
 	case 9: //Count
 		CP0[Opcode.REG.rd].UW[0] = GPR[Opcode.BRANCH.rt].UW[0];
 		ChangeCompareTimer();
@@ -1403,6 +1404,9 @@ void _fastcall r4300i_COP0_DMT(void) {
 		CP0[Opcode.REG.rd].UW[0] &= 0xFFFFCFF;
 		if (ShowDebugMessages)
 			if ((GPR[Opcode.BRANCH.rt].UW[0] & 0x300) != 0) { DisplayError("Set IP0 or IP1"); }
+		break;
+	case 20: //XContext
+		CP0[Opcode.REG.rd].UDW = (CP0[Opcode.REG.rd].UDW & 0x1FFFFFFFFLL) | (GPR[Opcode.BRANCH.rt].UDW & 0xFFFFFFFE00000000LL);
 		break;
 	default:
 		R4300i_UnknownOpcode();
@@ -1891,28 +1895,31 @@ void _fastcall r4300i_COP1_L_CVT_D (void) {
 
 /************************** Other functions **************************/
 void _fastcall R4300i_UnknownOpcode (void) {
-	//char Message[200];
+#ifdef STOP_ON_UNKNOWN_OPCODE
+	char Message[200];
 
-	//sprintf(Message,"%s: %08X\n%s\n\n", GS(MSG_UNHANDLED_OP), PROGRAM_COUNTER,
-	//	R4300iOpcodeName(Opcode.Hex,PROGRAM_COUNTER));
-	//strcat(Message,"Stoping Emulation !");
-	//
-	//if (HaveDebugger && !inFullScreen) {
-	//	int response;
+	sprintf(Message,"%s: %08X\n%s\n\n", GS(MSG_UNHANDLED_OP), PROGRAM_COUNTER,
+	R4300iOpcodeName(Opcode.Hex,PROGRAM_COUNTER));
+	strcat(Message,"Stoping Emulation !");
+	
+	if (HaveDebugger && !inFullScreen) {
+		int response;
 
-	//	strcat(Message,"\n\nDo you wish to enter the debugger?");
-	//
-	//	response = MessageBox(NULL,Message,GS(MSG_MSGBOX_TITLE), MB_YESNO | MB_ICONERROR );
-	//	if (response == IDYES) {
-	//		Enter_R4300i_Commands_Window ();
-	//	}
-	//	ExitThread(0);
-	//} 
-	//else {
-	//	DisplayError(Message);
-	//	ExitThread(0);
-	//}
+		strcat(Message,"\n\nDo you wish to enter the debugger?");
+	
+		response = MessageBox(NULL,Message,GS(MSG_MSGBOX_TITLE), MB_YESNO | MB_ICONERROR );
+		if (response == IDYES) {
+			Enter_R4300i_Commands_Window ();
+		}
+		ExitThread(0);
+	} 
+	else {
+		DisplayError(Message);
+		ExitThread(0);
+	}
+#else
 	DoIllegalInstructionException(NextInstruction == JUMP);
 	NextInstruction = JUMP;
 	JumpToLocation = PROGRAM_COUNTER;
+#endif
 }
