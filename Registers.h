@@ -355,6 +355,7 @@ extern DWORD PROGRAM_COUNTER, *FPCR,*RegRDRAM,*RegSP,*RegDPC,*RegMI,*RegVI,*RegA
 void * FPRDoubleLocation[32], * FPRFloatLocation[32];
 extern MIPS_DWORD *GPR, *FPR, HI, LO, *CP0;
 extern N64_REGISTERS Registers;
+extern int lastUnusedCOP0Register;
 
 enum FPU_Format {
 	FPU_Unkown,FPU_Dword, FPU_Qword, FPU_Float, FPU_Double
