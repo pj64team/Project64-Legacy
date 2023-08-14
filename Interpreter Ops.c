@@ -1273,6 +1273,9 @@ void _fastcall r4300i_COP0_DMF(void) {
 	case 30: //ErrEPC
 		GPR[Opcode.BRANCH.rt].DW = CP0[Opcode.REG.rd].DW;
 		break;
+	case 17: //LLAddr
+		GPR[Opcode.BRANCH.rt].UDW = CP0[Opcode.REG.rd].UW[0];
+		break;
 	default:
 		GPR[Opcode.BRANCH.rt].DW = (int)CP0[Opcode.REG.rd].UW[0];
 	}
@@ -1294,6 +1297,7 @@ void _fastcall r4300i_COP0_MT (void) {
 	case 5: //PageMask
 	case 10: //Entry Hi
 	case 16: //Config
+	case 17: //LLAddr
 	case 18: //WatchLo
 	case 19: //WatchHi
 	case 28: //Tag lo
@@ -1376,6 +1380,7 @@ void _fastcall r4300i_COP0_DMT(void) {
 	case 5: //PageMask
 	case 10: //Entry Hi
 	case 16: //Config
+	case 17: //LLAddr
 	case 18: //WatchLo
 	case 19: //WatchHi
 	case 28: //Tag lo
