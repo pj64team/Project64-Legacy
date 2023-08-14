@@ -1296,7 +1296,6 @@ void _fastcall r4300i_COP0_MT (void) {
 	case 3: //EntryLo1
 	case 5: //PageMask
 	case 10: //Entry Hi
-	case 16: //Config
 	case 17: //LLAddr
 	case 18: //WatchLo
 	case 19: //WatchHi
@@ -1342,6 +1341,9 @@ void _fastcall r4300i_COP0_MT (void) {
 	case 14: //EPC
 		CP0[Opcode.REG.rd].DW = GPR[Opcode.BRANCH.rt].W[0];
 		break;
+	case 16: //Config
+		CP0[Opcode.REG.rd].UW[0] = (CP0[Opcode.REG.rd].UW[0] & 0x00066460) | (GPR[Opcode.BRANCH.rt].UW[0] & 0x7F00800F);
+		break;
 	case 20: //XContext
 		CP0[Opcode.REG.rd].UDW = ((CP0[Opcode.REG.rd].UDW & 0x1FFFFFFFFLL) | (((long long)GPR[Opcode.BRANCH.rt].W[0]) & 0xFFFFFFFE00000000LL));
 		break;
@@ -1379,7 +1381,6 @@ void _fastcall r4300i_COP0_DMT(void) {
 	case 3: //EntryLo1
 	case 5: //PageMask
 	case 10: //Entry Hi
-	case 16: //Config
 	case 17: //LLAddr
 	case 18: //WatchLo
 	case 19: //WatchHi
@@ -1425,6 +1426,9 @@ void _fastcall r4300i_COP0_DMT(void) {
 		break;
 	case 14: //EPC
 		CP0[Opcode.REG.rd].DW = GPR[Opcode.BRANCH.rt].DW;
+		break;
+	case 16: //Config
+		CP0[Opcode.REG.rd].UW[0] = (CP0[Opcode.REG.rd].UW[0] & 0x00066460) | (GPR[Opcode.BRANCH.rt].UW[0] & 0x7F00800F);
 		break;
 	case 20: //XContext
 		CP0[Opcode.REG.rd].UDW = (CP0[Opcode.REG.rd].UDW & 0x1FFFFFFFFLL) | (GPR[Opcode.BRANCH.rt].UDW & 0xFFFFFFFE00000000LL);
