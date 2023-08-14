@@ -1351,6 +1351,11 @@ void _fastcall r4300i_COP0_MT (void) {
 	case 20: //XContext
 		CP0[Opcode.REG.rd].UDW = ((CP0[Opcode.REG.rd].UDW & 0x1FFFFFFFFLL) | (((long long)GPR[Opcode.BRANCH.rt].W[0]) & 0xFFFFFFFE00000000LL));
 		break;
+	case 26: //ECC
+		CP0[Opcode.REG.rd].UW[0] = GPR[Opcode.BRANCH.rt].UW[0] & 0xFF;
+		break;
+	case 27: //CacheErr
+		break;
 	case 30: //ErrEPC
 		CP0[Opcode.REG.rd].DW = GPR[Opcode.BRANCH.rt].W[0];
 		break;
@@ -1463,6 +1468,11 @@ void _fastcall r4300i_COP0_DMT(void) {
 		break;
 	case 20: //XContext
 		CP0[Opcode.REG.rd].UDW = (CP0[Opcode.REG.rd].UDW & 0x1FFFFFFFFLL) | (GPR[Opcode.BRANCH.rt].UDW & 0xFFFFFFFE00000000LL);
+		break;
+	case 26: //ECC
+		CP0[Opcode.REG.rd].UW[0] = GPR[Opcode.BRANCH.rt].UW[0] & 0xFF;
+		break;
+	case 27: //CacheErr
 		break;
 	case 30: //ErrEPC
 		CP0[Opcode.REG.rd].DW = GPR[Opcode.BRANCH.rt].DW;
