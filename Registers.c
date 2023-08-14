@@ -83,6 +83,7 @@ void * FPRDoubleLocation[32], * FPRFloatLocation[32];
 MIPS_DWORD *GPR, *FPR, HI, LO, *CP0;
 N64_REGISTERS Registers;
 int fpuControl;
+int lastUnusedCOP0Register;
 
 
 int  UnMap_8BitTempReg (BLOCK_SECTION * Section);
@@ -351,6 +352,7 @@ void InitalizeR4300iRegisters (int UsePif, int Country, enum CIC_CHIP CIC_Chip) 
 	REVISION_REGISTER   = 0x00000511;
 	STATUS_REGISTER     = 0x34000000;
 	PRID_REGISTER       = 0xB22;
+	lastUnusedCOP0Register = -1;
 	SetFpuLocations();
 	if (UsePif) {
 		PROGRAM_COUNTER = 0xBFC00000;			

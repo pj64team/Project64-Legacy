@@ -1290,6 +1290,8 @@ void _fastcall r4300i_COP0_MT (void) {
 				CAUSE_REGISTER, (CAUSE_REGISTER & ~CAUSE_IP7));
 		}
 	}
+	BOOL unusedRegister = FALSE;
+
 	switch (Opcode.REG.rd) {	
 	case 0: //Index
 	case 2: //EntryLo0
@@ -1352,10 +1354,32 @@ void _fastcall r4300i_COP0_MT (void) {
 	case 30: //ErrEPC
 		CP0[Opcode.REG.rd].DW = GPR[Opcode.BRANCH.rt].W[0];
 		break;
+
+	//Unused registers
+	case 7:
+	case 21:
+	case 22:
+	case 23:
+	case 24:
+	case 25:
+	case 31:
+		CP0[Opcode.REG.rd].UDW = GPR[Opcode.BRANCH.rt].UW[0];
+		unusedRegister = TRUE;
+		break;
+
 	default:
 		R4300i_UnknownOpcode();
 	}
 
+	if (lastUnusedCOP0Register >= 0) {
+		CP0[lastUnusedCOP0Register].UDW = GPR[Opcode.BRANCH.rt].UW[0];
+	}
+	if (unusedRegister) {
+		lastUnusedCOP0Register = Opcode.REG.rd;
+	}
+	else {
+		lastUnusedCOP0Register = -1;
+	}
 }
 
 void _fastcall r4300i_COP0_DMT(void) {
@@ -1377,6 +1401,9 @@ void _fastcall r4300i_COP0_DMT(void) {
 				GPR[Opcode.BRANCH.rt].UDW, Cop0_Name[Opcode.REG.rd], CP0[Opcode.REG.rd].UW[0]);
 		}
 	}
+
+	BOOL unusedRegister = FALSE;
+
 	switch (Opcode.REG.rd) {
 	case 0: //Index
 	case 2: //EntryLo0
@@ -1440,10 +1467,32 @@ void _fastcall r4300i_COP0_DMT(void) {
 	case 30: //ErrEPC
 		CP0[Opcode.REG.rd].DW = GPR[Opcode.BRANCH.rt].DW;
 		break;
+
+	//Unused registers
+	case 7:
+	case 21:
+	case 22:
+	case 23:
+	case 24:
+	case 25:
+	case 31:
+		CP0[Opcode.REG.rd].UDW = GPR[Opcode.BRANCH.rt].UDW;
+		unusedRegister = TRUE;
+		break;
+
 	default:
 		R4300i_UnknownOpcode();
 	}
 
+	if (lastUnusedCOP0Register >= 0) {
+		CP0[lastUnusedCOP0Register].UDW = GPR[Opcode.BRANCH.rt].UW[0];
+	}
+	if (unusedRegister) {
+		lastUnusedCOP0Register = Opcode.REG.rd;
+	}
+	else {
+		lastUnusedCOP0Register = -1;
+	}
 }
 
 /************************** COP0 CO functions ***********************/
