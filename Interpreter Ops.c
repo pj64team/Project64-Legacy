@@ -1341,6 +1341,8 @@ void _fastcall r4300i_COP0_MT (void) {
 	case 14: //EPC
 		CP0[Opcode.REG.rd].DW = GPR[Opcode.BRANCH.rt].W[0];
 		break;
+	case 15: //PRId
+		break;
 	case 16: //Config
 		CP0[Opcode.REG.rd].UW[0] = (CP0[Opcode.REG.rd].UW[0] & 0x00066460) | (GPR[Opcode.BRANCH.rt].UW[0] & 0x7F00800F);
 		break;
@@ -1426,6 +1428,8 @@ void _fastcall r4300i_COP0_DMT(void) {
 		break;
 	case 14: //EPC
 		CP0[Opcode.REG.rd].DW = GPR[Opcode.BRANCH.rt].DW;
+		break;
+	case 15: //PRId
 		break;
 	case 16: //Config
 		CP0[Opcode.REG.rd].UW[0] = (CP0[Opcode.REG.rd].UW[0] & 0x00066460) | (GPR[Opcode.BRANCH.rt].UW[0] & 0x7F00800F);
