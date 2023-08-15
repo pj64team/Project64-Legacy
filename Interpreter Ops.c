@@ -1578,7 +1578,7 @@ void _fastcall r4300i_COP1_DMT (void) {
 void _fastcall r4300i_COP1_CT (void) {
 	TEST_COP1_USABLE_EXCEPTION
 	if (Opcode.FP.fs == 31) {
-		FPCR[Opcode.FP.fs] = GPR[Opcode.BRANCH.rt].W[0];
+		FPCR[Opcode.FP.fs] = GPR[Opcode.BRANCH.rt].W[0] & 0x183FFFF;
 		switch((FPCR[Opcode.FP.fs] & 3)) {
 		case 0: RoundingModel = _RC_NEAR; break;
 		case 1: RoundingModel = _RC_CHOP; break;
