@@ -79,7 +79,8 @@ char *Cop0_Name[32] = {"Index","Random","EntryLo0","EntryLo1","Context","PageMas
 
 DWORD PROGRAM_COUNTER, *FPCR,*RegRDRAM,*RegSP,*RegDPC,*RegMI,*RegVI,*RegAI,*RegPI,
 	*RegRI,*RegSI, HalfLine, RegModValue, ViFieldSerration, LLBit, LLAddr;
-void * FPRDoubleLocation[32], * FPRFloatLocation[32];
+void * FPRDoubleLocation[32], * FPRFloatLocation[32], *FPRFloatUpperHalfLocation[32];
+long PlaceholderForUpperHalf; // for speed reasons, fpu opcodes in 32 bits mode will write 0 here instead of testing if we are in 64 bits mode on each opcode
 MIPS_DWORD *GPR, *FPR, HI, LO, *CP0;
 N64_REGISTERS Registers;
 int fpuControl;
@@ -1038,12 +1039,14 @@ void SetFpuLocations (void) {
 			FPRFloatLocation[count] = (void *)(&FPR[count & ~1].W[count & 1]);
 			//FPRDoubleLocation[count] = FPRFloatLocation[count];
 			FPRDoubleLocation[count] = (void *)(&FPR[count & ~1].DW);
+			FPRFloatUpperHalfLocation[count] = (void*)(&PlaceholderForUpperHalf);
 		}
 	} else {
 		for (count = 0; count < 32; count ++) {
 			FPRFloatLocation[count] = (void *)(&FPR[count].W[0]);
 			//FPRDoubleLocation[count] = FPRFloatLocation[count];
 			FPRDoubleLocation[count] = (void *)(&FPR[count].DW);
+			FPRFloatUpperHalfLocation[count] = (void*)(&FPR[count].W[1]);
 		}
 	}
 }
