@@ -79,8 +79,8 @@ char *Cop0_Name[32] = {"Index","Random","EntryLo0","EntryLo1","Context","PageMas
 
 DWORD PROGRAM_COUNTER, *FPCR,*RegRDRAM,*RegSP,*RegDPC,*RegMI,*RegVI,*RegAI,*RegPI,
 	*RegRI,*RegSI, HalfLine, RegModValue, ViFieldSerration, LLBit, LLAddr;
-void * FPRDoubleLocation[32], * FPRFloatLocation[32], *FPRFloatUpperHalfLocation[32];
-long PlaceholderForUpperHalf; // for speed reasons, fpu opcodes in 32 bits mode will write 0 here instead of testing if we are in 64 bits mode on each opcode
+void * FPRDoubleLocation[32], * FPRFloatLoadStoreLocation[32], *FPRFloatUpperHalfLocation[32], *FPRFloatFSLocation[32];
+void* FPRFloatOtherLocation[32];
 MIPS_DWORD *GPR, *FPR, HI, LO, *CP0;
 N64_REGISTERS Registers;
 int fpuControl;
@@ -658,7 +658,7 @@ void Load_FPR_ToTop (BLOCK_SECTION * Section, int Reg, int RegToLoad, int Format
 		switch (Format) {
 		case FPU_Dword:
 			sprintf(Name,"FPRFloatLocation[%d]",RegToLoad);
-			MoveVariableToX86reg(&FPRFloatLocation[RegToLoad],Name,TempReg);
+			MoveVariableToX86reg(&FPRFloatLoadStoreLocation[RegToLoad],Name,TempReg);
 			fpuLoadIntegerDwordFromX86Reg(&StackTopPos,TempReg);
 			break;
 		case FPU_Qword:
@@ -668,7 +668,7 @@ void Load_FPR_ToTop (BLOCK_SECTION * Section, int Reg, int RegToLoad, int Format
 			break;
 		case FPU_Float:
 			sprintf(Name,"FPRFloatLocation[%d]",RegToLoad);
-			MoveVariableToX86reg(&FPRFloatLocation[RegToLoad],Name,TempReg);
+			MoveVariableToX86reg(&FPRFloatLoadStoreLocation[RegToLoad],Name,TempReg);
 			fpuLoadDwordFromX86Reg(&StackTopPos,TempReg);
 			break;
 		case FPU_Double:
@@ -1035,17 +1035,21 @@ void SetFpuLocations (void) {
 	int count;
 
 	if ((STATUS_REGISTER & STATUS_FR) == 0) {
-		for (count = 0; count < 32; count ++) {
-			FPRFloatLocation[count] = (void *)(&FPR[count & ~1].W[count & 1]);
+		for (count = 0; count < 32; count++) {
+			FPRFloatLoadStoreLocation[count] = (void*)(&FPR[count & ~1].W[count & 1]);
+			FPRFloatFSLocation[count] = (void*)(&FPR[count & ~1].W[0]);
+			FPRFloatOtherLocation[count] = (void*)(&FPR[count].W[0]);
 			//FPRDoubleLocation[count] = FPRFloatLocation[count];
-			FPRDoubleLocation[count] = (void *)(&FPR[count & ~1].DW);
-			FPRFloatUpperHalfLocation[count] = (void*)(&PlaceholderForUpperHalf);
+			FPRDoubleLocation[count] = (void*)(&FPR[count & ~1].DW);
+			FPRFloatUpperHalfLocation[count] = (void*)(&FPR[count].W[1]);
 		}
 	} else {
-		for (count = 0; count < 32; count ++) {
-			FPRFloatLocation[count] = (void *)(&FPR[count].W[0]);
+		for (count = 0; count < 32; count++) {
+			FPRFloatLoadStoreLocation[count] = (void*)(&FPR[count].W[0]);
+			FPRFloatFSLocation[count] = (void*)(&FPR[count].W[0]);
+			FPRFloatOtherLocation[count] = (void*)(&FPR[count].W[0]);
 			//FPRDoubleLocation[count] = FPRFloatLocation[count];
-			FPRDoubleLocation[count] = (void *)(&FPR[count].DW);
+			FPRDoubleLocation[count] = (void*)(&FPR[count].DW);
 			FPRFloatUpperHalfLocation[count] = (void*)(&FPR[count].W[1]);
 		}
 	}
@@ -1179,7 +1183,7 @@ void UnMap_FPR (BLOCK_SECTION * Section, int Reg, int WriteBackValue ) {
 			switch (FpuState(StackTopPos)) {
 			case FPU_Dword: 
 				sprintf(Name,"FPRFloatLocation[%d]",FpuMappedTo(StackTopPos));
-				MoveVariableToX86reg(&FPRFloatLocation[FpuMappedTo(StackTopPos)],Name,TempReg);
+				MoveVariableToX86reg(&FPRFloatLoadStoreLocation[FpuMappedTo(StackTopPos)],Name,TempReg);
 				fpuStoreIntegerDwordFromX86Reg(&StackTopPos,TempReg, TRUE); 
 				break;
 			case FPU_Qword: 
@@ -1189,7 +1193,7 @@ void UnMap_FPR (BLOCK_SECTION * Section, int Reg, int WriteBackValue ) {
 				break;
 			case FPU_Float: 
 				sprintf(Name,"FPRFloatLocation[%d]",FpuMappedTo(StackTopPos));
-				MoveVariableToX86reg(&FPRFloatLocation[FpuMappedTo(StackTopPos)],Name,TempReg);
+				MoveVariableToX86reg(&FPRFloatLoadStoreLocation[FpuMappedTo(StackTopPos)],Name,TempReg);
 				fpuStoreDwordFromX86Reg(&StackTopPos,TempReg, TRUE); 
 				break;
 			case FPU_Double: 
