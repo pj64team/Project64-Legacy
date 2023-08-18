@@ -1790,8 +1790,8 @@ void _fastcall r4300i_COP1_S_CMP (void) {
 
 	TEST_COP1_USABLE_EXCEPTION
 
-	Temp0 = *(float *)FPRFloatLoadStoreLocation[Opcode.FP.fs];
-	Temp1 = *(float *)FPRFloatLoadStoreLocation[Opcode.FP.ft];
+	Temp0 = *(float *)FPRFloatFSLocation[Opcode.FP.fs];
+	Temp1 = *(float *)FPRFloatOtherLocation[Opcode.FP.ft];
 
 	if (_isnan(Temp0) || _isnan(Temp1)) {
 		if (ShowDebugMessages)
@@ -1962,7 +1962,7 @@ void _fastcall r4300i_COP1_D_CMP (void) {
 	TEST_COP1_USABLE_EXCEPTION
 
 	Temp0.DW = *(__int64 *)FPRDoubleLocation[Opcode.FP.fs];
-	Temp1.DW = *(__int64 *)FPRDoubleLocation[Opcode.FP.ft];
+	Temp1.DW = *(__int64 *)FPRDoubleFTFDLocation[Opcode.FP.ft];
 
 	if (_isnan(Temp0.D) || _isnan(Temp1.D)) {
 		if (ShowDebugMessages)
