@@ -80,7 +80,7 @@ char *Cop0_Name[32] = {"Index","Random","EntryLo0","EntryLo1","Context","PageMas
 DWORD PROGRAM_COUNTER, *FPCR,*RegRDRAM,*RegSP,*RegDPC,*RegMI,*RegVI,*RegAI,*RegPI,
 	*RegRI,*RegSI, HalfLine, RegModValue, ViFieldSerration, LLBit, LLAddr;
 void * FPRDoubleLocation[32], * FPRFloatLoadStoreLocation[32], *FPRFloatUpperHalfLocation[32], *FPRFloatFSLocation[32];
-void* FPRFloatOtherLocation[32];
+void* FPRFloatOtherLocation[32], *FPRDoubleFTFDLocation[32];
 MIPS_DWORD *GPR, *FPR, HI, LO, *CP0;
 N64_REGISTERS Registers;
 int fpuControl;
@@ -1039,18 +1039,18 @@ void SetFpuLocations (void) {
 			FPRFloatLoadStoreLocation[count] = (void*)(&FPR[count & ~1].W[count & 1]);
 			FPRFloatFSLocation[count] = (void*)(&FPR[count & ~1].W[0]);
 			FPRFloatOtherLocation[count] = (void*)(&FPR[count].W[0]);
-			//FPRDoubleLocation[count] = FPRFloatLocation[count];
-			FPRDoubleLocation[count] = (void*)(&FPR[count & ~1].DW);
 			FPRFloatUpperHalfLocation[count] = (void*)(&FPR[count].W[1]);
+			FPRDoubleLocation[count] = (void*)(&FPR[count & ~1].DW);
+			FPRDoubleFTFDLocation[count] = (void*)(&FPR[count].DW);
 		}
 	} else {
 		for (count = 0; count < 32; count++) {
 			FPRFloatLoadStoreLocation[count] = (void*)(&FPR[count].W[0]);
 			FPRFloatFSLocation[count] = (void*)(&FPR[count].W[0]);
 			FPRFloatOtherLocation[count] = (void*)(&FPR[count].W[0]);
-			//FPRDoubleLocation[count] = FPRFloatLocation[count];
-			FPRDoubleLocation[count] = (void*)(&FPR[count].DW);
 			FPRFloatUpperHalfLocation[count] = (void*)(&FPR[count].W[1]);
+			FPRDoubleLocation[count] = (void*)(&FPR[count].DW);
+			FPRDoubleFTFDLocation[count] = (void*)(&FPR[count].DW);
 		}
 	}
 }

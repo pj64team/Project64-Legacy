@@ -353,7 +353,7 @@ extern char *GPR_Name[32], *GPR_NameHi[32], *GPR_NameLo[32], *FPR_Name[32], *FPR
 extern DWORD PROGRAM_COUNTER, *FPCR,*RegRDRAM,*RegSP,*RegDPC,*RegMI,*RegVI,*RegAI,*RegPI,
 	*RegRI,*RegSI, HalfLine, RegModValue, ViFieldSerration, LLBit, LLAddr;
 extern void* FPRDoubleLocation[32], * FPRFloatLoadStoreLocation[32], *FPRFloatUpperHalfLocation[32], *FPRFloatFSLocation[32];
-extern void* FPRFloatOtherLocation[32];
+extern void* FPRFloatOtherLocation[32], *FPRDoubleFTFDLocation[32];
 extern MIPS_DWORD *GPR, *FPR, HI, LO, *CP0;
 extern N64_REGISTERS Registers;
 extern int lastUnusedCOP0Register;
