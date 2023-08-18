@@ -1713,6 +1713,12 @@ void _fastcall r4300i_COP1_S_NEG (void) {
 	*(long*)FPRFloatUpperHalfLocation[Opcode.FP.fd] = 0;
 }
 
+void __fastcall r4300i_COP1_S_ROUND_L(void) {
+	TEST_COP1_USABLE_EXCEPTION
+	_controlfp(_RC_NEAR,_MCW_RC);
+	Float_RoundToInteger64(&*(__int64*)FPRDoubleLocation[Opcode.FP.fd], &* (float*)FPRFloatFSLocation[Opcode.FP.fs]);
+}
+
 void _fastcall r4300i_COP1_S_TRUNC_L (void) {
 	TEST_COP1_USABLE_EXCEPTION
 	_controlfp(_RC_CHOP,_MCW_RC);

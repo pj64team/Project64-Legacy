@@ -422,7 +422,7 @@ void BuildInterpreter (void ) {
 	R4300i_CoP1_S[ 5] = r4300i_COP1_S_ABS;
 	R4300i_CoP1_S[ 6] = r4300i_COP1_S_MOV;
 	R4300i_CoP1_S[ 7] = r4300i_COP1_S_NEG;
-	R4300i_CoP1_S[ 8] = R4300i_UnknownOpcode;
+	R4300i_CoP1_S[ 8] = r4300i_COP1_S_ROUND_L;
 	R4300i_CoP1_S[ 9] = r4300i_COP1_S_TRUNC_L;
 	R4300i_CoP1_S[10] = r4300i_COP1_S_CEIL_L;		//added by Witten
 	R4300i_CoP1_S[11] = r4300i_COP1_S_FLOOR_L;		//added by Witten
