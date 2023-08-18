@@ -169,6 +169,7 @@ void _fastcall r4300i_COP1_S_SQRT    ( void );
 void _fastcall r4300i_COP1_S_ABS     ( void );
 void _fastcall r4300i_COP1_S_MOV     ( void );
 void _fastcall r4300i_COP1_S_NEG     ( void );
+void _fastcall r4300i_COP1_S_ROUND_L ( void );
 void _fastcall r4300i_COP1_S_TRUNC_L ( void );
 void _fastcall r4300i_COP1_S_CEIL_L  ( void );	//added by Witten
 void _fastcall r4300i_COP1_S_FLOOR_L ( void );	//added by Witten
