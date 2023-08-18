@@ -1840,47 +1840,47 @@ __inline void Double_RoundToInteger64( __int64 * Dest, double * Source ) {
 
 void _fastcall r4300i_COP1_D_ADD (void) {
 	TEST_COP1_USABLE_EXCEPTION
-	*(double *)FPRDoubleLocation[Opcode.FP.fd] = *(double *)FPRDoubleLocation[Opcode.FP.fs] + *(double *)FPRDoubleLocation[Opcode.FP.ft]; 
+	*(double *)FPRDoubleFTFDLocation[Opcode.FP.fd] = *(double *)FPRDoubleLocation[Opcode.FP.fs] + *(double *)FPRDoubleFTFDLocation[Opcode.FP.ft]; 
 }
 
 void _fastcall r4300i_COP1_D_SUB (void) {
 	TEST_COP1_USABLE_EXCEPTION
-	*(double *)FPRDoubleLocation[Opcode.FP.fd] = *(double *)FPRDoubleLocation[Opcode.FP.fs] - *(double *)FPRDoubleLocation[Opcode.FP.ft]; 
+	*(double *)FPRDoubleFTFDLocation[Opcode.FP.fd] = *(double *)FPRDoubleLocation[Opcode.FP.fs] - *(double *)FPRDoubleFTFDLocation[Opcode.FP.ft]; 
 }
 
 void _fastcall r4300i_COP1_D_MUL (void) {
 	TEST_COP1_USABLE_EXCEPTION
-	*(double *)FPRDoubleLocation[Opcode.FP.fd] = *(double *)FPRDoubleLocation[Opcode.FP.fs] * *(double *)FPRDoubleLocation[Opcode.FP.ft]; 
+	*(double *)FPRDoubleFTFDLocation[Opcode.FP.fd] = *(double *)FPRDoubleLocation[Opcode.FP.fs] * *(double *)FPRDoubleFTFDLocation[Opcode.FP.ft]; 
 }
 
 void _fastcall r4300i_COP1_D_DIV (void) {
 	TEST_COP1_USABLE_EXCEPTION
-	*(double *)FPRDoubleLocation[Opcode.FP.fd] = *(double *)FPRDoubleLocation[Opcode.FP.fs] / *(double *)FPRDoubleLocation[Opcode.FP.ft]; 
+	*(double *)FPRDoubleFTFDLocation[Opcode.FP.fd] = *(double *)FPRDoubleLocation[Opcode.FP.fs] / *(double *)FPRDoubleFTFDLocation[Opcode.FP.ft]; 
 
 	// test if denormalize
-	if ((*(int*)FPRDoubleLocation[Opcode.FP.fd] & 0x7FF00000) == 0) {
-		*(int*)FPRDoubleLocation[Opcode.FP.fd] &= 0x80000000;
+	if ((*(int*)FPRDoubleFTFDLocation[Opcode.FP.fd] & 0x7FF00000) == 0) {
+		*(int*)FPRDoubleFTFDLocation[Opcode.FP.fd] &= 0x80000000;
 	}
 }
 
 void _fastcall r4300i_COP1_D_SQRT (void) {
 	TEST_COP1_USABLE_EXCEPTION
-	*(double *)FPRDoubleLocation[Opcode.FP.fd] = (double)sqrt(*(double *)FPRDoubleLocation[Opcode.FP.fs]); 
+	*(double *)FPRDoubleFTFDLocation[Opcode.FP.fd] = (double)sqrt(*(double *)FPRDoubleLocation[Opcode.FP.fs]); 
 }
 
 void _fastcall r4300i_COP1_D_ABS (void) {
 	TEST_COP1_USABLE_EXCEPTION
-	*(double *)FPRDoubleLocation[Opcode.FP.fd] = fabs(*(double *)FPRDoubleLocation[Opcode.FP.fs]);
+	*(double *)FPRDoubleFTFDLocation[Opcode.FP.fd] = fabs(*(double *)FPRDoubleLocation[Opcode.FP.fs]);
 }
 
 void _fastcall r4300i_COP1_D_MOV (void) {
 	TEST_COP1_USABLE_EXCEPTION
-	*(__int64 *)FPRDoubleLocation[Opcode.FP.fd] = *(__int64 *)FPRDoubleLocation[Opcode.FP.fs];
+	*(__int64 *)FPRDoubleFTFDLocation[Opcode.FP.fd] = *(__int64 *)FPRDoubleLocation[Opcode.FP.fs];
 }
 
 void _fastcall r4300i_COP1_D_NEG (void) {
 	TEST_COP1_USABLE_EXCEPTION
-	*(double *)FPRDoubleLocation[Opcode.FP.fd] = (*(double *)FPRDoubleLocation[Opcode.FP.fs] * -1.0);
+	*(double *)FPRDoubleFTFDLocation[Opcode.FP.fd] = (*(double *)FPRDoubleLocation[Opcode.FP.fs] * -1.0);
 }
 
 void _fastcall r4300i_COP1_D_TRUNC_L (void) {	//added by Witten
