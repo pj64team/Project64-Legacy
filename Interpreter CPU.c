@@ -487,7 +487,7 @@ void BuildInterpreter (void ) {
 	R4300i_CoP1_D[ 5] = r4300i_COP1_D_ABS;
 	R4300i_CoP1_D[ 6] = r4300i_COP1_D_MOV;
 	R4300i_CoP1_D[ 7] = r4300i_COP1_D_NEG;
-	R4300i_CoP1_D[ 8] = R4300i_UnknownOpcode;
+	R4300i_CoP1_D[ 8] = r4300i_COP1_D_ROUND_L;
 	R4300i_CoP1_D[ 9] = r4300i_COP1_D_TRUNC_L;		//added by Witten
 	R4300i_CoP1_D[10] = r4300i_COP1_D_CEIL_L;		//added by Witten
 	R4300i_CoP1_D[11] = r4300i_COP1_D_FLOOR_L;		//added by Witten
