@@ -596,7 +596,7 @@ InterruptsDisabled:
 BOOL Machine_LoadState(void) {
 	char Directory[255], FileName[255], ZipFile[255], LoadHeader[64], String[100];
 	char drive[_MAX_DRIVE] ,dir[_MAX_DIR], ext[_MAX_EXT];
-	DWORD dwRead, Value, count, SaveRDRAMSize;
+	DWORD dwRead, Value, count, SaveRDRAMSize, formatVersion;
 	BOOL LoadedZipFile = FALSE;
 	HANDLE hSaveFile;
 	unzFile file;
@@ -629,10 +629,19 @@ BOOL Machine_LoadState(void) {
 				port = -1;
 				continue;
 			}
-			unzReadCurrentFile(file,&Value,4);
-			if (Value != 0x23D8A6C8) { 
+			unzReadCurrentFile(file,&formatVersion,4);
+			if (formatVersion != Format_ORIGINAL && formatVersion != Format_2023_1) {
 				unzCloseCurrentFile(file);
 				continue; 
+			}
+			if (formatVersion == Format_ORIGINAL) {
+				if (!inFullScreen) {
+					int result = MessageBox(hMainWindow, GS(MSG_SAVESTATE_OLDFORMAT), GS(MSG_MSGBOX_TITLE),
+						MB_YESNO | MB_ICONQUESTION | MB_DEFBUTTON2);
+					if (result == IDNO) {
+						return FALSE;
+					}
+				}
 			}
 			unzReadCurrentFile(file,&SaveRDRAMSize,sizeof(SaveRDRAMSize));	
 			unzReadCurrentFile(file,LoadHeader,0x40);			
@@ -698,7 +707,15 @@ BOOL Machine_LoadState(void) {
 			unzReadCurrentFile(file,&PROGRAM_COUNTER,sizeof(PROGRAM_COUNTER));
 			unzReadCurrentFile(file,GPR,sizeof(_int64)*32);
 			unzReadCurrentFile(file,FPR,sizeof(_int64)*32);
-			unzReadCurrentFile(file,CP0,sizeof(DWORD)*32);
+			if (formatVersion == Format_ORIGINAL) {
+				for (int i = 0; i < 32; ++i) {
+					unzReadCurrentFile(file, &CP0[i].UW[0], sizeof(DWORD));
+					CP0[i].UW[1] = 0;
+				}
+			}
+			else {
+				unzReadCurrentFile(file, CP0, sizeof(QWORD) * 32);
+			}
 			unzReadCurrentFile(file,FPCR,sizeof(DWORD)*32);
 			unzReadCurrentFile(file,&HI,sizeof(_int64));
 			unzReadCurrentFile(file,&LO,sizeof(_int64));
@@ -716,6 +733,17 @@ BOOL Machine_LoadState(void) {
 			unzReadCurrentFile(file,RDRAM,RdramSize);
 			unzReadCurrentFile(file,DMEM,0x1000);
 			unzReadCurrentFile(file,IMEM,0x1000);
+
+			SetFpuLocations();
+
+			// Specific data introducted in 2023.1
+			unzReadCurrentFile(file, &LLAddr, sizeof(DWORD));
+			unzReadCurrentFile(file, &lastUnusedCOP0Register, sizeof(int));
+			unzReadCurrentFile(file, &WrittenToRom, sizeof(BOOL));
+			unzReadCurrentFile(file, &WrittenToRomCount, sizeof(DWORD));
+			unzReadCurrentFile(file, &WroteToRom, sizeof(DWORD));
+			unzReadCurrentFile(file, ISViewerBuffer, sizeof(ISViewerBuffer));
+
 			unzCloseCurrentFile(file);
 			unzClose(file);
 			LoadedZipFile = TRUE;

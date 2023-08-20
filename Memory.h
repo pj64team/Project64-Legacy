@@ -31,6 +31,10 @@ extern BYTE *N64MEM, *RDRAM, *DMEM, *IMEM, *ROM;
 extern void ** JumpTable, ** DelaySlotTable;
 extern BYTE *RecompCode, *RecompPos;
 extern BOOL WrittenToRom;
+extern DWORD WrittenToRomCount;
+extern DWORD WroteToRom;
+
+extern BYTE ISViewerBuffer[0x200];
 
 /* Memory Control */
 int  Allocate_ROM                ( void );

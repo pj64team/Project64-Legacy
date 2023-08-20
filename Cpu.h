@@ -113,6 +113,11 @@ enum SaveType {
 	FlashRam
 };
 
+enum  SaveStateFormat {
+	Format_ORIGINAL = 0x23D8A6C8,
+	Format_2023_1   = 0x23D8A6C9
+};
+
 #ifdef CFB_READ
 extern DWORD CFBStart, CFBEnd;
 
