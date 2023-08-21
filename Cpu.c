@@ -630,11 +630,11 @@ BOOL Machine_LoadState(void) {
 				continue;
 			}
 			unzReadCurrentFile(file,&formatVersion,4);
-			if (formatVersion != Format_ORIGINAL && formatVersion != Format_2023_1) {
+			if (formatVersion != SaveStateFormat_ORIGINAL && formatVersion != SaveStateFormat_2023_1) {
 				unzCloseCurrentFile(file);
 				continue; 
 			}
-			if (formatVersion == Format_ORIGINAL) {
+			if (formatVersion == SaveStateFormat_ORIGINAL) {
 				if (!inFullScreen) {
 					int result = MessageBox(hMainWindow, GS(MSG_SAVESTATE_OLDFORMAT), GS(MSG_MSGBOX_TITLE),
 						MB_YESNO | MB_ICONQUESTION | MB_DEFBUTTON2);
@@ -707,7 +707,7 @@ BOOL Machine_LoadState(void) {
 			unzReadCurrentFile(file,&PROGRAM_COUNTER,sizeof(PROGRAM_COUNTER));
 			unzReadCurrentFile(file,GPR,sizeof(_int64)*32);
 			unzReadCurrentFile(file,FPR,sizeof(_int64)*32);
-			if (formatVersion == Format_ORIGINAL) {
+			if (formatVersion == SaveStateFormat_ORIGINAL) {
 				for (int i = 0; i < 32; ++i) {
 					unzReadCurrentFile(file, &CP0[i].UW[0], sizeof(DWORD));
 					CP0[i].UW[1] = 0;
@@ -763,10 +763,10 @@ BOOL Machine_LoadState(void) {
 		}	
 		SetFilePointer(hSaveFile,0,NULL,FILE_BEGIN);	
 		ReadFile( hSaveFile,&formatVersion,sizeof(formatVersion),&dwRead,NULL);
-		if (formatVersion != Format_ORIGINAL && formatVersion != Format_2023_1) {
+		if (formatVersion != SaveStateFormat_ORIGINAL && formatVersion != SaveStateFormat_2023_1) {
 			return FALSE;
 		}
-		if (formatVersion == Format_ORIGINAL) {
+		if (formatVersion == SaveStateFormat_ORIGINAL) {
 			if (!inFullScreen) {
 				int result = MessageBox(hMainWindow, GS(MSG_SAVESTATE_OLDFORMAT), GS(MSG_MSGBOX_TITLE),
 					MB_YESNO | MB_ICONQUESTION | MB_DEFBUTTON2);
@@ -841,7 +841,7 @@ BOOL Machine_LoadState(void) {
 		ReadFile( hSaveFile,&PROGRAM_COUNTER,sizeof(PROGRAM_COUNTER),&dwRead,NULL);
 		ReadFile( hSaveFile,GPR,sizeof(_int64)*32,&dwRead,NULL);
 		ReadFile( hSaveFile,FPR,sizeof(_int64)*32,&dwRead,NULL);
-		if (formatVersion == Format_ORIGINAL) {
+		if (formatVersion == SaveStateFormat_ORIGINAL) {
 			for (int i = 0; i < 32; ++i) {
 				ReadFile(hSaveFile, &CP0[i].UW[0], sizeof(DWORD),&dwRead,NULL);
 				CP0[i].UW[1] = 0;
@@ -973,7 +973,7 @@ BOOL Machine_SaveState(void) {
 		CreateDirectory(Directory,NULL);
 		file = zipOpen(ZipFile,FALSE);
 		zipOpenNewFileInZip(file,CurrentSave,&ZipInfo,NULL,0,NULL,0,NULL,Z_DEFLATED,Z_DEFAULT_COMPRESSION);
-		Value = 0x23D8A6C8;
+		Value = SaveStateFormat_2023_1;
 		zipWriteInFileInZip( file,&Value,sizeof(Value));
 		zipWriteInFileInZip( file,&RdramSize,sizeof(RdramSize));
 		zipWriteInFileInZip( file,RomHeader,0x40);	
@@ -982,7 +982,7 @@ BOOL Machine_SaveState(void) {
 		zipWriteInFileInZip( file,&PROGRAM_COUNTER,sizeof(PROGRAM_COUNTER));
 		zipWriteInFileInZip( file,GPR,sizeof(_int64)*32);
 		zipWriteInFileInZip( file,FPR,sizeof(_int64)*32);
-		zipWriteInFileInZip( file,CP0,sizeof(DWORD)*32);
+		zipWriteInFileInZip( file,CP0,sizeof(QWORD)*32);
 		zipWriteInFileInZip( file,FPCR,sizeof(DWORD)*32);
 		zipWriteInFileInZip( file,&HI,sizeof(_int64));
 		zipWriteInFileInZip( file,&LO,sizeof(_int64));
@@ -1004,7 +1004,15 @@ BOOL Machine_SaveState(void) {
 		zipWriteInFileInZip( file,RDRAM,RdramSize);
 		zipWriteInFileInZip( file,DMEM,0x1000);
 		zipWriteInFileInZip( file,IMEM,0x1000);
-			
+
+		// Specific data introducted in 2023.1
+		zipWriteInFileInZip(file, &LLAddr, sizeof(DWORD));
+		zipWriteInFileInZip(file, &lastUnusedCOP0Register, sizeof(int));
+		zipWriteInFileInZip(file, &WrittenToRom, sizeof(BOOL));
+		zipWriteInFileInZip(file, &WrittenToRomCount, sizeof(DWORD));
+		zipWriteInFileInZip(file, &WroteToRom, sizeof(DWORD));
+		zipWriteInFileInZip(file, ISViewerBuffer, sizeof(ISViewerBuffer));
+
 		zipCloseFileInZip(file);
 		zipClose(file,"");
 		DeleteFile(FileName);
@@ -1037,7 +1045,7 @@ BOOL Machine_SaveState(void) {
 
 
 		SetFilePointer(hSaveFile,0,NULL,FILE_BEGIN);	
-		Value = 0x23D8A6C8;
+		Value = SaveStateFormat_2023_1;
 		WriteFile( hSaveFile,&Value,sizeof(Value),&dwWritten,NULL);
 		WriteFile( hSaveFile,&RdramSize,sizeof(RdramSize),&dwWritten,NULL);
 		WriteFile( hSaveFile,RomHeader,0x40,&dwWritten,NULL);	
@@ -1046,7 +1054,7 @@ BOOL Machine_SaveState(void) {
 		WriteFile( hSaveFile,&PROGRAM_COUNTER,sizeof(PROGRAM_COUNTER),&dwWritten,NULL);
 		WriteFile( hSaveFile,GPR,sizeof(_int64)*32,&dwWritten,NULL);
 		WriteFile( hSaveFile,FPR,sizeof(_int64)*32,&dwWritten,NULL);
-		WriteFile( hSaveFile,CP0,sizeof(DWORD)*32,&dwWritten,NULL);
+		WriteFile( hSaveFile,CP0,sizeof(QWORD)*32,&dwWritten,NULL);
 		WriteFile( hSaveFile,FPCR,sizeof(DWORD)*32,&dwWritten,NULL);
 		WriteFile( hSaveFile,&HI,sizeof(_int64),&dwWritten,NULL);
 		WriteFile( hSaveFile,&LO,sizeof(_int64),&dwWritten,NULL);
@@ -1068,6 +1076,14 @@ BOOL Machine_SaveState(void) {
 		WriteFile( hSaveFile,RDRAM,RdramSize,&dwWritten,NULL);
 		WriteFile( hSaveFile,DMEM,0x1000,&dwWritten,NULL);
 		WriteFile( hSaveFile,IMEM,0x1000,&dwWritten,NULL);
+
+		// Specific data introducted in 2023.1
+		WriteFile(hSaveFile, &LLAddr, sizeof(DWORD), &dwWritten, NULL);
+		WriteFile(hSaveFile, &lastUnusedCOP0Register, sizeof(int), &dwWritten, NULL);
+		WriteFile(hSaveFile, &WrittenToRom, sizeof(BOOL), &dwWritten, NULL);
+		WriteFile(hSaveFile, &WrittenToRomCount, sizeof(DWORD), &dwWritten, NULL);
+		WriteFile(hSaveFile, &WroteToRom, sizeof(DWORD), &dwWritten, NULL);
+		WriteFile(hSaveFile, ISViewerBuffer, sizeof(ISViewerBuffer), &dwWritten, NULL);
 
 		CloseHandle(hSaveFile);
 		DeleteFile(ZipFile);
