@@ -379,7 +379,7 @@ LANG_STR DefaultString[] = {
 	{ MSG_MAX_CHEATS,         "You Have reached the Maxiumn amount of cheats for this rom"},
 	{ MSG_NO_GAME_INFORMATION,"No game information available"},
 	{ MSG_FAIL_CREATE_TEMP,	  "Unable to create temporary ROM file"},
-	{ MSG_SAVESTATE_OLDFORMAT,"State save was saved with an older PJ64 emulator. \n\nLoading this state may cause the game and/or emulator to crash. \n\nAre you sure you want to continue loading?"},
+	{ MSG_SAVESTATE_OLDFORMAT,"State isn't compatible with current version of Project64-Legacy. \n\nLoading this state may cause the game and/or emulator to crash. \n\nAre you sure you want to continue loading?"},
 };
 
 class CLanguage  {

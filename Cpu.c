@@ -762,8 +762,19 @@ BOOL Machine_LoadState(void) {
 			return FALSE;
 		}	
 		SetFilePointer(hSaveFile,0,NULL,FILE_BEGIN);	
-		ReadFile( hSaveFile,&Value,sizeof(Value),&dwRead,NULL);
-		if (Value != 0x23D8A6C8) { return FALSE; }
+		ReadFile( hSaveFile,&formatVersion,sizeof(formatVersion),&dwRead,NULL);
+		if (formatVersion != Format_ORIGINAL && formatVersion != Format_2023_1) {
+			return FALSE;
+		}
+		if (formatVersion == Format_ORIGINAL) {
+			if (!inFullScreen) {
+				int result = MessageBox(hMainWindow, GS(MSG_SAVESTATE_OLDFORMAT), GS(MSG_MSGBOX_TITLE),
+					MB_YESNO | MB_ICONQUESTION | MB_DEFBUTTON2);
+				if (result == IDNO) {
+					return FALSE;
+				}
+			}
+		}
 		ReadFile( hSaveFile,&SaveRDRAMSize,sizeof(SaveRDRAMSize),&dwRead,NULL);	
 		ReadFile( hSaveFile,LoadHeader,0x40,&dwRead,NULL);	
 
@@ -830,6 +841,15 @@ BOOL Machine_LoadState(void) {
 		ReadFile( hSaveFile,&PROGRAM_COUNTER,sizeof(PROGRAM_COUNTER),&dwRead,NULL);
 		ReadFile( hSaveFile,GPR,sizeof(_int64)*32,&dwRead,NULL);
 		ReadFile( hSaveFile,FPR,sizeof(_int64)*32,&dwRead,NULL);
+		if (formatVersion == Format_ORIGINAL) {
+			for (int i = 0; i < 32; ++i) {
+				ReadFile(hSaveFile, &CP0[i].UW[0], sizeof(DWORD),&dwRead,NULL);
+				CP0[i].UW[1] = 0;
+			}
+		}
+		else {
+			ReadFile(hSaveFile, CP0, sizeof(QWORD) * 32,&dwRead,NULL);
+		}
 		ReadFile( hSaveFile,CP0,sizeof(DWORD)*32,&dwRead,NULL);
 		ReadFile( hSaveFile,FPCR,sizeof(DWORD)*32,&dwRead,NULL);
 		ReadFile( hSaveFile,&HI,sizeof(_int64),&dwRead,NULL);
@@ -848,6 +868,17 @@ BOOL Machine_LoadState(void) {
 		ReadFile( hSaveFile,RDRAM,RdramSize,&dwRead,NULL);
 		ReadFile( hSaveFile,DMEM,0x1000,&dwRead,NULL);
 		ReadFile( hSaveFile,IMEM,0x1000,&dwRead,NULL);
+
+		SetFpuLocations();
+
+		// Specific data introducted in 2023.1
+		ReadFile(hSaveFile, &LLAddr, sizeof(DWORD), &dwRead, NULL);
+		ReadFile(hSaveFile, &lastUnusedCOP0Register, sizeof(int), &dwRead, NULL);
+		ReadFile(hSaveFile, &WrittenToRom, sizeof(BOOL), &dwRead, NULL);
+		ReadFile(hSaveFile, &WrittenToRomCount, sizeof(DWORD), &dwRead, NULL);
+		ReadFile(hSaveFile, &WroteToRom, sizeof(DWORD), &dwRead, NULL);
+		ReadFile(hSaveFile, ISViewerBuffer, sizeof(ISViewerBuffer), &dwRead, NULL);
+
 		CloseHandle(hSaveFile);
 		_splitpath( FileName, drive, dir, ZipFile, ext );
 		sprintf(FileName,"%s%s",ZipFile,ext);
