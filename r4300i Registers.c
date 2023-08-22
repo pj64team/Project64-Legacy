@@ -42,6 +42,10 @@
 #define PeripheralInterface 	10
 #define RDRAMInterface	 		11
 #define SerialInterface			12
+#define COP1SRegisters			13
+#define COP1DRegisters			14
+#define COP1WRegisters			15
+#define COP1LRegisters			16
 
 #define IDC_TAB_CONTROL			1000
 
@@ -49,6 +53,10 @@ void __cdecl Create_R4300i_Register_Window     ( int );
 void PaintR4300iAIPanel                ( HWND );
 void PaintR4300iCP0Panel               ( HWND );
 void PaintR4300iFPRPanel               ( HWND );
+void PaintR4300iCOP1SPanel             ( HWND );
+void PaintR4300iCOP1DPanel             ( HWND );
+void PaintR4300iCOP1WPanel             ( HWND );
+void PaintR4300iCOP1LPanel             ( HWND );
 void PaintR4300iGPRPanel               ( HWND );
 void PaintR4300iMIPanel                ( HWND );
 void PaintR4300iRDRamPanel             ( HWND );
@@ -64,6 +72,10 @@ void PaintR4300iRIPanel                ( HWND );
 void SetupR4300iAIPanel                ( HWND );
 void SetupR4300iCP0Panel               ( HWND );
 void SetupR4300iFPRPanel               ( HWND );
+void SetupR4300iCOP1SPanel             ( HWND );
+void SetupR4300iCOP1DPanel             ( HWND );
+void SetupR4300iCOP1WPanel             ( HWND );
+void SetupR4300iCOP1LPanel             ( HWND );
 void SetupR4300iGPRPanel               ( HWND );
 void SetupR4300iMIPanel                ( HWND );
 void SetupR4300iRDRamPanel             ( HWND );
@@ -79,8 +91,8 @@ void ShowR4300iRegisterPanel           ( int );
 LRESULT CALLBACK RefreshR4300iRegProc  ( HWND, UINT, WPARAM, LPARAM );
 LRESULT CALLBACK R4300i_Registers_Proc ( HWND, UINT, WPARAM, LPARAM );
 
-HWND R4300i_Registers_hDlg, hTab, hStatic, hGPR[32], hCP0[32], hFPR[32], hSpecial[6],
-	hRDRam[10], hSP[10], hMI[4], hVI[14], hAI[6], hPI[13], hRI[8], hSI[4];
+HWND R4300i_Registers_hDlg, hTab, hStatic, hGPR[32], hCP0[32], hFPR[32], hCOP1S[32], hCOP1D[32], hCOP1W[32], hCOP1L[32],
+	hSpecial[6], hRDRam[10], hSP[10], hMI[4], hVI[14], hAI[6], hPI[13], hRI[8], hSI[4];
 int InR4300iRegisterWindow = FALSE;
 FARPROC r4300iRegRefreshProc;
 
@@ -118,6 +130,18 @@ void HideR4300iRegisterPanel ( int Panel) {
 		break;
 	case FloatingRegisters:
 		for (count = 0; count < 32;count ++) { ShowWindow(hFPR[count],FALSE); }
+		break;
+	case COP1SRegisters:
+		for (count = 0; count < 32; count++) { ShowWindow(hCOP1S[count], FALSE); }
+		break;
+	case COP1DRegisters:
+		for (count = 0; count < 32; count++) { ShowWindow(hCOP1D[count], FALSE); }
+		break;
+	case COP1WRegisters:
+		for (count = 0; count < 32; count++) { ShowWindow(hCOP1W[count], FALSE); }
+		break;
+	case COP1LRegisters:
+		for (count = 0; count < 32; count++) { ShowWindow(hCOP1L[count], FALSE); }
 		break;
 	case SpecialRegister:
 		for (count = 0; count < 6;count ++) { ShowWindow(hSpecial[count],FALSE); }
@@ -280,6 +304,226 @@ void PaintR4300iFPRPanel (HWND hWnd) {
 	SelectObject( ps.hdc,hOldFont );
 	SetBkMode( ps.hdc, OldBkMode );
 	EndPaint( hWnd, &ps );
+}
+
+void PaintR4300iCOP1SPanel(HWND hWnd) {
+	PAINTSTRUCT ps;
+	RECT rcBox;
+	HFONT hOldFont;
+	int OldBkMode;
+	BeginPaint(hWnd, &ps);
+
+	rcBox.left = 10;
+	rcBox.top = 29;
+	rcBox.right = 650;
+	rcBox.bottom = 275;
+	DrawEdge(ps.hdc, &rcBox, EDGE_ETCHED, BF_RECT);
+
+	hOldFont = SelectObject(ps.hdc,
+		GetStockObject(DEFAULT_GUI_FONT));
+	OldBkMode = SetBkMode(ps.hdc, TRANSPARENT);
+
+	TextOut(ps.hdc, 25, 46, " Reg 0:", 7);
+	TextOut(ps.hdc, 25, 66, " Reg 1:", 7);
+	TextOut(ps.hdc, 25, 86, " Reg 2:", 7);
+	TextOut(ps.hdc, 25, 106, " Reg 3:", 7);
+	TextOut(ps.hdc, 25, 126, " Reg 4:", 7);
+	TextOut(ps.hdc, 25, 146, " Reg 5:", 7);
+	TextOut(ps.hdc, 25, 166, " Reg 6:", 7);
+	TextOut(ps.hdc, 25, 186, " Reg 7:", 7);
+	TextOut(ps.hdc, 25, 206, " Reg 8:", 7);
+	TextOut(ps.hdc, 25, 226, " Reg 9:", 7);
+	TextOut(ps.hdc, 25, 246, "Reg 10:", 7);
+	TextOut(ps.hdc, 240, 46, "Reg 11:", 7);
+	TextOut(ps.hdc, 240, 66, "Reg 12:", 7);
+	TextOut(ps.hdc, 240, 86, "Reg 13:", 7);
+	TextOut(ps.hdc, 240, 106, "Reg 14:", 7);
+	TextOut(ps.hdc, 240, 126, "Reg 15:", 7);
+	TextOut(ps.hdc, 240, 146, "Reg 16:", 7);
+	TextOut(ps.hdc, 240, 166, "Reg 17:", 7);
+	TextOut(ps.hdc, 240, 186, "Reg 18:", 7);
+	TextOut(ps.hdc, 240, 206, "Reg 19:", 7);
+	TextOut(ps.hdc, 240, 226, "Reg 20:", 7);
+	TextOut(ps.hdc, 240, 246, "Reg 21:", 7);
+	TextOut(ps.hdc, 450, 46, "Reg 22:", 7);
+	TextOut(ps.hdc, 450, 66, "Reg 23:", 7);
+	TextOut(ps.hdc, 450, 86, "Reg 24:", 7);
+	TextOut(ps.hdc, 450, 106, "Reg 25:", 7);
+	TextOut(ps.hdc, 450, 126, "Reg 26:", 7);
+	TextOut(ps.hdc, 450, 146, "Reg 27:", 7);
+	TextOut(ps.hdc, 450, 166, "Reg 28:", 7);
+	TextOut(ps.hdc, 450, 186, "Reg 29:", 7);
+	TextOut(ps.hdc, 450, 206, "Reg 30:", 7);
+	TextOut(ps.hdc, 450, 226, "Reg 31:", 7);
+
+	SelectObject(ps.hdc, hOldFont);
+	SetBkMode(ps.hdc, OldBkMode);
+	EndPaint(hWnd, &ps);
+}
+
+void PaintR4300iCOP1DPanel(HWND hWnd) {
+	PAINTSTRUCT ps;
+	RECT rcBox;
+	HFONT hOldFont;
+	int OldBkMode;
+	BeginPaint(hWnd, &ps);
+
+	rcBox.left = 10;
+	rcBox.top = 29;
+	rcBox.right = 650;
+	rcBox.bottom = 275;
+	DrawEdge(ps.hdc, &rcBox, EDGE_ETCHED, BF_RECT);
+
+	hOldFont = SelectObject(ps.hdc,
+		GetStockObject(DEFAULT_GUI_FONT));
+	OldBkMode = SetBkMode(ps.hdc, TRANSPARENT);
+
+	TextOut(ps.hdc, 25, 46, " Reg 0:", 7);
+	TextOut(ps.hdc, 25, 66, " Reg 1:", 7);
+	TextOut(ps.hdc, 25, 86, " Reg 2:", 7);
+	TextOut(ps.hdc, 25, 106, " Reg 3:", 7);
+	TextOut(ps.hdc, 25, 126, " Reg 4:", 7);
+	TextOut(ps.hdc, 25, 146, " Reg 5:", 7);
+	TextOut(ps.hdc, 25, 166, " Reg 6:", 7);
+	TextOut(ps.hdc, 25, 186, " Reg 7:", 7);
+	TextOut(ps.hdc, 25, 206, " Reg 8:", 7);
+	TextOut(ps.hdc, 25, 226, " Reg 9:", 7);
+	TextOut(ps.hdc, 25, 246, "Reg 10:", 7);
+	TextOut(ps.hdc, 240, 46, "Reg 11:", 7);
+	TextOut(ps.hdc, 240, 66, "Reg 12:", 7);
+	TextOut(ps.hdc, 240, 86, "Reg 13:", 7);
+	TextOut(ps.hdc, 240, 106, "Reg 14:", 7);
+	TextOut(ps.hdc, 240, 126, "Reg 15:", 7);
+	TextOut(ps.hdc, 240, 146, "Reg 16:", 7);
+	TextOut(ps.hdc, 240, 166, "Reg 17:", 7);
+	TextOut(ps.hdc, 240, 186, "Reg 18:", 7);
+	TextOut(ps.hdc, 240, 206, "Reg 19:", 7);
+	TextOut(ps.hdc, 240, 226, "Reg 20:", 7);
+	TextOut(ps.hdc, 240, 246, "Reg 21:", 7);
+	TextOut(ps.hdc, 450, 46, "Reg 22:", 7);
+	TextOut(ps.hdc, 450, 66, "Reg 23:", 7);
+	TextOut(ps.hdc, 450, 86, "Reg 24:", 7);
+	TextOut(ps.hdc, 450, 106, "Reg 25:", 7);
+	TextOut(ps.hdc, 450, 126, "Reg 26:", 7);
+	TextOut(ps.hdc, 450, 146, "Reg 27:", 7);
+	TextOut(ps.hdc, 450, 166, "Reg 28:", 7);
+	TextOut(ps.hdc, 450, 186, "Reg 29:", 7);
+	TextOut(ps.hdc, 450, 206, "Reg 30:", 7);
+	TextOut(ps.hdc, 450, 226, "Reg 31:", 7);
+
+	SelectObject(ps.hdc, hOldFont);
+	SetBkMode(ps.hdc, OldBkMode);
+	EndPaint(hWnd, &ps);
+}
+
+void PaintR4300iCOP1WPanel(HWND hWnd) {
+	PAINTSTRUCT ps;
+	RECT rcBox;
+	HFONT hOldFont;
+	int OldBkMode;
+	BeginPaint(hWnd, &ps);
+
+	rcBox.left = 10;
+	rcBox.top = 29;
+	rcBox.right = 650;
+	rcBox.bottom = 275;
+	DrawEdge(ps.hdc, &rcBox, EDGE_ETCHED, BF_RECT);
+
+	hOldFont = SelectObject(ps.hdc,
+		GetStockObject(DEFAULT_GUI_FONT));
+	OldBkMode = SetBkMode(ps.hdc, TRANSPARENT);
+
+	TextOut(ps.hdc, 25, 46, " Reg 0:", 7);
+	TextOut(ps.hdc, 25, 66, " Reg 1:", 7);
+	TextOut(ps.hdc, 25, 86, " Reg 2:", 7);
+	TextOut(ps.hdc, 25, 106, " Reg 3:", 7);
+	TextOut(ps.hdc, 25, 126, " Reg 4:", 7);
+	TextOut(ps.hdc, 25, 146, " Reg 5:", 7);
+	TextOut(ps.hdc, 25, 166, " Reg 6:", 7);
+	TextOut(ps.hdc, 25, 186, " Reg 7:", 7);
+	TextOut(ps.hdc, 25, 206, " Reg 8:", 7);
+	TextOut(ps.hdc, 25, 226, " Reg 9:", 7);
+	TextOut(ps.hdc, 25, 246, "Reg 10:", 7);
+	TextOut(ps.hdc, 240, 46, "Reg 11:", 7);
+	TextOut(ps.hdc, 240, 66, "Reg 12:", 7);
+	TextOut(ps.hdc, 240, 86, "Reg 13:", 7);
+	TextOut(ps.hdc, 240, 106, "Reg 14:", 7);
+	TextOut(ps.hdc, 240, 126, "Reg 15:", 7);
+	TextOut(ps.hdc, 240, 146, "Reg 16:", 7);
+	TextOut(ps.hdc, 240, 166, "Reg 17:", 7);
+	TextOut(ps.hdc, 240, 186, "Reg 18:", 7);
+	TextOut(ps.hdc, 240, 206, "Reg 19:", 7);
+	TextOut(ps.hdc, 240, 226, "Reg 20:", 7);
+	TextOut(ps.hdc, 240, 246, "Reg 21:", 7);
+	TextOut(ps.hdc, 450, 46, "Reg 22:", 7);
+	TextOut(ps.hdc, 450, 66, "Reg 23:", 7);
+	TextOut(ps.hdc, 450, 86, "Reg 24:", 7);
+	TextOut(ps.hdc, 450, 106, "Reg 25:", 7);
+	TextOut(ps.hdc, 450, 126, "Reg 26:", 7);
+	TextOut(ps.hdc, 450, 146, "Reg 27:", 7);
+	TextOut(ps.hdc, 450, 166, "Reg 28:", 7);
+	TextOut(ps.hdc, 450, 186, "Reg 29:", 7);
+	TextOut(ps.hdc, 450, 206, "Reg 30:", 7);
+	TextOut(ps.hdc, 450, 226, "Reg 31:", 7);
+
+	SelectObject(ps.hdc, hOldFont);
+	SetBkMode(ps.hdc, OldBkMode);
+	EndPaint(hWnd, &ps);
+}
+
+void PaintR4300iCOP1LPanel(HWND hWnd) {
+	PAINTSTRUCT ps;
+	RECT rcBox;
+	HFONT hOldFont;
+	int OldBkMode;
+	BeginPaint(hWnd, &ps);
+
+	rcBox.left = 10;
+	rcBox.top = 29;
+	rcBox.right = 650;
+	rcBox.bottom = 275;
+	DrawEdge(ps.hdc, &rcBox, EDGE_ETCHED, BF_RECT);
+
+	hOldFont = SelectObject(ps.hdc,
+		GetStockObject(DEFAULT_GUI_FONT));
+	OldBkMode = SetBkMode(ps.hdc, TRANSPARENT);
+
+	TextOut(ps.hdc, 25, 46, " Reg 0:", 7);
+	TextOut(ps.hdc, 25, 66, " Reg 1:", 7);
+	TextOut(ps.hdc, 25, 86, " Reg 2:", 7);
+	TextOut(ps.hdc, 25, 106, " Reg 3:", 7);
+	TextOut(ps.hdc, 25, 126, " Reg 4:", 7);
+	TextOut(ps.hdc, 25, 146, " Reg 5:", 7);
+	TextOut(ps.hdc, 25, 166, " Reg 6:", 7);
+	TextOut(ps.hdc, 25, 186, " Reg 7:", 7);
+	TextOut(ps.hdc, 25, 206, " Reg 8:", 7);
+	TextOut(ps.hdc, 25, 226, " Reg 9:", 7);
+	TextOut(ps.hdc, 25, 246, "Reg 10:", 7);
+	TextOut(ps.hdc, 240, 46, "Reg 11:", 7);
+	TextOut(ps.hdc, 240, 66, "Reg 12:", 7);
+	TextOut(ps.hdc, 240, 86, "Reg 13:", 7);
+	TextOut(ps.hdc, 240, 106, "Reg 14:", 7);
+	TextOut(ps.hdc, 240, 126, "Reg 15:", 7);
+	TextOut(ps.hdc, 240, 146, "Reg 16:", 7);
+	TextOut(ps.hdc, 240, 166, "Reg 17:", 7);
+	TextOut(ps.hdc, 240, 186, "Reg 18:", 7);
+	TextOut(ps.hdc, 240, 206, "Reg 19:", 7);
+	TextOut(ps.hdc, 240, 226, "Reg 20:", 7);
+	TextOut(ps.hdc, 240, 246, "Reg 21:", 7);
+	TextOut(ps.hdc, 450, 46, "Reg 22:", 7);
+	TextOut(ps.hdc, 450, 66, "Reg 23:", 7);
+	TextOut(ps.hdc, 450, 86, "Reg 24:", 7);
+	TextOut(ps.hdc, 450, 106, "Reg 25:", 7);
+	TextOut(ps.hdc, 450, 126, "Reg 26:", 7);
+	TextOut(ps.hdc, 450, 146, "Reg 27:", 7);
+	TextOut(ps.hdc, 450, 166, "Reg 28:", 7);
+	TextOut(ps.hdc, 450, 186, "Reg 29:", 7);
+	TextOut(ps.hdc, 450, 206, "Reg 30:", 7);
+	TextOut(ps.hdc, 450, 226, "Reg 31:", 7);
+
+	SelectObject(ps.hdc, hOldFont);
+	SetBkMode(ps.hdc, OldBkMode);
+	EndPaint(hWnd, &ps);
 }
 
 void PaintR4300iGPRPanel (HWND hWnd) {	
@@ -653,6 +897,18 @@ LRESULT CALLBACK RefreshR4300iRegProc ( HWND hWnd, UINT uMsg, WPARAM wParam, LPA
 			case FloatingRegisters:
 				PaintR4300iFPRPanel (hWnd);
 				break;
+			case COP1SRegisters:
+				PaintR4300iCOP1SPanel(hWnd);
+				break;
+			case COP1DRegisters:
+				PaintR4300iCOP1DPanel(hWnd);
+				break;
+			case COP1WRegisters:
+				PaintR4300iCOP1WPanel(hWnd);
+				break;
+			case COP1LRegisters:
+				PaintR4300iCOP1LPanel(hWnd);
+				break;
 			case SpecialRegister:
 				PaintR4300iSpecialPanel (hWnd);
 				break;
@@ -757,6 +1013,102 @@ void SetupR4300iFPRPanel (HWND hDlg) {
 			ES_READONLY | WS_BORDER | WS_TABSTOP,510,(count*20) + 50,135,19, 
 			hDlg,0,hInst, NULL );
 		SendMessage(hFPR[ count + 22 ],WM_SETFONT, (WPARAM)GetStockObject(DEFAULT_GUI_FONT),0);
+	}
+}
+
+void SetupR4300iCOP1SPanel(HWND hDlg) {
+	int count;
+
+	for (count = 0; count < 11; count++) {
+		hCOP1S[count] = CreateWindowEx(WS_EX_CLIENTEDGE, "EDIT", "", WS_CHILD |
+			ES_READONLY | WS_BORDER | WS_TABSTOP, 90, (count * 20) + 50, 135, 19,
+			hDlg, 0, hInst, NULL);
+		SendMessage(hCOP1S[count], WM_SETFONT, (WPARAM)GetStockObject(DEFAULT_GUI_FONT), 0);
+
+	}
+	for (count = 0; count < 11; count++) {
+		hCOP1S[count + 11] = CreateWindowEx(WS_EX_CLIENTEDGE, "EDIT", "", WS_CHILD |
+			ES_READONLY | WS_BORDER | WS_TABSTOP, 300, (count * 20) + 50, 135, 19,
+			hDlg, 0, hInst, NULL);
+		SendMessage(hCOP1S[count + 11], WM_SETFONT, (WPARAM)GetStockObject(DEFAULT_GUI_FONT), 0);
+	}
+	for (count = 0; count < 10; count++) {
+		hCOP1S[count + 22] = CreateWindowEx(WS_EX_CLIENTEDGE, "EDIT", "", WS_CHILD |
+			ES_READONLY | WS_BORDER | WS_TABSTOP, 510, (count * 20) + 50, 135, 19,
+			hDlg, 0, hInst, NULL);
+		SendMessage(hCOP1S[count + 22], WM_SETFONT, (WPARAM)GetStockObject(DEFAULT_GUI_FONT), 0);
+	}
+}
+
+void SetupR4300iCOP1DPanel(HWND hDlg) {
+	int count;
+
+	for (count = 0; count < 11; count++) {
+		hCOP1D[count] = CreateWindowEx(WS_EX_CLIENTEDGE, "EDIT", "", WS_CHILD |
+			ES_READONLY | WS_BORDER | WS_TABSTOP, 90, (count * 20) + 50, 135, 19,
+			hDlg, 0, hInst, NULL);
+		SendMessage(hCOP1D[count], WM_SETFONT, (WPARAM)GetStockObject(DEFAULT_GUI_FONT), 0);
+
+	}
+	for (count = 0; count < 11; count++) {
+		hCOP1D[count + 11] = CreateWindowEx(WS_EX_CLIENTEDGE, "EDIT", "", WS_CHILD |
+			ES_READONLY | WS_BORDER | WS_TABSTOP, 300, (count * 20) + 50, 135, 19,
+			hDlg, 0, hInst, NULL);
+		SendMessage(hCOP1D[count + 11], WM_SETFONT, (WPARAM)GetStockObject(DEFAULT_GUI_FONT), 0);
+	}
+	for (count = 0; count < 10; count++) {
+		hCOP1D[count + 22] = CreateWindowEx(WS_EX_CLIENTEDGE, "EDIT", "", WS_CHILD |
+			ES_READONLY | WS_BORDER | WS_TABSTOP, 510, (count * 20) + 50, 135, 19,
+			hDlg, 0, hInst, NULL);
+		SendMessage(hCOP1D[count + 22], WM_SETFONT, (WPARAM)GetStockObject(DEFAULT_GUI_FONT), 0);
+	}
+}
+
+void SetupR4300iCOP1WPanel(HWND hDlg) {
+	int count;
+
+	for (count = 0; count < 11; count++) {
+		hCOP1W[count] = CreateWindowEx(WS_EX_CLIENTEDGE, "EDIT", "", WS_CHILD |
+			ES_READONLY | WS_BORDER | WS_TABSTOP, 90, (count * 20) + 50, 135, 19,
+			hDlg, 0, hInst, NULL);
+		SendMessage(hCOP1W[count], WM_SETFONT, (WPARAM)GetStockObject(DEFAULT_GUI_FONT), 0);
+
+	}
+	for (count = 0; count < 11; count++) {
+		hCOP1W[count + 11] = CreateWindowEx(WS_EX_CLIENTEDGE, "EDIT", "", WS_CHILD |
+			ES_READONLY | WS_BORDER | WS_TABSTOP, 300, (count * 20) + 50, 135, 19,
+			hDlg, 0, hInst, NULL);
+		SendMessage(hCOP1W[count + 11], WM_SETFONT, (WPARAM)GetStockObject(DEFAULT_GUI_FONT), 0);
+	}
+	for (count = 0; count < 10; count++) {
+		hCOP1W[count + 22] = CreateWindowEx(WS_EX_CLIENTEDGE, "EDIT", "", WS_CHILD |
+			ES_READONLY | WS_BORDER | WS_TABSTOP, 510, (count * 20) + 50, 135, 19,
+			hDlg, 0, hInst, NULL);
+		SendMessage(hCOP1W[count + 22], WM_SETFONT, (WPARAM)GetStockObject(DEFAULT_GUI_FONT), 0);
+	}
+}
+
+void SetupR4300iCOP1LPanel(HWND hDlg) {
+	int count;
+
+	for (count = 0; count < 11; count++) {
+		hCOP1L[count] = CreateWindowEx(WS_EX_CLIENTEDGE, "EDIT", "", WS_CHILD |
+			ES_READONLY | WS_BORDER | WS_TABSTOP, 90, (count * 20) + 50, 135, 19,
+			hDlg, 0, hInst, NULL);
+		SendMessage(hCOP1L[count], WM_SETFONT, (WPARAM)GetStockObject(DEFAULT_GUI_FONT), 0);
+
+	}
+	for (count = 0; count < 11; count++) {
+		hCOP1L[count + 11] = CreateWindowEx(WS_EX_CLIENTEDGE, "EDIT", "", WS_CHILD |
+			ES_READONLY | WS_BORDER | WS_TABSTOP, 300, (count * 20) + 50, 135, 19,
+			hDlg, 0, hInst, NULL);
+		SendMessage(hCOP1L[count + 11], WM_SETFONT, (WPARAM)GetStockObject(DEFAULT_GUI_FONT), 0);
+	}
+	for (count = 0; count < 10; count++) {
+		hCOP1L[count + 22] = CreateWindowEx(WS_EX_CLIENTEDGE, "EDIT", "", WS_CHILD |
+			ES_READONLY | WS_BORDER | WS_TABSTOP, 510, (count * 20) + 50, 135, 19,
+			hDlg, 0, hInst, NULL);
+		SendMessage(hCOP1L[count + 22], WM_SETFONT, (WPARAM)GetStockObject(DEFAULT_GUI_FONT), 0);
 	}
 }
 
@@ -931,39 +1283,55 @@ void SetupR4300iRegistersMain (HWND hDlg) {
 		TabCtrl_InsertItem( hTab,1, &item);	
 		item.lParam  = FloatingRegisters;
 		item.pszText = " floating-point Registers ";
-		TabCtrl_InsertItem( hTab,2, &item);	
+		TabCtrl_InsertItem( hTab,2, &item);
+		item.lParam = COP1SRegisters;
+		item.pszText = " COP1.S ";
+		TabCtrl_InsertItem(hTab, 3, &item);
+		item.lParam = COP1DRegisters;
+		item.pszText = " COP1.D ";
+		TabCtrl_InsertItem(hTab, 4, &item);
+		item.lParam = COP1WRegisters;
+		item.pszText = " COP1.W ";
+		TabCtrl_InsertItem(hTab, 5, &item);
+		item.lParam = COP1LRegisters;
+		item.pszText = " COP1.L ";
+		TabCtrl_InsertItem(hTab, 6, &item);
 		item.lParam  = SpecialRegister;
 		item.pszText = " Special Registers ";
-		TabCtrl_InsertItem( hTab,3, &item);	
+		TabCtrl_InsertItem( hTab,7, &item);	
 		item.lParam  = RDRAMRegisters;
 		item.pszText = " RDRAM Registers ";
-		TabCtrl_InsertItem( hTab,4, &item);	
+		TabCtrl_InsertItem( hTab,8, &item);	
 		item.lParam  = SPRegisters;
 		item.pszText = " SP Registers ";
-		TabCtrl_InsertItem( hTab,5, &item);	
+		TabCtrl_InsertItem( hTab,9, &item);	
 		item.lParam  = MIPSInterface;
 		item.pszText = " MIPS Interface ";
-		TabCtrl_InsertItem( hTab,6, &item);
+		TabCtrl_InsertItem( hTab,10, &item);
 		item.lParam  = VideoInterface  ;
 		item.pszText = " Video Interface   ";
-		TabCtrl_InsertItem( hTab,7, &item);	
+		TabCtrl_InsertItem( hTab,11, &item);	
 		item.lParam  = AudioInterface ;
 		item.pszText = " Audio Interface  ";
-		TabCtrl_InsertItem( hTab,8, &item);	
+		TabCtrl_InsertItem( hTab,12, &item);	
 		item.lParam  = PeripheralInterface;
 		item.pszText = " Peripheral Interface ";
-		TabCtrl_InsertItem( hTab,9, &item);	
+		TabCtrl_InsertItem( hTab,13, &item);	
 		item.lParam  = RDRAMInterface;
 		item.pszText = " RDRAM Interface ";
-		TabCtrl_InsertItem( hTab,10, &item);	
+		TabCtrl_InsertItem( hTab,14, &item);	
 		item.lParam  = SerialInterface;
 		item.pszText = " Serial Interface ";
-		TabCtrl_InsertItem( hTab,11, &item);	
+		TabCtrl_InsertItem( hTab,15, &item);	
 	}
 	
 	SetupR4300iAIPanel ( hDlg );
 	SetupR4300iCP0Panel ( hDlg );
 	SetupR4300iFPRPanel ( hDlg );
+	SetupR4300iCOP1SPanel( hDlg );
+	SetupR4300iCOP1DPanel( hDlg );
+	SetupR4300iCOP1WPanel( hDlg );
+	SetupR4300iCOP1LPanel( hDlg );
 	SetupR4300iGPRPanel ( hDlg );
 	SetupR4300iMIPanel ( hDlg );
 	SetupR4300iRDRamPanel ( hDlg );
@@ -1000,6 +1368,18 @@ void ShowR4300iRegisterPanel ( int Panel) {
 		break;
 	case FloatingRegisters:
 		for (count = 0; count < 32;count ++) { ShowWindow(hFPR[count],TRUE); }
+		break;
+	case COP1SRegisters:
+		for (count = 0; count < 32; count++) { ShowWindow(hCOP1S[count], TRUE); }
+		break;
+	case COP1DRegisters:
+		for (count = 0; count < 32; count++) { ShowWindow(hCOP1D[count], TRUE); }
+		break;
+	case COP1WRegisters:
+		for (count = 0; count < 32; count++) { ShowWindow(hCOP1W[count], TRUE); }
+		break;
+	case COP1LRegisters:
+		for (count = 0; count < 32; count++) { ShowWindow(hCOP1L[count], TRUE); }
 		break;
 	case SpecialRegister:
 		for (count = 0; count < 6;count ++) { ShowWindow(hSpecial[count],TRUE); }
@@ -1076,6 +1456,80 @@ void __cdecl UpdateCurrentR4300iRegisterPanel ( void ) {
 				sprintf(RegisterValue," 0x%08X - %08X",FPR[count].W[1],FPR[count].W[0]);
 				if ( strcmp( RegisterValue, OldWinText) != 0 ) {
 					SetWindowText(hFPR[count],RegisterValue);
+				}
+			}
+			break;
+		case COP1SRegisters:
+			for (count = 0; count < 32; count++) {
+				GetWindowText(hCOP1S[count], OldWinText, 60);
+				if ((STATUS_REGISTER & STATUS_FR) == 0 && (count & 1) == 1) { // odd not alowed in half mode
+					sprintf(RegisterValue, " -");
+				}
+				else if (IsSubNormal_S(*(DWORD*)FPRFloatLoadStoreLocation[count])) {
+					sprintf(RegisterValue, " subnormal");
+				}
+				else if (IsNAN_S(*(DWORD*)FPRFloatLoadStoreLocation[count])) {
+					sprintf(RegisterValue, " NAN");
+				}
+				else if (IsQNAN_S(*(DWORD*)FPRFloatLoadStoreLocation[count])) {
+					sprintf(RegisterValue, " quiet NAN");
+				}
+				else {
+					snprintf(RegisterValue, 50, " %f", *(float*)FPRFloatLoadStoreLocation[count]);
+				}
+				if (strcmp(RegisterValue, OldWinText) != 0) {
+					SetWindowText(hCOP1S[count], RegisterValue);
+				}
+			}
+			break;
+		case COP1DRegisters:
+			for (count = 0; count < 32; count++) {
+				GetWindowText(hCOP1D[count], OldWinText, 60);
+				if ((STATUS_REGISTER & STATUS_FR) == 0 && (count & 1) == 1) { // odd not alowed in half mode
+					sprintf(RegisterValue, " -");
+				}
+				else if (IsSubNormal_D(*(QWORD*)FPRDoubleLocation[count])) {
+					sprintf(RegisterValue, " subnormal");
+				}
+				else if (IsNAN_D(*(QWORD*)FPRDoubleLocation[count])) {
+					sprintf(RegisterValue, " NAN");
+				}
+				else if (IsQNAN_D(*(QWORD*)FPRDoubleLocation[count])) {
+					sprintf(RegisterValue, " quiet NAN");
+				}
+				else {
+					snprintf(RegisterValue, 50, " %lf", *(double*)FPRDoubleLocation[count]);
+				}
+				if (strcmp(RegisterValue, OldWinText) != 0) {
+					SetWindowText(hCOP1D[count], RegisterValue);
+				}
+			}
+			break;
+		case COP1WRegisters:
+			for (count = 0; count < 32; count++) {
+				GetWindowText(hCOP1W[count], OldWinText, 60);
+				if ((STATUS_REGISTER & STATUS_FR) == 0 && (count & 1) == 1) { // odd not alowed in half mode
+					sprintf(RegisterValue, " -");
+				}
+				else {
+					sprintf(RegisterValue, " %d", *(DWORD*)FPRFloatLoadStoreLocation[count]);
+				}
+				if (strcmp(RegisterValue, OldWinText) != 0) {
+					SetWindowText(hCOP1W[count], RegisterValue);
+				}
+			}
+			break;
+		case COP1LRegisters:
+			for (count = 0; count < 32; count++) {
+				GetWindowText(hCOP1L[count], OldWinText, 60);
+				if ((STATUS_REGISTER & STATUS_FR) == 0 && (count & 1) == 1) { // odd not alowed in half mode
+					sprintf(RegisterValue, " -");
+				}
+				else {
+					sprintf(RegisterValue, " %lld", *(QWORD*)FPRDoubleLocation[count]);
+				}
+				if (strcmp(RegisterValue, OldWinText) != 0) {
+					SetWindowText(hCOP1L[count], RegisterValue);
 				}
 			}
 			break;

@@ -393,3 +393,19 @@ void UpdateFieldSerration     ( int interlaced );
 void WriteBackRegisters       ( BLOCK_SECTION * Section );
 
 BOOL IsSignExtended(MIPS_DWORD v);
+
+#define EXPONENT_MASK_S 0x7F800000
+#define MANTISSA_MASK_S 0x007FFFFF
+#define QNAN_MASK_S     0x7FC00000
+
+#define IsSubNormal_S(v) ((v & EXPONENT_MASK_S) == 0 && (v & MANTISSA_MASK_S) != 0)
+#define IsNAN_S(v) ((v & EXPONENT_MASK_S) == EXPONENT_MASK_S && (v & MANTISSA_MASK_S) != 0)
+#define IsQNAN_S(v) ((v & QNAN_MASK_S) == QNAN_MASK_S)
+
+#define EXPONENT_MASK_D 0x7FF0000000000000LL
+#define MANTISSA_MASK_D 0x000FFFFFFFFFFFFFLL
+#define QNAN_MASK_D     0x7FF8000000000000LL
+
+#define IsSubNormal_D(v) ((v & EXPONENT_MASK_D) == 0LL && (v & MANTISSA_MASK_D) != 0LL)
+#define IsNAN_D(v) ((v & EXPONENT_MASK_D) == EXPONENT_MASK_D && (v & MANTISSA_MASK_D) != 0LL)
+#define IsQNAN_D(v) ((v & QNAN_MASK_D) == QNAN_MASK_D)
