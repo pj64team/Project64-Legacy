@@ -75,3 +75,4 @@ void _fastcall DoSysCallException		( BOOL DelaySlot );
 void _fastcall DoBreakException			( BOOL DelaySlot );
 void _fastcall DoIllegalInstructionException(BOOL DelaySlot );
 void _fastcall DoTrapException			( BOOL DelaySlot );
+void _fastcall DoFPException            ( BOOL DelaySlot );

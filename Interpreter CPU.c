@@ -105,7 +105,7 @@ void BuildInterpreter (void ) {
 	R4300i_Opcode[15] = r4300i_LUI;
 	R4300i_Opcode[16] = R4300i_opcode_COP0;
 	R4300i_Opcode[17] = R4300i_opcode_COP1;
-	R4300i_Opcode[18] = R4300i_UnknownOpcode;
+	R4300i_Opcode[18] = r4300i_COP2;
 	R4300i_Opcode[19] = R4300i_UnknownOpcode;
 	R4300i_Opcode[20] = r4300i_BEQL;
 	R4300i_Opcode[21] = r4300i_BNEL;

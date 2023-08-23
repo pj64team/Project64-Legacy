@@ -89,6 +89,7 @@ typedef union {
 #define R4300i_LUI					15
 #define	R4300i_CP0					16
 #define	R4300i_CP1					17
+#define R4300i_CP2					18
 #define R4300i_BEQL					20
 #define R4300i_BNEL					21
 #define R4300i_BLEZL				22

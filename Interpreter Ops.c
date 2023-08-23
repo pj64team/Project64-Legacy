@@ -31,7 +31,7 @@
 #include "cpu.h"
 #include "debugger.h"
 
-//#define STOP_ON_UNKNOWN_OPCODE
+#define STOP_ON_UNKNOWN_OPCODE
 
 int RoundingModel = _RC_NEAR;
 
@@ -41,7 +41,6 @@ int RoundingModel = _RC_NEAR;
 	JumpToLocation = PROGRAM_COUNTER;\
 	return;
 
-//#define TEST_COP1_USABLE_EXCEPTION
 #define TEST_COP1_USABLE_EXCEPTION \
 	if ((STATUS_REGISTER & STATUS_CU1) == 0) {\
 		DoCopUnusableException(NextInstruction == JUMP,1);\
@@ -49,6 +48,21 @@ int RoundingModel = _RC_NEAR;
 		JumpToLocation = PROGRAM_COUNTER;\
 		return;\
 	}
+
+/*#define TEST_COP1_FP_EXCEPTION \
+	{ \
+		LogMessage("fpcr31:%x", FPCR[31]); \
+		const DWORD cause = (FPCR[31] >> 12) & 0x3F; \
+		const DWORD enable = ((FPCR[31] >> 7) & 0x1F) | 0x20; \
+			LogMessage("cause:%x", cause); \
+			LogMessage("enable:%x", enable); \
+		if((cause & enable) != 0) { \
+			DoFPException(NextInstruction == JUMP); \
+			NextInstruction = JUMP; \
+			JumpToLocation = PROGRAM_COUNTER; \
+			return; \
+		} \
+	}*/
 
 #define TLB_READ_EXCEPTION(Address) \
 	if (UseTlb) { \
@@ -184,6 +198,14 @@ void _fastcall r4300i_LUI (void) {
 		StackValue = GPR[Opcode.BRANCH.rt].W[0];
 	}
 #endif
+}
+
+void _fastcall r4300i_COP2 (void) {
+	if ((STATUS_REGISTER & STATUS_CU2) == 0) {
+		DoCopUnusableException(NextInstruction == JUMP,2);
+		NextInstruction = JUMP;
+		JumpToLocation = PROGRAM_COUNTER;
+	}
 }
 
 void _fastcall r4300i_BEQL (void) {
@@ -1578,6 +1600,7 @@ void _fastcall r4300i_COP1_DMT (void) {
 void _fastcall r4300i_COP1_CT (void) {
 	TEST_COP1_USABLE_EXCEPTION
 	if (Opcode.FP.fs == 31) {
+		LogMessage("ctc1: %x", GPR[Opcode.BRANCH.rt].W[0]);
 		FPCR[Opcode.FP.fs] = GPR[Opcode.BRANCH.rt].W[0] & 0x183FFFF;
 		switch((FPCR[Opcode.FP.fs] & 3)) {
 		case 0: RoundingModel = _RC_NEAR; break;
@@ -1585,6 +1608,7 @@ void _fastcall r4300i_COP1_CT (void) {
 		case 2: RoundingModel = _RC_UP; break;
 		case 3: RoundingModel = _RC_DOWN; break;
 		}
+		//TEST_COP1_FP_EXCEPTION;
 		return;
 	}
 	if (ShowDebugMessages)

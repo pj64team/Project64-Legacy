@@ -172,6 +172,7 @@
 #define STATUS_FR				0x04000000
 #define STATUS_CU0				0x10000000
 #define STATUS_CU1				0x20000000
+#define STATUS_CU2				0x40000000
 
 #define CAUSE_EXC_CODE			0xFF
 #define CAUSE_IP0				0x100
