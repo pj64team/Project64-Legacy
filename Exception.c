@@ -112,8 +112,7 @@ void DoAddressError ( BOOL DelaySlot, QWORD BadVaddr, BOOL FromRead) {
 	PROGRAM_COUNTER = 0x80000180;
 }
 
-/*void _fastcall DoFPException(BOOL DelaySlot) {
-	LogMessage("DoFPException");
+void _fastcall DoFPException(BOOL DelaySlot) {
 	if (ShowDebugMessages) {
 		if ((STATUS_REGISTER & STATUS_EXL) != 0) {
 			DisplayError("EXL set in Break Exception");
@@ -130,8 +129,9 @@ void DoAddressError ( BOOL DelaySlot, QWORD BadVaddr, BOOL FromRead) {
 	else {
 		EPC_REGISTER = (long)PROGRAM_COUNTER;
 	}
+	STATUS_REGISTER |= STATUS_EXL;
 	PROGRAM_COUNTER = 0x80000180;
-}*/
+}
 
 void _fastcall DoBreakException ( BOOL DelaySlot) {
 	if (ShowDebugMessages) {
