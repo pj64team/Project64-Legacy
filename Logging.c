@@ -411,7 +411,7 @@ void Log_LW (DWORD PC, DWORD VAddr) {
 
 void __cdecl LogMessage (char * Message, ...) {
 	DWORD dwWritten;
-	char Msg[400];
+	char Msg[0x2000];
 	va_list ap;
 
 	if(!HaveDebugger) { return; }
