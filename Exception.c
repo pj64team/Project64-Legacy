@@ -166,6 +166,7 @@ void _fastcall DoCopUnusableException ( BOOL DelaySlot, int Coprocessor ) {
 
 	CAUSE_REGISTER = EXC_CPU;
 	if (Coprocessor == 1) { CAUSE_REGISTER |= 0x10000000; }
+	else if (Coprocessor == 2) { CAUSE_REGISTER |= 0x20000000; }
 	if (DelaySlot) {
 		CAUSE_REGISTER |= CAUSE_BD;
 		EPC_REGISTER = PROGRAM_COUNTER - 4;
