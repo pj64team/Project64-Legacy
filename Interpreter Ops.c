@@ -49,7 +49,7 @@ int RoundingModel = _RC_NEAR;
 		return;\
 	}
 
-#define TEST_COP1_FP_EXCEPTION \
+#define TEST_COP1_FP_EXCEPTION() \
 	{ \
 		const DWORD cause = (FPCR[31] >> 12) & 0x3F; \
 		const DWORD enable = ((FPCR[31] >> 7) & 0x1F) | 0x20; \
@@ -75,6 +75,21 @@ int RoundingModel = _RC_NEAR;
 		NextInstruction = JUMP;\
 		JumpToLocation = PROGRAM_COUNTER;\
 		return; \
+	}
+
+#define CLEAR_COP1_CAUSE() \
+	{ \
+		FPCR[31] &= 0xFFFFC0FFF; \
+	}
+
+#define SET_COP1_CAUSE(cause) \
+	{ \
+		FPCR[31] |= ((cause) << 12); \
+	}
+
+#define SET_COP1_FLAGS(cause) \
+	{ \
+		FPCR[31] |= ((cause) << 2); \
 	}
 
 /************************* OpCode functions *************************/
@@ -1604,7 +1619,7 @@ void _fastcall r4300i_COP1_CT (void) {
 		case 2: RoundingModel = _RC_UP; break;
 		case 3: RoundingModel = _RC_DOWN; break;
 		}
-		TEST_COP1_FP_EXCEPTION;
+		TEST_COP1_FP_EXCEPTION();
 		return;
 	}
 	if (ShowDebugMessages)
@@ -1672,10 +1687,28 @@ __inline void Float_RoundToInteger64( __int64 * Dest, float * Source ) {
 	}
 }
 
+__inline DWORD getCop1Cause() {
+	DWORD status = _statusfp();
+	DWORD cause = 0;
+	if (status) {
+		if (status & _EM_INEXACT) {
+			cause |= 1;
+		}
+	}
+	return cause;
+}
+
 void _fastcall r4300i_COP1_S_ADD (void) {
 	TEST_COP1_USABLE_EXCEPTION
+	CLEAR_COP1_CAUSE();
 	_controlfp(RoundingModel,_MCW_RC);
-	*(float *)FPRFloatOtherLocation[Opcode.FP.fd] = (*(float *)FPRFloatFSLocation[Opcode.FP.fs] + *(float *)FPRFloatOtherLocation[Opcode.FP.ft]);
+	_clearfp();
+	float result = (*(float *)FPRFloatFSLocation[Opcode.FP.fs] + *(float *)FPRFloatOtherLocation[Opcode.FP.ft]);
+	DWORD cause = getCop1Cause();
+	SET_COP1_CAUSE(cause);
+	TEST_COP1_FP_EXCEPTION();
+	SET_COP1_FLAGS(cause);
+	*(float*)FPRFloatOtherLocation[Opcode.FP.fd] = result;
 	*(long *)FPRFloatUpperHalfLocation[Opcode.FP.fd] = 0;
 }
 
