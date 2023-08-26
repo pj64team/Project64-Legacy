@@ -35,6 +35,12 @@
 
 int RoundingModel = _RC_NEAR;
 
+#define CAUSE_INEXACT       0x01
+#define CAUSE_UNDERFLOW     0x02
+#define CAUSE_OVERFLOW      0x04
+#define CAUSE_INVALID       0x10
+#define CAUSE_UNIMPLEMENTED 0x20
+
 #define ADDRESS_ERROR_EXCEPTION(Address,FromRead) \
 	DoAddressError(NextInstruction == JUMP,Address,FromRead);\
 	NextInstruction = JUMP;\
@@ -84,7 +90,11 @@ int RoundingModel = _RC_NEAR;
 
 #define SET_COP1_CAUSE(cause) \
 	{ \
-		FPCR[31] |= ((cause) << 12); \
+		if(cause & CAUSE_UNIMPLEMENTED) { \
+			FPCR[31] |= (((cause) & CAUSE_UNIMPLEMENTED) << 12); \
+		} else { \
+			FPCR[31] |= ((cause) << 12); \
+		} \
 	}
 
 #define SET_COP1_FLAGS(cause) \
@@ -1687,12 +1697,69 @@ __inline void Float_RoundToInteger64( __int64 * Dest, float * Source ) {
 	}
 }
 
-__inline DWORD getCop1Cause() {
+__inline DWORD getCop1SArgCause(DWORD* v) {
+	DWORD cause = 0;
+	if (IsSubNormal_S(*v)) {
+		cause |= CAUSE_UNIMPLEMENTED;
+	}
+	else if (IsQNAN_S(*v)) {
+		cause |= CAUSE_INVALID;
+	}
+	else if (IsNAN_S(*v)) {
+		cause |= CAUSE_UNIMPLEMENTED;
+	}
+	return cause;
+}
+
+__inline DWORD getCop1SCause(float* res) {
 	DWORD status = _statusfp();
 	DWORD cause = 0;
 	if (status) {
 		if (status & _EM_INEXACT) {
-			cause |= 1;
+			cause |= CAUSE_INEXACT;
+		}
+		if (status & _EM_OVERFLOW) {
+			cause |= CAUSE_OVERFLOW;
+		}
+		if (status & _EM_INVALID) {
+			cause |= CAUSE_INVALID;
+			*(DWORD*)res = NAN_S;
+		}
+	}
+	if (IsNAN_S(*(DWORD*)res)) {
+		*(DWORD*)res = NAN_S;
+	}
+	if (IsSubNormal_S(*(DWORD*)res)) {
+		if ((FPCR[31] & FPCSR_FS) == 0 || (FPCR[31] & FPCSR_EU) || (FPCR[31] & FPCSR_EI)) {
+			cause |= CAUSE_UNIMPLEMENTED;
+		}
+		else {
+			cause |= CAUSE_UNDERFLOW | CAUSE_INEXACT;
+
+			switch (FPCR[31] & FPCSR_RM_MASK) {
+			case FPCSR_RM_RN:
+			case FPCSR_RM_RZ:
+				*(DWORD*)res &= 0x80000000; // only keep the sign
+				break;
+
+			case FPCSR_RM_RP:
+				if ((*(DWORD*)res & 0x80000000) != 0) {
+					*(DWORD*)res = 0x80000000; // -0.0
+				}
+				else {
+					*(DWORD*)res = 0x00800000; // min float
+				}
+				break;
+
+			case FPCSR_RM_RM:
+				if ((*(DWORD*)res & 0x80000000) != 0) {
+					*(DWORD*)res = 0x80800000; // -min float
+				}
+				else {
+					*(DWORD*)res = 0; // 0.0
+				}
+				break;
+			}
 		}
 	}
 	return cause;
@@ -1703,8 +1770,12 @@ void _fastcall r4300i_COP1_S_ADD (void) {
 	CLEAR_COP1_CAUSE();
 	_controlfp(RoundingModel,_MCW_RC);
 	_clearfp();
+	DWORD cause = getCop1SArgCause((DWORD*)FPRFloatFSLocation[Opcode.FP.fs]);
+	cause |= getCop1SArgCause((DWORD*)FPRFloatOtherLocation[Opcode.FP.ft]);
+	SET_COP1_CAUSE(cause);
+	TEST_COP1_FP_EXCEPTION();
 	float result = (*(float *)FPRFloatFSLocation[Opcode.FP.fs] + *(float *)FPRFloatOtherLocation[Opcode.FP.ft]);
-	DWORD cause = getCop1Cause();
+	cause |= getCop1SCause(&result);
 	SET_COP1_CAUSE(cause);
 	TEST_COP1_FP_EXCEPTION();
 	SET_COP1_FLAGS(cause);
