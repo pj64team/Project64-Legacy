@@ -2006,12 +2006,16 @@ __inline DWORD getCop1DArgCause(QWORD* v) {
 __inline DWORD getCop1DCause(double* res) {
 	DWORD status = _statusfp();
 	DWORD cause = 0;
+	int underflow = 0;
 	if (status) {
 		if (status & _EM_INEXACT) {
 			cause |= CAUSE_INEXACT;
 		}
 		if (status & _EM_OVERFLOW) {
 			cause |= CAUSE_OVERFLOW;
+		}
+		if (status & _EM_UNDERFLOW) {
+			underflow = 1;
 		}
 		if (status & _EM_INVALID) {
 			cause |= CAUSE_INVALID;
@@ -2020,7 +2024,7 @@ __inline DWORD getCop1DCause(double* res) {
 	if (IsNAN_D(*(QWORD*)res)) {
 		*(QWORD*)res = NAN_D;
 	}
-	if (IsSubNormal_D(*(QWORD*)res)) {
+	if (IsSubNormal_D(*(QWORD*)res) || underflow) {
 		if ((FPCR[31] & FPCSR_FS) == 0 || (FPCR[31] & FPCSR_EU) || (FPCR[31] & FPCSR_EI)) {
 			cause |= CAUSE_UNIMPLEMENTED;
 		}
@@ -2090,7 +2094,18 @@ void _fastcall r4300i_COP1_D_SUB (void) {
 
 void _fastcall r4300i_COP1_D_MUL (void) {
 	TEST_COP1_USABLE_EXCEPTION
-	*(double *)FPRDoubleFTFDLocation[Opcode.FP.fd] = *(double *)FPRDoubleLocation[Opcode.FP.fs] * *(double *)FPRDoubleFTFDLocation[Opcode.FP.ft]; 
+	CLEAR_COP1_CAUSE();
+	_clearfp();
+	DWORD cause = getCop1DArgCause((QWORD*)FPRDoubleLocation[Opcode.FP.fs]);
+	cause |= getCop1DArgCause((QWORD*)FPRDoubleFTFDLocation[Opcode.FP.ft]);
+	SET_COP1_CAUSE(cause);
+	TEST_COP1_FP_EXCEPTION();
+	double result = *(double *)FPRDoubleLocation[Opcode.FP.fs] * *(double *)FPRDoubleFTFDLocation[Opcode.FP.ft];
+	cause |= getCop1DCause(&result);
+	SET_COP1_CAUSE(cause);
+	TEST_COP1_FP_EXCEPTION();
+	SET_COP1_FLAGS(cause);
+	*(double*)FPRDoubleFTFDLocation[Opcode.FP.fd] = result;
 }
 
 void _fastcall r4300i_COP1_D_DIV (void) {
