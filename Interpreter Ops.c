@@ -1962,9 +1962,87 @@ __inline void Double_RoundToInteger64( __int64 * Dest, double * Source ) {
 	}
 }
 
+__inline DWORD getCop1DArgCause(QWORD* v) {
+	DWORD cause = 0;
+	if (IsSubNormal_D(*v)) {
+		cause |= CAUSE_UNIMPLEMENTED;
+	}
+	else if (IsQNAN_D(*v)) {
+		cause |= CAUSE_INVALID;
+	}
+	else if (IsNAN_D(*v)) {
+		cause |= CAUSE_UNIMPLEMENTED;
+	}
+	return cause;
+}
+
+__inline DWORD getCop1DCause(double* res) {
+	DWORD status = _statusfp();
+	DWORD cause = 0;
+	if (status) {
+		if (status & _EM_INEXACT) {
+			cause |= CAUSE_INEXACT;
+		}
+		if (status & _EM_OVERFLOW) {
+			cause |= CAUSE_OVERFLOW;
+		}
+		if (status & _EM_INVALID) {
+			cause |= CAUSE_INVALID;
+		}
+	}
+	if (IsNAN_D(*(QWORD*)res)) {
+		*(QWORD*)res = NAN_D;
+	}
+	if (IsSubNormal_D(*(QWORD*)res)) {
+		if ((FPCR[31] & FPCSR_FS) == 0 || (FPCR[31] & FPCSR_EU) || (FPCR[31] & FPCSR_EI)) {
+			cause |= CAUSE_UNIMPLEMENTED;
+		}
+		else {
+			cause |= CAUSE_UNDERFLOW | CAUSE_INEXACT;
+
+			switch (FPCR[31] & FPCSR_RM_MASK) {
+			case FPCSR_RM_RN:
+			case FPCSR_RM_RZ:
+				*(QWORD*)res &= 0x8000000000000000LL; // only keep the sign
+				break;
+
+			case FPCSR_RM_RP:
+				if ((*(QWORD*)res & 0x8000000000000000LL) != 0LL) {
+					*(QWORD*)res = 0x8000000000000000LL; // -0.0
+				}
+				else {
+					*(QWORD*)res = 0x0010000000000000LL; // min double
+				}
+				break;
+
+			case FPCSR_RM_RM:
+				if ((*(QWORD*)res & 0x8000000000000000LL) != 0LL) {
+					*(QWORD*)res = 0x8010000000000000LL; // -min double
+				}
+				else {
+					*(QWORD*)res = 0; // 0.0
+				}
+				break;
+			}
+		}
+	}
+	return cause;
+}
+
 void _fastcall r4300i_COP1_D_ADD (void) {
 	TEST_COP1_USABLE_EXCEPTION
-	*(double *)FPRDoubleFTFDLocation[Opcode.FP.fd] = *(double *)FPRDoubleLocation[Opcode.FP.fs] + *(double *)FPRDoubleFTFDLocation[Opcode.FP.ft]; 
+	CLEAR_COP1_CAUSE();
+	_clearfp();
+	DWORD cause = getCop1DArgCause((QWORD*)FPRDoubleLocation[Opcode.FP.fs]);
+	cause |= getCop1DArgCause((QWORD*)FPRDoubleFTFDLocation[Opcode.FP.ft]);
+	SET_COP1_CAUSE(cause);
+	TEST_COP1_FP_EXCEPTION();
+	double result = *(double *)FPRDoubleLocation[Opcode.FP.fs] + *(double *)FPRDoubleFTFDLocation[Opcode.FP.ft];
+	cause |= getCop1DCause(&result);
+	SET_COP1_CAUSE(cause);
+	TEST_COP1_FP_EXCEPTION();
+	SET_COP1_FLAGS(cause);
+	*(double*)FPRDoubleFTFDLocation[Opcode.FP.fd] = result;
 }
 
 void _fastcall r4300i_COP1_D_SUB (void) {

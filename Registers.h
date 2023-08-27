@@ -396,6 +396,7 @@ void WriteBackRegisters       ( BLOCK_SECTION * Section );
 BOOL IsSignExtended(MIPS_DWORD v);
 
 #define NAN_S 0x7FBFFFFF
+#define NAN_D 0x7FF7FFFFFFFFFFFF
 
 #define EXPONENT_MASK_S 0x7F800000
 #define MANTISSA_MASK_S 0x007FFFFF
