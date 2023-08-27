@@ -2058,7 +2058,18 @@ void _fastcall r4300i_COP1_D_ADD (void) {
 
 void _fastcall r4300i_COP1_D_SUB (void) {
 	TEST_COP1_USABLE_EXCEPTION
-	*(double *)FPRDoubleFTFDLocation[Opcode.FP.fd] = *(double *)FPRDoubleLocation[Opcode.FP.fs] - *(double *)FPRDoubleFTFDLocation[Opcode.FP.ft]; 
+	CLEAR_COP1_CAUSE();
+	_clearfp();
+	DWORD cause = getCop1DArgCause((QWORD*)FPRDoubleLocation[Opcode.FP.fs]);
+	cause |= getCop1DArgCause((QWORD*)FPRDoubleFTFDLocation[Opcode.FP.ft]);
+	SET_COP1_CAUSE(cause);
+	TEST_COP1_FP_EXCEPTION();
+	double result = *(double *)FPRDoubleLocation[Opcode.FP.fs] - *(double *)FPRDoubleFTFDLocation[Opcode.FP.ft];
+	cause |= getCop1DCause(&result);
+	SET_COP1_CAUSE(cause);
+	TEST_COP1_FP_EXCEPTION();
+	SET_COP1_FLAGS(cause);
+	*(double*)FPRDoubleFTFDLocation[Opcode.FP.fd] = result;
 }
 
 void _fastcall r4300i_COP1_D_MUL (void) {
