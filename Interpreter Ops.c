@@ -1785,8 +1785,19 @@ void _fastcall r4300i_COP1_S_ADD (void) {
 
 void _fastcall r4300i_COP1_S_SUB (void) {
 	TEST_COP1_USABLE_EXCEPTION
+	CLEAR_COP1_CAUSE();
 	_controlfp(RoundingModel,_MCW_RC);
-	*(float *)FPRFloatOtherLocation[Opcode.FP.fd] = (*(float *)FPRFloatFSLocation[Opcode.FP.fs] - *(float *)FPRFloatOtherLocation[Opcode.FP.ft]);
+	_clearfp();
+	DWORD cause = getCop1SArgCause((DWORD*)FPRFloatFSLocation[Opcode.FP.fs]);
+	cause |= getCop1SArgCause((DWORD*)FPRFloatOtherLocation[Opcode.FP.ft]);
+	SET_COP1_CAUSE(cause);
+	TEST_COP1_FP_EXCEPTION();
+	float result = (*(float *)FPRFloatFSLocation[Opcode.FP.fs] - *(float *)FPRFloatOtherLocation[Opcode.FP.ft]);
+	cause |= getCop1SCause(&result);
+	SET_COP1_CAUSE(cause);
+	TEST_COP1_FP_EXCEPTION();
+	SET_COP1_FLAGS(cause);
+	*(float*)FPRFloatOtherLocation[Opcode.FP.fd] = result;
 	*(long*)FPRFloatUpperHalfLocation[Opcode.FP.fd] = 0;
 }
 
