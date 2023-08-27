@@ -1714,12 +1714,16 @@ __inline DWORD getCop1SArgCause(DWORD* v) {
 __inline DWORD getCop1SCause(float* res) {
 	DWORD status = _statusfp();
 	DWORD cause = 0;
+	int underflow = 0;
 	if (status) {
 		if (status & _EM_INEXACT) {
 			cause |= CAUSE_INEXACT;
 		}
 		if (status & _EM_OVERFLOW) {
 			cause |= CAUSE_OVERFLOW;
+		}
+		if (status & _EM_UNDERFLOW) {
+			underflow = 1;
 		}
 		if (status & _EM_INVALID) {
 			cause |= CAUSE_INVALID;
@@ -1729,7 +1733,8 @@ __inline DWORD getCop1SCause(float* res) {
 	if (IsNAN_S(*(DWORD*)res)) {
 		*(DWORD*)res = NAN_S;
 	}
-	if (IsSubNormal_S(*(DWORD*)res)) {
+	
+	if (IsSubNormal_S(*(DWORD*)res) || underflow) {
 		if ((FPCR[31] & FPCSR_FS) == 0 || (FPCR[31] & FPCSR_EU) || (FPCR[31] & FPCSR_EI)) {
 			cause |= CAUSE_UNIMPLEMENTED;
 		}
@@ -1803,8 +1808,19 @@ void _fastcall r4300i_COP1_S_SUB (void) {
 
 void _fastcall r4300i_COP1_S_MUL (void) {
 	TEST_COP1_USABLE_EXCEPTION
+	CLEAR_COP1_CAUSE();
 	_controlfp(RoundingModel,_MCW_RC);
-	*(float*)FPRFloatOtherLocation[Opcode.FP.fd] = (*(float*)FPRFloatFSLocation[Opcode.FP.fs] * *(float*)FPRFloatOtherLocation[Opcode.FP.ft]);
+	_clearfp();
+	DWORD cause = getCop1SArgCause((DWORD*)FPRFloatFSLocation[Opcode.FP.fs]);
+	cause |= getCop1SArgCause((DWORD*)FPRFloatOtherLocation[Opcode.FP.ft]);
+	SET_COP1_CAUSE(cause);
+	TEST_COP1_FP_EXCEPTION();
+	float result = (*(float*)FPRFloatFSLocation[Opcode.FP.fs] * *(float*)FPRFloatOtherLocation[Opcode.FP.ft]);
+	cause |= getCop1SCause(&result);
+	SET_COP1_CAUSE(cause);
+	TEST_COP1_FP_EXCEPTION();
+	SET_COP1_FLAGS(cause);
+	*(float*)FPRFloatOtherLocation[Opcode.FP.fd] = result;
 	*(long*)FPRFloatUpperHalfLocation[Opcode.FP.fd] = 0;
 }
 
