@@ -38,6 +38,7 @@ int RoundingModel = _RC_NEAR;
 #define CAUSE_INEXACT       0x01
 #define CAUSE_UNDERFLOW     0x02
 #define CAUSE_OVERFLOW      0x04
+#define CAUSE_DIVBYZERO     0x08
 #define CAUSE_INVALID       0x10
 #define CAUSE_UNIMPLEMENTED 0x20
 
@@ -1725,6 +1726,9 @@ __inline DWORD getCop1SCause(float* res) {
 		if (status & _EM_UNDERFLOW) {
 			underflow = 1;
 		}
+		if (status & _EM_ZERODIVIDE) {
+			cause |= CAUSE_DIVBYZERO;
+		}
 		if (status & _EM_INVALID) {
 			cause |= CAUSE_INVALID;
 			*(DWORD*)res = NAN_S;
@@ -1826,14 +1830,20 @@ void _fastcall r4300i_COP1_S_MUL (void) {
 
 void _fastcall r4300i_COP1_S_DIV (void) {
 	TEST_COP1_USABLE_EXCEPTION
+	CLEAR_COP1_CAUSE();
 	_controlfp(RoundingModel,_MCW_RC);
-	*(float *)FPRFloatOtherLocation[Opcode.FP.fd] = (*(float *)FPRFloatFSLocation[Opcode.FP.fs] / *(float *)FPRFloatOtherLocation[Opcode.FP.ft]);
+	_clearfp();
+	DWORD cause = getCop1SArgCause((DWORD*)FPRFloatFSLocation[Opcode.FP.fs]);
+	cause |= getCop1SArgCause((DWORD*)FPRFloatOtherLocation[Opcode.FP.ft]);
+	SET_COP1_CAUSE(cause);
+	TEST_COP1_FP_EXCEPTION();
+	float result = (*(float *)FPRFloatFSLocation[Opcode.FP.fs] / *(float *)FPRFloatOtherLocation[Opcode.FP.ft]);
+	cause |= getCop1SCause(&result);
+	SET_COP1_CAUSE(cause);
+	TEST_COP1_FP_EXCEPTION();
+	SET_COP1_FLAGS(cause);
+	*(float*)FPRFloatOtherLocation[Opcode.FP.fd] = result;
 	*(long*)FPRFloatUpperHalfLocation[Opcode.FP.fd] = 0;
-	
-	// test if denormalize
-	if ((*(int*)FPRFloatOtherLocation[Opcode.FP.fd] & 0x7F800000) == 0) {
-		*(int*)FPRFloatOtherLocation[Opcode.FP.fd] &= 0x80000000;
-	}
 }
 
 void _fastcall r4300i_COP1_S_SQRT (void) {
@@ -2017,6 +2027,9 @@ __inline DWORD getCop1DCause(double* res) {
 		if (status & _EM_UNDERFLOW) {
 			underflow = 1;
 		}
+		if (status & _EM_ZERODIVIDE) {
+			cause |= CAUSE_DIVBYZERO;
+		}
 		if (status & _EM_INVALID) {
 			cause |= CAUSE_INVALID;
 		}
@@ -2110,12 +2123,18 @@ void _fastcall r4300i_COP1_D_MUL (void) {
 
 void _fastcall r4300i_COP1_D_DIV (void) {
 	TEST_COP1_USABLE_EXCEPTION
-	*(double *)FPRDoubleFTFDLocation[Opcode.FP.fd] = *(double *)FPRDoubleLocation[Opcode.FP.fs] / *(double *)FPRDoubleFTFDLocation[Opcode.FP.ft]; 
-
-	// test if denormalize
-	if ((*(int*)FPRDoubleFTFDLocation[Opcode.FP.fd] & 0x7FF00000) == 0) {
-		*(int*)FPRDoubleFTFDLocation[Opcode.FP.fd] &= 0x80000000;
-	}
+	CLEAR_COP1_CAUSE();
+	_clearfp();
+	DWORD cause = getCop1DArgCause((QWORD*)FPRDoubleLocation[Opcode.FP.fs]);
+	cause |= getCop1DArgCause((QWORD*)FPRDoubleFTFDLocation[Opcode.FP.ft]);
+	SET_COP1_CAUSE(cause);
+	TEST_COP1_FP_EXCEPTION();
+	double result = *(double *)FPRDoubleLocation[Opcode.FP.fs] / *(double *)FPRDoubleFTFDLocation[Opcode.FP.ft];
+	cause |= getCop1DCause(&result);
+	SET_COP1_CAUSE(cause);
+	TEST_COP1_FP_EXCEPTION();
+	SET_COP1_FLAGS(cause);
+	*(double*)FPRDoubleFTFDLocation[Opcode.FP.fd] = result;
 }
 
 void _fastcall r4300i_COP1_D_SQRT (void) {
