@@ -1338,7 +1338,6 @@ void _fastcall r4300i_COP0_MT (void) {
 	BOOL unusedRegister = FALSE;
 
 	switch (Opcode.REG.rd) {	
-	case 0: //Index
 	case 2: //EntryLo0
 	case 3: //EntryLo1
 	case 5: //PageMask
@@ -1349,6 +1348,9 @@ void _fastcall r4300i_COP0_MT (void) {
 	case 28: //Tag lo
 	case 29: //Tag Hi
 		CP0[Opcode.REG.rd].UW[0] = GPR[Opcode.BRANCH.rt].UW[0];
+		break;
+	case 0: //Index
+		CP0[Opcode.REG.rd].UW[0] = GPR[Opcode.BRANCH.rt].UW[0] & 0x8000003F;
 		break;
 	case 4: //Context
 		CP0[Opcode.REG.rd].DW = (long)((CP0[Opcode.REG.rd].W[0] & 0x7FFFFF) | (GPR[Opcode.BRANCH.rt].W[0] & 0xFF800000));
@@ -1455,7 +1457,6 @@ void _fastcall r4300i_COP0_DMT(void) {
 	BOOL unusedRegister = FALSE;
 
 	switch (Opcode.REG.rd) {
-	case 0: //Index
 	case 2: //EntryLo0
 	case 3: //EntryLo1
 	case 5: //PageMask
@@ -1466,6 +1467,9 @@ void _fastcall r4300i_COP0_DMT(void) {
 	case 28: //Tag lo
 	case 29: //Tag Hi
 		CP0[Opcode.REG.rd].UW[0] = GPR[Opcode.BRANCH.rt].UW[0];
+		break;
+	case 0: //Index
+		CP0[Opcode.REG.rd].UW[0] = GPR[Opcode.BRANCH.rt].UW[0] & 0x8000003F;
 		break;
 	case 4: //Context
 		CP0[Opcode.REG.rd].UDW = (CP0[Opcode.REG.rd].UDW & 0x7FFFFFLL) | (GPR[Opcode.BRANCH.rt].UDW & 0xFFFFFFFFFF800000LL);
