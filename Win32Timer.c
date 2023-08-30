@@ -31,7 +31,7 @@
 struct {
 	DWORD Frames, LastTime;
 	DOUBLE Ratio;
-} FPSTimer = { 0,0, 1000.0F / 60.0F };
+} FPSTimer = { 0,0, 16.0 /* 1000.0F / 60.0F = 16.0 */ };
 
 void Timer_Initialize(double Hertz) {
 	FPSTimer.Ratio = 1000.0f / Hertz;

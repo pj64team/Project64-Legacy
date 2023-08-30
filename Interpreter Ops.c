@@ -1848,8 +1848,18 @@ void _fastcall r4300i_COP1_S_DIV (void) {
 
 void _fastcall r4300i_COP1_S_SQRT (void) {
 	TEST_COP1_USABLE_EXCEPTION
+	CLEAR_COP1_CAUSE();
 	_controlfp(RoundingModel,_MCW_RC);
-	*(float *)FPRFloatOtherLocation[Opcode.FP.fd] = (float)sqrt(*(float *)FPRFloatFSLocation[Opcode.FP.fs]);
+	_clearfp();
+	DWORD cause = getCop1SArgCause((DWORD*)FPRFloatFSLocation[Opcode.FP.fs]);
+	SET_COP1_CAUSE(cause);
+	TEST_COP1_FP_EXCEPTION();
+	float result = (float)sqrt(*(float*)FPRFloatFSLocation[Opcode.FP.fs]);
+	cause |= getCop1SCause(&result);
+	SET_COP1_CAUSE(cause);
+	TEST_COP1_FP_EXCEPTION();
+	SET_COP1_FLAGS(cause);
+	*(float*)FPRFloatOtherLocation[Opcode.FP.fd] = result;
 	*(long*)FPRFloatUpperHalfLocation[Opcode.FP.fd] = 0;
 }
 
@@ -1877,8 +1887,16 @@ void _fastcall r4300i_COP1_S_MOV (void) {
 
 void _fastcall r4300i_COP1_S_NEG (void) {
 	TEST_COP1_USABLE_EXCEPTION
-	_controlfp(RoundingModel,_MCW_RC);
-	*(float *)FPRFloatOtherLocation[Opcode.FP.fd] = (*(float *)FPRFloatFSLocation[Opcode.FP.fs] * -1.0f);
+	CLEAR_COP1_CAUSE();
+	_controlfp(RoundingModel, _MCW_RC);
+	_clearfp();
+	DWORD cause = getCop1SArgCause((DWORD*)FPRFloatFSLocation[Opcode.FP.fs]);
+	SET_COP1_CAUSE(cause);
+	TEST_COP1_FP_EXCEPTION();
+	float result = (*(float *)FPRFloatFSLocation[Opcode.FP.fs] * -1.0f);
+	getCop1SCause(&result);
+	SET_COP1_FLAGS(cause);
+	*(float*)FPRFloatOtherLocation[Opcode.FP.fd] = result;
 	*(long*)FPRFloatUpperHalfLocation[Opcode.FP.fd] = 0;
 }
 
@@ -2004,6 +2022,16 @@ __inline void Double_RoundToInteger64( __int64 * Dest, double * Source ) {
 		mov edi, [Dest]
 		fld qword ptr [esi]
 		fistp qword ptr [edi]
+	}
+}
+
+__inline void sqrt_fixed(double* Dest, double* Source) {
+	_asm {
+		mov esi, [Source]
+		mov edi, [Dest]
+		fld qword ptr [esi]
+		fsqrt
+		fstp qword ptr [edi]
 	}
 }
 
@@ -2147,7 +2175,18 @@ void _fastcall r4300i_COP1_D_DIV (void) {
 
 void _fastcall r4300i_COP1_D_SQRT (void) {
 	TEST_COP1_USABLE_EXCEPTION
-	*(double *)FPRDoubleFTFDLocation[Opcode.FP.fd] = (double)sqrt(*(double *)FPRDoubleLocation[Opcode.FP.fs]); 
+	CLEAR_COP1_CAUSE();
+	_clearfp();
+	DWORD cause = getCop1DArgCause((QWORD*)FPRDoubleLocation[Opcode.FP.fs]);
+	SET_COP1_CAUSE(cause);
+	TEST_COP1_FP_EXCEPTION();
+	double result;
+	sqrt_fixed(&result, (double*)FPRDoubleLocation[Opcode.FP.fs]);
+	cause |= getCop1DCause(&result);
+	SET_COP1_CAUSE(cause);
+	TEST_COP1_FP_EXCEPTION();
+	SET_COP1_FLAGS(cause);
+	*(double*)FPRDoubleFTFDLocation[Opcode.FP.fd] = result;
 }
 
 void _fastcall r4300i_COP1_D_ABS (void) {
@@ -2170,7 +2209,15 @@ void _fastcall r4300i_COP1_D_MOV (void) {
 
 void _fastcall r4300i_COP1_D_NEG (void) {
 	TEST_COP1_USABLE_EXCEPTION
-	*(double *)FPRDoubleFTFDLocation[Opcode.FP.fd] = (*(double *)FPRDoubleLocation[Opcode.FP.fs] * -1.0);
+	CLEAR_COP1_CAUSE();
+	_clearfp();
+	DWORD cause = getCop1DArgCause((QWORD*)FPRDoubleLocation[Opcode.FP.fs]);
+	SET_COP1_CAUSE(cause);
+	TEST_COP1_FP_EXCEPTION();
+	double result = (*(double *)FPRDoubleLocation[Opcode.FP.fs] * -1.0);
+	getCop1DCause(&result);
+	SET_COP1_FLAGS(cause);
+	*(double*)FPRDoubleFTFDLocation[Opcode.FP.fd] = result;
 }
 
 void _fastcall r4300i_COP1_D_ROUND_L(void) {
