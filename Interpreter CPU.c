@@ -512,7 +512,7 @@ void BuildInterpreter (void ) {
 	R4300i_CoP1_D[30] = R4300i_UnknownOpcode;
 	R4300i_CoP1_D[31] = R4300i_UnknownOpcode;
 	R4300i_CoP1_D[32] = r4300i_COP1_D_CVT_S;
-	R4300i_CoP1_D[33] = R4300i_UnknownOpcode;
+	R4300i_CoP1_D[33] = r4300i_COP1_D_CVT_D;
 	R4300i_CoP1_D[34] = R4300i_UnknownOpcode;
 	R4300i_CoP1_D[35] = R4300i_UnknownOpcode;
 	R4300i_CoP1_D[36] = r4300i_COP1_D_CVT_W;
