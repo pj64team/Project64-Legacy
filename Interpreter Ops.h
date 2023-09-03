@@ -210,10 +210,12 @@ void _fastcall r4300i_COP1_D_CMP     ( void );
 /************************** COP1: W functions ************************/
 void _fastcall r4300i_COP1_W_CVT_S   ( void );
 void _fastcall r4300i_COP1_W_CVT_D   ( void );
+void _fastcall r4300i_COP1_W_CVT_W   ( void );
 
 /************************** COP1: L functions ************************/
 void _fastcall r4300i_COP1_L_CVT_S   ( void );
 void _fastcall r4300i_COP1_L_CVT_D   ( void );
+void _fastcall r4300i_COP1_L_CVT_W   ( void );
 
 /************************** Other functions **************************/	
 void _fastcall  R4300i_UnknownOpcode ( void );
