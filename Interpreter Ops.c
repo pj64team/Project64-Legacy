@@ -48,7 +48,7 @@ int RoundingModel = _RC_NEAR;
 	JumpToLocation = PROGRAM_COUNTER;\
 	return;
 
-#define TEST_COP1_USABLE_EXCEPTION \
+#define TEST_COP1_USABLE_EXCEPTION() \
 	if ((STATUS_REGISTER & STATUS_CU1) == 0) {\
 		DoCopUnusableException(NextInstruction == JUMP,1);\
 		NextInstruction = JUMP;\
@@ -734,7 +734,7 @@ void _fastcall r4300i_LL (void) {
 void _fastcall r4300i_LWC1 (void) {
 	MIPS_DWORD Address;
 	Address.UDW = GPR[Opcode.IMM.base].UDW + (short)Opcode.IMM.immediate;
-	TEST_COP1_USABLE_EXCEPTION
+	TEST_COP1_USABLE_EXCEPTION();
 	if ((Address.UW[0] & 3) != 0 || !IsSignExtended(Address)) {
 		ADDRESS_ERROR_EXCEPTION(Address.UDW,TRUE);
 		return;
@@ -794,7 +794,7 @@ void _fastcall r4300i_LDC1 (void) {
 	MIPS_DWORD Address;
 	Address.UDW = GPR[Opcode.IMM.base].UDW + (short)Opcode.IMM.immediate;
 
-	TEST_COP1_USABLE_EXCEPTION
+	TEST_COP1_USABLE_EXCEPTION();
 	if ((Address.UW[0] & 7) != 0 || !IsSignExtended(Address)) {
 		ADDRESS_ERROR_EXCEPTION(Address.UDW,TRUE);
 		return;
@@ -810,7 +810,7 @@ void _fastcall r4300i_LDC1 (void) {
 void _fastcall r4300i_SWC1 (void) {
 	MIPS_DWORD Address;
 	Address.UDW = GPR[Opcode.IMM.base].UDW + (short)Opcode.IMM.immediate;
-	TEST_COP1_USABLE_EXCEPTION
+	TEST_COP1_USABLE_EXCEPTION();
 	if ((Address.UW[0] & 3) != 0 || !IsSignExtended(Address)) {
 		ADDRESS_ERROR_EXCEPTION(Address.UDW,FALSE);
 		return;
@@ -828,7 +828,7 @@ void _fastcall r4300i_SDC1 (void) {
 	MIPS_DWORD Address;
 	Address.UDW = GPR[Opcode.IMM.base].UDW + (short)Opcode.IMM.immediate;
 
-	TEST_COP1_USABLE_EXCEPTION
+	TEST_COP1_USABLE_EXCEPTION();
 	if ((Address.UW[0] & 7) != 0 || !IsSignExtended(Address)) {
 		ADDRESS_ERROR_EXCEPTION(Address.UDW,FALSE);
 		return;
@@ -1595,17 +1595,17 @@ void _fastcall r4300i_COP0_CO_ERET (void) {
 
 /************************** COP1 functions **************************/
 void _fastcall r4300i_COP1_MF (void) {
-	TEST_COP1_USABLE_EXCEPTION	
+	TEST_COP1_USABLE_EXCEPTION();
 	GPR[Opcode.BRANCH.rt].DW = *(int *)FPRFloatLoadStoreLocation[Opcode.FP.fs];
 }
 
 void _fastcall r4300i_COP1_DMF (void) {
-	TEST_COP1_USABLE_EXCEPTION
+	TEST_COP1_USABLE_EXCEPTION();
 	GPR[Opcode.BRANCH.rt].DW = *(__int64 *)FPRDoubleLocation[Opcode.FP.fs];
 }
 
 void _fastcall r4300i_COP1_CF (void) {
-	TEST_COP1_USABLE_EXCEPTION
+	TEST_COP1_USABLE_EXCEPTION();
 	if (Opcode.FP.fs != 31 && Opcode.FP.fs != 0) {
 		if (ShowDebugMessages)
 			DisplayError("CFC1 what register are you writing to ?");
@@ -1615,17 +1615,17 @@ void _fastcall r4300i_COP1_CF (void) {
 }
 
 void _fastcall r4300i_COP1_MT (void) {
-	TEST_COP1_USABLE_EXCEPTION
+	TEST_COP1_USABLE_EXCEPTION();
 	*(int *)FPRFloatLoadStoreLocation[Opcode.FP.fs] = GPR[Opcode.BRANCH.rt].W[0];
 }
 
 void _fastcall r4300i_COP1_DMT (void) {
-	TEST_COP1_USABLE_EXCEPTION
+	TEST_COP1_USABLE_EXCEPTION();
 	*(__int64 *)FPRDoubleLocation[Opcode.FP.fs] = GPR[Opcode.BRANCH.rt].DW;
 }
 
 void _fastcall r4300i_COP1_CT (void) {
-	TEST_COP1_USABLE_EXCEPTION
+	TEST_COP1_USABLE_EXCEPTION();
 	if (Opcode.FP.fs == 31) {
 		FPCR[Opcode.FP.fs] = GPR[Opcode.BRANCH.rt].W[0] & 0x183FFFF;
 		switch((FPCR[Opcode.FP.fs] & 3)) {
@@ -1643,7 +1643,7 @@ void _fastcall r4300i_COP1_CT (void) {
 
 /************************* COP1: BC1 functions ***********************/
 void _fastcall r4300i_COP1_BCF (void) {
-	TEST_COP1_USABLE_EXCEPTION
+	TEST_COP1_USABLE_EXCEPTION();
 	NextInstruction = DELAY_SLOT;
 	if ((FPCR[31] & FPCSR_C) == 0) {
 		JumpToLocation = PROGRAM_COUNTER + ((short)Opcode.BRANCH.offset << 2) + 4;
@@ -1653,7 +1653,7 @@ void _fastcall r4300i_COP1_BCF (void) {
 }
 
 void _fastcall r4300i_COP1_BCT (void) {
-	TEST_COP1_USABLE_EXCEPTION
+	TEST_COP1_USABLE_EXCEPTION();
 	NextInstruction = DELAY_SLOT;
 	if ((FPCR[31] & FPCSR_C) != 0) {
 		JumpToLocation = PROGRAM_COUNTER + ((short)Opcode.BRANCH.offset << 2) + 4;
@@ -1663,7 +1663,7 @@ void _fastcall r4300i_COP1_BCT (void) {
 }
 
 void _fastcall r4300i_COP1_BCFL (void) {
-	TEST_COP1_USABLE_EXCEPTION
+	TEST_COP1_USABLE_EXCEPTION();
 	if ((FPCR[31] & FPCSR_C) == 0) {
 		NextInstruction = DELAY_SLOT;
 		JumpToLocation = PROGRAM_COUNTER + ((short)Opcode.BRANCH.offset << 2) + 4;
@@ -1674,7 +1674,7 @@ void _fastcall r4300i_COP1_BCFL (void) {
 }
 
 void _fastcall r4300i_COP1_BCTL (void) {
-	TEST_COP1_USABLE_EXCEPTION
+	TEST_COP1_USABLE_EXCEPTION();
 	if ((FPCR[31] & FPCSR_C) != 0) {
 		NextInstruction = DELAY_SLOT;
 		JumpToLocation = PROGRAM_COUNTER + ((short)Opcode.BRANCH.offset << 2) + 4;
@@ -1717,8 +1717,8 @@ __inline DWORD getCop1SArgCause(DWORD* v) {
 }
 
 __inline DWORD getCop1SToWArgCause(DWORD* v) {
-	if (*(float*)FPRFloatFSLocation[Opcode.FP.fs] >= 2147483648.0 ||
-		*(float*)FPRFloatFSLocation[Opcode.FP.fs] < -2147483648.0) {
+	if (*(float*)v >= 2147483648.0 ||
+		*(float*)v < -2147483648.0) {
 		return CAUSE_UNIMPLEMENTED;
 	}
 	else if (IsQNAN_S(*v) || IsNAN_S(*v) || IsSubNormal_S(*v)) {
@@ -1801,7 +1801,7 @@ __inline DWORD getCop1ConvertCause() {
 }
 
 void _fastcall r4300i_COP1_S_ADD (void) {
-	TEST_COP1_USABLE_EXCEPTION
+	TEST_COP1_USABLE_EXCEPTION();
 	CLEAR_COP1_CAUSE();
 	_controlfp(RoundingModel,_MCW_RC);
 	_clearfp();
@@ -1819,7 +1819,7 @@ void _fastcall r4300i_COP1_S_ADD (void) {
 }
 
 void _fastcall r4300i_COP1_S_SUB (void) {
-	TEST_COP1_USABLE_EXCEPTION
+	TEST_COP1_USABLE_EXCEPTION();
 	CLEAR_COP1_CAUSE();
 	_controlfp(RoundingModel,_MCW_RC);
 	_clearfp();
@@ -1837,7 +1837,7 @@ void _fastcall r4300i_COP1_S_SUB (void) {
 }
 
 void _fastcall r4300i_COP1_S_MUL (void) {
-	TEST_COP1_USABLE_EXCEPTION
+	TEST_COP1_USABLE_EXCEPTION();
 	CLEAR_COP1_CAUSE();
 	_controlfp(RoundingModel,_MCW_RC);
 	_clearfp();
@@ -1855,7 +1855,7 @@ void _fastcall r4300i_COP1_S_MUL (void) {
 }
 
 void _fastcall r4300i_COP1_S_DIV (void) {
-	TEST_COP1_USABLE_EXCEPTION
+	TEST_COP1_USABLE_EXCEPTION();
 	CLEAR_COP1_CAUSE();
 	_controlfp(RoundingModel,_MCW_RC);
 	_clearfp();
@@ -1873,7 +1873,7 @@ void _fastcall r4300i_COP1_S_DIV (void) {
 }
 
 void _fastcall r4300i_COP1_S_SQRT (void) {
-	TEST_COP1_USABLE_EXCEPTION
+	TEST_COP1_USABLE_EXCEPTION();
 	CLEAR_COP1_CAUSE();
 	_controlfp(RoundingModel,_MCW_RC);
 	_clearfp();
@@ -1890,7 +1890,7 @@ void _fastcall r4300i_COP1_S_SQRT (void) {
 }
 
 void _fastcall r4300i_COP1_S_ABS (void) {
-	TEST_COP1_USABLE_EXCEPTION
+	TEST_COP1_USABLE_EXCEPTION();
 	CLEAR_COP1_CAUSE();
 	_controlfp(RoundingModel,_MCW_RC);
 	_clearfp();
@@ -1905,14 +1905,14 @@ void _fastcall r4300i_COP1_S_ABS (void) {
 }
 
 void _fastcall r4300i_COP1_S_MOV (void) {
-	TEST_COP1_USABLE_EXCEPTION
+	TEST_COP1_USABLE_EXCEPTION();
 	_controlfp(RoundingModel,_MCW_RC);
 	*(float *)FPRFloatOtherLocation[Opcode.FP.fd] = *(float *)FPRFloatFSLocation[Opcode.FP.fs];
 	*(long*)FPRFloatUpperHalfLocation[Opcode.FP.fd] = *((long long*)FPRDoubleLocation[Opcode.FP.fs]) >> 32;
 }
 
 void _fastcall r4300i_COP1_S_NEG (void) {
-	TEST_COP1_USABLE_EXCEPTION
+	TEST_COP1_USABLE_EXCEPTION();
 	CLEAR_COP1_CAUSE();
 	_controlfp(RoundingModel, _MCW_RC);
 	_clearfp();
@@ -1927,31 +1927,31 @@ void _fastcall r4300i_COP1_S_NEG (void) {
 }
 
 void __fastcall r4300i_COP1_S_ROUND_L(void) {
-	TEST_COP1_USABLE_EXCEPTION
+	TEST_COP1_USABLE_EXCEPTION();
 	_controlfp(_RC_NEAR,_MCW_RC);
 	Float_RoundToInteger64(&*(__int64*)FPRDoubleFTFDLocation[Opcode.FP.fd], &* (float*)FPRFloatFSLocation[Opcode.FP.fs]);
 }
 
 void _fastcall r4300i_COP1_S_TRUNC_L (void) {
-	TEST_COP1_USABLE_EXCEPTION
+	TEST_COP1_USABLE_EXCEPTION();
 	_controlfp(_RC_CHOP,_MCW_RC);
 	Float_RoundToInteger64(&*(__int64 *)FPRDoubleFTFDLocation[Opcode.FP.fd],&*(float *)FPRFloatFSLocation[Opcode.FP.fs]);
 }
 
 void _fastcall r4300i_COP1_S_CEIL_L (void) {	//added by Witten
-	TEST_COP1_USABLE_EXCEPTION
+	TEST_COP1_USABLE_EXCEPTION();
 	_controlfp(_RC_UP,_MCW_RC);
 	Float_RoundToInteger64(&*(__int64 *)FPRDoubleFTFDLocation[Opcode.FP.fd],&*(float *)FPRFloatFSLocation[Opcode.FP.fs]);
 }
 
 void _fastcall r4300i_COP1_S_FLOOR_L (void) {	//added by Witten
-	TEST_COP1_USABLE_EXCEPTION
+	TEST_COP1_USABLE_EXCEPTION();
 	_controlfp(_RC_DOWN,_MCW_RC);
 	Float_RoundToInteger64(&*(__int64 *)FPRDoubleFTFDLocation[Opcode.FP.fd],&*(float *)FPRFloatFSLocation[Opcode.FP.fs]);
 }
 
 void _fastcall r4300i_COP1_S_ROUND_W (void) {
-	TEST_COP1_USABLE_EXCEPTION
+	TEST_COP1_USABLE_EXCEPTION();
 	CLEAR_COP1_CAUSE();
 	_controlfp(_RC_NEAR,_MCW_RC);
 	DWORD cause = getCop1SToWArgCause((DWORD*)FPRFloatFSLocation[Opcode.FP.fs]);
@@ -1969,7 +1969,7 @@ void _fastcall r4300i_COP1_S_ROUND_W (void) {
 }
 
 void _fastcall r4300i_COP1_S_TRUNC_W (void) {
-	TEST_COP1_USABLE_EXCEPTION
+	TEST_COP1_USABLE_EXCEPTION();
 	CLEAR_COP1_CAUSE();
 	_controlfp(_RC_CHOP,_MCW_RC);
 	DWORD cause = getCop1SToWArgCause((DWORD*)FPRFloatFSLocation[Opcode.FP.fs]);
@@ -1987,7 +1987,7 @@ void _fastcall r4300i_COP1_S_TRUNC_W (void) {
 }
 
 void _fastcall r4300i_COP1_S_CEIL_W (void) {	//added by Witten
-	TEST_COP1_USABLE_EXCEPTION
+	TEST_COP1_USABLE_EXCEPTION();
 	CLEAR_COP1_CAUSE();
 	_controlfp(_RC_UP,_MCW_RC);
 	DWORD cause = getCop1SToWArgCause((DWORD*)FPRFloatFSLocation[Opcode.FP.fs]);
@@ -2005,7 +2005,7 @@ void _fastcall r4300i_COP1_S_CEIL_W (void) {	//added by Witten
 }
 
 void _fastcall r4300i_COP1_S_FLOOR_W (void) {
-	TEST_COP1_USABLE_EXCEPTION
+	TEST_COP1_USABLE_EXCEPTION();
 	CLEAR_COP1_CAUSE();
 	_controlfp(_RC_DOWN,_MCW_RC);
 	DWORD cause = getCop1SToWArgCause((DWORD*)FPRFloatFSLocation[Opcode.FP.fs]);
@@ -2023,7 +2023,7 @@ void _fastcall r4300i_COP1_S_FLOOR_W (void) {
 }
 
 void _fastcall r4300i_COP1_S_CVT_S (void) {
-	TEST_COP1_USABLE_EXCEPTION
+	TEST_COP1_USABLE_EXCEPTION();
 	CLEAR_COP1_CAUSE();
 	DWORD cause = CAUSE_UNIMPLEMENTED;
 	SET_COP1_CAUSE(cause);
@@ -2031,7 +2031,7 @@ void _fastcall r4300i_COP1_S_CVT_S (void) {
 }
 
 void _fastcall r4300i_COP1_S_CVT_D (void) {
-	TEST_COP1_USABLE_EXCEPTION
+	TEST_COP1_USABLE_EXCEPTION();
 	CLEAR_COP1_CAUSE();
 	_controlfp(RoundingModel,_MCW_RC);
 	_clearfp();
@@ -2047,7 +2047,7 @@ void _fastcall r4300i_COP1_S_CVT_D (void) {
 }
 
 void _fastcall r4300i_COP1_S_CVT_W (void) {
-	TEST_COP1_USABLE_EXCEPTION
+	TEST_COP1_USABLE_EXCEPTION();
 	CLEAR_COP1_CAUSE();
 	_controlfp(RoundingModel,_MCW_RC);
 	DWORD cause = getCop1SToWArgCause((DWORD*)FPRFloatFSLocation[Opcode.FP.fs]);
@@ -2065,7 +2065,7 @@ void _fastcall r4300i_COP1_S_CVT_W (void) {
 }
 
 void _fastcall r4300i_COP1_S_CVT_L (void) {
-	TEST_COP1_USABLE_EXCEPTION
+	TEST_COP1_USABLE_EXCEPTION();
 	_controlfp(RoundingModel,_MCW_RC);
 	Float_RoundToInteger64(&*(__int64 *)FPRDoubleFTFDLocation[Opcode.FP.fd],&*(float *)FPRFloatFSLocation[Opcode.FP.fs]);
 }
@@ -2074,7 +2074,7 @@ void _fastcall r4300i_COP1_S_CMP (void) {
 	int less, equal, unorded, condition;
 	float Temp0, Temp1;
 
-	TEST_COP1_USABLE_EXCEPTION
+	TEST_COP1_USABLE_EXCEPTION();
 
 	Temp0 = *(float *)FPRFloatFSLocation[Opcode.FP.fs];
 	Temp1 = *(float *)FPRFloatOtherLocation[Opcode.FP.ft];
@@ -2148,6 +2148,18 @@ __inline DWORD getCop1DArgCause(QWORD* v) {
 	return cause;
 }
 
+__inline DWORD getCop1DToWArgCause(QWORD* v) {
+	double rv = rint(*(double*)v);
+	if (rv >= 2147483648.0 ||
+		rv < -2147483648.0) {
+		return CAUSE_UNIMPLEMENTED;
+	}
+	else if (IsQNAN_D(*v) || IsNAN_D(*v) || IsSubNormal_D(*v)) {
+		return CAUSE_UNIMPLEMENTED;
+	}
+	return 0;
+}
+
 __inline DWORD getCop1DCause(double* res) {
 	DWORD status = _statusfp();
 	DWORD cause = 0;
@@ -2209,7 +2221,7 @@ __inline DWORD getCop1DCause(double* res) {
 }
 
 void _fastcall r4300i_COP1_D_ADD (void) {
-	TEST_COP1_USABLE_EXCEPTION
+	TEST_COP1_USABLE_EXCEPTION();
 	CLEAR_COP1_CAUSE();
 	_clearfp();
 	DWORD cause = getCop1DArgCause((QWORD*)FPRDoubleLocation[Opcode.FP.fs]);
@@ -2225,7 +2237,7 @@ void _fastcall r4300i_COP1_D_ADD (void) {
 }
 
 void _fastcall r4300i_COP1_D_SUB (void) {
-	TEST_COP1_USABLE_EXCEPTION
+	TEST_COP1_USABLE_EXCEPTION();
 	CLEAR_COP1_CAUSE();
 	_clearfp();
 	DWORD cause = getCop1DArgCause((QWORD*)FPRDoubleLocation[Opcode.FP.fs]);
@@ -2241,7 +2253,7 @@ void _fastcall r4300i_COP1_D_SUB (void) {
 }
 
 void _fastcall r4300i_COP1_D_MUL (void) {
-	TEST_COP1_USABLE_EXCEPTION
+	TEST_COP1_USABLE_EXCEPTION();
 	CLEAR_COP1_CAUSE();
 	_clearfp();
 	DWORD cause = getCop1DArgCause((QWORD*)FPRDoubleLocation[Opcode.FP.fs]);
@@ -2257,7 +2269,7 @@ void _fastcall r4300i_COP1_D_MUL (void) {
 }
 
 void _fastcall r4300i_COP1_D_DIV (void) {
-	TEST_COP1_USABLE_EXCEPTION
+	TEST_COP1_USABLE_EXCEPTION();
 	CLEAR_COP1_CAUSE();
 	_clearfp();
 	DWORD cause = getCop1DArgCause((QWORD*)FPRDoubleLocation[Opcode.FP.fs]);
@@ -2273,7 +2285,7 @@ void _fastcall r4300i_COP1_D_DIV (void) {
 }
 
 void _fastcall r4300i_COP1_D_SQRT (void) {
-	TEST_COP1_USABLE_EXCEPTION
+	TEST_COP1_USABLE_EXCEPTION();
 	CLEAR_COP1_CAUSE();
 	_clearfp();
 	DWORD cause = getCop1DArgCause((QWORD*)FPRDoubleLocation[Opcode.FP.fs]);
@@ -2289,7 +2301,7 @@ void _fastcall r4300i_COP1_D_SQRT (void) {
 }
 
 void _fastcall r4300i_COP1_D_ABS (void) {
-	TEST_COP1_USABLE_EXCEPTION
+	TEST_COP1_USABLE_EXCEPTION();
 	CLEAR_COP1_CAUSE();
 	_clearfp();
 	DWORD cause = getCop1DArgCause((QWORD*)FPRDoubleLocation[Opcode.FP.fs]);
@@ -2302,12 +2314,12 @@ void _fastcall r4300i_COP1_D_ABS (void) {
 }
 
 void _fastcall r4300i_COP1_D_MOV (void) {
-	TEST_COP1_USABLE_EXCEPTION
+	TEST_COP1_USABLE_EXCEPTION();
 	*(__int64 *)FPRDoubleFTFDLocation[Opcode.FP.fd] = *(__int64 *)FPRDoubleLocation[Opcode.FP.fs];
 }
 
 void _fastcall r4300i_COP1_D_NEG (void) {
-	TEST_COP1_USABLE_EXCEPTION
+	TEST_COP1_USABLE_EXCEPTION();
 	CLEAR_COP1_CAUSE();
 	_clearfp();
 	DWORD cause = getCop1DArgCause((QWORD*)FPRDoubleLocation[Opcode.FP.fs]);
@@ -2320,59 +2332,103 @@ void _fastcall r4300i_COP1_D_NEG (void) {
 }
 
 void _fastcall r4300i_COP1_D_ROUND_L(void) {
-	TEST_COP1_USABLE_EXCEPTION
+	TEST_COP1_USABLE_EXCEPTION();
 	_controlfp(RC_NEAR, _MCW_RC);
 	Double_RoundToInteger64(&*(__int64*)FPRDoubleFTFDLocation[Opcode.FP.fd], &*(double*)FPRDoubleLocation[Opcode.FP.fs]);
 }
 
 void _fastcall r4300i_COP1_D_TRUNC_L (void) {	//added by Witten
-	TEST_COP1_USABLE_EXCEPTION
+	TEST_COP1_USABLE_EXCEPTION();
 	_controlfp(RC_CHOP,_MCW_RC);
 	Double_RoundToInteger64(&*(__int64 *)FPRDoubleFTFDLocation[Opcode.FP.fd],&*(double *)FPRDoubleLocation[Opcode.FP.fs] );
 }
 
 void _fastcall r4300i_COP1_D_CEIL_L (void) {	//added by Witten
-	TEST_COP1_USABLE_EXCEPTION
+	TEST_COP1_USABLE_EXCEPTION();
 	_controlfp(RC_UP,_MCW_RC);
 	Double_RoundToInteger64(&*(__int64 *)FPRDoubleFTFDLocation[Opcode.FP.fd],&*(double *)FPRDoubleLocation[Opcode.FP.fs] );
 }
 
 void _fastcall r4300i_COP1_D_FLOOR_L (void) {	//added by Witten
-	TEST_COP1_USABLE_EXCEPTION
+	TEST_COP1_USABLE_EXCEPTION();
 	_controlfp(_RC_DOWN,_MCW_RC);
 	Double_RoundToInteger64(&*(__int64 *)FPRDoubleFTFDLocation[Opcode.FP.fd],&*(double *)FPRDoubleLocation[Opcode.FP.fs]);
 }
 
 void _fastcall r4300i_COP1_D_ROUND_W (void) {
-	TEST_COP1_USABLE_EXCEPTION
+	TEST_COP1_USABLE_EXCEPTION();
+	CLEAR_COP1_CAUSE();
 	_controlfp(_RC_NEAR,_MCW_RC);
-	Double_RoundToInteger32(&*(DWORD *)FPRFloatOtherLocation[Opcode.FP.fd],&*(double *)FPRDoubleLocation[Opcode.FP.fs] );
+	DWORD cause = getCop1DToWArgCause((QWORD*)FPRDoubleLocation[Opcode.FP.fs]);
+	SET_COP1_CAUSE(cause);
+	TEST_COP1_FP_EXCEPTION();
+	_clearfp();
+	DWORD result;
+	Double_RoundToInteger32(&result,&*(double *)FPRDoubleLocation[Opcode.FP.fs] );
+	cause |= getCop1ConvertCause(&result);
+	SET_COP1_CAUSE(cause);
+	TEST_COP1_FP_EXCEPTION();
+	SET_COP1_FLAGS(cause);
+	*(DWORD*)FPRFloatOtherLocation[Opcode.FP.fd] = result;
 	*(long*)FPRFloatUpperHalfLocation[Opcode.FP.fd] = 0;
 }
 
 void _fastcall r4300i_COP1_D_TRUNC_W (void) {
-	TEST_COP1_USABLE_EXCEPTION
+	TEST_COP1_USABLE_EXCEPTION();
+	CLEAR_COP1_CAUSE();
 	_controlfp(RC_CHOP,_MCW_RC);
-	Double_RoundToInteger32(&*(DWORD *)FPRFloatOtherLocation[Opcode.FP.fd],&*(double *)FPRDoubleLocation[Opcode.FP.fs] );
+	DWORD cause = getCop1DToWArgCause((QWORD*)FPRDoubleLocation[Opcode.FP.fs]);
+	SET_COP1_CAUSE(cause);
+	TEST_COP1_FP_EXCEPTION();
+	_clearfp();
+	DWORD result;
+	Double_RoundToInteger32(&result,&*(double *)FPRDoubleLocation[Opcode.FP.fs] );
+	cause |= getCop1ConvertCause(&result);
+	SET_COP1_CAUSE(cause);
+	TEST_COP1_FP_EXCEPTION();
+	SET_COP1_FLAGS(cause);
+	*(DWORD*)FPRFloatOtherLocation[Opcode.FP.fd] = result;
 	*(long*)FPRFloatUpperHalfLocation[Opcode.FP.fd] = 0;
 }
 
 void _fastcall r4300i_COP1_D_CEIL_W (void) {	//added by Witten
-	TEST_COP1_USABLE_EXCEPTION
+	TEST_COP1_USABLE_EXCEPTION();
+	CLEAR_COP1_CAUSE();
 	_controlfp(RC_UP,_MCW_RC);
-	Double_RoundToInteger32(&*(DWORD *)FPRFloatOtherLocation[Opcode.FP.fd],&*(double *)FPRDoubleLocation[Opcode.FP.fs] );
+	DWORD cause = getCop1DToWArgCause((QWORD*)FPRDoubleLocation[Opcode.FP.fs]);
+	SET_COP1_CAUSE(cause);
+	TEST_COP1_FP_EXCEPTION();
+	_clearfp();
+	DWORD result;
+	Double_RoundToInteger32(&result,&*(double *)FPRDoubleLocation[Opcode.FP.fs] );
+	cause |= getCop1ConvertCause(&result);
+	SET_COP1_CAUSE(cause);
+	TEST_COP1_FP_EXCEPTION();
+	SET_COP1_FLAGS(cause);
+	*(DWORD*)FPRFloatOtherLocation[Opcode.FP.fd] = result;
 	*(long*)FPRFloatUpperHalfLocation[Opcode.FP.fd] = 0;
 }
 
 void _fastcall r4300i_COP1_D_FLOOR_W (void) {	//added by Witten
-	TEST_COP1_USABLE_EXCEPTION
+	TEST_COP1_USABLE_EXCEPTION();
+	CLEAR_COP1_CAUSE();
 	_controlfp(_RC_DOWN,_MCW_RC);
-	Double_RoundToInteger32(&*(DWORD *)FPRFloatOtherLocation[Opcode.FP.fd],&*(double *)FPRDoubleLocation[Opcode.FP.fs]);
+	DWORD cause = getCop1DToWArgCause((QWORD*)FPRDoubleLocation[Opcode.FP.fs]);
+	SET_COP1_CAUSE(cause);
+	TEST_COP1_FP_EXCEPTION();
+	_clearfp();
+	DWORD result;
+	Double_RoundToInteger32(&result,&*(double *)FPRDoubleLocation[Opcode.FP.fs]);
+	cause |= getCop1ConvertCause(&result);
+	SET_COP1_CAUSE(cause);
+	TEST_COP1_FP_EXCEPTION();
+	SET_COP1_FLAGS(cause);
+	*(DWORD*)FPRFloatOtherLocation[Opcode.FP.fd] = result;
 	*(long*)FPRFloatUpperHalfLocation[Opcode.FP.fd] = 0;
 }
 
 void _fastcall r4300i_COP1_D_CVT_S (void) {
-	TEST_COP1_USABLE_EXCEPTION
+	TEST_COP1_USABLE_EXCEPTION();
 	CLEAR_COP1_CAUSE();
 	_controlfp(RoundingModel, _MCW_RC);
 	_clearfp();
@@ -2389,7 +2445,7 @@ void _fastcall r4300i_COP1_D_CVT_S (void) {
 }
 
 void _fastcall r4300i_COP1_D_CVT_D (void) {
-	TEST_COP1_USABLE_EXCEPTION
+	TEST_COP1_USABLE_EXCEPTION();
 	CLEAR_COP1_CAUSE();
 	DWORD cause = CAUSE_UNIMPLEMENTED;
 	SET_COP1_CAUSE(cause);
@@ -2397,14 +2453,25 @@ void _fastcall r4300i_COP1_D_CVT_D (void) {
 }
 
 void _fastcall r4300i_COP1_D_CVT_W (void) {
-	TEST_COP1_USABLE_EXCEPTION
+	TEST_COP1_USABLE_EXCEPTION();
+	CLEAR_COP1_CAUSE();
 	_controlfp(RoundingModel,_MCW_RC);
-	Double_RoundToInteger32(&*(DWORD *)FPRFloatOtherLocation[Opcode.FP.fd],&*(double *)FPRDoubleLocation[Opcode.FP.fs] );
+	DWORD cause = getCop1DToWArgCause((QWORD*)FPRDoubleLocation[Opcode.FP.fs]);
+	SET_COP1_CAUSE(cause);
+	TEST_COP1_FP_EXCEPTION();
+	_clearfp();
+	DWORD result;
+	Double_RoundToInteger32(&result,&*(double *)FPRDoubleLocation[Opcode.FP.fs] );
+	cause |= getCop1ConvertCause(&result);
+	SET_COP1_CAUSE(cause);
+	TEST_COP1_FP_EXCEPTION();
+	SET_COP1_FLAGS(cause);
+	*(DWORD*)FPRFloatOtherLocation[Opcode.FP.fd] = result;
 	*(long*)FPRFloatUpperHalfLocation[Opcode.FP.fd] = 0;
 }
 
 void _fastcall r4300i_COP1_D_CVT_L (void) {
-	TEST_COP1_USABLE_EXCEPTION
+	TEST_COP1_USABLE_EXCEPTION();
 	_controlfp(RoundingModel,_MCW_RC);
 	Double_RoundToInteger64(&*(unsigned __int64 *)FPRDoubleFTFDLocation[Opcode.FP.fd],&*(double *)FPRDoubleLocation[Opcode.FP.fs]);
 }
@@ -2413,7 +2480,7 @@ void _fastcall r4300i_COP1_D_CMP (void) {
 	int less, equal, unorded, condition;
 	MIPS_DWORD Temp0, Temp1;
 
-	TEST_COP1_USABLE_EXCEPTION
+	TEST_COP1_USABLE_EXCEPTION();
 
 	Temp0.DW = *(__int64 *)FPRDoubleLocation[Opcode.FP.fs];
 	Temp1.DW = *(__int64 *)FPRDoubleFTFDLocation[Opcode.FP.ft];
@@ -2444,8 +2511,36 @@ void _fastcall r4300i_COP1_D_CMP (void) {
 }
 
 /************************** COP1: W functions ************************/
+void _fastcall r4300i_COP1_W_ROUND_W (void) {
+	TEST_COP1_USABLE_EXCEPTION();
+	CLEAR_COP1_CAUSE();
+	SET_COP1_CAUSE(CAUSE_UNIMPLEMENTED);
+	TEST_COP1_FP_EXCEPTION();
+}
+
+void _fastcall r4300i_COP1_W_TRUNC_W(void) {
+	TEST_COP1_USABLE_EXCEPTION();
+	CLEAR_COP1_CAUSE();
+	SET_COP1_CAUSE(CAUSE_UNIMPLEMENTED);
+	TEST_COP1_FP_EXCEPTION();
+}
+
+void _fastcall r4300i_COP1_W_CEIL_W(void) {
+	TEST_COP1_USABLE_EXCEPTION();
+	CLEAR_COP1_CAUSE();
+	SET_COP1_CAUSE(CAUSE_UNIMPLEMENTED);
+	TEST_COP1_FP_EXCEPTION();
+}
+
+void _fastcall r4300i_COP1_W_FLOOR_W(void) {
+	TEST_COP1_USABLE_EXCEPTION();
+	CLEAR_COP1_CAUSE();
+	SET_COP1_CAUSE(CAUSE_UNIMPLEMENTED);
+	TEST_COP1_FP_EXCEPTION();
+}
+
 void _fastcall r4300i_COP1_W_CVT_S (void) {
-	TEST_COP1_USABLE_EXCEPTION
+	TEST_COP1_USABLE_EXCEPTION();
 	CLEAR_COP1_CAUSE();
 	_controlfp(RoundingModel,_MCW_RC);
 	_clearfp();
@@ -2459,19 +2554,50 @@ void _fastcall r4300i_COP1_W_CVT_S (void) {
 }
 
 void _fastcall r4300i_COP1_W_CVT_D (void) {
-	TEST_COP1_USABLE_EXCEPTION
+	TEST_COP1_USABLE_EXCEPTION();
 	CLEAR_COP1_CAUSE();
 	_controlfp(RoundingModel,_MCW_RC);
 	*(double *)FPRDoubleFTFDLocation[Opcode.FP.fd] = (double)*(int *)FPRFloatFSLocation[Opcode.FP.fs];
 }
 
 void _fastcall r4300i_COP1_W_CVT_W (void) {
-	TEST_COP1_USABLE_EXCEPTION
+	TEST_COP1_USABLE_EXCEPTION();
+	CLEAR_COP1_CAUSE();
+	SET_COP1_CAUSE(CAUSE_UNIMPLEMENTED);
+	TEST_COP1_FP_EXCEPTION();
 }
 
 /************************** COP1: L functions ************************/
+void _fastcall r4300i_COP1_L_ROUND_W(void) {
+	TEST_COP1_USABLE_EXCEPTION();
+	CLEAR_COP1_CAUSE();
+	SET_COP1_CAUSE(CAUSE_UNIMPLEMENTED);
+	TEST_COP1_FP_EXCEPTION();
+}
+
+void _fastcall r4300i_COP1_L_TRUNC_W(void) {
+	TEST_COP1_USABLE_EXCEPTION();
+	CLEAR_COP1_CAUSE();
+	SET_COP1_CAUSE(CAUSE_UNIMPLEMENTED);
+	TEST_COP1_FP_EXCEPTION();
+}
+
+void _fastcall r4300i_COP1_L_CEIL_W(void) {
+	TEST_COP1_USABLE_EXCEPTION();
+	CLEAR_COP1_CAUSE();
+	SET_COP1_CAUSE(CAUSE_UNIMPLEMENTED);
+	TEST_COP1_FP_EXCEPTION();
+}
+
+void _fastcall r4300i_COP1_L_FLOOR_W(void) {
+	TEST_COP1_USABLE_EXCEPTION();
+	CLEAR_COP1_CAUSE();
+	SET_COP1_CAUSE(CAUSE_UNIMPLEMENTED);
+	TEST_COP1_FP_EXCEPTION();
+}
+
 void _fastcall r4300i_COP1_L_CVT_S (void) {
-	TEST_COP1_USABLE_EXCEPTION
+	TEST_COP1_USABLE_EXCEPTION();
 	CLEAR_COP1_CAUSE();
 	_controlfp(RoundingModel,_MCW_RC);
 	_clearfp();
@@ -2490,7 +2616,7 @@ void _fastcall r4300i_COP1_L_CVT_S (void) {
 }
 
 void _fastcall r4300i_COP1_L_CVT_D (void) {
-	TEST_COP1_USABLE_EXCEPTION
+	TEST_COP1_USABLE_EXCEPTION();
 	CLEAR_COP1_CAUSE();
 	_controlfp(RoundingModel,_MCW_RC);
 	_clearfp();
@@ -2508,7 +2634,10 @@ void _fastcall r4300i_COP1_L_CVT_D (void) {
 }
 
 void _fastcall r4300i_COP1_L_CVT_W (void) {
-	TEST_COP1_USABLE_EXCEPTION
+	TEST_COP1_USABLE_EXCEPTION();
+	CLEAR_COP1_CAUSE();
+	SET_COP1_CAUSE(CAUSE_UNIMPLEMENTED);
+	TEST_COP1_FP_EXCEPTION();
 }
 
 /************************** Other functions **************************/
