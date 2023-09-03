@@ -581,7 +581,7 @@ void BuildInterpreter (void ) {
 	R4300i_CoP1_W[34] = R4300i_UnknownOpcode;
 	R4300i_CoP1_W[35] = R4300i_UnknownOpcode;
 	R4300i_CoP1_W[36] = r4300i_COP1_W_CVT_W;
-	R4300i_CoP1_W[37] = R4300i_UnknownOpcode;
+	R4300i_CoP1_W[37] = r4300i_COP1_W_CVT_L;
 	R4300i_CoP1_W[38] = R4300i_UnknownOpcode;
 	R4300i_CoP1_W[39] = R4300i_UnknownOpcode;
 	R4300i_CoP1_W[40] = R4300i_UnknownOpcode;
@@ -646,7 +646,7 @@ void BuildInterpreter (void ) {
 	R4300i_CoP1_L[34] = R4300i_UnknownOpcode;
 	R4300i_CoP1_L[35] = R4300i_UnknownOpcode;
 	R4300i_CoP1_L[36] = r4300i_COP1_L_CVT_W;
-	R4300i_CoP1_L[37] = R4300i_UnknownOpcode;
+	R4300i_CoP1_L[37] = r4300i_COP1_L_CVT_L;
 	R4300i_CoP1_L[38] = R4300i_UnknownOpcode;
 	R4300i_CoP1_L[39] = R4300i_UnknownOpcode;
 	R4300i_CoP1_L[40] = R4300i_UnknownOpcode;
