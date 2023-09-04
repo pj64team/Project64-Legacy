@@ -208,6 +208,10 @@ void _fastcall r4300i_COP1_D_CVT_L   ( void );
 void _fastcall r4300i_COP1_D_CMP     ( void );
 
 /************************** COP1: W functions ************************/
+void _fastcall r4300i_COP1_W_ROUND_L ( void );
+void _fastcall r4300i_COP1_W_TRUNC_L ( void );
+void _fastcall r4300i_COP1_W_CEIL_L  ( void );
+void _fastcall r4300i_COP1_W_FLOOR_L ( void );
 void _fastcall r4300i_COP1_W_ROUND_W ( void );
 void _fastcall r4300i_COP1_W_TRUNC_W ( void );
 void _fastcall r4300i_COP1_W_CEIL_W  ( void );
@@ -218,6 +222,10 @@ void _fastcall r4300i_COP1_W_CVT_W   ( void );
 void _fastcall r4300i_COP1_W_CVT_L   ( void );
 
 /************************** COP1: L functions ************************/
+void _fastcall r4300i_COP1_L_ROUND_L ( void );
+void _fastcall r4300i_COP1_L_TRUNC_L ( void );
+void _fastcall r4300i_COP1_L_CEIL_L  ( void );
+void _fastcall r4300i_COP1_L_FLOOR_L ( void );
 void _fastcall r4300i_COP1_L_ROUND_W ( void );
 void _fastcall r4300i_COP1_L_TRUNC_W ( void );
 void _fastcall r4300i_COP1_L_CEIL_W  ( void );
