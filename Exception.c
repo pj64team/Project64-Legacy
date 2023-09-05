@@ -112,6 +112,27 @@ void DoAddressError ( BOOL DelaySlot, QWORD BadVaddr, BOOL FromRead) {
 	PROGRAM_COUNTER = 0x80000180;
 }
 
+void _fastcall DoFPException(BOOL DelaySlot) {
+	if (ShowDebugMessages) {
+		if ((STATUS_REGISTER & STATUS_EXL) != 0) {
+			DisplayError("EXL set in Break Exception");
+		}
+		if ((STATUS_REGISTER & STATUS_ERL) != 0) {
+			DisplayError("ERL set in Break Exception");
+		}
+	}
+	CAUSE_REGISTER = EXC_FPE;
+	if (DelaySlot) {
+		CAUSE_REGISTER |= CAUSE_BD;
+		EPC_REGISTER = (long)(PROGRAM_COUNTER - 4);
+	}
+	else {
+		EPC_REGISTER = (long)PROGRAM_COUNTER;
+	}
+	STATUS_REGISTER |= STATUS_EXL;
+	PROGRAM_COUNTER = 0x80000180;
+}
+
 void _fastcall DoBreakException ( BOOL DelaySlot) {
 	if (ShowDebugMessages) {
 		if ((STATUS_REGISTER & STATUS_EXL) != 0) {
@@ -145,6 +166,7 @@ void _fastcall DoCopUnusableException ( BOOL DelaySlot, int Coprocessor ) {
 
 	CAUSE_REGISTER = EXC_CPU;
 	if (Coprocessor == 1) { CAUSE_REGISTER |= 0x10000000; }
+	else if (Coprocessor == 2) { CAUSE_REGISTER |= 0x20000000; }
 	if (DelaySlot) {
 		CAUSE_REGISTER |= CAUSE_BD;
 		EPC_REGISTER = PROGRAM_COUNTER - 4;

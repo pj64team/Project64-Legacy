@@ -38,6 +38,7 @@ void _fastcall r4300i_ANDI           ( void );
 void _fastcall r4300i_ORI            ( void );
 void _fastcall r4300i_XORI           ( void );
 void _fastcall r4300i_LUI            ( void );
+void _fastcall r4300i_COP2           ( void );
 void _fastcall r4300i_BEQL           ( void );
 void _fastcall r4300i_BNEL           ( void );
 void _fastcall r4300i_BLEZL          ( void );
@@ -177,6 +178,7 @@ void _fastcall r4300i_COP1_S_ROUND_W ( void );
 void _fastcall r4300i_COP1_S_TRUNC_W ( void );
 void _fastcall r4300i_COP1_S_CEIL_W  ( void );	//added by Witten
 void _fastcall r4300i_COP1_S_FLOOR_W ( void );
+void _fastcall r4300i_COP1_S_CVT_S   ( void );
 void _fastcall r4300i_COP1_S_CVT_D   ( void );
 void _fastcall r4300i_COP1_S_CVT_W   ( void );
 void _fastcall r4300i_COP1_S_CVT_L   ( void );
@@ -200,17 +202,38 @@ void _fastcall r4300i_COP1_D_TRUNC_W ( void );
 void _fastcall r4300i_COP1_D_CEIL_W  ( void );	//added by Witten
 void _fastcall r4300i_COP1_D_FLOOR_W ( void );	//added by Witten
 void _fastcall r4300i_COP1_D_CVT_S   ( void );
+void _fastcall r4300i_COP1_D_CVT_D   ( void );
 void _fastcall r4300i_COP1_D_CVT_W   ( void );
 void _fastcall r4300i_COP1_D_CVT_L   ( void );
 void _fastcall r4300i_COP1_D_CMP     ( void );
 
 /************************** COP1: W functions ************************/
+void _fastcall r4300i_COP1_W_ROUND_L ( void );
+void _fastcall r4300i_COP1_W_TRUNC_L ( void );
+void _fastcall r4300i_COP1_W_CEIL_L  ( void );
+void _fastcall r4300i_COP1_W_FLOOR_L ( void );
+void _fastcall r4300i_COP1_W_ROUND_W ( void );
+void _fastcall r4300i_COP1_W_TRUNC_W ( void );
+void _fastcall r4300i_COP1_W_CEIL_W  ( void );
+void _fastcall r4300i_COP1_W_FLOOR_W ( void );
 void _fastcall r4300i_COP1_W_CVT_S   ( void );
 void _fastcall r4300i_COP1_W_CVT_D   ( void );
+void _fastcall r4300i_COP1_W_CVT_W   ( void );
+void _fastcall r4300i_COP1_W_CVT_L   ( void );
 
 /************************** COP1: L functions ************************/
+void _fastcall r4300i_COP1_L_ROUND_L ( void );
+void _fastcall r4300i_COP1_L_TRUNC_L ( void );
+void _fastcall r4300i_COP1_L_CEIL_L  ( void );
+void _fastcall r4300i_COP1_L_FLOOR_L ( void );
+void _fastcall r4300i_COP1_L_ROUND_W ( void );
+void _fastcall r4300i_COP1_L_TRUNC_W ( void );
+void _fastcall r4300i_COP1_L_CEIL_W  ( void );
+void _fastcall r4300i_COP1_L_FLOOR_W ( void );
 void _fastcall r4300i_COP1_L_CVT_S   ( void );
 void _fastcall r4300i_COP1_L_CVT_D   ( void );
+void _fastcall r4300i_COP1_L_CVT_W   ( void );
+void _fastcall r4300i_COP1_L_CVT_L   ( void );
 
 /************************** Other functions **************************/	
 void _fastcall  R4300i_UnknownOpcode ( void );
