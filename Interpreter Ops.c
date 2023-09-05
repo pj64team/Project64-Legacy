@@ -2141,11 +2141,19 @@ void _fastcall r4300i_COP1_S_CMP (void) {
 	float Temp0, Temp1;
 
 	TEST_COP1_USABLE_EXCEPTION();
+	CLEAR_COP1_CAUSE();
 
 	Temp0 = *(float *)FPRFloatFSLocation[Opcode.FP.fs];
 	Temp1 = *(float *)FPRFloatOtherLocation[Opcode.FP.ft];
 
-	if (_isnan(Temp0) || _isnan(Temp1)) {
+	if (IsQNAN_S(*(DWORD*)&Temp0) || IsQNAN_S(*(DWORD*)&Temp1)) {
+		less = FALSE;
+		equal = FALSE;
+		unorded = TRUE;
+		SET_COP1_CAUSE(CAUSE_INVALID);
+		TEST_COP1_FP_EXCEPTION();
+		SET_COP1_FLAGS(CAUSE_INVALID);
+	} else if (_isnan(Temp0) || _isnan(Temp1)) {
 		if (ShowDebugMessages)
 			DisplayError("Not a number?");
 		less = FALSE;
@@ -2154,6 +2162,9 @@ void _fastcall r4300i_COP1_S_CMP (void) {
 		if ((Opcode.REG.funct & 8) != 0) {
 			if (ShowDebugMessages)
 				DisplayError("Signal InvalidOperationException\nin r4300i_COP1_S_CMP\n%X  %ff\n%X  %ff", Temp0, Temp0, Temp1, Temp1);
+			SET_COP1_CAUSE(CAUSE_INVALID);
+			TEST_COP1_FP_EXCEPTION();
+			SET_COP1_FLAGS(CAUSE_INVALID);
 		}
 	} else {
 		less = Temp0 < Temp1;
@@ -2613,11 +2624,19 @@ void _fastcall r4300i_COP1_D_CMP (void) {
 	MIPS_DWORD Temp0, Temp1;
 
 	TEST_COP1_USABLE_EXCEPTION();
+	CLEAR_COP1_CAUSE();
 
 	Temp0.DW = *(__int64 *)FPRDoubleLocation[Opcode.FP.fs];
 	Temp1.DW = *(__int64 *)FPRDoubleFTFDLocation[Opcode.FP.ft];
 
-	if (_isnan(Temp0.D) || _isnan(Temp1.D)) {
+	if (IsQNAN_D(Temp0.DW) || IsQNAN_D(Temp1.DW)) {
+		less = FALSE;
+		equal = FALSE;
+		unorded = TRUE;
+		SET_COP1_CAUSE(CAUSE_INVALID);
+		TEST_COP1_FP_EXCEPTION();
+		SET_COP1_FLAGS(CAUSE_INVALID);
+	} else if (_isnan(Temp0.D) || _isnan(Temp1.D)) {
 		if (ShowDebugMessages)
 			DisplayError("Not A Number?");
 		less = FALSE;
@@ -2626,6 +2645,9 @@ void _fastcall r4300i_COP1_D_CMP (void) {
 		if ((Opcode.REG.funct & 8) != 0) {
 			if (ShowDebugMessages)
 				DisplayError("Signal InvalidOperationException\nin r4300i_COP1_D_CMP");
+			SET_COP1_CAUSE(CAUSE_INVALID);
+			TEST_COP1_FP_EXCEPTION();
+			SET_COP1_FLAGS(CAUSE_INVALID);
 		}
 	} else {
 		less = Temp0.D < Temp1.D;
