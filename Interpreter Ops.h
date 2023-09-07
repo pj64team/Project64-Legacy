@@ -151,6 +151,7 @@ void _fastcall r4300i_COP0_CO_ERET   ( void );
 void _fastcall r4300i_COP1_MF        ( void );
 void _fastcall r4300i_COP1_DMF       ( void );
 void _fastcall r4300i_COP1_CF        ( void );
+void _fastcall r4300i_COP1_DCF       ( void );
 void _fastcall r4300i_COP1_MT        ( void );
 void _fastcall r4300i_COP1_DMT       ( void );
 void _fastcall r4300i_COP1_CT        ( void );

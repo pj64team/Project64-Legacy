@@ -1614,6 +1614,13 @@ void _fastcall r4300i_COP1_CF (void) {
 	GPR[Opcode.BRANCH.rt].DW = (int)FPCR[Opcode.FP.fs];
 }
 
+void _fastcall r4300i_COP1_DCF (void) {
+	TEST_COP1_USABLE_EXCEPTION();
+	CLEAR_COP1_CAUSE();
+	SET_COP1_CAUSE(CAUSE_UNIMPLEMENTED);
+	TEST_COP1_FP_EXCEPTION();
+}
+
 void _fastcall r4300i_COP1_MT (void) {
 	TEST_COP1_USABLE_EXCEPTION();
 	*(int *)FPRFloatLoadStoreLocation[Opcode.FP.fs] = GPR[Opcode.BRANCH.rt].W[0];
