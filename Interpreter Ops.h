@@ -155,6 +155,7 @@ void _fastcall r4300i_COP1_DCF       ( void );
 void _fastcall r4300i_COP1_MT        ( void );
 void _fastcall r4300i_COP1_DMT       ( void );
 void _fastcall r4300i_COP1_CT        ( void );
+void _fastcall r4300i_COP1_DCT       ( void );
 
 /************************* COP1: BC1 functions ***********************/
 void _fastcall r4300i_COP1_BCF       ( void );

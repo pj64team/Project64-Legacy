@@ -1106,6 +1106,9 @@ char * R4300iCop1Name ( DWORD OpCode, DWORD PC ) {
 	case R4300i_COP1_CF:
 		sprintf(CommandName,"cfc1\t%s, %s",GPR_Name[command.BRANCH.rt], FPR_Ctrl_Name[command.FP.fs]);
 		break;
+	case R4300i_COP1_DCF:
+		sprintf(CommandName, "dcfc1\t%s, %s", GPR_Name[command.BRANCH.rt], FPR_Ctrl_Name[command.FP.fs]);
+		break;
 	case R4300i_COP1_MT:
 		sprintf(CommandName,"mtc1\t%s, %s",GPR_Name[command.BRANCH.rt], FPR_Name[command.FP.fs]);
 		break;
@@ -1114,6 +1117,9 @@ char * R4300iCop1Name ( DWORD OpCode, DWORD PC ) {
 		break;
 	case R4300i_COP1_CT:
 		sprintf(CommandName,"ctc1\t%s, %s",GPR_Name[command.BRANCH.rt], FPR_Ctrl_Name[command.FP.fs]);
+		break;
+	case R4300i_COP1_DCT:
+		sprintf(CommandName, "dctc1\t%s, %s", GPR_Name[command.BRANCH.rt], FPR_Ctrl_Name[command.FP.fs]);
 		break;
 	case R4300i_COP1_BC:
 		switch (command.FP.ft) {

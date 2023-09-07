@@ -216,9 +216,11 @@ typedef union {
 #define	R4300i_COP1_MF				0 
 #define	R4300i_COP1_DMF				1 
 #define	R4300i_COP1_CF				2
+#define R4300i_COP1_DCF				3
 #define	R4300i_COP1_MT				4
 #define	R4300i_COP1_DMT				5
 #define	R4300i_COP1_CT				6
+#define R4300i_COP1_DCT				7
 #define	R4300i_COP1_BC				8
 #define R4300i_COP1_S				16
 #define R4300i_COP1_D				17

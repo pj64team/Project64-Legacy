@@ -1648,6 +1648,13 @@ void _fastcall r4300i_COP1_CT (void) {
 		DisplayError("CTC1 what register are you writing to ?");
 }
 
+void _fastcall r4300i_COP1_DCT(void) {
+	TEST_COP1_USABLE_EXCEPTION();
+	CLEAR_COP1_CAUSE();
+	SET_COP1_CAUSE(CAUSE_UNIMPLEMENTED);
+	TEST_COP1_FP_EXCEPTION();
+}
+
 /************************* COP1: BC1 functions ***********************/
 void _fastcall r4300i_COP1_BCF (void) {
 	TEST_COP1_USABLE_EXCEPTION();
