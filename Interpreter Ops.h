@@ -244,6 +244,7 @@ void _fastcall r4300i_COP2_DCF       ( void );
 void _fastcall r4300i_COP2_MT        ( void );
 void _fastcall r4300i_COP2_DMT       ( void );
 void _fastcall r4300i_COP2_CT        ( void );
+void _fastcall r4300i_COP2_DCT       ( void );
 
 /************************** Other functions **************************/	
 void _fastcall  R4300i_UnknownOpcode ( void );

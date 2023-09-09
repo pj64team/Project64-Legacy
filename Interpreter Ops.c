@@ -2932,6 +2932,19 @@ void _fastcall r4300i_COP2_CT(void) {
 	}
 }
 
+void _fastcall r4300i_COP2_DCT(void) {
+	if ((STATUS_REGISTER & STATUS_CU2) == 0) {
+		DoCopUnusableException(NextInstruction == JUMP, 2);
+		NextInstruction = JUMP;
+		JumpToLocation = PROGRAM_COUNTER;
+		return;
+	}
+	DoIllegalInstructionException(NextInstruction == JUMP);
+	CAUSE_REGISTER |= 0x20000000;
+	NextInstruction = JUMP;
+	JumpToLocation = PROGRAM_COUNTER;
+}
+
 /************************** Other functions **************************/
 void _fastcall R4300i_UnknownOpcode (void) {
 #ifdef STOP_ON_UNKNOWN_OPCODE

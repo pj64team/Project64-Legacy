@@ -686,7 +686,7 @@ void BuildInterpreter (void ) {
 	R4300i_CoP2[ 4] = r4300i_COP2_MT;
 	R4300i_CoP2[ 5] = r4300i_COP2_DMT;
 	R4300i_CoP2[ 6] = r4300i_COP2_CT;
-	R4300i_CoP2[ 7] = R4300i_UnknownOpcode;
+	R4300i_CoP2[ 7] = r4300i_COP2_DCT;
 	R4300i_CoP2[ 8] = R4300i_UnknownOpcode;
 	R4300i_CoP2[ 9] = R4300i_UnknownOpcode;
 	R4300i_CoP2[10] = R4300i_UnknownOpcode;

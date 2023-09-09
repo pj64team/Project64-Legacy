@@ -278,5 +278,6 @@ typedef union {
 #define R4300i_COP2_MT				4
 #define R4300i_COP2_DMT				5
 #define R4300i_COP2_CT				6
+#define R4300i_COP2_DCT				7
 
 #endif

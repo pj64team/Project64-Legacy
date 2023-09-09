@@ -1430,6 +1430,9 @@ char * R4300iOpcodeName ( DWORD OpCode, DWORD PC ) {
 		case R4300i_COP2_CT:
 			sprintf(CommandName, "ctc2\t%s, %d", GPR_Name[command.BRANCH.rt], command.REG.rd);
 			break;
+		case R4300i_COP2_DCT:
+			sprintf(CommandName, "dctc2\t%s, %d", GPR_Name[command.BRANCH.rt], command.REG.rd);
+			break;
 		default:
 			sprintf(CommandName, "Unknown\t%02X %02X %02X %02X",
 				command.Ascii[3], command.Ascii[2], command.Ascii[1], command.Ascii[0]);
