@@ -90,6 +90,7 @@ typedef union {
 #define	R4300i_CP0					16
 #define	R4300i_CP1					17
 #define R4300i_CP2					18
+#define R4300i_CP3					19
 #define R4300i_BEQL					20
 #define R4300i_BNEL					21
 #define R4300i_BLEZL				22
@@ -216,9 +217,11 @@ typedef union {
 #define	R4300i_COP1_MF				0 
 #define	R4300i_COP1_DMF				1 
 #define	R4300i_COP1_CF				2
+#define R4300i_COP1_DCF				3
 #define	R4300i_COP1_MT				4
 #define	R4300i_COP1_DMT				5
 #define	R4300i_COP1_CT				6
+#define R4300i_COP1_DCT				7
 #define	R4300i_COP1_BC				8
 #define R4300i_COP1_S				16
 #define R4300i_COP1_D				17
@@ -267,5 +270,15 @@ typedef union {
 #define R4300i_COP1_FUNCT_C_NGE		61
 #define R4300i_COP1_FUNCT_C_LE		62
 #define R4300i_COP1_FUNCT_C_NGT		63
+
+/* R4300i COP2 opcodes */
+#define R4300i_COP2_MF				0
+#define R4300i_COP2_DMF				1
+#define R4300i_COP2_CF				2
+#define R4300i_COP2_DCF				3
+#define R4300i_COP2_MT				4
+#define R4300i_COP2_DMT				5
+#define R4300i_COP2_CT				6
+#define R4300i_COP2_DCT				7
 
 #endif

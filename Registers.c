@@ -85,6 +85,7 @@ MIPS_DWORD *GPR, *FPR, HI, LO, *CP0;
 N64_REGISTERS Registers;
 int fpuControl;
 int lastUnusedCOP0Register;
+MIPS_DWORD cop2LatchedValue;
 
 
 int  UnMap_8BitTempReg (BLOCK_SECTION * Section);
@@ -355,6 +356,7 @@ void InitalizeR4300iRegisters (int UsePif, int Country, enum CIC_CHIP CIC_Chip) 
 	PRID_REGISTER       = 0xB22;
 	lastUnusedCOP0Register = -1;
 	SetFpuLocations();
+	cop2LatchedValue.UDW = 0;
 	if (UsePif) {
 		PROGRAM_COUNTER = 0xBFC00000;			
 		switch (CIC_Chip) {

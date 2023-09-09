@@ -223,12 +223,10 @@ void _fastcall r4300i_LUI (void) {
 #endif
 }
 
-void _fastcall r4300i_COP2 (void) {
-	if ((STATUS_REGISTER & STATUS_CU2) == 0) {
-		DoCopUnusableException(NextInstruction == JUMP,2);
-		NextInstruction = JUMP;
-		JumpToLocation = PROGRAM_COUNTER;
-	}
+void _fastcall r4300i_COP3 (void) {
+	DoIllegalInstructionException(NextInstruction == JUMP);
+	NextInstruction = JUMP;
+	JumpToLocation = PROGRAM_COUNTER;
 }
 
 void _fastcall r4300i_BEQL (void) {
@@ -1614,6 +1612,13 @@ void _fastcall r4300i_COP1_CF (void) {
 	GPR[Opcode.BRANCH.rt].DW = (int)FPCR[Opcode.FP.fs];
 }
 
+void _fastcall r4300i_COP1_DCF (void) {
+	TEST_COP1_USABLE_EXCEPTION();
+	CLEAR_COP1_CAUSE();
+	SET_COP1_CAUSE(CAUSE_UNIMPLEMENTED);
+	TEST_COP1_FP_EXCEPTION();
+}
+
 void _fastcall r4300i_COP1_MT (void) {
 	TEST_COP1_USABLE_EXCEPTION();
 	*(int *)FPRFloatLoadStoreLocation[Opcode.FP.fs] = GPR[Opcode.BRANCH.rt].W[0];
@@ -1639,6 +1644,13 @@ void _fastcall r4300i_COP1_CT (void) {
 	}
 	if (ShowDebugMessages)
 		DisplayError("CTC1 what register are you writing to ?");
+}
+
+void _fastcall r4300i_COP1_DCT(void) {
+	TEST_COP1_USABLE_EXCEPTION();
+	CLEAR_COP1_CAUSE();
+	SET_COP1_CAUSE(CAUSE_UNIMPLEMENTED);
+	TEST_COP1_FP_EXCEPTION();
 }
 
 /************************* COP1: BC1 functions ***********************/
@@ -2862,6 +2874,85 @@ void _fastcall r4300i_COP1_L_CVT_L (void) {
 	CLEAR_COP1_CAUSE();
 	SET_COP1_CAUSE(CAUSE_UNIMPLEMENTED);
 	TEST_COP1_FP_EXCEPTION();
+}
+
+/************************** COP2 functions **************************/
+void _fastcall r4300i_COP2_MF(void) {
+	if ((STATUS_REGISTER & STATUS_CU2) == 0) {
+		DoCopUnusableException(NextInstruction == JUMP, 2);
+		NextInstruction = JUMP;
+		JumpToLocation = PROGRAM_COUNTER;
+	}
+	GPR[Opcode.BRANCH.rt].DW = cop2LatchedValue.W[0];
+}
+
+void _fastcall r4300i_COP2_DMF(void) {
+	if ((STATUS_REGISTER & STATUS_CU2) == 0) {
+		DoCopUnusableException(NextInstruction == JUMP, 2);
+		NextInstruction = JUMP;
+		JumpToLocation = PROGRAM_COUNTER;
+	}
+	GPR[Opcode.BRANCH.rt].DW = cop2LatchedValue.DW;
+}
+
+void _fastcall r4300i_COP2_CF(void) {
+	if ((STATUS_REGISTER & STATUS_CU2) == 0) {
+		DoCopUnusableException(NextInstruction == JUMP, 2);
+		NextInstruction = JUMP;
+		JumpToLocation = PROGRAM_COUNTER;
+	}
+}
+
+void _fastcall r4300i_COP2_DCF(void) {
+	if ((STATUS_REGISTER & STATUS_CU2) == 0) {
+		DoCopUnusableException(NextInstruction == JUMP, 2);
+		NextInstruction = JUMP;
+		JumpToLocation = PROGRAM_COUNTER;
+		return;
+	}
+	DoIllegalInstructionException(NextInstruction == JUMP);
+	CAUSE_REGISTER |= 0x20000000;
+	NextInstruction = JUMP;
+	JumpToLocation = PROGRAM_COUNTER;
+}
+
+void _fastcall r4300i_COP2_MT(void) {
+	if ((STATUS_REGISTER & STATUS_CU2) == 0) {
+		DoCopUnusableException(NextInstruction == JUMP, 2);
+		NextInstruction = JUMP;
+		JumpToLocation = PROGRAM_COUNTER;
+	}
+	cop2LatchedValue.DW = GPR[Opcode.BRANCH.rt].DW;
+}
+
+void _fastcall r4300i_COP2_DMT(void) {
+	if ((STATUS_REGISTER & STATUS_CU2) == 0) {
+		DoCopUnusableException(NextInstruction == JUMP, 2);
+		NextInstruction = JUMP;
+		JumpToLocation = PROGRAM_COUNTER;
+	}
+	cop2LatchedValue.DW = GPR[Opcode.BRANCH.rt].DW;
+}
+
+void _fastcall r4300i_COP2_CT(void) {
+	if ((STATUS_REGISTER & STATUS_CU2) == 0) {
+		DoCopUnusableException(NextInstruction == JUMP, 2);
+		NextInstruction = JUMP;
+		JumpToLocation = PROGRAM_COUNTER;
+	}
+}
+
+void _fastcall r4300i_COP2_DCT(void) {
+	if ((STATUS_REGISTER & STATUS_CU2) == 0) {
+		DoCopUnusableException(NextInstruction == JUMP, 2);
+		NextInstruction = JUMP;
+		JumpToLocation = PROGRAM_COUNTER;
+		return;
+	}
+	DoIllegalInstructionException(NextInstruction == JUMP);
+	CAUSE_REGISTER |= 0x20000000;
+	NextInstruction = JUMP;
+	JumpToLocation = PROGRAM_COUNTER;
 }
 
 /************************** Other functions **************************/

@@ -358,6 +358,7 @@ extern void* FPRFloatOtherLocation[32], *FPRDoubleFTFDLocation[32];
 extern MIPS_DWORD *GPR, *FPR, HI, LO, *CP0;
 extern N64_REGISTERS Registers;
 extern int lastUnusedCOP0Register;
+extern MIPS_DWORD cop2LatchedValue;
 
 enum FPU_Format {
 	FPU_Unkown,FPU_Dword, FPU_Qword, FPU_Float, FPU_Double

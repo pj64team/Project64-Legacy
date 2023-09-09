@@ -169,9 +169,9 @@ void _fastcall DoCopUnusableException ( BOOL DelaySlot, int Coprocessor ) {
 	else if (Coprocessor == 2) { CAUSE_REGISTER |= 0x20000000; }
 	if (DelaySlot) {
 		CAUSE_REGISTER |= CAUSE_BD;
-		EPC_REGISTER = PROGRAM_COUNTER - 4;
+		EPC_REGISTER = (long)(PROGRAM_COUNTER - 4);
 	} else {
-		EPC_REGISTER = PROGRAM_COUNTER;
+		EPC_REGISTER = (long)PROGRAM_COUNTER;
 	}
 	STATUS_REGISTER |= STATUS_EXL;
 	PROGRAM_COUNTER = 0x80000180;
@@ -254,10 +254,10 @@ void _fastcall DoIllegalInstructionException(BOOL DelaySlot) {
 	CAUSE_REGISTER = EXC_II;
 	if (DelaySlot) {
 		CAUSE_REGISTER |= CAUSE_BD;
-		EPC_REGISTER = PROGRAM_COUNTER - 4;
+		EPC_REGISTER = (long)(PROGRAM_COUNTER - 4);
 	}
 	else {
-		EPC_REGISTER = PROGRAM_COUNTER;
+		EPC_REGISTER = (long)PROGRAM_COUNTER;
 	}
 	STATUS_REGISTER |= STATUS_EXL;
 	PROGRAM_COUNTER = 0x80000180;

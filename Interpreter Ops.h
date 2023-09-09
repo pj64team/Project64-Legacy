@@ -38,7 +38,7 @@ void _fastcall r4300i_ANDI           ( void );
 void _fastcall r4300i_ORI            ( void );
 void _fastcall r4300i_XORI           ( void );
 void _fastcall r4300i_LUI            ( void );
-void _fastcall r4300i_COP2           ( void );
+void _fastcall r4300i_COP3           ( void );
 void _fastcall r4300i_BEQL           ( void );
 void _fastcall r4300i_BNEL           ( void );
 void _fastcall r4300i_BLEZL          ( void );
@@ -151,9 +151,11 @@ void _fastcall r4300i_COP0_CO_ERET   ( void );
 void _fastcall r4300i_COP1_MF        ( void );
 void _fastcall r4300i_COP1_DMF       ( void );
 void _fastcall r4300i_COP1_CF        ( void );
+void _fastcall r4300i_COP1_DCF       ( void );
 void _fastcall r4300i_COP1_MT        ( void );
 void _fastcall r4300i_COP1_DMT       ( void );
 void _fastcall r4300i_COP1_CT        ( void );
+void _fastcall r4300i_COP1_DCT       ( void );
 
 /************************* COP1: BC1 functions ***********************/
 void _fastcall r4300i_COP1_BCF       ( void );
@@ -234,6 +236,16 @@ void _fastcall r4300i_COP1_L_CVT_S   ( void );
 void _fastcall r4300i_COP1_L_CVT_D   ( void );
 void _fastcall r4300i_COP1_L_CVT_W   ( void );
 void _fastcall r4300i_COP1_L_CVT_L   ( void );
+
+/************************** COP2 functions **************************/
+void _fastcall r4300i_COP2_MF        ( void );
+void _fastcall r4300i_COP2_DMF       ( void );
+void _fastcall r4300i_COP2_CF        ( void );
+void _fastcall r4300i_COP2_DCF       ( void );
+void _fastcall r4300i_COP2_MT        ( void );
+void _fastcall r4300i_COP2_DMT       ( void );
+void _fastcall r4300i_COP2_CT        ( void );
+void _fastcall r4300i_COP2_DCT       ( void );
 
 /************************** Other functions **************************/	
 void _fastcall  R4300i_UnknownOpcode ( void );
