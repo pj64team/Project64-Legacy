@@ -2883,6 +2883,7 @@ void _fastcall r4300i_COP2_MF(void) {
 		NextInstruction = JUMP;
 		JumpToLocation = PROGRAM_COUNTER;
 	}
+	GPR[Opcode.BRANCH.rt].DW = cop2LatchedValue.W[0];
 }
 
 void _fastcall r4300i_COP2_DMF(void) {
@@ -2891,6 +2892,7 @@ void _fastcall r4300i_COP2_DMF(void) {
 		NextInstruction = JUMP;
 		JumpToLocation = PROGRAM_COUNTER;
 	}
+	GPR[Opcode.BRANCH.rt].DW = cop2LatchedValue.DW;
 }
 
 void _fastcall r4300i_COP2_CF(void) {
@@ -2920,6 +2922,7 @@ void _fastcall r4300i_COP2_MT(void) {
 		NextInstruction = JUMP;
 		JumpToLocation = PROGRAM_COUNTER;
 	}
+	cop2LatchedValue.DW = GPR[Opcode.BRANCH.rt].DW;
 }
 
 void _fastcall r4300i_COP2_DMT(void) {
@@ -2928,6 +2931,7 @@ void _fastcall r4300i_COP2_DMT(void) {
 		NextInstruction = JUMP;
 		JumpToLocation = PROGRAM_COUNTER;
 	}
+	cop2LatchedValue.DW = GPR[Opcode.BRANCH.rt].DW;
 }
 
 void _fastcall r4300i_COP2_CT(void) {

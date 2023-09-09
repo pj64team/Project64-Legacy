@@ -743,6 +743,7 @@ BOOL Machine_LoadState(void) {
 			unzReadCurrentFile(file, &WrittenToRomCount, sizeof(DWORD));
 			unzReadCurrentFile(file, &WroteToRom, sizeof(DWORD));
 			unzReadCurrentFile(file, ISViewerBuffer, sizeof(ISViewerBuffer));
+			unzReadCurrentFile(file, &cop2LatchedValue.UDW, sizeof(QWORD));
 
 			unzCloseCurrentFile(file);
 			unzClose(file);
@@ -878,6 +879,7 @@ BOOL Machine_LoadState(void) {
 		ReadFile(hSaveFile, &WrittenToRomCount, sizeof(DWORD), &dwRead, NULL);
 		ReadFile(hSaveFile, &WroteToRom, sizeof(DWORD), &dwRead, NULL);
 		ReadFile(hSaveFile, ISViewerBuffer, sizeof(ISViewerBuffer), &dwRead, NULL);
+		ReadFile(hSaveFile, &cop2LatchedValue.UDW, sizeof(QWORD), &dwRead, NULL);
 
 		CloseHandle(hSaveFile);
 		_splitpath( FileName, drive, dir, ZipFile, ext );
@@ -1012,6 +1014,7 @@ BOOL Machine_SaveState(void) {
 		zipWriteInFileInZip(file, &WrittenToRomCount, sizeof(DWORD));
 		zipWriteInFileInZip(file, &WroteToRom, sizeof(DWORD));
 		zipWriteInFileInZip(file, ISViewerBuffer, sizeof(ISViewerBuffer));
+		zipWriteInFileInZip(file, &cop2LatchedValue.UDW, sizeof(QWORD));
 
 		zipCloseFileInZip(file);
 		zipClose(file,"");
@@ -1084,6 +1087,7 @@ BOOL Machine_SaveState(void) {
 		WriteFile(hSaveFile, &WrittenToRomCount, sizeof(DWORD), &dwWritten, NULL);
 		WriteFile(hSaveFile, &WroteToRom, sizeof(DWORD), &dwWritten, NULL);
 		WriteFile(hSaveFile, ISViewerBuffer, sizeof(ISViewerBuffer), &dwWritten, NULL);
+		WriteFile(hSaveFile, &cop2LatchedValue.UDW, sizeof(QWORD), &dwWritten, NULL);
 
 		CloseHandle(hSaveFile);
 		DeleteFile(ZipFile);
