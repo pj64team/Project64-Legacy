@@ -15,7 +15,7 @@
 // Note that Project64 automatically prefixes "http://"
 
 Author=PJ64LegacyTeam
-Date=16th July 2023 Version: 1
+Date=31st August 2023 Version: 1
 Homepage=www.project64-legacy.com
 Version=Project64 1.6.2 (Legacy)
 
@@ -3858,7 +3858,7 @@ ReleaseDate=1998/11/10
 Name=Knockout Kings 2000 (E) [!]
 Developer=Black Ops
 ForceFeedback=Yes
-GameInformation=
+GameInformation=knockout-kings-2000
 Genre=Sport-Boxing
 Players=2
 ReleaseDate=1999/10/10
@@ -3867,7 +3867,7 @@ ReleaseDate=1999/10/10
 Name=Knockout Kings 2000 (U) [!]
 Developer=Black Ops
 ForceFeedback=Yes
-GameInformation=
+GameInformation=knockout-kings-2000
 Genre=Sport-Boxing
 Players=2
 ReleaseDate=1999/10/03
