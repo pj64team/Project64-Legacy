@@ -223,6 +223,12 @@ void _fastcall r4300i_LUI (void) {
 #endif
 }
 
+void _fastcall r4300i_COP3 (void) {
+	DoIllegalInstructionException(NextInstruction == JUMP);
+	NextInstruction = JUMP;
+	JumpToLocation = PROGRAM_COUNTER;
+}
+
 void _fastcall r4300i_BEQL (void) {
 	if (GPR[Opcode.BRANCH.rs].DW == GPR[Opcode.BRANCH.rt].DW) {
 		NextInstruction = DELAY_SLOT;

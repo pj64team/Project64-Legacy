@@ -1438,6 +1438,9 @@ char * R4300iOpcodeName ( DWORD OpCode, DWORD PC ) {
 				command.Ascii[3], command.Ascii[2], command.Ascii[1], command.Ascii[0]);
 		}
 		break;
+	case R4300i_CP3:
+		sprintf(CommandName, "cop3");
+		break;
 	case R4300i_BEQL:
 		if (command.BRANCH.rs == command.BRANCH.rt) {
 			sprintf(CommandName,"b\t%s", LabelName(PC + ((short)command.BRANCH.offset << 2) + 4));
