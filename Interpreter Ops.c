@@ -223,14 +223,6 @@ void _fastcall r4300i_LUI (void) {
 #endif
 }
 
-void _fastcall r4300i_COP2 (void) {
-	if ((STATUS_REGISTER & STATUS_CU2) == 0) {
-		DoCopUnusableException(NextInstruction == JUMP,2);
-		NextInstruction = JUMP;
-		JumpToLocation = PROGRAM_COUNTER;
-	}
-}
-
 void _fastcall r4300i_BEQL (void) {
 	if (GPR[Opcode.BRANCH.rs].DW == GPR[Opcode.BRANCH.rt].DW) {
 		NextInstruction = DELAY_SLOT;
@@ -2876,6 +2868,68 @@ void _fastcall r4300i_COP1_L_CVT_L (void) {
 	CLEAR_COP1_CAUSE();
 	SET_COP1_CAUSE(CAUSE_UNIMPLEMENTED);
 	TEST_COP1_FP_EXCEPTION();
+}
+
+/************************** COP2 functions **************************/
+void _fastcall r4300i_COP2_MF(void) {
+	if ((STATUS_REGISTER & STATUS_CU2) == 0) {
+		DoCopUnusableException(NextInstruction == JUMP, 2);
+		NextInstruction = JUMP;
+		JumpToLocation = PROGRAM_COUNTER;
+	}
+}
+
+void _fastcall r4300i_COP2_DMF(void) {
+	if ((STATUS_REGISTER & STATUS_CU2) == 0) {
+		DoCopUnusableException(NextInstruction == JUMP, 2);
+		NextInstruction = JUMP;
+		JumpToLocation = PROGRAM_COUNTER;
+	}
+}
+
+void _fastcall r4300i_COP2_CF(void) {
+	if ((STATUS_REGISTER & STATUS_CU2) == 0) {
+		DoCopUnusableException(NextInstruction == JUMP, 2);
+		NextInstruction = JUMP;
+		JumpToLocation = PROGRAM_COUNTER;
+	}
+}
+
+void _fastcall r4300i_COP2_DCF(void) {
+	if ((STATUS_REGISTER & STATUS_CU2) == 0) {
+		DoCopUnusableException(NextInstruction == JUMP, 2);
+		NextInstruction = JUMP;
+		JumpToLocation = PROGRAM_COUNTER;
+		return;
+	}
+	DoIllegalInstructionException(NextInstruction == JUMP);
+	CAUSE_REGISTER |= 0x20000000;
+	NextInstruction = JUMP;
+	JumpToLocation = PROGRAM_COUNTER;
+}
+
+void _fastcall r4300i_COP2_MT(void) {
+	if ((STATUS_REGISTER & STATUS_CU2) == 0) {
+		DoCopUnusableException(NextInstruction == JUMP, 2);
+		NextInstruction = JUMP;
+		JumpToLocation = PROGRAM_COUNTER;
+	}
+}
+
+void _fastcall r4300i_COP2_DMT(void) {
+	if ((STATUS_REGISTER & STATUS_CU2) == 0) {
+		DoCopUnusableException(NextInstruction == JUMP, 2);
+		NextInstruction = JUMP;
+		JumpToLocation = PROGRAM_COUNTER;
+	}
+}
+
+void _fastcall r4300i_COP2_CT(void) {
+	if ((STATUS_REGISTER & STATUS_CU2) == 0) {
+		DoCopUnusableException(NextInstruction == JUMP, 2);
+		NextInstruction = JUMP;
+		JumpToLocation = PROGRAM_COUNTER;
+	}
 }
 
 /************************** Other functions **************************/

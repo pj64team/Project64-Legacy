@@ -1408,7 +1408,32 @@ char * R4300iOpcodeName ( DWORD OpCode, DWORD PC ) {
 	case R4300i_CP1:
 		return R4300iCop1Name ( OpCode, PC );
 	case R4300i_CP2:
-		sprintf(CommandName, "cop2");
+		switch (command.BRANCH.rs) {
+		case R4300i_COP2_MF:
+			sprintf(CommandName, "mfc2\t%s, %d", GPR_Name[command.BRANCH.rt], command.REG.rd);
+			break;
+		case R4300i_COP2_DMF:
+			sprintf(CommandName, "dmfc2\t%s, %d", GPR_Name[command.BRANCH.rt], command.REG.rd);
+			break;
+		case R4300i_COP2_CF:
+			sprintf(CommandName, "cfc2\t%s, %d", GPR_Name[command.BRANCH.rt], command.REG.rd);
+			break;
+		case R4300i_COP2_DCF:
+			sprintf(CommandName, "dcfc2\t%s, %d", GPR_Name[command.BRANCH.rt], command.REG.rd);
+			break;
+		case R4300i_COP2_MT:
+			sprintf(CommandName, "mtc2\t%s, %d", GPR_Name[command.BRANCH.rt], command.REG.rd);
+			break;
+		case R4300i_COP2_DMT:
+			sprintf(CommandName, "dmtc2\t%s, %d", GPR_Name[command.BRANCH.rt], command.REG.rd);
+			break;
+		case R4300i_COP2_CT:
+			sprintf(CommandName, "ctc2\t%s, %d", GPR_Name[command.BRANCH.rt], command.REG.rd);
+			break;
+		default:
+			sprintf(CommandName, "Unknown\t%02X %02X %02X %02X",
+				command.Ascii[3], command.Ascii[2], command.Ascii[1], command.Ascii[0]);
+		}
 		break;
 	case R4300i_BEQL:
 		if (command.BRANCH.rs == command.BRANCH.rt) {

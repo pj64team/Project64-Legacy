@@ -43,6 +43,7 @@ void(__fastcall* R4300i_CoP1_S[64])(void);
 void(__fastcall* R4300i_CoP1_D[64])(void);
 void(__fastcall* R4300i_CoP1_W[64])(void);
 void(__fastcall* R4300i_CoP1_L[64])(void);
+void(__fastcall* R4300i_CoP2[32])(void);
 
 void _fastcall R4300i_opcode_SPECIAL (void) {
 	((void (_fastcall *)()) R4300i_Special[ Opcode.REG.funct ])();
@@ -86,6 +87,10 @@ void _fastcall R4300i_opcode_COP1_L (void) {
 	((void (_fastcall *)()) R4300i_CoP1_L[ Opcode.REG.funct ])();
 }
 
+void _fastcall R4300i_opcode_COP2(void) {
+	((void(_fastcall*)()) R4300i_CoP2[Opcode.BRANCH.rs])();
+}
+
 void BuildInterpreter (void ) { 
 	R4300i_Opcode[ 0] = R4300i_opcode_SPECIAL;
 	R4300i_Opcode[ 1] = R4300i_opcode_REGIMM;
@@ -105,7 +110,7 @@ void BuildInterpreter (void ) {
 	R4300i_Opcode[15] = r4300i_LUI;
 	R4300i_Opcode[16] = R4300i_opcode_COP0;
 	R4300i_Opcode[17] = R4300i_opcode_COP1;
-	R4300i_Opcode[18] = r4300i_COP2;
+	R4300i_Opcode[18] = R4300i_opcode_COP2;
 	R4300i_Opcode[19] = R4300i_UnknownOpcode;
 	R4300i_Opcode[20] = r4300i_BEQL;
 	R4300i_Opcode[21] = r4300i_BNEL;
@@ -672,7 +677,40 @@ void BuildInterpreter (void ) {
 	R4300i_CoP1_L[60] = R4300i_UnknownOpcode;
 	R4300i_CoP1_L[61] = R4300i_UnknownOpcode;
 	R4300i_CoP1_L[62] = R4300i_UnknownOpcode;
-	R4300i_CoP1_L[63] = R4300i_UnknownOpcode;	
+	R4300i_CoP1_L[63] = R4300i_UnknownOpcode;
+
+	R4300i_CoP2[ 0] = r4300i_COP2_MF;
+	R4300i_CoP2[ 1] = r4300i_COP2_DMF;
+	R4300i_CoP2[ 2] = r4300i_COP2_CF;
+	R4300i_CoP2[ 3] = r4300i_COP2_DCF;
+	R4300i_CoP2[ 4] = r4300i_COP2_MT;
+	R4300i_CoP2[ 5] = r4300i_COP2_DMT;
+	R4300i_CoP2[ 6] = r4300i_COP2_CT;
+	R4300i_CoP2[ 7] = R4300i_UnknownOpcode;
+	R4300i_CoP2[ 8] = R4300i_UnknownOpcode;
+	R4300i_CoP2[ 9] = R4300i_UnknownOpcode;
+	R4300i_CoP2[10] = R4300i_UnknownOpcode;
+	R4300i_CoP2[11] = R4300i_UnknownOpcode;
+	R4300i_CoP2[12] = R4300i_UnknownOpcode;
+	R4300i_CoP2[13] = R4300i_UnknownOpcode;
+	R4300i_CoP2[14] = R4300i_UnknownOpcode;
+	R4300i_CoP2[15] = R4300i_UnknownOpcode;
+	R4300i_CoP2[16] = R4300i_UnknownOpcode;
+	R4300i_CoP2[17] = R4300i_UnknownOpcode;
+	R4300i_CoP2[18] = R4300i_UnknownOpcode;
+	R4300i_CoP2[19] = R4300i_UnknownOpcode;
+	R4300i_CoP2[20] = R4300i_UnknownOpcode;
+	R4300i_CoP2[21] = R4300i_UnknownOpcode;
+	R4300i_CoP2[22] = R4300i_UnknownOpcode;
+	R4300i_CoP2[23] = R4300i_UnknownOpcode;
+	R4300i_CoP2[24] = R4300i_UnknownOpcode;
+	R4300i_CoP2[25] = R4300i_UnknownOpcode;
+	R4300i_CoP2[26] = R4300i_UnknownOpcode;
+	R4300i_CoP2[27] = R4300i_UnknownOpcode;
+	R4300i_CoP2[28] = R4300i_UnknownOpcode;
+	R4300i_CoP2[29] = R4300i_UnknownOpcode;
+	R4300i_CoP2[30] = R4300i_UnknownOpcode;
+	R4300i_CoP2[31] = R4300i_UnknownOpcode;
 }
 
 void ExecuteInterpreterOpCode (void) {

@@ -270,4 +270,13 @@ typedef union {
 #define R4300i_COP1_FUNCT_C_LE		62
 #define R4300i_COP1_FUNCT_C_NGT		63
 
+/* R4300i COP2 opcodes */
+#define R4300i_COP2_MF				0
+#define R4300i_COP2_DMF				1
+#define R4300i_COP2_CF				2
+#define R4300i_COP2_DCF				3
+#define R4300i_COP2_MT				4
+#define R4300i_COP2_DMT				5
+#define R4300i_COP2_CT				6
+
 #endif
