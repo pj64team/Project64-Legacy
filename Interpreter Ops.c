@@ -2985,3 +2985,9 @@ void _fastcall R4300i_UnknownOpcode (void) {
 	JumpToLocation = PROGRAM_COUNTER;
 #endif
 }
+
+void _fastcall r4300i_RESERVED (void) {
+	DoIllegalInstructionException(NextInstruction == JUMP);
+	NextInstruction = JUMP;
+	JumpToLocation = PROGRAM_COUNTER;
+}
