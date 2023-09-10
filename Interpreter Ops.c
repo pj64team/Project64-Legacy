@@ -1283,6 +1283,20 @@ void _fastcall r4300i_REGIMM_BGEZAL (void) {
 	}
 	GPR[31].DW = (long)(PROGRAM_COUNTER + 8);
 }
+
+void _fastcall r4300i_REGIMM_BGEZALL (void) {
+	if (GPR[Opcode.BRANCH.rs].DW >= 0) {
+		NextInstruction = DELAY_SLOT;
+		JumpToLocation = PROGRAM_COUNTER + ((short)Opcode.BRANCH.offset << 2) + 4;
+		TestInterpreterJump(PROGRAM_COUNTER, JumpToLocation, Opcode.BRANCH.rs, 0);
+	}
+	else {
+		NextInstruction = JUMP;
+		JumpToLocation = PROGRAM_COUNTER + 8;
+	}
+	GPR[31].DW = (long)(PROGRAM_COUNTER + 8);
+}
+
 /************************** COP0 functions **************************/
 void _fastcall r4300i_COP0_MF (void) {
 	if (HaveDebugger && LogOptions.LogCP0reads) {
