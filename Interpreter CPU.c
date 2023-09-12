@@ -240,7 +240,7 @@ void BuildInterpreter (void ) {
 	R4300i_Regimm[15] = r4300i_RESERVED;
 	R4300i_Regimm[16] = r4300i_REGIMM_BLTZAL;
 	R4300i_Regimm[17] = r4300i_REGIMM_BGEZAL;
-	R4300i_Regimm[18] = R4300i_UnknownOpcode;
+	R4300i_Regimm[18] = R4300i_REGIMM_BLTZALL;
 	R4300i_Regimm[19] = r4300i_REGIMM_BGEZALL;
 	R4300i_Regimm[20] = r4300i_RESERVED;
 	R4300i_Regimm[21] = r4300i_RESERVED;
