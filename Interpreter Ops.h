@@ -133,6 +133,8 @@ void _fastcall r4300i_REGIMM_BLTZL   ( void );
 void _fastcall r4300i_REGIMM_BGEZL   ( void );
 void _fastcall r4300i_REGIMM_BLTZAL  ( void );
 void _fastcall r4300i_REGIMM_BGEZAL  ( void );
+void _fastcall r4300i_REGIMM_BLTZALL ( void );
+void _fastcall r4300i_REGIMM_BGEZALL ( void );
 
 /************************** COP0 functions **************************/
 void _fastcall r4300i_COP0_MF        ( void );
