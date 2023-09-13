@@ -1274,14 +1274,30 @@ void _fastcall r4300i_REGIMM_BLTZAL (void) {
 }
 
 void _fastcall r4300i_REGIMM_BGEZAL (void) {
+	BOOL inDelay = NextInstruction == JUMP;
 	NextInstruction = DELAY_SLOT;
 	if (GPR[Opcode.BRANCH.rs].DW >= 0) {
-		JumpToLocation = PROGRAM_COUNTER + ((short)Opcode.BRANCH.offset << 2) + 4;
+		if (inDelay) {
+			GPR[31].DW = JumpToLocation + 4;
+			PROGRAM_COUNTER = JumpToLocation-4; // It will be incremented to JumpToLocation in main loop
+			JumpToLocation = JumpToLocation + ((short)Opcode.BRANCH.offset << 2);
+		}
+		else {
+			GPR[31].DW = (long)(PROGRAM_COUNTER + 8);
+			JumpToLocation = PROGRAM_COUNTER + ((short)Opcode.BRANCH.offset << 2) + 4;
+		}
 		TestInterpreterJump(PROGRAM_COUNTER,JumpToLocation,Opcode.BRANCH.rs,0);
 	} else {
-		JumpToLocation = PROGRAM_COUNTER + 8;
+		if (inDelay) {
+			GPR[31].DW = (long)(JumpToLocation + 4);
+			PROGRAM_COUNTER = JumpToLocation - 4; // It will be incremented to JumpToLocation in main loop
+			JumpToLocation = JumpToLocation + 4;
+		}
+		else {
+			GPR[31].DW = (long)(PROGRAM_COUNTER + 8);
+			JumpToLocation = PROGRAM_COUNTER + 8;
+		}
 	}
-	GPR[31].DW = (long)(PROGRAM_COUNTER + 8);
 }
 
 void _fastcall r4300i_REGIMM_BLTZALL(void) {
