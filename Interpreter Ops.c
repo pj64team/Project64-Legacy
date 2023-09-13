@@ -105,12 +105,18 @@ int RoundingModel = _RC_NEAR;
 
 /************************* OpCode functions *************************/
 void _fastcall r4300i_J (void) {
+	if(NextInstruction == JUMP) return;
 	NextInstruction = DELAY_SLOT;
 	JumpToLocation = (PROGRAM_COUNTER & 0xF0000000) + (Opcode.JMP.target << 2);
 	TestInterpreterJump(PROGRAM_COUNTER,JumpToLocation,0,0);
 }
 
 void _fastcall r4300i_JAL (void) {
+	if (NextInstruction == JUMP)
+	{
+		GPR[31].DW = (long)(JumpToLocation + 4);
+		return;
+	}
 	NextInstruction = DELAY_SLOT;
 	JumpToLocation = (PROGRAM_COUNTER & 0xF0000000) + (Opcode.JMP.target << 2);
 	TestInterpreterJump(PROGRAM_COUNTER,JumpToLocation,0,0);
@@ -880,6 +886,7 @@ void _fastcall r4300i_SPECIAL_SRAV (void) {
 }
 
 void _fastcall r4300i_SPECIAL_JR (void) {
+	if (NextInstruction == JUMP) return;
 	NextInstruction = DELAY_SLOT;
 	JumpToLocation = GPR[Opcode.BRANCH.rs].UW[0];
 	if (JumpToLocation & 3) {
@@ -891,6 +898,10 @@ void _fastcall r4300i_SPECIAL_JR (void) {
 }
 
 void _fastcall r4300i_SPECIAL_JALR (void) {
+	if (NextInstruction == JUMP) {
+		GPR[Opcode.REG.rd].DW = (long)(JumpToLocation + 4);
+		return;
+	}
 	NextInstruction = DELAY_SLOT;
 	JumpToLocation = GPR[Opcode.BRANCH.rs].UW[0];
 	if (JumpToLocation & 3) {
