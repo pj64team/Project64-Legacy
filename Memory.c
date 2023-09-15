@@ -1402,6 +1402,20 @@ int r4300i_LB_NonMemory ( DWORD PAddr, DWORD * Value, BOOL SignExtend ) {
 	}
 
 	switch (PAddr & 0xFFF00000) {
+	case 0x1FC00000:
+		if (PAddr < 0x1FC007C0) {
+			*Value = 0;
+			return TRUE;
+		}
+		else if (PAddr < 0x1FC00800) {
+			*Value = PIF_Ram[(PAddr - 0x1FC007C0) ^ 3];
+			return TRUE;
+		}
+		else {
+			*Value = 0;
+			return FALSE;
+		}
+		break;
 	default:
 		* Value = 0;
 		return FALSE;
@@ -1479,6 +1493,27 @@ int r4300i_LH_NonMemory ( DWORD PAddr, DWORD * Value, int SignExtend ) {
 	}
 
 	switch (PAddr & 0xFFF00000) {
+	case 0x1FC00000:
+		if (PAddr < 0x1FC007C0) {
+			*Value = 0;
+			return TRUE;
+		}
+		else if (PAddr < 0x1FC00800) {
+			DWORD ToSwap = *(DWORD*)(&PIF_Ram[(PAddr & ~3) - 0x1FC007C0]);
+			_asm {
+				mov eax, ToSwap
+				bswap eax
+				mov ToSwap, eax
+			}
+			if ((PAddr&3) == 0) *Value = ToSwap & 0xFFFF;
+			else *Value = (ToSwap >> 16) & 0xFFFF;
+			return TRUE;
+		}
+		else {
+			*Value = 0;
+			return FALSE;
+		}
+		break;
 	default:
 		* Value = 0;
 		return FALSE;
@@ -1838,6 +1873,27 @@ int r4300i_SB_NonMemory ( DWORD PAddr, BYTE Value ) {
 			ISViewerBuffer[PAddr - 0x13FF0020] = Value;
 		}
 		break;
+	case 0x1FC00000:
+		if (PAddr < 0x1FC007C0) {
+			return FALSE;
+		}
+		else if (PAddr < 0x1FC00800) {
+			DWORD v = RegisterCurrentlyWritten->UW[0];
+			v <<= 8 * (PAddr & 3);
+			_asm {
+				mov eax, v
+				bswap eax
+				mov v, eax
+			}
+			DWORD alignedAddr = PAddr & ~3;
+			*(DWORD*)(&PIF_Ram[alignedAddr - 0x1FC007C0]) = v;
+			if (alignedAddr == 0x1FC007FC) {
+				PifRamWrite();
+			}
+			return TRUE;
+		}
+		return FALSE;
+		break;
 	default:
 		return FALSE;
 		break;
@@ -1906,6 +1962,27 @@ int r4300i_SH_NonMemory ( DWORD PAddr, WORD Value ) {
 			*(DelaySlotTable + ((PAddr & 0xFFFFF000) >> 12)) = NULL;
 		}
 		break;
+	case 0x1FC00000:
+		if (PAddr < 0x1FC007C0) {
+			return FALSE;
+		}
+		else if (PAddr < 0x1FC00800) {
+			DWORD v = RegisterCurrentlyWritten->UW[0];
+			if ((PAddr & 3) != 0) v <<= 16;
+			_asm {
+				mov eax, v
+				bswap eax
+				mov v, eax
+			}
+			DWORD alignedAddr = PAddr & ~3;
+			*(DWORD*)(&PIF_Ram[alignedAddr - 0x1FC007C0]) = v;
+			if (alignedAddr == 0x1FC007FC) {
+				PifRamWrite();
+			}
+			return TRUE;
+		}
+		return FALSE;
+		break;
 	default:
 		return FALSE;
 		break;
@@ -1922,11 +1999,11 @@ BOOL r4300i_SD_VAddr ( DWORD VAddr, unsigned _int64 Value ) {
 	return TRUE;
 }
 
-BOOL r4300i_SH_VAddr ( DWORD VAddr, WORD Value ) {
+BOOL r4300i_SH_VAddr ( DWORD VAddr, MIPS_DWORD* Value) {
 	CheckForWatchPoint(VAddr, WP_WRITE, sizeof(WORD));
-
+	RegisterCurrentlyWritten = Value;
 	if (TLB_WriteMap[VAddr >> 12] == 0) { return FALSE; }
-	*(WORD *)(TLB_WriteMap[VAddr >> 12] + (VAddr ^ 2)) = Value;
+	*(WORD *)(TLB_WriteMap[VAddr >> 12] + (VAddr ^ 2)) = Value->UHW[0];
 	return TRUE;
 }
 

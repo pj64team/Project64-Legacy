@@ -634,7 +634,7 @@ void _fastcall r4300i_SH (void) {
 		ADDRESS_ERROR_EXCEPTION(Address.UDW,FALSE);
 		return;
 	}
-	if (!r4300i_SH_VAddr(Address.UW[0],GPR[Opcode.BRANCH.rt].UHW[0])) {
+	if (!r4300i_SH_VAddr(Address.UW[0],&GPR[Opcode.BRANCH.rt])) {
 		if (ShowTLBMisses) {
 			DisplayError("SH TLB: %X", Address.UW[0]);
 		}
