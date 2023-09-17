@@ -1639,6 +1639,9 @@ int r4300i_LW_NonMemory ( DWORD PAddr, DWORD * Value ) {
 		break;
 	case 0x04100000:
 		switch (PAddr) {
+		case 0x04100000: *Value = DPC_START_REG; break;
+		case 0x04100004: *Value = DPC_END_REG; break;
+		case 0x04100008: *Value = DPC_CURRENT_REG; break;
 		case 0x0410000C: *Value = DPC_STATUS_REG; break;
 		case 0x04100010: *Value = DPC_CLOCK_REG; break;
 		case 0x04100014: *Value = DPC_BUFBUSY_REG; break;
