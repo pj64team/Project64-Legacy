@@ -2193,8 +2193,8 @@ int r4300i_SW_NonMemory ( DWORD PAddr, DWORD Value ) {
 			if (DPC_STATUS_REG & DPC_STATUS_START_VALID) {
 				DPC_CURRENT_REG = DPC_START_REG;
 				DPC_STATUS_REG &= ~DPC_STATUS_START_VALID;
-				if (ProcessRDPList) { ProcessRDPList(); }
 			}
+			if (ProcessRDPList) { ProcessRDPList(); }
 			break;
 		//case 0x04100008: DPC_CURRENT_REG = Value; break;
 		case 0x0410000C:
