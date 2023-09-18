@@ -2182,13 +2182,19 @@ int r4300i_SW_NonMemory ( DWORD PAddr, DWORD Value ) {
 		break;
 	case 0x04100000:
 		switch (PAddr) {
-		case 0x04100000: 
-			DPC_START_REG = Value & 0xFFFFF8; 
-			DPC_CURRENT_REG = Value & 0xFFFFF8;
+		case 0x04100000:
+			if ((DPC_STATUS_REG & DPC_STATUS_START_VALID) == 0) {
+				DPC_START_REG = Value & 0xFFFFF8;
+				DPC_STATUS_REG |= DPC_STATUS_START_VALID;
+			}
 			break;
 		case 0x04100004: 
-			DPC_END_REG = Value & 0xFFFFF8; 
-			if (ProcessRDPList) { ProcessRDPList(); }
+			DPC_END_REG = Value & 0xFFFFF8;
+			if (DPC_STATUS_REG & DPC_STATUS_START_VALID) {
+				DPC_CURRENT_REG = DPC_START_REG;
+				DPC_STATUS_REG &= ~DPC_STATUS_START_VALID;
+				if (ProcessRDPList) { ProcessRDPList(); }
+			}
 			break;
 		//case 0x04100008: DPC_CURRENT_REG = Value; break;
 		case 0x0410000C:
