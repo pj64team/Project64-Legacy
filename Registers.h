@@ -75,6 +75,8 @@
 #define RDRAM_ADDR_SELECT_REG	RegRDRAM[8]
 #define RDRAM_DEVICE_MANUF_REG	RegRDRAM[9]
 
+#define SP_MEM_ADDR_REGW		RegSPW[0]
+#define SP_DRAM_ADDR_REGW		RegSPW[1]
 #define SP_MEM_ADDR_REG			RegSP[0]
 #define SP_DRAM_ADDR_REG		RegSP[1]
 #define SP_RD_LEN_REG			RegSP[2]
@@ -359,6 +361,7 @@ extern MIPS_DWORD *GPR, *FPR, HI, LO, *CP0;
 extern N64_REGISTERS Registers;
 extern int lastUnusedCOP0Register;
 extern MIPS_DWORD cop2LatchedValue;
+extern DWORD RegSPW[2];
 
 enum FPU_Format {
 	FPU_Unkown,FPU_Dword, FPU_Qword, FPU_Float, FPU_Double
