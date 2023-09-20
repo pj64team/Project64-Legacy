@@ -234,6 +234,7 @@ void PI_DMA_WRITE (void) {
 
 		PI_DRAM_ADDR_REG += wr_len + 1;
 		PI_CART_ADDR_REG += wr_len_cart + 1;
+		PI_DRAM_ADDR_REG = (PI_DRAM_ADDR_REG) & 0x7FFFFF;
 		PI_WR_LEN_REG = 0x7f;
 		PI_RD_LEN_REG = 0x7f;
 
@@ -433,63 +434,117 @@ void SI_DMA_WRITE (void) {
 	}
 }
 
-void SP_DMA_READ (void) { 
-	SP_DRAM_ADDR_REG &= 0x1FFFFFFF;
+void SP_DMA_READ(void) {
+	SP_DRAM_ADDR_REGW &= 0x1FFFFFF8;
+	SP_MEM_ADDR_REGW &= 0x001FFFF8;
+	//(RW) : [11:0] length
+	//[19:12] count
+	//[31:20] skip
+	int length = SP_RD_LEN_REG & 0xFFF;
+	int count = (SP_RD_LEN_REG >> 12) & 0x0FF;
+	int skip = (SP_RD_LEN_REG >> 20) & 0x0FF8;
+
+	if ((length & 0x07) == 0)
+		length++;
 
 	if (SP_DRAM_ADDR_REG > RdramSize) {
 		if (ShowDebugMessages)
 			DisplayError("SP DMA\nSP_DRAM_ADDR_REG not in RDRam space");
 		SP_DMA_BUSY_REG = 0;
-		SP_STATUS_REG  &= ~SP_STATUS_DMA_BUSY;
+		SP_STATUS_REG &= ~SP_STATUS_DMA_BUSY;
 		return;
 	}
-	
-	if (SP_RD_LEN_REG + 1  + (SP_MEM_ADDR_REG & 0xFFF) > 0x1000) {
-		if (ShowDebugMessages)
-			DisplayError("SP DMA\ncould not fit copy in memory segement");
-		SP_DMA_BUSY_REG = 0;
-		SP_STATUS_REG  &= ~SP_STATUS_DMA_BUSY;
-		return;		
+
+	if (SP_RD_LEN_REG + 1 + (SP_MEM_ADDR_REG & 0xFFF) > 0x1000) {
+		//if (ShowDebugMessages)
+		//	DisplayError("SP DMA\ncould not fit copy in memory segement");
+		//SP_DMA_BUSY_REG = 0;
+		//SP_STATUS_REG  &= ~SP_STATUS_DMA_BUSY;
+		//return;		
 	}
 
 	if ((SP_MEM_ADDR_REG & 3) != 0 || (SP_DRAM_ADDR_REG & 3) != 0 || ((SP_RD_LEN_REG + 1) & 3) != 0) {
-		DisplayErrorFatal("Nonstandard DMA Transfer.\nStopping Emulation.");
-		ExitThread(0);
+		//DisplayErrorFatal("Nonstandard DMA Transfer.\nStopping Emulation.");
+		//ExitThread(0);
 	}
+
+	SP_MEM_ADDR_REG = SP_MEM_ADDR_REGW;
+	SP_DRAM_ADDR_REG = SP_DRAM_ADDR_REGW;
+
 	/*
 	if ((SP_MEM_ADDR_REG & 3) != 0) { _asm int 3 }
 	if ((SP_DRAM_ADDR_REG & 3) != 0) { _asm int 3 }
 	if (((SP_RD_LEN_REG + 1) & 3) != 0) { _asm int 3 }
 	*/
-	memcpy( DMEM + (SP_MEM_ADDR_REG & 0x1FFF), N64MEM + SP_DRAM_ADDR_REG,
-		SP_RD_LEN_REG + 1 );
-		
+	if (length == 0)
+		length = 1;
+	length = ((length + 7) & 0x01FF8);
+	for (int i = 0; i <= count; i++)
+	{
+		if (SP_MEM_ADDR_REG & 0x1000)
+			memcpy(DMEM + (SP_MEM_ADDR_REG & 0x1FFF), N64MEM + SP_DRAM_ADDR_REG, length);
+		else
+		{
+			for (int ix = 0; ix < length; ix++)
+			{
+				DMEM[(SP_MEM_ADDR_REG + ix) & 0xFFF] = N64MEM[(SP_DRAM_ADDR_REG + ix)];
+			}
+		}
+		SP_MEM_ADDR_REG += length;
+		SP_DRAM_ADDR_REG += length + skip;
+	}
+
+	SP_DRAM_ADDR_REG -= skip;
+	SP_RD_LEN_REG = (SP_RD_LEN_REG & 0xFF000000) | 0xff8;
+	SP_WR_LEN_REG = SP_RD_LEN_REG;
 	SP_DMA_BUSY_REG = 0;
-	SP_STATUS_REG  &= ~SP_STATUS_DMA_BUSY;
+	SP_STATUS_REG &= ~SP_STATUS_DMA_BUSY;
 }
 
-void SP_DMA_WRITE (void) { 
-	SP_DRAM_ADDR_REG &= 0x7FFFFFFF;
+void SP_DMA_WRITE(void) {
+	SP_DRAM_ADDR_REGW &= 0x1FFFFFF8;
+	SP_MEM_ADDR_REGW &= 0x001FFFF8;
+	//(RW) : [11:0] length
+	//[19:12] count
+	//[31:20] skip
+	int length = SP_WR_LEN_REG & 0xFFF;
+	int count = (SP_WR_LEN_REG >> 12) & 0x0FF;
+	int skip = (SP_WR_LEN_REG >> 20) & 0x0FF8;
+
 
 	if (SP_DRAM_ADDR_REG > RdramSize) {
 		if (ShowDebugMessages)
 			DisplayError("SP DMA WRITE\nSP_DRAM_ADDR_REG not in RDRam space");
 		return;
 	}
-	
+
 	if (SP_WR_LEN_REG + 1 + (SP_MEM_ADDR_REG & 0xFFF) > 0x1000) {
-		if (ShowDebugMessages)
-			DisplayError("SP DMA WRITE\ncould not fit copy in memory segement");
-		return;		
+		//if (ShowDebugMessages)
+		//	DisplayError("SP DMA WRITE\ncould not fit copy in memory segement");
+		//return;		
 	}
 
-	if ((SP_MEM_ADDR_REG & 3) != 0) { _asm int 3 }
-	if ((SP_DRAM_ADDR_REG & 3) != 0) { _asm int 3 }
-	if (((SP_WR_LEN_REG + 1) & 3) != 0) { _asm int 3 }
+	SP_MEM_ADDR_REG = SP_MEM_ADDR_REGW;
+	SP_DRAM_ADDR_REG = SP_DRAM_ADDR_REGW;
 
-	memcpy( N64MEM + SP_DRAM_ADDR_REG, DMEM + (SP_MEM_ADDR_REG & 0x1FFF),
-		SP_WR_LEN_REG + 1);
-		
+	//if ((SP_MEM_ADDR_REG & 3) != 0) { _asm int 3 }
+	//if ((SP_DRAM_ADDR_REG & 3) != 0) { _asm int 3 }
+	//if (((SP_WR_LEN_REG + 1) & 3) != 0) { _asm int 3 }
+
+	if (length == 0)
+		length = 1;
+	length = ((length + 7) & 0x01FF8);
+	for (int i = 0; i <= count; i++)
+	{
+		memcpy(N64MEM + SP_DRAM_ADDR_REG, DMEM + (SP_MEM_ADDR_REG & 0x1FFF), length);
+		SP_MEM_ADDR_REG += length;
+		SP_DRAM_ADDR_REG += length + skip;
+	}
+
+	//SP_DRAM_ADDR_REG += 8;
+	SP_DRAM_ADDR_REG -= skip;
+	SP_WR_LEN_REG = (SP_WR_LEN_REG & 0xFF000000) | 0xff8;
+	SP_RD_LEN_REG = SP_WR_LEN_REG;
 	SP_DMA_BUSY_REG = 0;
-	SP_STATUS_REG  &= ~SP_STATUS_DMA_BUSY;
+	SP_STATUS_REG &= ~SP_STATUS_DMA_BUSY;
 }

@@ -250,14 +250,18 @@ BOOL Compile_LW(int Reg, DWORD Addr) {
 			break; 
 		}
 		switch (Addr) {
-		case 0x04040010: MoveVariableToX86reg(&SP_STATUS_REG,"SP_STATUS_REG",Reg); break;
-		case 0x04040014: MoveVariableToX86reg(&SP_DMA_FULL_REG,"SP_DMA_FULL_REG",Reg); break;
-		case 0x04040018: MoveVariableToX86reg(&SP_DMA_BUSY_REG,"SP_DMA_BUSY_REG",Reg); break;
-		case 0x04080000: MoveVariableToX86reg(&SP_PC_REG,"SP_PC_REG",Reg); break;
+		case 0x04040000: MoveVariableToX86reg(&SP_MEM_ADDR_REG, "SP_MEM_ADDR_REG", Reg); break;
+		case 0x04040004: MoveVariableToX86reg(&SP_DRAM_ADDR_REG, "SP_DRAM_ADDR_REG", Reg); break;
+		case 0x04040008: MoveVariableToX86reg(&SP_RD_LEN_REG, "SP_RD_LEN_REG", Reg); break;
+		case 0x0404000C: MoveVariableToX86reg(&SP_WR_LEN_REG, "SP_WR_LEN_REG", Reg); break;
+		case 0x04040010: MoveVariableToX86reg(&SP_STATUS_REG, "SP_STATUS_REG", Reg); break;
+		case 0x04040014: MoveVariableToX86reg(&SP_DMA_FULL_REG, "SP_DMA_FULL_REG", Reg); break;
+		case 0x04040018: MoveVariableToX86reg(&SP_DMA_BUSY_REG, "SP_DMA_BUSY_REG", Reg); break;
+		case 0x04080000: MoveVariableToX86reg(&SP_PC_REG, "SP_PC_REG", Reg); break;
 		default:
-			MoveConstToX86reg(0,Reg);
+			MoveConstToX86reg(0, Reg);
 			CPU_Message("Compile_LW\nFailed to compile address: %X", Addr);
-			if (ShowUnhandledMemory) { DisplayError("Compile_LW\nFailed to compile address: %X",Addr); }
+			if (ShowUnhandledMemory) { DisplayError("Compile_LW\nFailed to compile address: %X", Addr); }
 		}
 		break;
 	case 0x04100000:
@@ -535,8 +539,8 @@ BOOL Compile_SW_Const ( DWORD Value, DWORD Addr ) {
 			break;
 		}
 		switch (Addr) {
-		case 0x04040000: MoveConstToVariable(Value,&SP_MEM_ADDR_REG,"SP_MEM_ADDR_REG"); break;
-		case 0x04040004: MoveConstToVariable(Value,&SP_DRAM_ADDR_REG,"SP_DRAM_ADDR_REG"); break;
+		case 0x04040000: MoveConstToVariable(Value,&SP_MEM_ADDR_REGW,"SP_MEM_ADDR_REG"); break;
+		case 0x04040004: MoveConstToVariable(Value,&SP_DRAM_ADDR_REGW,"SP_DRAM_ADDR_REG"); break;
 		case 0x04040008:
 			MoveConstToVariable(Value,&SP_RD_LEN_REG,"SP_RD_LEN_REG");
 			Pushad();
@@ -837,8 +841,8 @@ BOOL Compile_SW_Register ( int x86Reg, DWORD Addr ) {
 		break;
 	case 0x04000000: 
 		switch (Addr) {
-		case 0x04040000: MoveX86regToVariable(x86Reg,&SP_MEM_ADDR_REG,"SP_MEM_ADDR_REG"); break;
-		case 0x04040004: MoveX86regToVariable(x86Reg,&SP_DRAM_ADDR_REG,"SP_DRAM_ADDR_REG"); break;
+		case 0x04040000: MoveX86regToVariable(x86Reg,&SP_MEM_ADDR_REGW,"SP_MEM_ADDR_REG"); break;
+		case 0x04040004: MoveX86regToVariable(x86Reg,&SP_DRAM_ADDR_REGW,"SP_DRAM_ADDR_REG"); break;
 		case 0x04040008: 
 			MoveX86regToVariable(x86Reg,&SP_RD_LEN_REG,"SP_RD_LEN_REG");
 			Pushad();
@@ -1628,6 +1632,10 @@ int r4300i_LW_NonMemory ( DWORD PAddr, DWORD * Value ) {
 		break;
 	case 0x04000000:
 		switch (PAddr) {
+		case 0x04040000: *Value = SP_MEM_ADDR_REG; break;
+		case 0x04040004: *Value = SP_DRAM_ADDR_REG; break;
+		case 0x04040008: *Value = SP_RD_LEN_REG; break;
+		case 0x0404000C: *Value = SP_WR_LEN_REG; break;
 		case 0x04040010: *Value = SP_STATUS_REG; break;
 		case 0x04040014: *Value = SP_DMA_FULL_REG; break;
 		case 0x04040018: *Value = SP_DMA_BUSY_REG; break;
@@ -1639,6 +1647,9 @@ int r4300i_LW_NonMemory ( DWORD PAddr, DWORD * Value ) {
 		break;
 	case 0x04100000:
 		switch (PAddr) {
+		case 0x04100000: *Value = DPC_START_REG; break;
+		case 0x04100004: *Value = DPC_END_REG; break;
+		case 0x04100008: *Value = DPC_CURRENT_REG; break;
 		case 0x0410000C: *Value = DPC_STATUS_REG; break;
 		case 0x04100010: *Value = DPC_CLOCK_REG; break;
 		case 0x04100014: *Value = DPC_BUFBUSY_REG; break;
@@ -2101,8 +2112,8 @@ int r4300i_SW_NonMemory ( DWORD PAddr, DWORD Value ) {
 			return TRUE;
 		}
 		switch (PAddr) {
-		case 0x04040000: SP_MEM_ADDR_REG = Value; break;
-		case 0x04040004: SP_DRAM_ADDR_REG = Value; break;
+		case 0x04040000: SP_MEM_ADDR_REGW = Value; break;
+		case 0x04040004: SP_DRAM_ADDR_REGW = Value; break;
 		case 0x04040008: 
 			SP_RD_LEN_REG = Value; 
 			SP_DMA_READ();
@@ -2179,12 +2190,18 @@ int r4300i_SW_NonMemory ( DWORD PAddr, DWORD Value ) {
 		break;
 	case 0x04100000:
 		switch (PAddr) {
-		case 0x04100000: 
-			DPC_START_REG = Value; 
-			DPC_CURRENT_REG = Value; 
+		case 0x04100000:
+			if ((DPC_STATUS_REG & DPC_STATUS_START_VALID) == 0) {
+				DPC_START_REG = Value & 0xFFFFF8;
+				DPC_STATUS_REG |= DPC_STATUS_START_VALID;
+			}
 			break;
 		case 0x04100004: 
-			DPC_END_REG = Value; 
+			DPC_END_REG = Value & 0xFFFFF8;
+			if (DPC_STATUS_REG & DPC_STATUS_START_VALID) {
+				DPC_CURRENT_REG = DPC_START_REG;
+				DPC_STATUS_REG &= ~DPC_STATUS_START_VALID;
+			}
 			if (ProcessRDPList) { ProcessRDPList(); }
 			break;
 		//case 0x04100008: DPC_CURRENT_REG = Value; break;

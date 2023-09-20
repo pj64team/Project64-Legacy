@@ -2012,6 +2012,16 @@ __inline void Float_RoundToInteger64( __int64 * Dest, float * Source ) {
 	}
 }
 
+__inline void Float_sqrt_fixed(float* Dest, float* Source) {
+	_asm {
+		mov esi, [Source]
+		mov edi, [Dest]
+		fld dword ptr[esi]
+		fsqrt
+		fstp dword ptr[edi]
+	}
+}
+
 __inline DWORD getCop1SArgCause(DWORD* v) {
 	DWORD cause = 0;
 	if (IsSubNormal_S(*v)) {
@@ -2201,7 +2211,8 @@ void _fastcall r4300i_COP1_S_SQRT (void) {
 	DWORD cause = getCop1SArgCause((DWORD*)FPRFloatFSLocation[Opcode.FP.fs]);
 	SET_COP1_CAUSE(cause);
 	TEST_COP1_FP_EXCEPTION();
-	float result = (float)sqrt(*(float*)FPRFloatFSLocation[Opcode.FP.fs]);
+	float result;
+	Float_sqrt_fixed(&result, (float*)FPRFloatFSLocation[Opcode.FP.fs]);
 	cause |= getCop1SCause(&result);
 	SET_COP1_CAUSE(cause);
 	TEST_COP1_FP_EXCEPTION();
@@ -2511,7 +2522,7 @@ __inline void Double_RoundToInteger64( __int64 * Dest, double * Source ) {
 	}
 }
 
-__inline void sqrt_fixed(double* Dest, double* Source) {
+__inline void Double_sqrt_fixed(double* Dest, double* Source) {
 	_asm {
 		mov esi, [Source]
 		mov edi, [Dest]
@@ -2690,7 +2701,7 @@ void _fastcall r4300i_COP1_D_SQRT (void) {
 	SET_COP1_CAUSE(cause);
 	TEST_COP1_FP_EXCEPTION();
 	double result;
-	sqrt_fixed(&result, (double*)FPRDoubleLocation[Opcode.FP.fs]);
+	Double_sqrt_fixed(&result, (double*)FPRDoubleLocation[Opcode.FP.fs]);
 	cause |= getCop1DCause(&result);
 	SET_COP1_CAUSE(cause);
 	TEST_COP1_FP_EXCEPTION();

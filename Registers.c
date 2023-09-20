@@ -86,6 +86,7 @@ N64_REGISTERS Registers;
 int fpuControl;
 int lastUnusedCOP0Register;
 MIPS_DWORD cop2LatchedValue;
+DWORD RegSPW[2];
 
 
 int  UnMap_8BitTempReg (BLOCK_SECTION * Section);
