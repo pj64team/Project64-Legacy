@@ -234,6 +234,7 @@ void PI_DMA_WRITE (void) {
 
 		PI_DRAM_ADDR_REG += wr_len + 1;
 		PI_CART_ADDR_REG += wr_len_cart + 1;
+		PI_DRAM_ADDR_REG = (PI_DRAM_ADDR_REG) & 0x7FFFFF;
 		PI_WR_LEN_REG = 0x7f;
 		PI_RD_LEN_REG = 0x7f;
 
@@ -480,7 +481,15 @@ void SP_DMA_READ(void) {
 	length = ((length + 7) & 0x01FF8);
 	for (int i = 0; i <= count; i++)
 	{
-		memcpy(DMEM + (SP_MEM_ADDR_REG & 0x1FFF), N64MEM + SP_DRAM_ADDR_REG, length);
+		if (SP_MEM_ADDR_REG & 0x1000)
+			memcpy(DMEM + (SP_MEM_ADDR_REG & 0x1FFF), N64MEM + SP_DRAM_ADDR_REG, length);
+		else
+		{
+			for (int ix = 0; ix < length; ix++)
+			{
+				DMEM[(SP_MEM_ADDR_REG + ix) & 0xFFF] = N64MEM[(SP_DRAM_ADDR_REG + ix)];
+			}
+		}
 		SP_MEM_ADDR_REG += length;
 		SP_DRAM_ADDR_REG += length + skip;
 	}
