@@ -1278,6 +1278,13 @@ void RunRsp (void) {
 				SetFrameBuffer(VI_ORIGIN_REG, (DWORD)(VI_WIDTH_REG * (VI_WIDTH_REG *.75)));
 			}
 #endif
+			if ((SP_STATUS_REG & SP_STATUS_HALT) == 0) {
+				if ((SP_STATUS_REG & SP_STATUS_BROKE) == 0) {
+					if ((DPC_STATUS_REG & DPC_STATUS_FREEZE) == 0) {
+						ChangeTimer(RspTimer, Timers.Timer + 100);
+					}
+				}
+			}
 		} 
 	}
 }
