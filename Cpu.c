@@ -1213,73 +1213,78 @@ void RefreshScreen (void ){
 
 void RunRsp (void) {
 	if ( ( SP_STATUS_REG & SP_STATUS_HALT ) == 0) {
-		if ( ( SP_STATUS_REG & SP_STATUS_BROKE ) == 0 ) {
-			DWORD Task = *( DWORD *)(DMEM + 0xFC0);
+		DWORD Task = *( DWORD *)(DMEM + 0xFC0);
 
-			if (Task == 1 && (DPC_STATUS_REG & DPC_STATUS_FREEZE) != 0) 
-			{
+		if ((SP_STATUS_REG & SP_STATUS_BROKE) == 0) {
+			if (Task == 1 && (DPC_STATUS_REG & DPC_STATUS_FREEZE) != 0) {
 				return;
 			}
-			
+
 			switch (Task) {
 			case 0: {
 				// TWINTRIS Support, the RSP Task is 0 yet it is meant to be a 1 (Graphics call)
-				unsigned int ucode = *( DWORD *)(DMEM + 0xFFC);
-				unsigned int size = *( DWORD *)(DMEM + 0x100B) & 0xF80;
+				unsigned int ucode = *(DWORD*)(DMEM + 0xFFC);
+				unsigned int size = *(DWORD*)(DMEM + 0x100B) & 0xF80;
 				unsigned int i, sum;
 
 				for (i = 0, sum = 0; i < (size / 2); i++)
-					sum += *(BYTE *)(RDRAM + ucode + i);
+					sum += *(BYTE*)(RDRAM + ucode + i);
 
 				if (sum == 0x7efd)
-					*( DWORD *)(DMEM + 0xFC0) = 1;
-					}
-			case 1:  
-				DlistCount += 1; 
-				/*if ((DlistCount % 2) == 0) { 
+					*(DWORD*)(DMEM + 0xFC0) = 1;
+			}
+			case 1:
+				DlistCount += 1;
+				/*if ((DlistCount % 2) == 0) {
 					SP_STATUS_REG |= (0x0203 );
 					MI_INTR_REG |= MI_INTR_SP | MI_INTR_DP;
 					CheckInterrupts();
-					return; 
+					return;
 				}*/
 				break;
-			case 2:  
-				AlistCount += 1; 
+			case 2:
+				AlistCount += 1;
 				break;
 			}
 
 			if (ShowDListAListCount) {
 				char StatusString[256];
 
-				sprintf(StatusString,"Dlist: %d   Alist: %d",DlistCount,AlistCount);
-				SendMessage( hStatusWnd, SB_SETTEXT, 0, (LPARAM)StatusString );
+				sprintf(StatusString, "Dlist: %d   Alist: %d", DlistCount, AlistCount);
+				SendMessage(hStatusWnd, SB_SETTEXT, 0, (LPARAM)StatusString);
 			}
-			if (Profiling || ShowCPUPer) {
-				char Label[100];
+		}
+		if (Profiling || ShowCPUPer) {
+			char Label[100];
 
-				strncpy(Label,ProfilingLabel,sizeof(Label));
+			strncpy(Label,ProfilingLabel,sizeof(Label));
 
-				if (IndividualBlock && !ShowCPUPer) {
-					StartTimer("RSP");
-				} else {
-					switch (*( DWORD *)(DMEM + 0xFC0)) {
-					case 1:  StartTimer("RSP: Dlist"); break;
-					case 2:  StartTimer("RSP: Alist"); break;
-					default: StartTimer("RSP: Unknown"); break;
-					}
+			if (IndividualBlock && !ShowCPUPer) {
+				StartTimer("RSP");
+			}
+			else {
+				switch (*(DWORD*)(DMEM + 0xFC0)) {
+				case 1:  StartTimer("RSP: Dlist"); break;
+				case 2:  StartTimer("RSP: Alist"); break;
+				default: StartTimer("RSP: Unknown"); break;
 				}
-				DoRspCycles(100);
-				StartTimer(Label); 
-			} else {
-				DoRspCycles(100);
 			}
+			DoRspCycles(100);
+			StartTimer(Label); 
+		} else {
+			DoRspCycles(100);
+		}
 #ifdef CFB_READ
 			if (VI_ORIGIN_REG > 0x280) {
 				SetFrameBuffer(VI_ORIGIN_REG, (DWORD)(VI_WIDTH_REG * (VI_WIDTH_REG *.75)));
 			}
 #endif
-		} 
-	}
+		if ((SP_STATUS_REG & SP_STATUS_HALT) == 0) {
+			if ((DPC_STATUS_REG & DPC_STATUS_FREEZE) == 0) {
+				ChangeTimer(RspTimer, Timers.Timer + 100);
+			}
+		}
+	} 
 }
 
 void SetCoreToRunning  ( void ) {
