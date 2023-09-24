@@ -1437,6 +1437,7 @@ void __cdecl UpdateCurrentR4300iRegisterPanel ( void ) {
 				switch (count) {
 				case 4: //Context
 				case 8: //BadVAddr
+				case 10: //EntryHi
 				case 14: //EPC
 				case 20: //XContext
 				case 30: //ErrEPC

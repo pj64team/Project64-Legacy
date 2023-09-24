@@ -1547,6 +1547,7 @@ void _fastcall r4300i_COP0_DMF(void) {
 		switch (Opcode.REG.rd) {
 		case 4: //Context
 		case 8: //BadVAddr
+		case 10: //EntryHi
 		case 14: //EPC
 		case 20: //XContext:
 		case 30: //ErrEPC
@@ -1561,6 +1562,7 @@ void _fastcall r4300i_COP0_DMF(void) {
 	switch (Opcode.REG.rd) {
 	case 4: //Context
 	case 8: //BadVAddr
+	case 10: //EntryHi
 	case 14: //EPC
 	case 20: //XContext
 	case 30: //ErrEPC
@@ -1587,7 +1589,6 @@ void _fastcall r4300i_COP0_MT (void) {
 
 	switch (Opcode.REG.rd) {	
 	case 5: //PageMask
-	case 10: //Entry Hi
 	case 17: //LLAddr
 	case 18: //WatchLo
 	case 19: //WatchHi
@@ -1616,7 +1617,10 @@ void _fastcall r4300i_COP0_MT (void) {
 	case 9: //Count
 		CP0[Opcode.REG.rd].UW[0] = GPR[Opcode.BRANCH.rt].UW[0];
 		ChangeCompareTimer();
-		break;		
+		break;
+	case 10: //Entry Hi
+		CP0[Opcode.REG.rd].UDW = GPR[Opcode.BRANCH.rt].UW[0] & 0x0FFFFE0FF;
+		break;
 	case 11: //Compare
 		CP0[Opcode.REG.rd].UW[0] = GPR[Opcode.BRANCH.rt].UW[0];
 		FAKE_CAUSE_REGISTER &= ~CAUSE_IP7;
@@ -1696,6 +1700,7 @@ void _fastcall r4300i_COP0_DMT(void) {
 			break;
 		case 4: //Context
 		case 8: //BadVAddr
+		case 10: //Entry Hi
 		case 14: //EPC
 		case 20: //XContext:
 			LogMessage("%08X: Writing 0x%llX to %s register (Originally: 0x%016llX)", PROGRAM_COUNTER,
@@ -1711,7 +1716,6 @@ void _fastcall r4300i_COP0_DMT(void) {
 
 	switch (Opcode.REG.rd) {
 	case 5: //PageMask
-	case 10: //Entry Hi
 	case 17: //LLAddr
 	case 18: //WatchLo
 	case 19: //WatchHi
@@ -1740,6 +1744,9 @@ void _fastcall r4300i_COP0_DMT(void) {
 	case 9: //Count
 		CP0[Opcode.REG.rd].UW[0] = GPR[Opcode.BRANCH.rt].UW[0];
 		ChangeCompareTimer();
+		break;
+	case 10: //Entry Hi
+		CP0[Opcode.REG.rd].UDW = GPR[Opcode.BRANCH.rt].UDW & 0xC00000FFFFFFE0FFLL;
 		break;
 	case 11: //Compare
 		CP0[Opcode.REG.rd].UW[0] = GPR[Opcode.BRANCH.rt].UW[0];
