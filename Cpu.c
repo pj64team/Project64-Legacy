@@ -1210,8 +1210,15 @@ void RefreshScreen (void ){
 	if ((STATUS_REGISTER & STATUS_IE) != 0 ) { ApplyCheats(); Apply_CheatSearchDev(); }
 	if (Profiling || ShowCPUPer) { StartTimer(Label); }
 }
+#define NUMCYCLES 2000
+int RSPisRunning = 0;
 
 void RunRsp (void) {
+	if (RSPisRunning) {
+		DoRspCycles(NUMCYCLES);
+		if ((SP_STATUS_REG & SP_STATUS_HALT) & 1 != 0)
+			RSPisRunning = 0;
+	}
 	if ( ( SP_STATUS_REG & SP_STATUS_HALT ) == 0) {
 		DWORD Task = *( DWORD *)(DMEM + 0xFC0);
 
@@ -1227,8 +1234,8 @@ void RunRsp (void) {
 				unsigned int size = *(DWORD*)(DMEM + 0x100B) & 0xF80;
 				unsigned int i, sum;
 
-				for (i = 0, sum = 0; i < (size / 2); i++)
-					sum += *(BYTE*)(RDRAM + ucode + i);
+				//for (i = 0, sum = 0; i < (size / 2); i++)
+				//	sum += *(BYTE*)(RDRAM + ucode + i);
 
 				if (sum == 0x7efd)
 					*(DWORD*)(DMEM + 0xFC0) = 1;
@@ -1269,10 +1276,16 @@ void RunRsp (void) {
 				default: StartTimer("RSP: Unknown"); break;
 				}
 			}
-			DoRspCycles(100);
-			StartTimer(Label); 
+			RSPisRunning = 1;
+			DoRspCycles(NUMCYCLES);
+			if ((SP_STATUS_REG & SP_STATUS_HALT) & 1 != 0)
+				RSPisRunning = 0;
+			StartTimer(Label);
 		} else {
-			DoRspCycles(100);
+			RSPisRunning = 1;
+			DoRspCycles(NUMCYCLES);
+			if ((SP_STATUS_REG & SP_STATUS_HALT) & 1 != 0)
+				RSPisRunning = 0;
 		}
 #ifdef CFB_READ
 			if (VI_ORIGIN_REG > 0x280) {
