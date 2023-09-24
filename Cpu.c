@@ -1276,6 +1276,7 @@ void RunRsp (void) {
 				default: StartTimer("RSP: Unknown"); break;
 				}
 			}
+
 			RSPisRunning = 1;
 			DoRspCycles(NUMCYCLES);
 			if ((SP_STATUS_REG & SP_STATUS_HALT) & 1 != 0)
