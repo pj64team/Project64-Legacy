@@ -1609,6 +1609,7 @@ void _fastcall r4300i_COP0_MT (void) {
 		break;
 	case 6: //Wired
 		CP0[Opcode.REG.rd].UW[0] = GPR[Opcode.BRANCH.rt].UW[0] & 0x3F;
+		RANDOM_REGISTER = 31;
 		break;
 	case 8: //BadVAddr
 		break;
@@ -1732,6 +1733,7 @@ void _fastcall r4300i_COP0_DMT(void) {
 		break;
 	case 6: //Wired
 		CP0[Opcode.REG.rd].UW[0] = GPR[Opcode.BRANCH.rt].UW[0] & 0x3F;
+		RANDOM_REGISTER = 31;
 		break;
 	case 8: //BadVAddr
 		break;
