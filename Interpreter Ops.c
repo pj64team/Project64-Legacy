@@ -1600,6 +1600,8 @@ void _fastcall r4300i_COP0_MT (void) {
 	case 0: //Index
 		CP0[Opcode.REG.rd].UW[0] = GPR[Opcode.BRANCH.rt].UW[0] & 0x8000003F;
 		break;
+	case 1: //Random
+		break;
 	case 4: //Context
 		CP0[Opcode.REG.rd].DW = (long)((CP0[Opcode.REG.rd].W[0] & 0x7FFFFF) | (GPR[Opcode.BRANCH.rt].W[0] & 0xFF800000));
 		break;
@@ -1718,6 +1720,8 @@ void _fastcall r4300i_COP0_DMT(void) {
 		break;
 	case 0: //Index
 		CP0[Opcode.REG.rd].UW[0] = GPR[Opcode.BRANCH.rt].UW[0] & 0x8000003F;
+		break;
+	case 1: //Random
 		break;
 	case 4: //Context
 		CP0[Opcode.REG.rd].UDW = (CP0[Opcode.REG.rd].UDW & 0x7FFFFFLL) | (GPR[Opcode.BRANCH.rt].UDW & 0xFFFFFFFFFF800000LL);
