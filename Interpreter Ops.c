@@ -1709,7 +1709,6 @@ void _fastcall r4300i_COP0_DMT(void) {
 	BOOL unusedRegister = FALSE;
 
 	switch (Opcode.REG.rd) {
-	case 2: //EntryLo0
 	case 3: //EntryLo1
 	case 5: //PageMask
 	case 10: //Entry Hi
@@ -1722,6 +1721,9 @@ void _fastcall r4300i_COP0_DMT(void) {
 		break;
 	case 0: //Index
 		CP0[Opcode.REG.rd].UW[0] = GPR[Opcode.BRANCH.rt].UW[0] & 0x8000003F;
+		break;
+	case 2: //EntryLo0
+		CP0[Opcode.REG.rd].UW[0] = GPR[Opcode.BRANCH.rt].UW[0] & 0x3FFFFFFF;
 		break;
 	case 1: //Random
 		break;
