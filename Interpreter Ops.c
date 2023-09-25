@@ -1587,8 +1587,7 @@ void _fastcall r4300i_COP0_MT (void) {
 	}
 	BOOL unusedRegister = FALSE;
 
-	switch (Opcode.REG.rd) {	
-	case 5: //PageMask
+	switch (Opcode.REG.rd) {
 	case 17: //LLAddr
 	case 18: //WatchLo
 	case 19: //WatchHi
@@ -1607,6 +1606,9 @@ void _fastcall r4300i_COP0_MT (void) {
 		break;
 	case 4: //Context
 		CP0[Opcode.REG.rd].DW = (long)((CP0[Opcode.REG.rd].W[0] & 0x7FFFFF) | (GPR[Opcode.BRANCH.rt].W[0] & 0xFF800000));
+		break;
+	case 5: //PageMask
+		CP0[Opcode.REG.rd].UW[0] = GPR[Opcode.BRANCH.rt].UW[0] & 0x1FFE000;
 		break;
 	case 6: //Wired
 		CP0[Opcode.REG.rd].UW[0] = GPR[Opcode.BRANCH.rt].UW[0] & 0x3F;
@@ -1715,7 +1717,6 @@ void _fastcall r4300i_COP0_DMT(void) {
 	BOOL unusedRegister = FALSE;
 
 	switch (Opcode.REG.rd) {
-	case 5: //PageMask
 	case 17: //LLAddr
 	case 18: //WatchLo
 	case 19: //WatchHi
@@ -1734,6 +1735,9 @@ void _fastcall r4300i_COP0_DMT(void) {
 		break;
 	case 4: //Context
 		CP0[Opcode.REG.rd].UDW = (CP0[Opcode.REG.rd].UDW & 0x7FFFFFLL) | (GPR[Opcode.BRANCH.rt].UDW & 0xFFFFFFFFFF800000LL);
+		break;
+	case 5: //PageMask
+		CP0[Opcode.REG.rd].UW[0] = GPR[Opcode.BRANCH.rt].UW[0] & 0x1FFE000;
 		break;
 	case 6: //Wired
 		CP0[Opcode.REG.rd].UW[0] = GPR[Opcode.BRANCH.rt].UW[0] & 0x3F;
