@@ -1210,17 +1210,24 @@ void RefreshScreen (void ){
 	if ((STATUS_REGISTER & STATUS_IE) != 0 ) { ApplyCheats(); Apply_CheatSearchDev(); }
 	if (Profiling || ShowCPUPer) { StartTimer(Label); }
 }
-#define NUMCYCLES 2000
+#define NUMCYCLES 200000
 int RSPisRunning = 0;
+int CheckRSPInterrupt = 0;
 
 void RunRsp (void) {
-	if (RSPisRunning) {
-		DoRspCycles(NUMCYCLES);
-		if ((SP_STATUS_REG & SP_STATUS_HALT) & 1 != 0)
-			RSPisRunning = 0;
-	}
 	if ( ( SP_STATUS_REG & SP_STATUS_HALT ) == 0) {
 		DWORD Task = *( DWORD *)(DMEM + 0xFC0);
+		if (RSPisRunning) {
+			DoRspCycles(NUMCYCLES);
+			if ((SP_STATUS_REG & SP_STATUS_HALT) != 0)
+			{
+				RSPisRunning = 0;
+				CheckRSPInterrupt = 0;
+				if (CheckRSPInterrupt)
+					CheckInterrupts();
+			}
+			return;
+		}
 
 		if ((SP_STATUS_REG & SP_STATUS_BROKE) == 0) {
 			if (Task == 1 && (DPC_STATUS_REG & DPC_STATUS_FREEZE) != 0) {
@@ -1278,13 +1285,13 @@ void RunRsp (void) {
 			}
 			RSPisRunning = 1;
 			DoRspCycles(NUMCYCLES);
-			if ((SP_STATUS_REG & SP_STATUS_HALT) & 1 != 0)
+			if ((SP_STATUS_REG & SP_STATUS_HALT) != 0)
 				RSPisRunning = 0;
 			StartTimer(Label);
 		} else {
 			RSPisRunning = 1;
 			DoRspCycles(NUMCYCLES);
-			if ((SP_STATUS_REG & SP_STATUS_HALT) & 1 != 0)
+			if ((SP_STATUS_REG & SP_STATUS_HALT) != 0)
 				RSPisRunning = 0;
 		}
 #ifdef CFB_READ
@@ -1419,8 +1426,12 @@ void TimerDone (void) {
 	case RspTimer:
 		ChangeTimer(RspTimer,0);
 		RunRsp();
-		CheckInterrupts();	// Test to see if this helps netplay out any.
-							// Jabo believes if it does help netplay then there could be a possible issue inside the rsp.
+		if (!RSPisRunning)
+			// Test to see if this helps netplay out any.
+			// Jabo believes if it does help netplay then there could be a possible issue inside the rsp.
+			CheckInterrupts();
+		else
+			CheckRSPInterrupt = 1;
 		break;
 	case AiTimer:
 		EmuAI_SetNextTimer();

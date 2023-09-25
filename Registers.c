@@ -188,8 +188,10 @@ void ChangeSpStatus (void) {
 	// The next bit checks to make sure either the GFX (1) or RSP (2) is being called to do work
 	if (!(*( DWORD *)(DMEM + 0xFED) >= 0 && *( DWORD *)(DMEM + 0xFED) <= 1000) && 
 		(*( DWORD *)(DMEM + 0xFC0) == 1 || *( DWORD *)(DMEM + 0xFC0) == 2)) {
-		ChangeTimer(RspTimer, 0x900);
-		return;
+		if ((SP_STATUS_REG & SP_STATUS_HALT) == 0) {
+			ChangeTimer(RspTimer, 0x900);
+			return;
+		}
 	}
 	/*
 	if (DelayRDP == TRUE && *( DWORD *)(DMEM + 0xFC0) == 1) {
