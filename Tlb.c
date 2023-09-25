@@ -214,7 +214,11 @@ void _fastcall WriteTLBEntry (int index) {
 			}
 		}
 	}
-	tlb[index].PageMask.Value = PAGE_MASK_REGISTER;
+
+	DWORD pageMask = PAGE_MASK_REGISTER & 0x01554000; // 0000 0001 0101 0101 0100 0000 0000 0000
+	pageMask |= pageMask >> 1;
+
+	tlb[index].PageMask.Value = pageMask;
 	tlb[index].EntryHi.Value = ENTRYHI_REGISTER;
 	tlb[index].EntryLo0.Value = ENTRYLO0_REGISTER;
 	tlb[index].EntryLo1.Value = ENTRYLO1_REGISTER;
