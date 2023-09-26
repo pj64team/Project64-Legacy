@@ -38,7 +38,7 @@ typedef struct {
 	} PageMask;
 	
 	union {
-		unsigned long Value;
+		unsigned long long Value;
 		unsigned char A[4];
 		
 		struct BreakDownEntryHi {

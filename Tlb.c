@@ -167,7 +167,7 @@ void TLB_Read (void) {
 	}
 
 	PAGE_MASK_REGISTER = tlb[index].PageMask.Value ;
-	ENTRYHI_REGISTER = (tlb[index].EntryHi.Value & ~tlb[index].PageMask.Value) ;
+	ENTRYHI_REGISTER = (tlb[index].EntryHi.Value & ~((unsigned long long)tlb[index].PageMask.Value));
 	ENTRYLO0_REGISTER = tlb[index].EntryLo0.Value;
 	ENTRYLO1_REGISTER = tlb[index].EntryLo1.Value;		
 }
@@ -192,7 +192,7 @@ void _fastcall WriteTLBEntry (int index) {
 		FastTlb[FastIndx + 1].ValidEntry && FastTlb[FastIndx + 1].VALID))
 	{
 		if (HaveDebugger && LogOptions.GenerateLog && LogOptions.LogTLB) { 
-			LogMessage("%08X: TLB write:  Index: %d   PageMask: %X  EntryLo0: %X  EntryLo1: %X  EntryHi: %X",PROGRAM_COUNTER,
+			LogMessage("%08X: TLB write:  Index: %d   PageMask: %X  EntryLo0: %X  EntryLo1: %X  EntryHi: %llX",PROGRAM_COUNTER,
 				index,PAGE_MASK_REGISTER,ENTRYLO0_REGISTER,ENTRYLO1_REGISTER,ENTRYHI_REGISTER);
 			LogMessage("       Being Ignored");
 			LogMessage("");
@@ -220,12 +220,16 @@ void _fastcall WriteTLBEntry (int index) {
 
 	tlb[index].PageMask.Value = pageMask;
 	tlb[index].EntryHi.Value = ENTRYHI_REGISTER;
-	tlb[index].EntryLo0.Value = ENTRYLO0_REGISTER;
-	tlb[index].EntryLo1.Value = ENTRYLO1_REGISTER;
+	tlb[index].EntryLo0.Value = ENTRYLO0_REGISTER & 0x3FFFFFF;
+	tlb[index].EntryLo1.Value = ENTRYLO1_REGISTER & 0x3FFFFFF;
+	if (!tlb[index].EntryLo0.BreakDownEntryLo0.GLOBAL || !tlb[index].EntryLo1.BreakDownEntryLo1.GLOBAL) {
+		tlb[index].EntryLo0.BreakDownEntryLo0.GLOBAL = 0;
+		tlb[index].EntryLo1.BreakDownEntryLo1.GLOBAL = 0;
+	}
 	tlb[index].EntryDefined = TRUE;
 	
 	if (HaveDebugger && LogOptions.GenerateLog && LogOptions.LogTLB) { 
-		LogMessage("%08X: TLB write:  Index: %d   PageMask: %X  EntryLo0: %X  EntryLo1: %X  EntryHi: %X",PROGRAM_COUNTER,
+		LogMessage("%08X: TLB write:  Index: %d   PageMask: %X  EntryLo0: %X  EntryLo1: %X  EntryHi: %llX",PROGRAM_COUNTER,
 			index,PAGE_MASK_REGISTER,ENTRYLO0_REGISTER,ENTRYLO1_REGISTER,ENTRYHI_REGISTER);
 		LogMessage("      Entry 1:  VStart: %X   VEnd: %X  Physical Start: %X",
 			tlb[index].EntryHi.BreakDownEntryHi.VPN2 << 13, //VStart
