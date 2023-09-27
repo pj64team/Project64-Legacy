@@ -139,13 +139,14 @@ void TLB_Probe (void) {
 		}
 	}
 
-	INDEX_REGISTER |= 0x80000000;
-	for (Counter = 0; Counter < 32; Counter ++) {		
-		DWORD TlbValue = tlb[Counter].EntryHi.Value & (~tlb[Counter].PageMask.BreakDownPageMask.Mask << 13);
-		DWORD EntryHi = ENTRYHI_REGISTER & (~tlb[Counter].PageMask.BreakDownPageMask.Mask << 13);
+	INDEX_REGISTER = 0x80000000;
 
-		if (TlbValue == EntryHi) {			
-			BOOL Global = (tlb[Counter].EntryHi.Value & 0x100) != 0;
+	for (Counter = 0; Counter < 32; Counter ++) {		
+		QWORD TlbValue = tlb[Counter].EntryHi.Value & (~((QWORD)tlb[Counter].PageMask.BreakDownPageMask.Mask) << 13);
+		QWORD EntryHi = ENTRYHI_REGISTER & (~((QWORD)tlb[Counter].PageMask.BreakDownPageMask.Mask) << 13);
+
+		if (TlbValue == EntryHi) {
+			BOOL Global = tlb[Counter].EntryLo0.BreakDownEntryLo0.GLOBAL && tlb[Counter].EntryLo1.BreakDownEntryLo1.GLOBAL;
 			BOOL SameAsid = ((tlb[Counter].EntryHi.Value & 0xFF) == (ENTRYHI_REGISTER & 0xFF));
 			
 			if (Global || SameAsid) {
