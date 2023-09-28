@@ -720,7 +720,7 @@ void _fastcall r4300i_SDL (void) {
 		if (ShowTLBMisses) {
 			DisplayError("SDL TLB: %X", Address.UW[0]);
 		}
-		TLB_READ_EXCEPTION(Address.UW[0]);
+		TLB_WRITE_EXCEPTION(Address.UW[0]);
 	} else {
 		Value &= SDL_MASK[Offset];
 		Value += GPR[Opcode.BRANCH.rt].UDW >> SDL_SHIFT[Offset];
@@ -761,7 +761,7 @@ void _fastcall r4300i_SDR (void) {
 		if (ShowTLBMisses) {
 			DisplayError("SDR TLB: %X", Address.UW[0]);
 		}
-		TLB_READ_EXCEPTION(Address.UW[0]);
+		TLB_WRITE_EXCEPTION(Address.UW[0]);
 	} else {
 		Value &= SDR_MASK[Offset];
 		Value += GPR[Opcode.BRANCH.rt].UDW << SDR_SHIFT[Offset];
