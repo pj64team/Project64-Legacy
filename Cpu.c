@@ -1213,6 +1213,10 @@ void RefreshScreen (void ){
 #define NUMCYCLES 2000
 int RSPisRunning = 0;
 
+#define NUMCYCLES 200
+int RSPisRunning = 0;
+int CheckRSPInterrupt = 0;
+
 void RunRsp (void) {
 	if (RSPisRunning) {
 		DoRspCycles(NUMCYCLES);
@@ -1221,6 +1225,20 @@ void RunRsp (void) {
 	}
 	if ( ( SP_STATUS_REG & SP_STATUS_HALT ) == 0) {
 		DWORD Task = *( DWORD *)(DMEM + 0xFC0);
+
+		if (RSPisRunning) {
+			DoRspCycles(NUMCYCLES);
+			if ((SP_STATUS_REG & SP_STATUS_HALT) != 0)
+			{
+				RSPisRunning = 0;
+				if (CheckRSPInterrupt)
+					CheckInterrupts();
+				CheckRSPInterrupt = 0;
+			}
+			//else
+			//	SP_STATUS_REG &= ~SP_STATUS_BROKE;
+			return;
+		}
 
 		if ((SP_STATUS_REG & SP_STATUS_BROKE) == 0) {
 			if (Task == 1 && (DPC_STATUS_REG & DPC_STATUS_FREEZE) != 0) {
@@ -1232,10 +1250,12 @@ void RunRsp (void) {
 				// TWINTRIS Support, the RSP Task is 0 yet it is meant to be a 1 (Graphics call)
 				unsigned int ucode = *(DWORD*)(DMEM + 0xFFC);
 				unsigned int size = *(DWORD*)(DMEM + 0x100B) & 0xF80;
-				unsigned int i, sum;
 
-				//for (i = 0, sum = 0; i < (size / 2); i++)
-				//	sum += *(BYTE*)(RDRAM + ucode + i);
+				unsigned int i;
+				unsigned int sum = 0;
+
+				for (i = 0, sum = 0; i < (size / 2); i++)
+					sum += *(BYTE*)(RDRAM + ucode + i);
 
 				if (sum == 0x7efd)
 					*(DWORD*)(DMEM + 0xFC0) = 1;
@@ -1279,14 +1299,19 @@ void RunRsp (void) {
 
 			RSPisRunning = 1;
 			DoRspCycles(NUMCYCLES);
-			if ((SP_STATUS_REG & SP_STATUS_HALT) & 1 != 0)
+			if ((SP_STATUS_REG & SP_STATUS_HALT) != 0)
 				RSPisRunning = 0;
+			//else
+			//	SP_STATUS_REG &= ~SP_STATUS_BROKE;
 			StartTimer(Label);
 		} else {
 			RSPisRunning = 1;
 			DoRspCycles(NUMCYCLES);
-			if ((SP_STATUS_REG & SP_STATUS_HALT) & 1 != 0)
+
+			if ((SP_STATUS_REG & SP_STATUS_HALT) != 0)
 				RSPisRunning = 0;
+			//else
+			//	SP_STATUS_REG &= ~SP_STATUS_BROKE;
 		}
 #ifdef CFB_READ
 			if (VI_ORIGIN_REG > 0x280) {
@@ -1420,8 +1445,12 @@ void TimerDone (void) {
 	case RspTimer:
 		ChangeTimer(RspTimer,0);
 		RunRsp();
-		CheckInterrupts();	// Test to see if this helps netplay out any.
-							// Jabo believes if it does help netplay then there could be a possible issue inside the rsp.
+		if (!RSPisRunning)
+			// Test to see if this helps netplay out any.
+			// Jabo believes if it does help netplay then there could be a possible issue inside the rsp.
+			CheckInterrupts();
+		else
+			CheckRSPInterrupt = 1;
 		break;
 	case AiTimer:
 		EmuAI_SetNextTimer();
