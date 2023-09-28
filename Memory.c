@@ -2182,8 +2182,10 @@ int r4300i_SW_NonMemory ( DWORD PAddr, DWORD Value ) {
 
 			RunRsp();
 			break;
-		case 0x0404001C: SP_SEMAPHORE_REG = 0; break;
-		case 0x04080000: SP_PC_REG = Value & 0xFFC; break;
+		case 0x0404001C:
+			SP_SEMAPHORE_REG = 0; break;
+		case 0x04080000:
+			SP_PC_REG = Value & 0xFFC; break;
 		default:
 			return FALSE;
 		}
