@@ -1210,7 +1210,8 @@ void RefreshScreen (void ){
 	if ((STATUS_REGISTER & STATUS_IE) != 0 ) { ApplyCheats(); Apply_CheatSearchDev(); }
 	if (Profiling || ShowCPUPer) { StartTimer(Label); }
 }
-#define NUMCYCLES 200000
+
+#define NUMCYCLES 2000
 int RSPisRunning = 0;
 int CheckRSPInterrupt = 0;
 
@@ -1222,10 +1223,12 @@ void RunRsp (void) {
 			if ((SP_STATUS_REG & SP_STATUS_HALT) != 0)
 			{
 				RSPisRunning = 0;
-				CheckRSPInterrupt = 0;
 				if (CheckRSPInterrupt)
 					CheckInterrupts();
+				CheckRSPInterrupt = 0;
 			}
+			else
+				SP_STATUS_REG &= ~SP_STATUS_BROKE;
 			return;
 		}
 
@@ -1239,10 +1242,11 @@ void RunRsp (void) {
 				// TWINTRIS Support, the RSP Task is 0 yet it is meant to be a 1 (Graphics call)
 				unsigned int ucode = *(DWORD*)(DMEM + 0xFFC);
 				unsigned int size = *(DWORD*)(DMEM + 0x100B) & 0xF80;
-				unsigned int i, sum;
+				unsigned int i;
+				unsigned int sum = 0;
 
-				//for (i = 0, sum = 0; i < (size / 2); i++)
-				//	sum += *(BYTE*)(RDRAM + ucode + i);
+				for (i = 0, sum = 0; i < (size / 2); i++)
+					sum += *(BYTE*)(RDRAM + ucode + i);
 
 				if (sum == 0x7efd)
 					*(DWORD*)(DMEM + 0xFC0) = 1;
@@ -1287,12 +1291,16 @@ void RunRsp (void) {
 			DoRspCycles(NUMCYCLES);
 			if ((SP_STATUS_REG & SP_STATUS_HALT) != 0)
 				RSPisRunning = 0;
+			else
+				SP_STATUS_REG &= ~SP_STATUS_BROKE;
 			StartTimer(Label);
 		} else {
 			RSPisRunning = 1;
 			DoRspCycles(NUMCYCLES);
 			if ((SP_STATUS_REG & SP_STATUS_HALT) != 0)
 				RSPisRunning = 0;
+			else
+				SP_STATUS_REG &= ~SP_STATUS_BROKE;
 		}
 #ifdef CFB_READ
 			if (VI_ORIGIN_REG > 0x280) {
