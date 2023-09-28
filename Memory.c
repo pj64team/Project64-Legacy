@@ -1812,7 +1812,7 @@ int r4300i_LW_NonMemory ( DWORD PAddr, DWORD * Value ) {
 
 BOOL r4300i_LW_VAddr ( DWORD VAddr, DWORD * Value ) {
 	CheckForWatchPoint(VAddr, WP_READ, sizeof(DWORD));
-
+	
 	if (TLB_ReadMap[VAddr >> 12] == 0) { return FALSE; }
 	*Value = *(DWORD *)(TLB_ReadMap[VAddr >> 12] + VAddr);
 	return TRUE;

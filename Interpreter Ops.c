@@ -459,7 +459,6 @@ void _fastcall r4300i_LB (void) {
 		ADDRESS_ERROR_EXCEPTION(Address.UDW, TRUE);
 		return;
 	}
-	if (Opcode.BRANCH.rt == 0) { return; }
 	if (!r4300i_LB_VAddr(Address.UW[0],&GPR[Opcode.BRANCH.rt].UB[0])) {
 		if (ShowTLBMisses) {
 			DisplayError("LB TLB: %X",Address.UW[0]);
@@ -518,11 +517,9 @@ void _fastcall r4300i_LW (void) {
 	if ((Address.UW[0] & 3) != 0 || !IsSignExtended(Address)) {
 		ADDRESS_ERROR_EXCEPTION(Address.UDW,TRUE);
 	}
-
+	
 	if (ShowDebugMessages)
 		Log_LW(PROGRAM_COUNTER,Address.UW[0]);
-
-	if (Opcode.BRANCH.rt == 0) { return; }
 
 	if (!r4300i_LW_VAddr(Address.UW[0],&GPR[Opcode.BRANCH.rt].UW[0])) {
 		if (ShowTLBMisses) {
@@ -600,7 +597,6 @@ void _fastcall r4300i_LWU (void) {
 		ADDRESS_ERROR_EXCEPTION(Address.UDW,TRUE);
 		return;
 	}
-	if (Opcode.BRANCH.rt == 0) { return; }
 
 	if (!r4300i_LW_VAddr(Address.UW[0],&GPR[Opcode.BRANCH.rt].UW[0])) {
 		if (ShowTLBMisses) {
