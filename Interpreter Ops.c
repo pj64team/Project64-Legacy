@@ -459,7 +459,6 @@ void _fastcall r4300i_LB (void) {
 		ADDRESS_ERROR_EXCEPTION(Address.UDW, TRUE);
 		return;
 	}
-	if (Opcode.BRANCH.rt == 0) { return; }
 	if (!r4300i_LB_VAddr(Address.UW[0],&GPR[Opcode.BRANCH.rt].UB[0])) {
 		if (ShowTLBMisses) {
 			DisplayError("LB TLB: %X",Address.UW[0]);
@@ -518,11 +517,9 @@ void _fastcall r4300i_LW (void) {
 	if ((Address.UW[0] & 3) != 0 || !IsSignExtended(Address)) {
 		ADDRESS_ERROR_EXCEPTION(Address.UDW,TRUE);
 	}
-
+	
 	if (ShowDebugMessages)
 		Log_LW(PROGRAM_COUNTER,Address.UW[0]);
-
-	if (Opcode.BRANCH.rt == 0) { return; }
 
 	if (!r4300i_LW_VAddr(Address.UW[0],&GPR[Opcode.BRANCH.rt].UW[0])) {
 		if (ShowTLBMisses) {
@@ -600,7 +597,6 @@ void _fastcall r4300i_LWU (void) {
 		ADDRESS_ERROR_EXCEPTION(Address.UDW,TRUE);
 		return;
 	}
-	if (Opcode.BRANCH.rt == 0) { return; }
 
 	if (!r4300i_LW_VAddr(Address.UW[0],&GPR[Opcode.BRANCH.rt].UW[0])) {
 		if (ShowTLBMisses) {
@@ -660,7 +656,7 @@ void _fastcall r4300i_SWL (void) {
 		if (ShowTLBMisses) {
 			DisplayError("SWL TLB: %X", Address.UW[0]);
 		}
-		TLB_READ_EXCEPTION(Address.UW[0]);
+		TLB_WRITE_EXCEPTION(Address.UW[0]);
 	} else {
 		Value &= SWL_MASK[Offset];
 		Value += GPR[Opcode.BRANCH.rt].UW[0] >> SWL_SHIFT[Offset];
@@ -720,7 +716,7 @@ void _fastcall r4300i_SDL (void) {
 		if (ShowTLBMisses) {
 			DisplayError("SDL TLB: %X", Address.UW[0]);
 		}
-		TLB_READ_EXCEPTION(Address.UW[0]);
+		TLB_WRITE_EXCEPTION(Address.UW[0]);
 	} else {
 		Value &= SDL_MASK[Offset];
 		Value += GPR[Opcode.BRANCH.rt].UDW >> SDL_SHIFT[Offset];
@@ -761,7 +757,7 @@ void _fastcall r4300i_SDR (void) {
 		if (ShowTLBMisses) {
 			DisplayError("SDR TLB: %X", Address.UW[0]);
 		}
-		TLB_READ_EXCEPTION(Address.UW[0]);
+		TLB_WRITE_EXCEPTION(Address.UW[0]);
 	} else {
 		Value &= SDR_MASK[Offset];
 		Value += GPR[Opcode.BRANCH.rt].UDW << SDR_SHIFT[Offset];
@@ -793,7 +789,7 @@ void _fastcall r4300i_SWR (void) {
 		if (ShowTLBMisses) {
 			DisplayError("SWR TLB: %X", Address.UW[0]);
 		}
-		TLB_READ_EXCEPTION(Address.UW[0]);
+		TLB_WRITE_EXCEPTION(Address.UW[0]);
 	} else {
 		Value &= SWR_MASK[Offset];
 		Value += GPR[Opcode.BRANCH.rt].UW[0] << SWR_SHIFT[Offset];
@@ -1547,6 +1543,7 @@ void _fastcall r4300i_COP0_DMF(void) {
 		switch (Opcode.REG.rd) {
 		case 4: //Context
 		case 8: //BadVAddr
+		case 10: //EntryHi
 		case 14: //EPC
 		case 20: //XContext:
 		case 30: //ErrEPC
@@ -1561,6 +1558,7 @@ void _fastcall r4300i_COP0_DMF(void) {
 	switch (Opcode.REG.rd) {
 	case 4: //Context
 	case 8: //BadVAddr
+	case 10: //EntryHi
 	case 14: //EPC
 	case 20: //XContext
 	case 30: //ErrEPC
@@ -1585,11 +1583,7 @@ void _fastcall r4300i_COP0_MT (void) {
 	}
 	BOOL unusedRegister = FALSE;
 
-	switch (Opcode.REG.rd) {	
-	case 2: //EntryLo0
-	case 3: //EntryLo1
-	case 5: //PageMask
-	case 10: //Entry Hi
+	switch (Opcode.REG.rd) {
 	case 17: //LLAddr
 	case 18: //WatchLo
 	case 19: //WatchHi
@@ -1600,18 +1594,31 @@ void _fastcall r4300i_COP0_MT (void) {
 	case 0: //Index
 		CP0[Opcode.REG.rd].UW[0] = GPR[Opcode.BRANCH.rt].UW[0] & 0x8000003F;
 		break;
+	case 1: //Random
+		break;
+	case 2: //EntryLo0
+	case 3: //EntryLo1
+		CP0[Opcode.REG.rd].UW[0] = GPR[Opcode.BRANCH.rt].UW[0] & 0x3FFFFFFF;
+		break;
 	case 4: //Context
 		CP0[Opcode.REG.rd].DW = (long)((CP0[Opcode.REG.rd].W[0] & 0x7FFFFF) | (GPR[Opcode.BRANCH.rt].W[0] & 0xFF800000));
 		break;
+	case 5: //PageMask
+		CP0[Opcode.REG.rd].UW[0] = GPR[Opcode.BRANCH.rt].UW[0] & 0x1FFE000;
+		break;
 	case 6: //Wired
 		CP0[Opcode.REG.rd].UW[0] = GPR[Opcode.BRANCH.rt].UW[0] & 0x3F;
+		RANDOM_REGISTER = 31;
 		break;
 	case 8: //BadVAddr
 		break;
 	case 9: //Count
 		CP0[Opcode.REG.rd].UW[0] = GPR[Opcode.BRANCH.rt].UW[0];
 		ChangeCompareTimer();
-		break;		
+		break;
+	case 10: //Entry Hi
+		CP0[Opcode.REG.rd].UDW = GPR[Opcode.BRANCH.rt].UW[0] & 0x0FFFFE0FF;
+		break;
 	case 11: //Compare
 		CP0[Opcode.REG.rd].UW[0] = GPR[Opcode.BRANCH.rt].UW[0];
 		FAKE_CAUSE_REGISTER &= ~CAUSE_IP7;
@@ -1641,7 +1648,7 @@ void _fastcall r4300i_COP0_MT (void) {
 	case 15: //PRId
 		break;
 	case 16: //Config
-		CP0[Opcode.REG.rd].UW[0] = (CP0[Opcode.REG.rd].UW[0] & 0x00066460) | (GPR[Opcode.BRANCH.rt].UW[0] & 0x7F00800F);
+		CP0[Opcode.REG.rd].UW[0] = (CP0[Opcode.REG.rd].UW[0] & 0x70066460) | (GPR[Opcode.BRANCH.rt].UW[0] & 0x0F00800F);
 		break;
 	case 20: //XContext
 		CP0[Opcode.REG.rd].UDW = ((CP0[Opcode.REG.rd].UDW & 0x1FFFFFFFFLL) | (((long long)GPR[Opcode.BRANCH.rt].W[0]) & 0xFFFFFFFE00000000LL));
@@ -1691,6 +1698,7 @@ void _fastcall r4300i_COP0_DMT(void) {
 			break;
 		case 4: //Context
 		case 8: //BadVAddr
+		case 10: //Entry Hi
 		case 14: //EPC
 		case 20: //XContext:
 			LogMessage("%08X: Writing 0x%llX to %s register (Originally: 0x%016llX)", PROGRAM_COUNTER,
@@ -1705,10 +1713,6 @@ void _fastcall r4300i_COP0_DMT(void) {
 	BOOL unusedRegister = FALSE;
 
 	switch (Opcode.REG.rd) {
-	case 2: //EntryLo0
-	case 3: //EntryLo1
-	case 5: //PageMask
-	case 10: //Entry Hi
 	case 17: //LLAddr
 	case 18: //WatchLo
 	case 19: //WatchHi
@@ -1719,17 +1723,30 @@ void _fastcall r4300i_COP0_DMT(void) {
 	case 0: //Index
 		CP0[Opcode.REG.rd].UW[0] = GPR[Opcode.BRANCH.rt].UW[0] & 0x8000003F;
 		break;
+	case 2: //EntryLo0
+	case 3: //EntryLo1
+		CP0[Opcode.REG.rd].UW[0] = GPR[Opcode.BRANCH.rt].UW[0] & 0x3FFFFFFF;
+		break;
+	case 1: //Random
+		break;
 	case 4: //Context
 		CP0[Opcode.REG.rd].UDW = (CP0[Opcode.REG.rd].UDW & 0x7FFFFFLL) | (GPR[Opcode.BRANCH.rt].UDW & 0xFFFFFFFFFF800000LL);
 		break;
+	case 5: //PageMask
+		CP0[Opcode.REG.rd].UW[0] = GPR[Opcode.BRANCH.rt].UW[0] & 0x1FFE000;
+		break;
 	case 6: //Wired
 		CP0[Opcode.REG.rd].UW[0] = GPR[Opcode.BRANCH.rt].UW[0] & 0x3F;
+		RANDOM_REGISTER = 31;
 		break;
 	case 8: //BadVAddr
 		break;
 	case 9: //Count
 		CP0[Opcode.REG.rd].UW[0] = GPR[Opcode.BRANCH.rt].UW[0];
 		ChangeCompareTimer();
+		break;
+	case 10: //Entry Hi
+		CP0[Opcode.REG.rd].UDW = GPR[Opcode.BRANCH.rt].UDW & 0xC00000FFFFFFE0FFLL;
 		break;
 	case 11: //Compare
 		CP0[Opcode.REG.rd].UW[0] = GPR[Opcode.BRANCH.rt].UW[0];
@@ -1761,7 +1778,7 @@ void _fastcall r4300i_COP0_DMT(void) {
 	case 15: //PRId
 		break;
 	case 16: //Config
-		CP0[Opcode.REG.rd].UW[0] = (CP0[Opcode.REG.rd].UW[0] & 0x00066460) | (GPR[Opcode.BRANCH.rt].UW[0] & 0x7F00800F);
+		CP0[Opcode.REG.rd].UW[0] = (CP0[Opcode.REG.rd].UW[0] & 0x70066460) | (GPR[Opcode.BRANCH.rt].UW[0] & 0x0F00800F);
 		break;
 	case 20: //XContext
 		CP0[Opcode.REG.rd].UDW = (CP0[Opcode.REG.rd].UDW & 0x1FFFFFFFFLL) | (GPR[Opcode.BRANCH.rt].UDW & 0xFFFFFFFE00000000LL);

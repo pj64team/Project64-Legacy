@@ -724,8 +724,15 @@ void ExecuteInterpreterOpCode (void) {
 	if (CPU_Type != CPU_SyncCores) { Timers.Timer -= CountPerOp; }
 
 	RANDOM_REGISTER -= 1;
-	if ((int)RANDOM_REGISTER < (int)WIRED_REGISTER) {
-		RANDOM_REGISTER = 31;
+	if (WIRED_REGISTER < 32) {
+		if ((int)RANDOM_REGISTER < (int)WIRED_REGISTER) {
+			RANDOM_REGISTER = 31;
+		}
+	}
+	else {
+		if ((int)RANDOM_REGISTER < 0) {
+			RANDOM_REGISTER = 63;
+		}
 	}
 
 	((void(_fastcall*)()) R4300i_Opcode[Opcode.BRANCH.op])();

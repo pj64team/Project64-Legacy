@@ -1217,6 +1217,10 @@ int RSPisRunning = 0;
 int RSPisRunning = 0;
 int CheckRSPInterrupt = 0;
 
+#define NUMCYCLES 200
+int RSPisRunning = 0;
+int CheckRSPInterrupt = 0;
+
 void RunRsp (void) {
 	if (RSPisRunning) {
 		DoRspCycles(NUMCYCLES);

@@ -139,13 +139,14 @@ void TLB_Probe (void) {
 		}
 	}
 
-	INDEX_REGISTER |= 0x80000000;
-	for (Counter = 0; Counter < 32; Counter ++) {		
-		DWORD TlbValue = tlb[Counter].EntryHi.Value & (~tlb[Counter].PageMask.BreakDownPageMask.Mask << 13);
-		DWORD EntryHi = ENTRYHI_REGISTER & (~tlb[Counter].PageMask.BreakDownPageMask.Mask << 13);
+	INDEX_REGISTER = 0x80000000;
 
-		if (TlbValue == EntryHi) {			
-			BOOL Global = (tlb[Counter].EntryHi.Value & 0x100) != 0;
+	for (Counter = 0; Counter < 32; Counter ++) {		
+		QWORD TlbValue = tlb[Counter].EntryHi.Value & (~((QWORD)tlb[Counter].PageMask.BreakDownPageMask.Mask) << 13);
+		QWORD EntryHi = ENTRYHI_REGISTER & (~((QWORD)tlb[Counter].PageMask.BreakDownPageMask.Mask) << 13);
+
+		if (TlbValue == EntryHi) {
+			BOOL Global = tlb[Counter].EntryLo0.BreakDownEntryLo0.GLOBAL && tlb[Counter].EntryLo1.BreakDownEntryLo1.GLOBAL;
 			BOOL SameAsid = ((tlb[Counter].EntryHi.Value & 0xFF) == (ENTRYHI_REGISTER & 0xFF));
 			
 			if (Global || SameAsid) {
@@ -167,7 +168,7 @@ void TLB_Read (void) {
 	}
 
 	PAGE_MASK_REGISTER = tlb[index].PageMask.Value ;
-	ENTRYHI_REGISTER = (tlb[index].EntryHi.Value & ~tlb[index].PageMask.Value) ;
+	ENTRYHI_REGISTER = (tlb[index].EntryHi.Value & ~((unsigned long long)tlb[index].PageMask.Value));
 	ENTRYLO0_REGISTER = tlb[index].EntryLo0.Value;
 	ENTRYLO1_REGISTER = tlb[index].EntryLo1.Value;		
 }
@@ -192,7 +193,7 @@ void _fastcall WriteTLBEntry (int index) {
 		FastTlb[FastIndx + 1].ValidEntry && FastTlb[FastIndx + 1].VALID))
 	{
 		if (HaveDebugger && LogOptions.GenerateLog && LogOptions.LogTLB) { 
-			LogMessage("%08X: TLB write:  Index: %d   PageMask: %X  EntryLo0: %X  EntryLo1: %X  EntryHi: %X",PROGRAM_COUNTER,
+			LogMessage("%08X: TLB write:  Index: %d   PageMask: %X  EntryLo0: %X  EntryLo1: %X  EntryHi: %llX",PROGRAM_COUNTER,
 				index,PAGE_MASK_REGISTER,ENTRYLO0_REGISTER,ENTRYLO1_REGISTER,ENTRYHI_REGISTER);
 			LogMessage("       Being Ignored");
 			LogMessage("");
@@ -214,14 +215,22 @@ void _fastcall WriteTLBEntry (int index) {
 			}
 		}
 	}
-	tlb[index].PageMask.Value = PAGE_MASK_REGISTER;
+
+	DWORD pageMask = PAGE_MASK_REGISTER & 0x01554000; // 0000 0001 0101 0101 0100 0000 0000 0000
+	pageMask |= pageMask >> 1;
+
+	tlb[index].PageMask.Value = pageMask;
 	tlb[index].EntryHi.Value = ENTRYHI_REGISTER;
-	tlb[index].EntryLo0.Value = ENTRYLO0_REGISTER;
-	tlb[index].EntryLo1.Value = ENTRYLO1_REGISTER;
+	tlb[index].EntryLo0.Value = ENTRYLO0_REGISTER & 0x3FFFFFF;
+	tlb[index].EntryLo1.Value = ENTRYLO1_REGISTER & 0x3FFFFFF;
+	if (!tlb[index].EntryLo0.BreakDownEntryLo0.GLOBAL || !tlb[index].EntryLo1.BreakDownEntryLo1.GLOBAL) {
+		tlb[index].EntryLo0.BreakDownEntryLo0.GLOBAL = 0;
+		tlb[index].EntryLo1.BreakDownEntryLo1.GLOBAL = 0;
+	}
 	tlb[index].EntryDefined = TRUE;
 	
 	if (HaveDebugger && LogOptions.GenerateLog && LogOptions.LogTLB) { 
-		LogMessage("%08X: TLB write:  Index: %d   PageMask: %X  EntryLo0: %X  EntryLo1: %X  EntryHi: %X",PROGRAM_COUNTER,
+		LogMessage("%08X: TLB write:  Index: %d   PageMask: %X  EntryLo0: %X  EntryLo1: %X  EntryHi: %llX",PROGRAM_COUNTER,
 			index,PAGE_MASK_REGISTER,ENTRYLO0_REGISTER,ENTRYLO1_REGISTER,ENTRYHI_REGISTER);
 		LogMessage("      Entry 1:  VStart: %X   VEnd: %X  Physical Start: %X",
 			tlb[index].EntryHi.BreakDownEntryHi.VPN2 << 13, //VStart
