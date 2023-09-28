@@ -1211,7 +1211,7 @@ void RefreshScreen (void ){
 	if (Profiling || ShowCPUPer) { StartTimer(Label); }
 }
 
-#define NUMCYCLES 2000
+#define NUMCYCLES 200
 int RSPisRunning = 0;
 int CheckRSPInterrupt = 0;
 
@@ -1227,8 +1227,8 @@ void RunRsp (void) {
 					CheckInterrupts();
 				CheckRSPInterrupt = 0;
 			}
-			else
-				SP_STATUS_REG &= ~SP_STATUS_BROKE;
+			//else
+			//	SP_STATUS_REG &= ~SP_STATUS_BROKE;
 			return;
 		}
 
@@ -1291,16 +1291,16 @@ void RunRsp (void) {
 			DoRspCycles(NUMCYCLES);
 			if ((SP_STATUS_REG & SP_STATUS_HALT) != 0)
 				RSPisRunning = 0;
-			else
-				SP_STATUS_REG &= ~SP_STATUS_BROKE;
+			//else
+			//	SP_STATUS_REG &= ~SP_STATUS_BROKE;
 			StartTimer(Label);
 		} else {
 			RSPisRunning = 1;
 			DoRspCycles(NUMCYCLES);
 			if ((SP_STATUS_REG & SP_STATUS_HALT) != 0)
 				RSPisRunning = 0;
-			else
-				SP_STATUS_REG &= ~SP_STATUS_BROKE;
+			//else
+			//	SP_STATUS_REG &= ~SP_STATUS_BROKE;
 		}
 #ifdef CFB_READ
 			if (VI_ORIGIN_REG > 0x280) {
