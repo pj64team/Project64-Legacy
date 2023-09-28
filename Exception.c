@@ -195,6 +195,9 @@ void DoIntrException ( BOOL DelaySlot ) {
 
 void _fastcall DoTLBMiss ( BOOL DelaySlot, DWORD BadVaddr, BOOL FromRead ) {
 	CAUSE_REGISTER = FromRead ? EXC_RMISS : EXC_WMISS;
+	if (CAUSE_REGISTER == EXC_WMISS && TLB_ReadMap[BadVaddr >> 12] != 0) {
+		CAUSE_REGISTER = EXC_MOD;
+	}
 	BAD_VADDR_REGISTER = BadVaddr;
 	CONTEXT_REGISTER &= 0xFF80000F;
 	CONTEXT_REGISTER |= (BadVaddr >> 9) & 0x007FFFF0;
