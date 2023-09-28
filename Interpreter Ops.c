@@ -660,7 +660,7 @@ void _fastcall r4300i_SWL (void) {
 		if (ShowTLBMisses) {
 			DisplayError("SWL TLB: %X", Address.UW[0]);
 		}
-		TLB_READ_EXCEPTION(Address.UW[0]);
+		TLB_WRITE_EXCEPTION(Address.UW[0]);
 	} else {
 		Value &= SWL_MASK[Offset];
 		Value += GPR[Opcode.BRANCH.rt].UW[0] >> SWL_SHIFT[Offset];
@@ -793,7 +793,7 @@ void _fastcall r4300i_SWR (void) {
 		if (ShowTLBMisses) {
 			DisplayError("SWR TLB: %X", Address.UW[0]);
 		}
-		TLB_READ_EXCEPTION(Address.UW[0]);
+		TLB_WRITE_EXCEPTION(Address.UW[0]);
 	} else {
 		Value &= SWR_MASK[Offset];
 		Value += GPR[Opcode.BRANCH.rt].UW[0] << SWR_SHIFT[Offset];
