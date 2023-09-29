@@ -70,6 +70,7 @@ void _fastcall r4300i_LDC1           ( void );
 void _fastcall r4300i_LD             ( void );
 void _fastcall r4300i_SC             ( void );
 void _fastcall r4300i_SWC1           ( void );
+void _fastcall r4300i_SCD            ( void );
 void _fastcall r4300i_SDC1           ( void );
 void _fastcall r4300i_SD             ( void );
 

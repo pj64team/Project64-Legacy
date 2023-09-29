@@ -834,7 +834,7 @@ void _fastcall r4300i_LL (void) {
 void _fastcall r4300i_LLD(void) {
 	MIPS_DWORD Address;
 	Address.UDW = GPR[Opcode.IMM.base].UDW + (short)Opcode.IMM.immediate;
-	if ((Address.UW[0] & 3) != 0 || !IsSignExtended(Address)) {
+	if ((Address.UW[0] & 7) != 0 || !IsSignExtended(Address)) {
 		ADDRESS_ERROR_EXCEPTION(Address.UDW, TRUE);
 		return;
 	}
@@ -888,7 +888,26 @@ void _fastcall r4300i_SC (void) {
 			TLB_WRITE_EXCEPTION(Address.UW[0]);
 		}
 	}
-	GPR[Opcode.BRANCH.rt].UW[0] = LLBit;
+	GPR[Opcode.BRANCH.rt].UDW = LLBit;
+}
+
+void _fastcall r4300i_SCD(void) {
+	MIPS_DWORD Address;
+	Address.UDW = GPR[Opcode.IMM.base].UDW + (short)Opcode.IMM.immediate;
+	if ((Address.UW[0] & 7) != 0 || !IsSignExtended(Address)) {
+		ADDRESS_ERROR_EXCEPTION(Address.UDW, FALSE);
+		return;
+	}
+
+	if (LLBit == 1) {
+		if (!r4300i_SD_VAddr(Address.UW[0], GPR[Opcode.BRANCH.rt].UDW)) {
+			if (ShowTLBMisses) {
+				DisplayError("SW TLB: %X", Address.UW[0]);
+			}
+			TLB_WRITE_EXCEPTION(Address.UW[0]);
+		}
+	}
+	GPR[Opcode.BRANCH.rt].UDW = LLBit;
 }
 
 void _fastcall r4300i_LD (void) {
