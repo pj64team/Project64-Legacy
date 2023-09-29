@@ -831,6 +831,28 @@ void _fastcall r4300i_LL (void) {
 	}
 }
 
+void _fastcall r4300i_LLD(void) {
+	MIPS_DWORD Address;
+	Address.UDW = GPR[Opcode.IMM.base].UDW + (short)Opcode.IMM.immediate;
+	if ((Address.UW[0] & 3) != 0 || !IsSignExtended(Address)) {
+		ADDRESS_ERROR_EXCEPTION(Address.UDW, TRUE);
+		return;
+	}
+
+	if (!r4300i_LD_VAddr(Address.UW[0], &GPR[Opcode.BRANCH.rt].UDW)) {
+		if (ShowTLBMisses) {
+			DisplayError("LL TLB: %X", Address.UW[0]);
+		}
+		TLB_READ_EXCEPTION(Address.UW[0]);
+	}
+	else {
+		LLBit = 1;
+		LLAddr = Address.UW[0];
+		TranslateVaddr(&LLAddr);
+		if (Opcode.BRANCH.rt == 0) { return; }
+	}
+}
+
 void _fastcall r4300i_LWC1 (void) {
 	MIPS_DWORD Address;
 	Address.UDW = GPR[Opcode.IMM.base].UDW + (short)Opcode.IMM.immediate;

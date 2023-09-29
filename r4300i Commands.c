@@ -1533,6 +1533,9 @@ char * R4300iOpcodeName ( DWORD OpCode, DWORD PC ) {
 	case R4300i_LWC1:
 		sprintf(CommandName,"lwc1\t%s, 0x%X (%s)",FPR_Name[command.BRANCH.rt], command.BRANCH.offset, GPR_Name[command.IMM.base]);
 		break;
+	case R4300i_LLD:
+		sprintf(CommandName, "lld\t%s, 0x%X (%s)", GPR_Name[command.BRANCH.rt], command.BRANCH.offset, GPR_Name[command.IMM.base]);
+		break;
 	case R4300i_LDC1:
 		sprintf(CommandName,"ldc1\t%s, 0x%X (%s)",FPR_Name[command.BRANCH.rt], command.BRANCH.offset, GPR_Name[command.IMM.base]);
 		break;

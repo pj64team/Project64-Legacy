@@ -144,7 +144,7 @@ void BuildInterpreter (void ) {
 	R4300i_Opcode[49] = r4300i_LWC1;
 	R4300i_Opcode[50] = R4300i_UnknownOpcode;
 	R4300i_Opcode[51] = r4300i_RESERVED;
-	R4300i_Opcode[52] = R4300i_UnknownOpcode; // TODO: LLD
+	R4300i_Opcode[52] = r4300i_LLD;
 	R4300i_Opcode[53] = r4300i_LDC1;
 	R4300i_Opcode[54] = R4300i_UnknownOpcode;
 	R4300i_Opcode[55] = r4300i_LD;
