@@ -1210,12 +1210,6 @@ void RefreshScreen (void ){
 	if ((STATUS_REGISTER & STATUS_IE) != 0 ) { ApplyCheats(); Apply_CheatSearchDev(); }
 	if (Profiling || ShowCPUPer) { StartTimer(Label); }
 }
-#define NUMCYCLES 2000
-int RSPisRunning = 0;
-
-#define NUMCYCLES 200
-int RSPisRunning = 0;
-int CheckRSPInterrupt = 0;
 
 #define NUMCYCLES 200
 int RSPisRunning = 0;
