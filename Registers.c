@@ -1349,7 +1349,8 @@ void UpdateCurrentHalfLine (void) {
 		HalfLine = 0;
 		return;
 	}
-    if (Timers.Timer < 0) { 
+    if (Timers.Timer < 0) {
+		//LogMessage("negative timer");
 		HalfLine = 0;
 		return;
 	}

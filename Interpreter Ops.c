@@ -1672,9 +1672,12 @@ void _fastcall r4300i_COP0_MT (void) {
 		} else {
 			CP0[Opcode.REG.rd].UW[0] = GPR[Opcode.BRANCH.rt].UW[0] & 0XFFF7FFFF;
 		}
-		if ((CP0[Opcode.REG.rd].UW[0] & 0x18) != 0) { 
+		if ((CP0[Opcode.REG.rd].UW[0] & STATUS_KSU) != STATUS_KERNEL) { 
 			if (ShowDebugMessages)
 				DisplayError("Left kernel mode ??");
+		}
+		if ((CP0[Opcode.REG.rd].UW[0] & STATUS_KX) != 0) {
+			DisplayError("Kernel mode with 64 bits mode");
 		}
 		CheckInterrupts();
 		break;		

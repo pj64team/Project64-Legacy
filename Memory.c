@@ -1431,7 +1431,20 @@ BOOL r4300i_LB_VAddr ( DWORD VAddr, BYTE * Value ) {
 	CheckForWatchPoint(VAddr, WP_READ, sizeof(BYTE));
 
 	if (TLB_ReadMap[VAddr >> 12] == 0) { return FALSE; }
-	*Value = *(BYTE *)(TLB_ReadMap[VAddr >> 12] + (VAddr ^ 3));
+
+	DWORD PAddr = (DWORD)TLB_ReadMap[VAddr >> 12] + VAddr - (DWORD)N64MEM;
+
+	// DRAM, DMEM, and IMEM can all be accessed directly through the host's virtual memory.
+	if (PAddr < RdramSize || (PAddr >= 0x04000000 && PAddr < 0x04002000)) {
+		*Value = *(BYTE*)(TLB_ReadMap[VAddr >> 12] + (VAddr ^ 3));
+	}
+	else {
+		DWORD DValue = 0;
+		if (!r4300i_LB_NonMemory(PAddr^3, &DValue, FALSE)) {
+			return FALSE;
+		}
+		*Value = (BYTE)DValue;
+	}
 	return TRUE;
 }
 
@@ -1445,7 +1458,7 @@ BOOL r4300i_LB_VAddr_NonCPU(DWORD VAddr, BYTE *Value) {
 		*Value = *(BYTE *)(TLB_ReadMap[VAddr >> 12] + (VAddr ^ 3));
 	} else {
 		DWORD DValue = 0;
-		if (!r4300i_LB_NonMemory(PAddr, &DValue, FALSE)) {
+		if (!r4300i_LB_NonMemory(PAddr^3, &DValue, FALSE)) {
 			return FALSE;
 		}
 		*Value = (BYTE)DValue;
@@ -1457,8 +1470,25 @@ BOOL r4300i_LD_VAddr ( DWORD VAddr, unsigned _int64 * Value ) {
 	CheckForWatchPoint(VAddr, WP_READ, sizeof(unsigned _int64));
 
 	if (TLB_ReadMap[VAddr >> 12] == 0) { return FALSE; }
-	*((DWORD *)(Value) + 1) = *(DWORD *)(TLB_ReadMap[VAddr >> 12] + VAddr);
-	*((DWORD *)(Value)) = *(DWORD *)(TLB_ReadMap[VAddr >> 12] + VAddr + 4);
+
+	DWORD PAddr = (DWORD)TLB_ReadMap[VAddr >> 12] + VAddr - (DWORD)N64MEM;
+
+	// DRAM, DMEM, and IMEM can all be accessed directly through the host's virtual memory.
+	if (PAddr < RdramSize || (PAddr >= 0x04000000 && PAddr < 0x04002000)) {
+		*((DWORD*)(Value)+1) = *(DWORD*)(TLB_ReadMap[VAddr >> 12] + VAddr);
+		*((DWORD*)(Value)) = *(DWORD*)(TLB_ReadMap[VAddr >> 12] + VAddr + 4);
+	}
+	else {
+		DWORD DValue = 0;
+		if (!r4300i_LW_NonMemory(PAddr, &DValue)) {
+			return FALSE;
+		}
+		*((DWORD*)(Value)+1) = DValue;
+		if (!r4300i_LW_NonMemory(PAddr+4, &DValue)) {
+			return FALSE;
+		}
+		*((DWORD*)(Value)) = DValue;
+	}
 	return TRUE;
 }
 
@@ -1529,7 +1559,20 @@ BOOL r4300i_LH_VAddr ( DWORD VAddr, WORD * Value ) {
 	CheckForWatchPoint(VAddr, WP_READ, sizeof(WORD));
 
 	if (TLB_ReadMap[VAddr >> 12] == 0) { return FALSE; }
-	*Value = *(WORD *)(TLB_ReadMap[VAddr >> 12] + (VAddr ^ 2));
+
+	DWORD PAddr = (DWORD)TLB_ReadMap[VAddr >> 12] + VAddr - (DWORD)N64MEM;
+
+	// DRAM, DMEM, and IMEM can all be accessed directly through the host's virtual memory.
+	if (PAddr < RdramSize || (PAddr >= 0x04000000 && PAddr < 0x04002000)) {
+		*Value = *(WORD*)(TLB_ReadMap[VAddr >> 12] + (VAddr ^ 2));
+	}
+	else {
+		DWORD DValue = 0;
+		if (!r4300i_LH_NonMemory(PAddr^2, &DValue, FALSE)) {
+			return FALSE;
+		}
+		*Value = (WORD)DValue;
+	}
 	return TRUE;
 }
 
@@ -1543,7 +1586,7 @@ BOOL r4300i_LH_VAddr_NonCPU ( DWORD VAddr, WORD * Value ) {
 		*Value = *(WORD *)(TLB_ReadMap[VAddr >> 12] + (VAddr ^ 2));
 	} else {
 		DWORD DValue = 0;
-		if (!r4300i_LH_NonMemory(PAddr, &DValue, FALSE)) {
+		if (!r4300i_LH_NonMemory(PAddr^2, &DValue, FALSE)) {
 			return FALSE;
 		}
 		*Value = (WORD)DValue;
@@ -1705,7 +1748,7 @@ int r4300i_LW_NonMemory ( DWORD PAddr, DWORD * Value ) {
 			}
 			break;
 		case 0x0450000C: 
-			*Value = AI_STATUS_REG; 
+			*Value = AI_STATUS_REG;
 			break;
 		default:
 			* Value = 0;
@@ -1814,7 +1857,16 @@ BOOL r4300i_LW_VAddr ( DWORD VAddr, DWORD * Value ) {
 	CheckForWatchPoint(VAddr, WP_READ, sizeof(DWORD));
 	
 	if (TLB_ReadMap[VAddr >> 12] == 0) { return FALSE; }
-	*Value = *(DWORD *)(TLB_ReadMap[VAddr >> 12] + VAddr);
+
+	DWORD PAddr = (DWORD)TLB_ReadMap[VAddr >> 12] + VAddr - (DWORD)N64MEM;
+	
+	// DRAM, DMEM, and IMEM can all be accessed directly through the host's virtual memory.
+	if (PAddr < RdramSize || (PAddr >= 0x04000000 && PAddr < 0x04002000)) {
+		*Value = *(DWORD*)(TLB_ReadMap[VAddr >> 12] + VAddr);
+	}
+	else if (!r4300i_LW_NonMemory(PAddr, Value)) {
+		return FALSE;
+	}
 	return TRUE;
 }
 
