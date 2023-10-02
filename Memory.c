@@ -1440,9 +1440,7 @@ BOOL r4300i_LB_VAddr ( DWORD VAddr, BYTE * Value ) {
 	}
 	else {
 		DWORD DValue = 0;
-		if (!r4300i_LB_NonMemory(PAddr^3, &DValue, FALSE)) {
-			return FALSE;
-		}
+		r4300i_LB_NonMemory(PAddr ^ 3, &DValue, FALSE);
 		*Value = (BYTE)DValue;
 	}
 	return TRUE;
@@ -1480,13 +1478,9 @@ BOOL r4300i_LD_VAddr ( DWORD VAddr, unsigned _int64 * Value ) {
 	}
 	else {
 		DWORD DValue = 0;
-		if (!r4300i_LW_NonMemory(PAddr, &DValue)) {
-			return FALSE;
-		}
+		r4300i_LW_NonMemory(PAddr, &DValue);
 		*((DWORD*)(Value)+1) = DValue;
-		if (!r4300i_LW_NonMemory(PAddr+4, &DValue)) {
-			return FALSE;
-		}
+		r4300i_LW_NonMemory(PAddr + 4, &DValue);
 		*((DWORD*)(Value)) = DValue;
 	}
 	return TRUE;
@@ -1568,9 +1562,7 @@ BOOL r4300i_LH_VAddr ( DWORD VAddr, WORD * Value ) {
 	}
 	else {
 		DWORD DValue = 0;
-		if (!r4300i_LH_NonMemory(PAddr^2, &DValue, FALSE)) {
-			return FALSE;
-		}
+		r4300i_LH_NonMemory(PAddr ^ 2, &DValue, FALSE);
 		*Value = (WORD)DValue;
 	}
 	return TRUE;
@@ -1864,8 +1856,8 @@ BOOL r4300i_LW_VAddr ( DWORD VAddr, DWORD * Value ) {
 	if (PAddr < RdramSize || (PAddr >= 0x04000000 && PAddr < 0x04002000)) {
 		*Value = *(DWORD*)(TLB_ReadMap[VAddr >> 12] + VAddr);
 	}
-	else if (!r4300i_LW_NonMemory(PAddr, Value)) {
-		return FALSE;
+	else {
+		r4300i_LW_NonMemory(PAddr, Value);
 	}
 	return TRUE;
 }
