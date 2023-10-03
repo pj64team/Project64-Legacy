@@ -1677,7 +1677,7 @@ void _fastcall r4300i_COP0_MT (void) {
 				DisplayError("Left kernel mode ??");
 		}
 		if ((CP0[Opcode.REG.rd].UW[0] & STATUS_KX) != 0) {
-			DisplayError("Kernel mode with 64 bits mode");
+			LogMessage("Kernel mode with 64 bits mode");
 		}
 		CheckInterrupts();
 		break;		
