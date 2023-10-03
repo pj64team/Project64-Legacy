@@ -831,6 +831,28 @@ void _fastcall r4300i_LL (void) {
 	}
 }
 
+void _fastcall r4300i_LLD(void) {
+	MIPS_DWORD Address;
+	Address.UDW = GPR[Opcode.IMM.base].UDW + (short)Opcode.IMM.immediate;
+	if ((Address.UW[0] & 7) != 0 || !IsSignExtended(Address)) {
+		ADDRESS_ERROR_EXCEPTION(Address.UDW, TRUE);
+		return;
+	}
+
+	if (!r4300i_LD_VAddr(Address.UW[0], &GPR[Opcode.BRANCH.rt].UDW)) {
+		if (ShowTLBMisses) {
+			DisplayError("LL TLB: %X", Address.UW[0]);
+		}
+		TLB_READ_EXCEPTION(Address.UW[0]);
+	}
+	else {
+		LLBit = 1;
+		LLAddr = Address.UW[0];
+		TranslateVaddr(&LLAddr);
+		if (Opcode.BRANCH.rt == 0) { return; }
+	}
+}
+
 void _fastcall r4300i_LWC1 (void) {
 	MIPS_DWORD Address;
 	Address.UDW = GPR[Opcode.IMM.base].UDW + (short)Opcode.IMM.immediate;
@@ -866,7 +888,26 @@ void _fastcall r4300i_SC (void) {
 			TLB_WRITE_EXCEPTION(Address.UW[0]);
 		}
 	}
-	GPR[Opcode.BRANCH.rt].UW[0] = LLBit;
+	GPR[Opcode.BRANCH.rt].UDW = LLBit;
+}
+
+void _fastcall r4300i_SCD(void) {
+	MIPS_DWORD Address;
+	Address.UDW = GPR[Opcode.IMM.base].UDW + (short)Opcode.IMM.immediate;
+	if ((Address.UW[0] & 7) != 0 || !IsSignExtended(Address)) {
+		ADDRESS_ERROR_EXCEPTION(Address.UDW, FALSE);
+		return;
+	}
+
+	if (LLBit == 1) {
+		if (!r4300i_SD_VAddr(Address.UW[0], GPR[Opcode.BRANCH.rt].UDW)) {
+			if (ShowTLBMisses) {
+				DisplayError("SW TLB: %X", Address.UW[0]);
+			}
+			TLB_WRITE_EXCEPTION(Address.UW[0]);
+		}
+	}
+	GPR[Opcode.BRANCH.rt].UDW = LLBit;
 }
 
 void _fastcall r4300i_LD (void) {
@@ -1631,9 +1672,12 @@ void _fastcall r4300i_COP0_MT (void) {
 		} else {
 			CP0[Opcode.REG.rd].UW[0] = GPR[Opcode.BRANCH.rt].UW[0] & 0XFFF7FFFF;
 		}
-		if ((CP0[Opcode.REG.rd].UW[0] & 0x18) != 0) { 
+		if ((CP0[Opcode.REG.rd].UW[0] & STATUS_KSU) != STATUS_KERNEL) { 
 			if (ShowDebugMessages)
 				DisplayError("Left kernel mode ??");
+		}
+		if ((CP0[Opcode.REG.rd].UW[0] & STATUS_KX) != 0) {
+			LogMessage("Kernel mode with 64 bits mode");
 		}
 		CheckInterrupts();
 		break;		

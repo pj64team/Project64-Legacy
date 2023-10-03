@@ -169,6 +169,13 @@
 #define STATUS_IE				0x00000001
 #define STATUS_EXL				0x00000002
 #define STATUS_ERL				0x00000004
+#define STATUS_KSU              0x00000018
+#define STATUS_KERNEL           0x00000000
+#define STATUS_SUPERVISOR       0x00000008
+#define STATUS_USER             0x00000010
+#define STATUS_UX               0x00000020
+#define STATUS_SX               0x00000040
+#define STATUS_KX               0x00000080
 #define STATUS_SR				0x00100000	// Soft Reset Signal caused exception
 #define STATUS_BEV				0x00400000
 #define STATUS_FR				0x04000000
