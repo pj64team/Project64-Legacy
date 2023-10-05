@@ -48,6 +48,7 @@ RomDelaySI, RomSPHack, RomAudioSignal, RomEmulateAI, RomModVIS;
 char CurrentFileName[MAX_PATH + 1] = { "" }, RomName[MAX_PATH + 1] = { "" }, RomFullName[MAX_PATH + 1] = { "" };
 char LastRoms[10][MAX_PATH + 1], LastDirs[10][MAX_PATH + 1];
 BYTE RomHeader[0x1000];
+DWORD CRC_SRC_SIZE = 0x00101000;
 DWORD PrevCRC1, PrevCRC2;
 HANDLE hRomFile = NULL;
 HANDLE hRomMapping = NULL;
@@ -1291,7 +1292,7 @@ void RecalculateCRCs(BYTE* data, DWORD data_size) {
 
 	t1 = t2 = t3 = t4 = t5 = t6 = seed;
 
-	for (i = 0x00001000; i < 0x00101000; i += 4) {
+	for (i = 0x00001000; i < CRC_SRC_SIZE; i += 4) {
 		if ((unsigned int)(i + 3) > data_size)
 			d = 0;
 		else
@@ -1309,7 +1310,9 @@ void RecalculateCRCs(BYTE* data, DWORD data_size) {
 
 		if (chip == CIC_NUS_6105) {
 			j = 0x40 + 0x0710 + (i & 0xFF);
-			t1 += (data[j + 3] << 24 | data[j + 2] << 16 | data[j + 1] << 8 | data[j]) ^ d;
+			if ((unsigned int)(j + 3) <= data_size) {
+				t1 += (data[j + 3] << 24 | data[j + 2] << 16 | data[j + 1] << 8 | data[j]) ^ d;
+			}
 		}
 		else
 			t1 += t5 ^ d;
@@ -1385,7 +1388,7 @@ void LoadRomRecalcCRCs(char* FileName, BYTE* CRC1, BYTE* CRC2) {
 			unzReadCurrentFile(file, Test, 4);
 			if (IsValidRomImage(Test)) {
 				FoundRom = TRUE;
-				data_size = info.uncompressed_size;
+				data_size = min(CRC_SRC_SIZE, info.uncompressed_size);
 
 				data = (BYTE*)malloc(sizeof(BYTE) * data_size);
 				if (!data) {
@@ -1454,7 +1457,7 @@ void LoadRomRecalcCRCs(char* FileName, BYTE* CRC1, BYTE* CRC2) {
 			DisplayError(GS(MSG_FAIL_IMAGE));
 			return;
 		}
-		data_size = GetFileSize(hFile, NULL);
+		data_size = min(CRC_SRC_SIZE, GetFileSize(hFile, NULL));
 
 		data = (BYTE*)malloc(sizeof(BYTE) * data_size);
 		if (!data) {
@@ -1466,8 +1469,8 @@ void LoadRomRecalcCRCs(char* FileName, BYTE* CRC1, BYTE* CRC2) {
 		SetFilePointer(hFile, 0, 0, FILE_BEGIN);
 
 		TotalRead = 0;
-		for (count = 0; count < RomFileSize; count += ReadFromRomSection) {
-			dwToRead = RomFileSize - count;
+		for (count = 0; count < data_size; count += ReadFromRomSection) {
+			dwToRead = data_size - count;
 			if (dwToRead > ReadFromRomSection) { dwToRead = ReadFromRomSection; }
 
 			if (!ReadFile(hFile, &data[count], dwToRead, &dwRead, NULL)) {
@@ -1480,7 +1483,7 @@ void LoadRomRecalcCRCs(char* FileName, BYTE* CRC1, BYTE* CRC2) {
 		}
 		dwRead = TotalRead;
 
-		if (RomFileSize != dwRead) {
+		if (data_size != dwRead) {
 			CloseHandle(hFile);
 			DisplayError(GS(MSG_FAIL_OPEN_IMAGE));
 			return;
