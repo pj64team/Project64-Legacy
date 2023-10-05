@@ -114,7 +114,7 @@ BOOL CreateTempRomFile(void) {
 		return FALSE;
 	}
 
-	if (GetTempFileName(temp_path, "PJ64", 1, temp_file) == 0) {
+	if (GetTempFileName(temp_path, "PJ64", 0, temp_file) == 0) {
 		free(ROM);
 		ROM = NULL;
 		return FALSE;
