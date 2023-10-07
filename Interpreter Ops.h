@@ -142,7 +142,6 @@ void _fastcall r4300i_REGIMM_TGEIU	 ( void );
 void _fastcall r4300i_REGIMM_TLTI	 ( void );
 void _fastcall r4300i_REGIMM_TLTIU	 ( void );
 void _fastcall r4300i_REGIMM_TEQI	 ( void );
-void _fastcall r4300i_RESERVED		 ( void );
 void _fastcall r4300i_REGIMM_TNEI	 ( void );
 
 /************************** COP0 functions **************************/

@@ -484,7 +484,12 @@ void SP_DMA_READ(void) {
 	for (int i = 0; i <= count; i++)
 	{
 		if (SP_MEM_ADDR_REG & 0x1000)
-			memcpy(DMEM + (SP_MEM_ADDR_REG & 0x1FFF), N64MEM + SP_DRAM_ADDR_REG, length);
+		{
+			for (int ix = 0; ix < length; ix++)
+			{
+				IMEM[(SP_MEM_ADDR_REG + ix) & 0xFFF] = N64MEM[(SP_DRAM_ADDR_REG + ix)];
+			}
+		}
 		else
 		{
 			for (int ix = 0; ix < length; ix++)

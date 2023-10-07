@@ -589,8 +589,8 @@ InterruptsDisabled:
 	CurrentFrame = 0;
 	CurrentPercent = 0;
 	DisplayFPS();
-	DisplayError(GS(MSG_PERM_LOOP));
-	ExitThread(0);
+	//DisplayError(GS(MSG_PERM_LOOP));
+	//ExitThread(0);
 }
 
 BOOL Machine_LoadState(void) {
@@ -1251,9 +1251,9 @@ void RunRsp (void) {
 
 				unsigned int i;
 				unsigned int sum = 0;
-
-				for (i = 0, sum = 0; i < (size / 2); i++)
-					sum += *(BYTE*)(RDRAM + ucode + i);
+				if (ucode < 0x800000)
+					for (i = 0, sum = 0; i < (size / 2); i++)
+						sum += *(BYTE*)(RDRAM + ucode + i);
 
 				if (sum == 0x7efd)
 					*(DWORD*)(DMEM + 0xFC0) = 1;
