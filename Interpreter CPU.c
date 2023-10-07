@@ -230,13 +230,13 @@ void BuildInterpreter (void ) {
 	R4300i_Regimm[ 5] = r4300i_RESERVED;
 	R4300i_Regimm[ 6] = r4300i_RESERVED;
 	R4300i_Regimm[ 7] = r4300i_RESERVED;
-	R4300i_Regimm[ 8] = R4300i_UnknownOpcode;
-	R4300i_Regimm[ 9] = R4300i_UnknownOpcode;
-	R4300i_Regimm[10] = R4300i_UnknownOpcode;
-	R4300i_Regimm[11] = R4300i_UnknownOpcode;
-	R4300i_Regimm[12] = R4300i_UnknownOpcode;
+	R4300i_Regimm[ 8] = r4300i_REGIMM_TGEI;
+	R4300i_Regimm[ 9] = r4300i_REGIMM_TGEIU;
+	R4300i_Regimm[10] = r4300i_REGIMM_TLTI;
+	R4300i_Regimm[11] = r4300i_REGIMM_TLTIU;
+	R4300i_Regimm[12] = r4300i_REGIMM_TEQI;
 	R4300i_Regimm[13] = r4300i_RESERVED;
-	R4300i_Regimm[14] = R4300i_UnknownOpcode;
+	R4300i_Regimm[14] = r4300i_REGIMM_TNEI;
 	R4300i_Regimm[15] = r4300i_RESERVED;
 	R4300i_Regimm[16] = r4300i_REGIMM_BLTZAL;
 	R4300i_Regimm[17] = r4300i_REGIMM_BGEZAL;
@@ -254,7 +254,7 @@ void BuildInterpreter (void ) {
 	R4300i_Regimm[29] = r4300i_RESERVED;
 	R4300i_Regimm[30] = r4300i_RESERVED;
 	R4300i_Regimm[31] = r4300i_RESERVED;
-	
+
 	R4300i_CoP0[ 0] = r4300i_COP0_MF;
 	R4300i_CoP0[ 1] = r4300i_COP0_DMF;
 	R4300i_CoP0[ 2] = R4300i_UnknownOpcode;

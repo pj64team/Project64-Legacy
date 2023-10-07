@@ -444,6 +444,8 @@ void SP_DMA_READ(void) {
 	int count = (SP_RD_LEN_REG >> 12) & 0x0FF;
 	int skip = (SP_RD_LEN_REG >> 20) & 0x0FF8;
 
+	int IDMEM_SELECT = SP_MEM_ADDR_REGW & 0x01000;
+
 	if ((length & 0x07) == 0)
 		length++;
 
@@ -495,6 +497,8 @@ void SP_DMA_READ(void) {
 	}
 
 	SP_DRAM_ADDR_REG -= skip;
+	SP_MEM_ADDR_REG &= 0x0fff;
+	SP_MEM_ADDR_REG |= IDMEM_SELECT;
 	SP_RD_LEN_REG = (SP_RD_LEN_REG & 0xFF000000) | 0xff8;
 	SP_WR_LEN_REG = SP_RD_LEN_REG;
 	SP_DMA_BUSY_REG = 0;
@@ -511,6 +515,7 @@ void SP_DMA_WRITE(void) {
 	int count = (SP_WR_LEN_REG >> 12) & 0x0FF;
 	int skip = (SP_WR_LEN_REG >> 20) & 0x0FF8;
 
+	int IDMEM_SELECT = SP_MEM_ADDR_REGW & 0x01000;
 
 	if (SP_DRAM_ADDR_REG > RdramSize) {
 		if (ShowDebugMessages)
@@ -543,6 +548,8 @@ void SP_DMA_WRITE(void) {
 
 	//SP_DRAM_ADDR_REG += 8;
 	SP_DRAM_ADDR_REG -= skip;
+	SP_MEM_ADDR_REG &= 0x0fff;
+	SP_MEM_ADDR_REG |= IDMEM_SELECT;
 	SP_WR_LEN_REG = (SP_WR_LEN_REG & 0xFF000000) | 0xff8;
 	SP_RD_LEN_REG = SP_WR_LEN_REG;
 	SP_DMA_BUSY_REG = 0;

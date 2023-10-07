@@ -1304,7 +1304,7 @@ void _fastcall r4300i_SPECIAL_TGE(void) {
 }
 
 void _fastcall r4300i_SPECIAL_TGEU(void) {
-	if (GPR[Opcode.BRANCH.rs].UDW == GPR[Opcode.BRANCH.rt].UDW) {
+	if (GPR[Opcode.BRANCH.rs].UDW >= GPR[Opcode.BRANCH.rt].UDW) {
 		DoTrapException(NextInstruction == JUMP);
 		NextInstruction = JUMP;
 		JumpToLocation = PROGRAM_COUNTER;
@@ -1337,6 +1337,53 @@ void _fastcall r4300i_SPECIAL_TEQ (void) {
 
 void _fastcall r4300i_SPECIAL_TNE(void) {
 	if (GPR[Opcode.BRANCH.rs].DW != GPR[Opcode.BRANCH.rt].DW) {
+		DoTrapException(NextInstruction == JUMP);
+		NextInstruction = JUMP;
+		JumpToLocation = PROGRAM_COUNTER;
+	}
+}
+void _fastcall r4300i_REGIMM_TGEI(void) {
+	if (GPR[Opcode.BRANCH.rs].DW >= (__int64)((short)Opcode.BRANCH.offset)) {
+		DoTrapException(NextInstruction == JUMP);
+		NextInstruction = JUMP;
+		JumpToLocation = PROGRAM_COUNTER;
+	}
+}
+
+void _fastcall  r4300i_REGIMM_TGEIU(void) {
+	if (GPR[Opcode.BRANCH.rs].UDW >= (unsigned __int64)((short)Opcode.BRANCH.offset)) {
+		DoTrapException(NextInstruction == JUMP);
+		NextInstruction = JUMP;
+		JumpToLocation = PROGRAM_COUNTER;
+	}
+}
+
+void _fastcall  r4300i_REGIMM_TLTI(void) {
+	if (GPR[Opcode.BRANCH.rs].DW < (__int64)((short)Opcode.BRANCH.offset)) {
+		DoTrapException(NextInstruction == JUMP);
+		NextInstruction = JUMP;
+		JumpToLocation = PROGRAM_COUNTER;
+	}
+}
+
+void _fastcall  r4300i_REGIMM_TLTIU(void) {
+	if (GPR[Opcode.BRANCH.rs].UDW < (unsigned __int64)((short)Opcode.BRANCH.offset)) {
+		DoTrapException(NextInstruction == JUMP);
+		NextInstruction = JUMP;
+		JumpToLocation = PROGRAM_COUNTER;
+	}
+}
+
+void _fastcall  r4300i_REGIMM_TEQI(void) {
+	if (GPR[Opcode.BRANCH.rs].DW == (__int64)((short)Opcode.BRANCH.offset)) {
+		DoTrapException(NextInstruction == JUMP);
+		NextInstruction = JUMP;
+		JumpToLocation = PROGRAM_COUNTER;
+	}
+}
+
+void _fastcall  r4300i_REGIMM_TNEI(void) {
+	if (GPR[Opcode.BRANCH.rs].DW != (__int64)((short)Opcode.BRANCH.offset)) {
 		DoTrapException(NextInstruction == JUMP);
 		NextInstruction = JUMP;
 		JumpToLocation = PROGRAM_COUNTER;
