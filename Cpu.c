@@ -528,7 +528,7 @@ void DoSomething ( void ) {
 	}
 	CPU_Action.DoSomething = FALSE;
 	
-	if (CPU_Action.SaveState) {
+	if (CPU_Action.SaveState && (SP_STATUS_REG & SP_STATUS_HALT) != 0) {
 		//test if allowed
 		CPU_Action.SaveState = FALSE;
 		if (!Machine_SaveState()) {

@@ -1144,7 +1144,7 @@ LRESULT CALLBACK Main_Proc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
 					break;
 
 				case ID_CPU_SAVE:
-					if (CPU_Paused) {
+					if (CPU_Paused && (SP_STATUS_REG & SP_STATUS_HALT) != 0) {
 						if (!Machine_SaveState()) {
 							CPU_Action.SaveState = TRUE;
 							CPU_Action.DoSomething = TRUE;
@@ -1186,7 +1186,7 @@ LRESULT CALLBACK Main_Proc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
 						}
 
 						strcpy(SaveAsFileName, SaveFile);
-						if (CPU_Paused) {
+						if (CPU_Paused && (SP_STATUS_REG & SP_STATUS_HALT) != 0) {
 							if (!Machine_SaveState()) {
 								CPU_Action.SaveState = TRUE;
 								CPU_Action.DoSomething = TRUE;
