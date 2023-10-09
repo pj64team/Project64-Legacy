@@ -47,6 +47,8 @@ BYTE ISViewerBuffer[0x200];
 BYTE ISViewerTempBuffer[0x1000+0x200+1];
 DWORD ISViewerTempBufferLength;
 
+int Addressing64Bits;
+
 int Allocate_ROM ( void ) {	
 	ROM = (BYTE *)malloc(RomFileSize);
 	WrittenToRom = FALSE;

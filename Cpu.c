@@ -716,6 +716,9 @@ BOOL Machine_LoadState(void) {
 			else {
 				unzReadCurrentFile(file, CP0, sizeof(QWORD) * 32);
 			}
+			if ((STATUS_REGISTER & STATUS_KX) != 0) {
+				Addressing64Bits = 1;
+			}
 			unzReadCurrentFile(file,FPCR,sizeof(DWORD)*32);
 			unzReadCurrentFile(file,&HI,sizeof(_int64));
 			unzReadCurrentFile(file,&LO,sizeof(_int64));
@@ -851,7 +854,9 @@ BOOL Machine_LoadState(void) {
 		else {
 			ReadFile(hSaveFile, CP0, sizeof(QWORD) * 32,&dwRead,NULL);
 		}
-		ReadFile( hSaveFile,CP0,sizeof(DWORD)*32,&dwRead,NULL);
+		if ((STATUS_REGISTER & STATUS_KX) != 0) {
+			Addressing64Bits = 1;
+		}
 		ReadFile( hSaveFile,FPCR,sizeof(DWORD)*32,&dwRead,NULL);
 		ReadFile( hSaveFile,&HI,sizeof(_int64),&dwRead,NULL);
 		ReadFile( hSaveFile,&LO,sizeof(_int64),&dwRead,NULL);

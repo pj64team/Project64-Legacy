@@ -33,6 +33,7 @@ extern BYTE *RecompCode, *RecompPos;
 extern BOOL WrittenToRom;
 extern DWORD WrittenToRomCount;
 extern DWORD WroteToRom;
+extern int Addressing64Bits;
 
 extern BYTE ISViewerBuffer[0x200];
 
