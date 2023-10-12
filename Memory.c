@@ -1674,6 +1674,9 @@ int r4300i_LW_NonMemory ( DWORD PAddr, DWORD * Value ) {
 		case 0x04040010: *Value = SP_STATUS_REG; break;
 		case 0x04040014: *Value = SP_DMA_FULL_REG; break;
 		case 0x04040018: *Value = SP_DMA_BUSY_REG; break;
+		case 0x0404001C:
+			*Value = SP_SEMAPHORE_REG;
+			SP_SEMAPHORE_REG = 1; break;
 		case 0x04080000: *Value = SP_PC_REG; break;
 		default:
 			* Value = 0;
@@ -2197,42 +2200,122 @@ int r4300i_SW_NonMemory ( DWORD PAddr, DWORD Value ) {
 			SP_DMA_WRITE();
 			break;
 		case 0x04040010: 
-			if ( ( Value & SP_CLR_HALT ) != 0) { SP_STATUS_REG &= ~SP_STATUS_HALT; }
-			if ( ( Value & SP_SET_HALT ) != 0) { SP_STATUS_REG |= SP_STATUS_HALT;  }
-			if ( ( Value & SP_CLR_BROKE ) != 0) { SP_STATUS_REG &= ~SP_STATUS_BROKE; }
-			if ( ( Value & SP_CLR_INTR ) != 0) { 
-				MI_INTR_REG &= ~MI_INTR_SP; 
-				CheckInterrupts();
-			}
-			if (ShowDebugMessages)
-				if ( ( Value & SP_SET_INTR ) != 0) { DisplayError("SP_SET_INTR"); }
 
-			if ( ( Value & SP_CLR_SSTEP ) != 0) { SP_STATUS_REG &= ~SP_STATUS_SSTEP; }
-			if ( ( Value & SP_SET_SSTEP ) != 0) { SP_STATUS_REG |= SP_STATUS_SSTEP;  }
-			if ( ( Value & SP_CLR_INTR_BREAK ) != 0) { SP_STATUS_REG &= ~SP_STATUS_INTR_BREAK; }
-			if ( ( Value & SP_SET_INTR_BREAK ) != 0) { SP_STATUS_REG |= SP_STATUS_INTR_BREAK;  }
-			if ( ( Value & SP_CLR_SIG0 ) != 0) { SP_STATUS_REG &= ~SP_STATUS_SIG0; }
-			if ( ( Value & SP_SET_SIG0 ) != 0) { SP_STATUS_REG |= SP_STATUS_SIG0;  }
-			if ( ( Value & SP_CLR_SIG1 ) != 0) { SP_STATUS_REG &= ~SP_STATUS_SIG1; }
-			if ( ( Value & SP_SET_SIG1 ) != 0) { SP_STATUS_REG |= SP_STATUS_SIG1;  }
-			if ( ( Value & SP_CLR_SIG2 ) != 0) { SP_STATUS_REG &= ~SP_STATUS_SIG2; }
-			if ( ( Value & SP_SET_SIG2 ) != 0) { SP_STATUS_REG |= SP_STATUS_SIG2;  }
-			if ( ( Value & SP_CLR_SIG3 ) != 0) { SP_STATUS_REG &= ~SP_STATUS_SIG3; }
-			if ( ( Value & SP_SET_SIG3 ) != 0) { SP_STATUS_REG |= SP_STATUS_SIG3;  }
-			if ( ( Value & SP_CLR_SIG4 ) != 0) { SP_STATUS_REG &= ~SP_STATUS_SIG4; }
-			if ( ( Value & SP_SET_SIG4 ) != 0) { SP_STATUS_REG |= SP_STATUS_SIG4;  }
-			if ( ( Value & SP_CLR_SIG5 ) != 0) { SP_STATUS_REG &= ~SP_STATUS_SIG5; }
-			if ( ( Value & SP_SET_SIG5 ) != 0) { SP_STATUS_REG |= SP_STATUS_SIG5;  }
-			if ( ( Value & SP_CLR_SIG6 ) != 0) { SP_STATUS_REG &= ~SP_STATUS_SIG6; }
-			if ( ( Value & SP_SET_SIG6 ) != 0) { SP_STATUS_REG |= SP_STATUS_SIG6;  }
-			if ( ( Value & SP_CLR_SIG7 ) != 0) { SP_STATUS_REG &= ~SP_STATUS_SIG7; }
-			if ( ( Value & SP_SET_SIG7 ) != 0) { SP_STATUS_REG |= SP_STATUS_SIG7;  }
-			
-			if ( ( Value & SP_SET_SIG0 ) != 0 && AudioSignal) 
-			{ 
-				MI_INTR_REG |= MI_INTR_SP; 
-				CheckInterrupts();				
+			switch (Value & (SP_CLR_HALT | SP_SET_HALT))
+			{
+			case SP_CLR_HALT: SP_STATUS_REG &= ~SP_STATUS_HALT;
+				break;
+			case SP_SET_HALT: SP_STATUS_REG |= SP_STATUS_HALT;
+				break;
 			}
+
+			if ( ( Value & SP_CLR_BROKE ) != 0) { SP_STATUS_REG &= ~SP_STATUS_BROKE; }
+
+			//if (ShowDebugMessages)
+			//	if ( ( Value & SP_SET_INTR ) != 0) { DisplayError("SP_SET_INTR"); }
+
+			switch (Value & (SP_CLR_INTR | SP_SET_INTR))
+			{
+			case SP_CLR_INTR: MI_INTR_REG &= ~MI_INTR_SP;
+				CheckInterrupts();
+				break;
+			case SP_SET_INTR: MI_INTR_REG |= MI_INTR_SP;
+				break;
+			}
+			//if (ShowDebugMessages)
+			//	if ((Value & SP_SET_INTR) != 0) { DisplayError("SP_SET_INTR"); }
+
+			switch (Value & (SP_CLR_SSTEP | SP_SET_SSTEP))
+			{
+			case SP_CLR_SSTEP: SP_STATUS_REG &= ~SP_STATUS_SSTEP;
+				break;
+			case SP_SET_SSTEP: SP_STATUS_REG |= SP_STATUS_SSTEP;
+				break;
+			}
+
+			switch (Value & (SP_CLR_INTR_BREAK | SP_SET_INTR_BREAK))
+			{
+			case SP_CLR_INTR_BREAK: SP_STATUS_REG &= ~SP_STATUS_INTR_BREAK;
+				break;
+			case SP_SET_INTR_BREAK: SP_STATUS_REG |= SP_STATUS_INTR_BREAK;
+				break;
+			}
+
+			switch (Value & (SP_CLR_SIG0 | SP_SET_SIG0))
+			{
+			case  SP_CLR_SIG0: SP_STATUS_REG &= ~SP_STATUS_SIG0;
+				break;
+			case  SP_SET_SIG0: SP_STATUS_REG |= SP_STATUS_SIG0;
+				if (AudioSignal)
+				{
+					MI_INTR_REG |= MI_INTR_SP;
+					CheckInterrupts();
+				}
+				break;
+			}
+
+			switch (Value & (SP_CLR_SIG1 | SP_SET_SIG1))
+			{
+			case  SP_CLR_SIG1: SP_STATUS_REG &= ~SP_STATUS_SIG1;
+				break;
+			case  SP_SET_SIG1: SP_STATUS_REG |= SP_STATUS_SIG1;
+				break;
+			}
+
+			switch (Value & (SP_CLR_SIG2 | SP_SET_SIG2))
+			{
+			case  SP_CLR_SIG2: SP_STATUS_REG &= ~SP_STATUS_SIG2;
+				break;
+			case  SP_SET_SIG2: SP_STATUS_REG |= SP_STATUS_SIG2;
+				break;
+			}
+
+			switch (Value & (SP_CLR_SIG3 | SP_SET_SIG3))
+			{
+			case  SP_CLR_SIG3: SP_STATUS_REG &= ~SP_STATUS_SIG3;
+				break;
+			case  SP_SET_SIG3: SP_STATUS_REG |= SP_STATUS_SIG3;
+				break;
+			}
+
+			switch (Value & (SP_CLR_SIG4 | SP_SET_SIG4))
+			{
+			case  SP_CLR_SIG4: SP_STATUS_REG &= ~SP_STATUS_SIG4;
+				break;
+			case  SP_SET_SIG4: SP_STATUS_REG |= SP_STATUS_SIG4;
+				break;
+			}
+
+			switch (Value & (SP_CLR_SIG5 | SP_SET_SIG5))
+			{
+			case  SP_CLR_SIG5: SP_STATUS_REG &= ~SP_STATUS_SIG5;
+				break;
+			case  SP_SET_SIG5: SP_STATUS_REG |= SP_STATUS_SIG5;
+				break;
+			}
+
+			switch (Value & (SP_CLR_SIG6 | SP_SET_SIG6))
+			{
+			case  SP_CLR_SIG6: SP_STATUS_REG &= ~SP_STATUS_SIG6;
+				break;
+			case  SP_SET_SIG6: SP_STATUS_REG |= SP_STATUS_SIG6;
+				break;
+			}
+
+			switch (Value & (SP_CLR_SIG7 | SP_SET_SIG7))
+			{
+			case  SP_CLR_SIG7: SP_STATUS_REG &= ~SP_STATUS_SIG7;
+				break;
+			case  SP_SET_SIG7: SP_STATUS_REG |= SP_STATUS_SIG7;
+				break;
+			}
+
+
+			//if ( ( Value & SP_SET_SIG0 ) != 0 && AudioSignal) 
+			//{ 
+			//	MI_INTR_REG |= MI_INTR_SP; 
+			//	CheckInterrupts();				
+			//}
 
 			// Automated Delay RSP / Delay RDP, based on information from Mupen64 Plus HLE RSP source code
 			// // If the ucode boot size (DMEM + 0xFED) is not within 0 to 1000 then assume the rsp is being called by the operating system
