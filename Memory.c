@@ -1621,6 +1621,7 @@ BOOL r4300i_LH_VAddr_NonCPU ( MIPS_DWORD VAddr, WORD * Value ) {
 	// DRAM, DMEM, and IMEM can all be accessed directly through the host's virtual memory.
 	if (PAddr < RdramSize) {
 		*Value = *(WORD*)(N64MEM + (PAddr ^ 2));
+	}
 	else if (((PAddr & ~0x03E000) >= 0x04000000 && (PAddr & ~0x03E000) < 0x04004000)) {
     *Value = *(WORD*)(N64MEM + (((PAddr & ~0x3E000) & ~0x2000) ^ 2));
 	}
@@ -2073,12 +2074,12 @@ BOOL r4300i_SB_VAddr_NonCPU ( MIPS_DWORD VAddr, BYTE Value ) {
 	if (PAddr < RdramSize) {
 		*(BYTE*)(N64MEM + (PAddr ^ 3)) = Value;
 	}
-  else if (((PAddr & ~0x03E000) >= 0x04000000 && (PAddr & ~0x03E000) < 0x04004000)) {
+	else if (((PAddr & ~0x03E000) >= 0x04000000 && (PAddr & ~0x03E000) < 0x04004000)) {
 		int tmp = PAddr & 3;
-		for (int i = 0; i <= tmp;i++)
-      *(BYTE*)(N64MEM + (((PAddr & ~3 & ~0x3E000) & ~0X2000) ^ 3)) = Value->UB[tmp - i];
+		for (int i = 0; i <= tmp; i++)
+			*(BYTE*)(N64MEM + (((PAddr & ~3 & ~0x3E000) & ~0X2000) ^ 3)) = (Value >> ((tmp - i) * 8)) & 0xFF;
 		for (int i = tmp+1; i < 4; i++)
-      *(BYTE*)(N64MEM + (((PAddr & ~3 & ~0x3E000) & ~0X2000) ^ 3)) = 0;
+			*(BYTE*)(N64MEM + (((PAddr & ~3 & ~0x3E000) & ~0X2000) ^ 3)) = 0;
 	}
 	else {
 		r4300i_SB_NonMemory(PAddr ^ 3, Value);
@@ -2207,11 +2208,11 @@ BOOL r4300i_SH_VAddr ( MIPS_DWORD VAddr, MIPS_DWORD* Value) {
 		*(WORD*)(N64MEM + (PAddr ^ 2)) = Value->UHW[0];
 	}
 	else if (((PAddr & ~0x03E000) >= 0x04000000 && (PAddr & ~0x03E000) < 0x04004000)) {
-		if ((VAddr & 2) == 0)
-      *(WORD*)(N64MEM + ((PAddr & ~0x3E000) & ~0x2000)) = 0;
+		if ((PAddr & 2) == 0)
+			*(WORD*)(N64MEM + ((PAddr & ~0x3E000) & ~0x2000)) = 0;
 		else
-      *(WORD*)(N64MEM + ((PAddr & ~0x3E000) & ~0x2000)) = Value->UHW[1];
-    *(WORD*)(N64MEM + (((PAddr & ~0x3E000) & ~0x2000) ^ 2)) = Value->UHW[0];
+			*(WORD*)(N64MEM + ((PAddr & ~0x3E000) & ~0x2000)) = Value->UHW[1];
+		*(WORD*)(N64MEM + (((PAddr & ~0x3E000) & ~0x2000) ^ 2)) = Value->UHW[0];
 	}
 	else {
 		RegisterCurrentlyWritten = Value;
@@ -2237,11 +2238,11 @@ BOOL r4300i_SH_VAddr_NonCPU ( MIPS_DWORD VAddr, WORD Value ) {
 		*(WORD*)(N64MEM + (PAddr ^ 2)) = Value;
 	}
   else if (((PAddr & ~0x03E000) >= 0x04000000 && (PAddr & ~0x03E000) < 0x04004000)) {
-		if ((VAddr & 2) == 0)
-      *(WORD*)(N64MEM + ((PAddr & ~0x3E000) & ~0x2000)) = 0;
+		if ((PAddr & 2) == 0)
+			*(WORD*)(N64MEM + ((PAddr & ~0x3E000) & ~0x2000)) = 0;
 		else
-      *(WORD*)(N64MEM + ((PAddr & ~0x3E000) & ~0x2000)) = Value->UHW[1];
-    *(WORD*)(N64MEM + (((PAddr & ~0x3E000) & ~0x2000) ^ 2)) = Value->UHW[0];
+			*(WORD*)(N64MEM + ((PAddr & ~0x3E000) & ~0x2000)) = (Value >> 16) & 0xFFFF;
+		*(WORD*)(N64MEM + (((PAddr & ~0x3E000) & ~0x2000) ^ 2)) = Value & 0xFFFF;
 	}
 	else {
 		r4300i_SH_NonMemory(PAddr ^ 2, Value);
