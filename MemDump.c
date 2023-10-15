@@ -243,7 +243,9 @@ void DumpRawBinary(HWND hDlg, DWORD startAddress, DWORD endAddress) {
 
 		for (int count = 0; count < bufferSize; count += 4) {
 			MIPS_WORD word;
-			r4300i_LW_VAddr_NonCPU(startAddress + count, (DWORD*)&word);
+			MIPS_DWORD address;
+			address.DW = (long)(startAddress + count);
+			r4300i_LW_VAddr_NonCPU(address, (DWORD*)&word);
 			buffer[count] = word.UB[3];
 			buffer[count + 1] = word.UB[2];
 			buffer[count + 2] = word.UB[1];
@@ -276,7 +278,9 @@ void DumpHexData (HWND hDlg, DWORD startAddress, DWORD endAddress) {
 		}
 
 		for (count=0; count<bufferSize; count+=4) {
-			r4300i_LW_VAddr_NonCPU(startAddress+count, (DWORD *)&word);
+			MIPS_DWORD address;
+			address.DW = (long)(startAddress + count);
+			r4300i_LW_VAddr_NonCPU(address, (DWORD *)&word);
 			buffer[count]=word.UB[3];
 			buffer[count+1]=word.UB[2];
 			buffer[count+2]=word.UB[1];
@@ -335,7 +339,9 @@ void DumpPCAndDisassembled (HWND hDlg, DWORD startAddress, DWORD endAddress) {
 		location = startAddress - startAddress % 4;
 		while (location < endAddress) {
 			validOpCode = TRUE;
-			if (!r4300i_LW_VAddr_NonCPU(location, &OpCode)) {
+			MIPS_DWORD address;
+			address.DW = (long)location;
+			if (!r4300i_LW_VAddr_NonCPU(address, &OpCode)) {
 				fprintf(pFile, " 0x%08X\tCould not resolve address\n", location);
 				validOpCode = FALSE;
 			}

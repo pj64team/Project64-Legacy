@@ -233,8 +233,10 @@ void CloseCpu (void) {
 
 int DelaySlotEffectsCompare (DWORD PC, DWORD Reg1, DWORD Reg2) {
 	OPCODE Command;
+	MIPS_DWORD Address;
+	Address.DW = (long)(PC + 4);
 
-	if (!r4300i_LW_VAddr_NonCPU(PC + 4, &Command.Hex)) {
+	if (!r4300i_LW_VAddr_NonCPU(Address, &Command.Hex)) {
 		if (ShowDebugMessages) {
 			char msg[100];
 			sprintf(msg, "%s\r\nPC: %08X", "Failed to load word 2" , PC + 4);
@@ -398,8 +400,10 @@ int DelaySlotEffectsCompare (DWORD PC, DWORD Reg1, DWORD Reg2) {
 
 int DelaySlotEffectsJump (DWORD JumpPC) {
 	OPCODE Command;
+	MIPS_DWORD Address;
+	Address.DW = (long)JumpPC;
 
-	if (!r4300i_LW_VAddr_NonCPU(JumpPC, &Command.Hex)) { return TRUE; }
+	if (!r4300i_LW_VAddr_NonCPU(Address, &Command.Hex)) { return TRUE; }
 	if (SelfModCheck == ModCode_ChangeMemory) {
 		if ( (Command.Hex >> 16) == 0x7C7C) {
 			Command.Hex = OrigMem[(Command.Hex & 0xFFFF)].OriginalValue;
@@ -443,8 +447,10 @@ int DelaySlotEffectsJump (DWORD JumpPC) {
 				{
 					int EffectDelaySlot;
 					OPCODE NewCommand;
+					MIPS_DWORD AddressAfterJumpDest;
+					AddressAfterJumpDest.DW = (long)(JumpPC + 4);
 
-					if (!r4300i_LW_VAddr_NonCPU(JumpPC + 4, &NewCommand.Hex)) { return TRUE; }
+					if (!r4300i_LW_VAddr_NonCPU(AddressAfterJumpDest, &NewCommand.Hex)) { return TRUE; }
 					
 					EffectDelaySlot = FALSE;
 					if (NewCommand.BRANCH.op == R4300i_CP1) {

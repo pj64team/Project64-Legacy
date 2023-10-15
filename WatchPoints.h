@@ -26,6 +26,8 @@
 #ifndef __watchpoints_h
 #define __watchpoints_h
 
+#include "Types.h"
+
 typedef enum {
 	WP_NONE,
 	WP_READ,
@@ -40,7 +42,7 @@ void RemoveWatchPoint(DWORD Location);
 void ToggleWatchPoint(DWORD Location);
 void RemoveAllWatchPoints(void);
 WATCH_TYPE HasWatchPoint(DWORD Location);
-BOOL CheckForWatchPoint(DWORD Location, WATCH_TYPE Type, int Size);
+BOOL CheckForWatchPoint(MIPS_DWORD Location, WATCH_TYPE Type, int Size);
 int CountWatchPoints(void);
 void RefreshWatchPoints(HWND hList);
 

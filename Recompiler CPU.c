@@ -244,7 +244,9 @@ BYTE * CompileDelaySlot(void) {
 			DisplayError("Why are you compiling the Delay Slot at %X",StartAddress);
 		ExitThread(0);
 	}
-	if (!r4300i_LW_VAddr_NonCPU(StartAddress, &Opcode.Hex)) {
+	MIPS_DWORD Address;
+	Address.DW = (long)StartAddress;
+	if (!r4300i_LW_VAddr_NonCPU(Address, &Opcode.Hex)) {
 		if (ShowDebugMessages)
 			DisplayError("TLB Miss in delay slot\nEmulation will now stop");
 		ExitThread(0);
@@ -856,7 +858,9 @@ void _fastcall FillSectionInfo(BLOCK_SECTION * Section) {
 	memcpy(&Section->RegWorking,&Section->RegStart,sizeof(REG_INFO));
 	NextInstruction = NORMAL;
 	do {
-		if (!r4300i_LW_VAddr_NonCPU(Section->CompilePC, &Command.Hex)) {
+		MIPS_DWORD Address;
+		Address.DW = (long)Section->CompilePC;
+		if (!r4300i_LW_VAddr_NonCPU(Address, &Command.Hex)) {
 			DisplayError(GS(MSG_FAIL_LOAD_WORD));
 			ExitThread(0);
 		} 
@@ -1492,7 +1496,9 @@ void _fastcall FillSectionInfo(BLOCK_SECTION * Section) {
 						int EffectDelaySlot;
 						OPCODE NewCommand;
 
-						if (!r4300i_LW_VAddr_NonCPU(Section->CompilePC + 4, &NewCommand.Hex)) {
+						MIPS_DWORD Address;
+						Address.DW = (long)(Section->CompilePC + 4);
+						if (!r4300i_LW_VAddr_NonCPU(Address, &NewCommand.Hex)) {
 							DisplayError(GS(MSG_FAIL_LOAD_WORD));
 							ExitThread(0);
 						}
@@ -2081,7 +2087,9 @@ BOOL GenerateX86Code (BLOCK_SECTION * Section, DWORD Test) {
 	}*/
 	do {
 		__try {
-			if (!r4300i_LW_VAddr_NonCPU(Section->CompilePC, &Opcode.Hex)) {
+			MIPS_DWORD Address;
+			Address.DW = (long)Section->CompilePC;
+			if (!r4300i_LW_VAddr_NonCPU(Address, &Opcode.Hex)) {
 				DisplayError(GS(MSG_FAIL_LOAD_WORD));
 				ExitThread(0);
 			} 

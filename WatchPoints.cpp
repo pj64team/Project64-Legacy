@@ -99,7 +99,7 @@ WATCH_TYPE HasWatchPoint(DWORD Location) {
 	return (WATCH_TYPE)search->second[Location & 7];
 }
 
-BOOL CheckForWatchPoint(DWORD Location, WATCH_TYPE Type, int Size) {
+BOOL CheckForWatchPoint(MIPS_DWORD Location, WATCH_TYPE Type, int Size) {
 	// The memory barrier here is a precaution for inlining this function in tight sequences.
 	// E.g. DMAs will need to check for watchpoints on read and write accesses
 	// between the source and destination with two calls.
@@ -113,13 +113,13 @@ BOOL CheckForWatchPoint(DWORD Location, WATCH_TYPE Type, int Size) {
 		return FALSE;
 	}
 
-	auto search = WatchPoints->find(Location & ~7);
+	auto search = WatchPoints->find(Location.UW[0] & ~7);
 	if (search == WatchPoints->end()) {
 		return FALSE;
 	}
 
 	int *wp = search->second;
-	int start = Location & 7;
+	int start = Location.UW[0] & 7;
 	for (int i = start; i < start + Size; i++) {
 		int value = wp[i];
 		if ((value & WP_ENABLED) && (value & (int)Type)) {

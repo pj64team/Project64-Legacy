@@ -57,8 +57,10 @@ void Compile_R4300i_Branch (BLOCK_SECTION * Section, void (*CompareFunc)(BLOCK_S
 			case BranchTypeCop1: 
 				{
 					OPCODE Command;
+					MIPS_DWORD Address;
+					Address.DW = (long)(Section->CompilePC + 4);
 
-					if (!r4300i_LW_VAddr_NonCPU(Section->CompilePC + 4, &Command.Hex)) {
+					if (!r4300i_LW_VAddr_NonCPU(Address, &Command.Hex)) {
 						DisplayError(GS(MSG_FAIL_LOAD_WORD));
 						ExitThread(0);
 					}
