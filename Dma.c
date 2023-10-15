@@ -483,7 +483,7 @@ void SP_DMA_READ(void) {
 	length = ((length + 7) & 0x01FF8);
 	for (int i = 0; i <= count; i++)
 	{
-		if (SP_MEM_ADDR_REG & 0x1000)
+		if (IDMEM_SELECT == 0x1000)
 		{
 			for (int ix = 0; ix < length; ix++)
 			{
@@ -503,7 +503,7 @@ void SP_DMA_READ(void) {
 
 	SP_DRAM_ADDR_REG -= skip;
 	SP_MEM_ADDR_REG &= 0x0fff;
-	//SP_MEM_ADDR_REG |= IDMEM_SELECT;
+	SP_MEM_ADDR_REG |= IDMEM_SELECT;
 	SP_RD_LEN_REG = (SP_RD_LEN_REG & 0xFF000000) | 0xff8;
 	SP_WR_LEN_REG = SP_RD_LEN_REG;
 	SP_DMA_BUSY_REG = 0;
@@ -554,7 +554,7 @@ void SP_DMA_WRITE(void) {
 	//SP_DRAM_ADDR_REG += 8;
 	SP_DRAM_ADDR_REG -= skip;
 	SP_MEM_ADDR_REG &= 0x0fff;
-	//SP_MEM_ADDR_REG |= IDMEM_SELECT;
+	SP_MEM_ADDR_REG |= IDMEM_SELECT;
 	SP_WR_LEN_REG = (SP_WR_LEN_REG & 0xFF000000) | 0xff8;
 	SP_RD_LEN_REG = SP_WR_LEN_REG;
 	SP_DMA_BUSY_REG = 0;

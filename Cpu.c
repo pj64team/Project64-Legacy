@@ -589,8 +589,8 @@ InterruptsDisabled:
 	CurrentFrame = 0;
 	CurrentPercent = 0;
 	DisplayFPS();
-	//DisplayError(GS(MSG_PERM_LOOP));
-	//ExitThread(0);
+	DisplayError(GS(MSG_PERM_LOOP));
+	ExitThread(0);
 }
 
 BOOL Machine_LoadState(void) {

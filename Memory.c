@@ -1435,8 +1435,11 @@ BOOL r4300i_LB_VAddr ( DWORD VAddr, BYTE * Value ) {
 	DWORD PAddr = (DWORD)TLB_ReadMap[VAddr >> 12] + VAddr - (DWORD)N64MEM;
 
 	// DRAM, DMEM, and IMEM can all be accessed directly through the host's virtual memory.
-	if (PAddr < RdramSize || (PAddr >= 0x04000000 && PAddr < 0x04002000)) {
+	if (PAddr < RdramSize) {
 		*Value = *(BYTE*)(TLB_ReadMap[VAddr >> 12] + (VAddr ^ 3));
+	}
+	else if (((PAddr & ~0x03E000) >= 0x04000000 && (PAddr & ~0x03E000) < 0x04004000)) {
+		*Value = *(BYTE*)(TLB_ReadMap[(VAddr & ~0x3E000) >> 12] + (((VAddr & ~0x3E000) & ~0x2000) ^ 3));
 	}
 	else {
 		DWORD DValue = 0;
@@ -1452,9 +1455,12 @@ BOOL r4300i_LB_VAddr_NonCPU(DWORD VAddr, BYTE *Value) {
 	DWORD PAddr = (DWORD)TLB_ReadMap[VAddr >> 12] + VAddr - (DWORD)N64MEM;
 
 	// DRAM, DMEM, and IMEM can all be accessed directly through the host's virtual memory.
-	if (PAddr < RdramSize || (PAddr >= 0x04000000 && PAddr < 0x04002000)) {
+	if (PAddr < RdramSize) {
 		*Value = *(BYTE *)(TLB_ReadMap[VAddr >> 12] + (VAddr ^ 3));
-	} else {
+	} else if (((PAddr & ~0x03E000) >= 0x04000000 && (PAddr & ~0x03E000) < 0x04004000)) {
+		*Value = *(BYTE*)(TLB_ReadMap[(VAddr & ~0x3E000) >> 12] + (((VAddr & ~0x3E000) & ~0x2000) ^ 3));
+	}
+	else {
 		DWORD DValue = 0;
 		if (!r4300i_LB_NonMemory(PAddr^3, &DValue, FALSE)) {
 			return FALSE;
@@ -1472,9 +1478,13 @@ BOOL r4300i_LD_VAddr ( DWORD VAddr, unsigned _int64 * Value ) {
 	DWORD PAddr = (DWORD)TLB_ReadMap[VAddr >> 12] + VAddr - (DWORD)N64MEM;
 
 	// DRAM, DMEM, and IMEM can all be accessed directly through the host's virtual memory.
-	if (PAddr < RdramSize || (PAddr >= 0x04000000 && PAddr < 0x04002000)) {
+	if (PAddr < RdramSize) {
 		*((DWORD*)(Value)+1) = *(DWORD*)(TLB_ReadMap[VAddr >> 12] + VAddr);
 		*((DWORD*)(Value)) = *(DWORD*)(TLB_ReadMap[VAddr >> 12] + VAddr + 4);
+	}
+	else if (((PAddr & ~0x03E000) >= 0x04000000 && (PAddr & ~0x03E000) < 0x04004000)) {
+		*((DWORD*)(Value)+1) = *(DWORD*)(TLB_ReadMap[(VAddr & ~0x3E000) >> 12] + ((VAddr & ~0x3E000) & ~0x2000));
+		*((DWORD*)(Value)) = *(DWORD*)(TLB_ReadMap[(VAddr & ~0x3E000) >> 12] + ((VAddr & ~0x3E000) & ~0x2000) + 4);
 	}
 	else {
 		DWORD DValue = 0;
@@ -1557,8 +1567,11 @@ BOOL r4300i_LH_VAddr ( DWORD VAddr, WORD * Value ) {
 	DWORD PAddr = (DWORD)TLB_ReadMap[VAddr >> 12] + VAddr - (DWORD)N64MEM;
 
 	// DRAM, DMEM, and IMEM can all be accessed directly through the host's virtual memory.
-	if (PAddr < RdramSize || (PAddr >= 0x04000000 && PAddr < 0x04002000)) {
+	if (PAddr < RdramSize) {
 		*Value = *(WORD*)(TLB_ReadMap[VAddr >> 12] + (VAddr ^ 2));
+	}
+	else if (((PAddr & ~0x03E000) >= 0x04000000 && (PAddr & ~0x03E000) < 0x04004000)) {
+		*Value = *(WORD*)(TLB_ReadMap[(VAddr & ~0x3E000) >> 12] + (((VAddr & ~0x3E000) & ~0x2000) ^ 2));
 	}
 	else {
 		DWORD DValue = 0;
@@ -1574,9 +1587,12 @@ BOOL r4300i_LH_VAddr_NonCPU ( DWORD VAddr, WORD * Value ) {
 	DWORD PAddr = (DWORD)TLB_ReadMap[VAddr >> 12] + VAddr - (DWORD)N64MEM;
 
 	// DRAM, DMEM, and IMEM can all be accessed directly through the host's virtual memory.
-	if (PAddr < RdramSize || (PAddr >= 0x04000000 && PAddr < 0x04002000)) {
+	if (PAddr < RdramSize) {
 		*Value = *(WORD *)(TLB_ReadMap[VAddr >> 12] + (VAddr ^ 2));
-	} else {
+	} else if (((PAddr & ~0x03E000) >= 0x04000000 && (PAddr & ~0x03E000) < 0x04004000)) {
+		*Value = *(WORD*)(TLB_ReadMap[(VAddr & ~0x3E000) >> 12] + (((VAddr & ~0x3E000) & ~0x2000) ^ 2));
+	}
+	else {
 		DWORD DValue = 0;
 		if (!r4300i_LH_NonMemory(PAddr^2, &DValue, FALSE)) {
 			return FALSE;
@@ -1856,8 +1872,11 @@ BOOL r4300i_LW_VAddr ( DWORD VAddr, DWORD * Value ) {
 	DWORD PAddr = (DWORD)TLB_ReadMap[VAddr >> 12] + VAddr - (DWORD)N64MEM;
 	
 	// DRAM, DMEM, and IMEM can all be accessed directly through the host's virtual memory.
-	if (PAddr < RdramSize || (PAddr >= 0x04000000 && PAddr < 0x04002000)) {
+	if (PAddr < RdramSize ) {
 		*Value = *(DWORD*)(TLB_ReadMap[VAddr >> 12] + VAddr);
+	}
+	else if (((PAddr & ~0x03E000) >= 0x04000000 && (PAddr & ~0x03E000) < 0x04004000)) {
+		*Value = *(DWORD*)(TLB_ReadMap[(VAddr & ~0x3E000) >> 12] + ((VAddr & ~0x3E000) & ~0x2000));
 	}
 	else {
 		r4300i_LW_NonMemory(PAddr, Value);
@@ -1871,9 +1890,13 @@ BOOL r4300i_LW_VAddr_NonCPU ( DWORD VAddr, DWORD * Value ) {
 	DWORD PAddr = (DWORD)TLB_ReadMap[VAddr >> 12] + VAddr - (DWORD)N64MEM;
 
 	// DRAM, DMEM, and IMEM can all be accessed directly through the host's virtual memory.
-	if (PAddr < RdramSize || (PAddr >= 0x04000000 && PAddr < 0x04002000)) {
+	if (PAddr < RdramSize) {
 		*Value = *(DWORD *)(TLB_ReadMap[VAddr >> 12] + VAddr);
-	} else if (!r4300i_LW_NonMemory(PAddr, Value)) {
+	}
+	else if (((PAddr & ~0x03E000) >= 0x04000000 && (PAddr & ~0x03E000) < 0x04004000)) {
+		*Value = *(DWORD*)(TLB_ReadMap[(VAddr & ~0x3E000) >> 12] + ((VAddr & ~0x3E000) & ~0x2000));
+	}
+	else if (!r4300i_LW_NonMemory(PAddr, Value)) {
 		// TODO: Returning false here is the right thing to do.
 		// But it changes the behavior of the memory editor when viewing MMIO registers.
 		//return FALSE;
@@ -1967,12 +1990,15 @@ BOOL r4300i_SB_VAddr ( DWORD VAddr, MIPS_DWORD* Value ) {
 	DWORD PAddr = (DWORD)TLB_WriteMap[VAddr >> 12] + VAddr - (DWORD)N64MEM;
 
 	// DRAM, DMEM, and IMEM can all be accessed directly through the host's virtual memory.
-	if (PAddr < RdramSize || (PAddr >= 0x04000000 && PAddr < 0x04002000)) {
+	if (PAddr < RdramSize) {
 		*(BYTE*)(TLB_WriteMap[VAddr >> 12] + (VAddr ^ 3)) = Value->UB[0];
 	}
+	else if (((PAddr & ~0x03E000) >= 0x04000000 && (PAddr & ~0x03E000) < 0x04004000)) {
+		*(BYTE*)(TLB_WriteMap[(VAddr & ~0x3E000) >> 12] + (((VAddr & ~0x3E000) & ~0x2000) ^ 3)) = Value->UB[0];
+	}
 	else {
-		RegisterCurrentlyWritten = Value;
-		r4300i_SB_NonMemory(PAddr ^ 3, Value->UB[0]);
+	RegisterCurrentlyWritten = Value;
+	r4300i_SB_NonMemory(PAddr ^ 3, Value->UB[0]);
 	}
 	
 	return TRUE;
@@ -2066,9 +2092,13 @@ BOOL r4300i_SD_VAddr ( DWORD VAddr, unsigned _int64 Value ) {
 	DWORD PAddr = (DWORD)TLB_WriteMap[VAddr >> 12] + VAddr - (DWORD)N64MEM;
 
 	// DRAM, DMEM, and IMEM can all be accessed directly through the host's virtual memory.
-	if (PAddr < RdramSize || (PAddr >= 0x04000000 && PAddr < 0x04002000)) {
+	if (PAddr < RdramSize) {
 		*(DWORD*)(TLB_WriteMap[VAddr >> 12] + VAddr) = *((DWORD*)(&Value) + 1);
 		*(DWORD*)(TLB_WriteMap[VAddr >> 12] + VAddr + 4) = *((DWORD*)(&Value));
+	}
+	else if (((PAddr & ~0x03E000) >= 0x04000000 && (PAddr & ~0x03E000) < 0x04004000)) {
+		*(DWORD*)(TLB_WriteMap[(VAddr & ~0x3E000) >> 12] + ((VAddr & ~0x3E000) & ~0x2000)) = *((DWORD*)(&Value) + 1);
+		*(DWORD*)(TLB_WriteMap[(VAddr & ~0x3E000) >> 12] + ((VAddr & ~0x3E000) & ~0x2000) + 4) = *((DWORD*)(&Value));
 	}
 	else {
 		r4300i_SW_NonMemory(PAddr, *((DWORD*)(&Value) + 1));
@@ -2084,8 +2114,11 @@ BOOL r4300i_SH_VAddr ( DWORD VAddr, MIPS_DWORD* Value) {
 	DWORD PAddr = (DWORD)TLB_WriteMap[VAddr >> 12] + VAddr - (DWORD)N64MEM;
 
 	// DRAM, DMEM, and IMEM can all be accessed directly through the host's virtual memory.
-	if (PAddr < RdramSize || (PAddr >= 0x04000000 && PAddr < 0x04002000)) {
+	if (PAddr < RdramSize) {
 		*(WORD*)(TLB_WriteMap[VAddr >> 12] + (VAddr ^ 2)) = Value->UHW[0];
+	}
+	else if (((PAddr & ~0x03E000) >= 0x04000000 && (PAddr & ~0x03E000) < 0x04004000)) {
+		*(WORD*)(TLB_WriteMap[(VAddr & ~0x3E000) >> 12] + (((VAddr & ~0x3E000) & ~0x2000) ^ 2)) = Value->UHW[0];
 	}
 	else {
 		RegisterCurrentlyWritten = Value;
@@ -2170,9 +2203,9 @@ int r4300i_SW_NonMemory ( DWORD PAddr, DWORD Value ) {
 		}
 		break;
 	case 0x04000000: 
-		if (PAddr < 0x04002000) {
+		if (PAddr < 0x04004000) {
 			DWORD OldProtect;
-			
+			PAddr &= ~0x2000;
 			if (VirtualProtect((N64MEM + PAddr), 4, PAGE_READWRITE, &OldProtect) == 0) {
 				DisplayError("Failed to unprotect %X\n2", PAddr);
 			}
@@ -2616,10 +2649,13 @@ BOOL r4300i_SW_VAddr ( DWORD VAddr, DWORD Value ) {
 	DWORD PAddr = (DWORD)TLB_WriteMap[VAddr >> 12] + VAddr - (DWORD)N64MEM;
 
 	// DRAM, DMEM, and IMEM can all be accessed directly through the host's virtual memory.
-	if (PAddr < RdramSize || (PAddr >= 0x04000000 && PAddr < 0x04002000)) {
+	if (PAddr < RdramSize) {
 		*(DWORD*)(TLB_WriteMap[VAddr >> 12] + VAddr) = Value;
 	}
-	else {
+	else if (((PAddr & ~0x03E000) >= 0x04000000 && (PAddr & ~0x03E000) < 0x04004000)) {
+		*(DWORD*)(TLB_WriteMap[(VAddr & ~0x3E000) >> 12] + ((VAddr & ~0x3E000) & ~0x2000)) = Value;
+	} else
+	{
 		r4300i_SW_NonMemory(PAddr, Value);
 	}
 
