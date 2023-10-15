@@ -1987,7 +1987,13 @@ BOOL r4300i_SB_VAddr ( DWORD VAddr, MIPS_DWORD* Value ) {
 		*(BYTE*)(TLB_WriteMap[VAddr >> 12] + (VAddr ^ 3)) = Value->UB[0];
 	}
 	else if (((PAddr & ~0x03E000) >= 0x04000000 && (PAddr & ~0x03E000) < 0x04004000)) {
-		*(BYTE*)(TLB_WriteMap[(VAddr & ~0x3E000) >> 12] + (((VAddr & ~0x3E000) & ~0x2000) ^ 3)) = Value->UB[0];
+		if (PAddr < 0x04001000)
+			VAddr += 0;
+		int tmp = VAddr & 3;
+		for (int i = 0; i <= tmp;i++)
+			*(BYTE*)(TLB_WriteMap[(VAddr & ~0x3E000) >> 12] + ((i + (VAddr & ~3 & ~0x3E000) & ~0x2000) ^ 3)) = Value->UB[tmp - i];
+		for (int i = tmp+1; i < 4; i++)
+			*(BYTE*)(TLB_WriteMap[(VAddr & ~0x3E000) >> 12] + (((i)+(VAddr & ~3 & ~0x3E000) & ~0x2000) ^ 3)) = 0;
 	}
 	else {
 	RegisterCurrentlyWritten = Value;
@@ -2091,7 +2097,7 @@ BOOL r4300i_SD_VAddr ( DWORD VAddr, unsigned _int64 Value ) {
 	}
 	else if (((PAddr & ~0x03E000) >= 0x04000000 && (PAddr & ~0x03E000) < 0x04004000)) {
 		*(DWORD*)(TLB_WriteMap[(VAddr & ~0x3E000) >> 12] + ((VAddr & ~0x3E000) & ~0x2000)) = *((DWORD*)(&Value) + 1);
-		*(DWORD*)(TLB_WriteMap[(VAddr & ~0x3E000) >> 12] + ((VAddr & ~0x3E000) & ~0x2000) + 4) = *((DWORD*)(&Value));
+		//*(DWORD*)(TLB_WriteMap[(VAddr & ~0x3E000) >> 12] + ((VAddr & ~0x3E000) & ~0x2000) + 4) = *((DWORD*)(&Value));
 	}
 	else {
 		r4300i_SW_NonMemory(PAddr, *((DWORD*)(&Value) + 1));
@@ -2111,6 +2117,10 @@ BOOL r4300i_SH_VAddr ( DWORD VAddr, MIPS_DWORD* Value) {
 		*(WORD*)(TLB_WriteMap[VAddr >> 12] + (VAddr ^ 2)) = Value->UHW[0];
 	}
 	else if (((PAddr & ~0x03E000) >= 0x04000000 && (PAddr & ~0x03E000) < 0x04004000)) {
+		if ((VAddr & 2) == 0)
+			*(WORD*)(TLB_WriteMap[(VAddr & ~0x3E000) >> 12] + (((VAddr & ~0x3E000) & ~0x2000))) = 0;
+		else
+			*(WORD*)(TLB_WriteMap[(VAddr & ~0x3E000) >> 12] + (((VAddr & ~0x3E000) & ~0x2000))) = Value->UHW[1];
 		*(WORD*)(TLB_WriteMap[(VAddr & ~0x3E000) >> 12] + (((VAddr & ~0x3E000) & ~0x2000) ^ 2)) = Value->UHW[0];
 	}
 	else {
