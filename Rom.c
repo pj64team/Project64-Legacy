@@ -41,13 +41,15 @@
 #define MenuLocOfUsedFiles	12
 #define MenuLocOfUsedDirs	(MenuLocOfUsedFiles + 1)
 
-DWORD RomFileSize;
+DWORD RomFileSize = 0;
 int RomRamSize, RomSaveUsing, RomCPUType, RomSelfMod,
 RomUseTlb, RomUseLinking, RomCF, RomUseLargeBuffer, RomUseCache,
 RomDelaySI, RomSPHack, RomAudioSignal, RomEmulateAI, RomModVIS;
 char CurrentFileName[MAX_PATH + 1] = { "" }, RomName[MAX_PATH + 1] = { "" }, RomFullName[MAX_PATH + 1] = { "" };
 char LastRoms[10][MAX_PATH + 1], LastDirs[10][MAX_PATH + 1];
 BYTE RomHeader[0x1000];
+const DWORD CRC_SRC_SIZE = 0x00101000;
+const BYTE ZEROS[4096] = { 0 };
 DWORD PrevCRC1, PrevCRC2;
 HANDLE hRomFile = NULL;
 HANDLE hRomMapping = NULL;
@@ -102,67 +104,51 @@ void AddRecentFile(HWND hWnd, char* addition) {
 	SetupMenu(hMainWindow);
 }
 
-// Create a temporary file for the unzipped/byte-swapped/patched ROM. Takes ownership of the `ROM` global.
-// The temporary file can be closed and deleted with `CloseTempRomFile()`
-BOOL CreateTempRomFile(void) {
+// Create a temporary file for the unzipped/byte-swapped/patched ROM.
+// Expects the `RomFileSize` global to have been initialized correctly.
+// Initializes the `ROM` global as a memory-mapped file.
+// The temporary file can be closed and deleted with `CloseMappedRomFile()`
+BOOL CreateMappedRomFile(void) {
+	if (RomFileSize == 0) {
+		return FALSE;
+	}
+
 	char temp_path[_MAX_PATH + 1] = { 0 };
 	char temp_file[_MAX_PATH + 1] = { 0 };
 
 	if (GetTempPath(_MAX_PATH, temp_path) == 0) {
-		free(ROM);
-		ROM = NULL;
 		return FALSE;
 	}
 
 	if (GetTempFileName(temp_path, "PJ64", 0, temp_file) == 0) {
-		free(ROM);
-		ROM = NULL;
 		return FALSE;
 	}
 
-	// Create the file and write ROM to it
-	hRomFile = CreateFile(temp_file, GENERIC_WRITE, 0, NULL, CREATE_ALWAYS,
-		FILE_ATTRIBUTE_NORMAL | FILE_ATTRIBUTE_TEMPORARY, NULL);
-	if (hRomFile == INVALID_HANDLE_VALUE) {
-		free(ROM);
-		ROM = NULL;
-		return FALSE;
-	}
-
-	DWORD bytes_written = 0;
-	if (WriteFile(hRomFile, ROM, RomFileSize, &bytes_written, NULL) == FALSE) {
-		free(ROM);
-		ROM = NULL;
-		CloseHandle(hRomFile);
-		DeleteFile(temp_file);
-		return FALSE;
-	}
-	free(ROM);
-	ROM = NULL;
-	if (bytes_written != RomFileSize) {
-		CloseHandle(hRomFile);
-		DeleteFile(temp_file);
-		return FALSE;
-	}
-
-	// Reopen the file read-only
-	CloseHandle(hRomFile);
-	hRomFile = CreateFile(temp_file, GENERIC_READ, 0, NULL, OPEN_EXISTING,
+	// Create the file
+	hRomFile = CreateFile(temp_file, GENERIC_READ | GENERIC_WRITE, 0, NULL, CREATE_ALWAYS,
 		FILE_ATTRIBUTE_NORMAL | FILE_ATTRIBUTE_TEMPORARY | FILE_FLAG_DELETE_ON_CLOSE | FILE_FLAG_RANDOM_ACCESS, NULL);
 	if (hRomFile == INVALID_HANDLE_VALUE) {
-		CloseHandle(hRomFile);
 		DeleteFile(temp_file);
 		return FALSE;
+	}
+
+	// Zero out the file
+	for (DWORD i = 0; i < RomFileSize; i += sizeof(ZEROS)) {
+		DWORD written = 0;
+		if (WriteFile(hRomFile, ZEROS, sizeof(ZEROS), &written, NULL) == FALSE || written != sizeof(ZEROS)) {
+			CloseHandle(hRomFile);
+			return FALSE;
+		}
 	}
 
 	// Map the file into memory
-	hRomMapping = CreateFileMapping(hRomFile, NULL, PAGE_READONLY, 0, 0, NULL);
+	hRomMapping = CreateFileMapping(hRomFile, NULL, PAGE_READWRITE, 0, RomFileSize, NULL);
 	if (hRomMapping == NULL) {
 		CloseHandle(hRomFile);
 		return FALSE;
 	}
 
-	ROM = MapViewOfFile(hRomMapping, FILE_MAP_READ, 0, 0, 0);
+	ROM = MapViewOfFile(hRomMapping, FILE_MAP_WRITE, 0, 0, 0);
 	if (ROM == NULL) {
 		CloseHandle(hRomMapping);
 		CloseHandle(hRomFile);
@@ -174,7 +160,7 @@ BOOL CreateTempRomFile(void) {
 
 // Close the temporary ROM file.
 // The file will be deleted automatically by the system when closed.
-void CloseTempRomFile(void) {
+void CloseMappedRomFile(void) {
 	if (ROM != NULL && hRomFile != NULL && hRomMapping != NULL) {
 		UnmapViewOfFile(ROM);
 		CloseHandle(hRomMapping);
@@ -183,6 +169,7 @@ void CloseTempRomFile(void) {
 		ROM = NULL;
 		hRomMapping = NULL;
 		hRomFile = NULL;
+		RomFileSize = 0;
 	}
 }
 
@@ -512,7 +499,6 @@ void LoadRecentRom(DWORD Index) {
 BOOL LoadRomHeader(void) {
 	char drive[_MAX_DRIVE], FileName[_MAX_DIR], dir[_MAX_DIR], ext[_MAX_EXT];
 	BYTE Test[4];
-	int count;
 
 	if (_strnicmp(&CurrentFileName[strlen(CurrentFileName) - 4], ".ZIP", 4) == 0) {
 		int port = 0, FoundRom;
@@ -829,7 +815,6 @@ void SetNewFileDirectory(void) {
 }
 
 DWORD WINAPI OpenChosenFile(LPVOID lpArgs) {
-#define ReadFromRomSection	0x40000000 // Adjusted from 40000 to 400000
 	char drive[_MAX_DRIVE], FileName[_MAX_DIR], dir[_MAX_DIR], ext[_MAX_EXT];
 	char WinTitle[300], MapFile[_MAX_PATH];
 	char Message[100];
@@ -861,6 +846,9 @@ DWORD WINAPI OpenChosenFile(LPVOID lpArgs) {
 		ResetMappings();
 	SetNewFileDirectory();
 	strcpy(MapFile, CurrentFileName);
+
+	SendMessage(hStatusWnd, SB_SETTEXT, 0, (LPARAM)GS(MSG_LOADING));
+
 	if (_strnicmp(&CurrentFileName[strlen(CurrentFileName) - 4], ".ZIP", 4) == 0) {
 		int len, port = 0, FoundRom;
 		unz_file_info info;
@@ -868,6 +856,7 @@ DWORD WINAPI OpenChosenFile(LPVOID lpArgs) {
 		unzFile file;
 		file = unzOpen(CurrentFileName);
 		if (file == NULL) {
+			SendMessage(hStatusWnd, SB_SETTEXT, 0, (LPARAM)"");
 			DisplayError(GS(MSG_FAIL_OPEN_ZIP));
 			EnableOpenMenuItems();
 			ShowRomList(hMainWindow);
@@ -879,6 +868,7 @@ DWORD WINAPI OpenChosenFile(LPVOID lpArgs) {
 		while (port == UNZ_OK && FoundRom == FALSE) {
 			unzGetCurrentFileInfo(file, &info, zname, 128, NULL, 0, NULL, 0);
 			if (unzLocateFile(file, zname, 1) != UNZ_OK) {
+				SendMessage(hStatusWnd, SB_SETTEXT, 0, (LPARAM)"");
 				unzClose(file);
 				DisplayError(GS(MSG_FAIL_ZIP));
 				EnableOpenMenuItems();
@@ -886,6 +876,7 @@ DWORD WINAPI OpenChosenFile(LPVOID lpArgs) {
 				return 0;
 			}
 			if (unzOpenCurrentFile(file) != UNZ_OK) {
+				SendMessage(hStatusWnd, SB_SETTEXT, 0, (LPARAM)"");
 				unzClose(file);
 				DisplayError(GS(MSG_FAIL_OPEN_ZIP));
 				EnableOpenMenuItems();
@@ -895,26 +886,24 @@ DWORD WINAPI OpenChosenFile(LPVOID lpArgs) {
 			unzReadCurrentFile(file, Test, 4);
 			if (IsValidRomImage(Test)) {
 				FoundRom = TRUE;
+
+				// Create a temporary file for memory-mapping the ROM
 				RomFileSize = info.uncompressed_size;
-				if (!Allocate_ROM()) {
+				if (CreateMappedRomFile() == FALSE) {
+					SendMessage(hStatusWnd, SB_SETTEXT, 0, (LPARAM)"");
 					unzCloseCurrentFile(file);
 					unzClose(file);
-					DisplayError(GS(MSG_MEM_ALLOC_ERROR));
+					DisplayError(GS(MSG_FAIL_CREATE_TEMP));
 					EnableOpenMenuItems();
 					ShowRomList(hMainWindow);
 					return 0;
 				}
+
 				memcpy(ROM, Test, 4);
-				//len = unzReadCurrentFile(file,&ROM[4],RomFileSize - 4) + 4;
-				len = 4;
-				for (count = 4; count < (int)RomFileSize; count += ReadFromRomSection) {
-					len += unzReadCurrentFile(file, &ROM[count], ReadFromRomSection);
-					sprintf(Message, "%s: %.2f%c", GS(MSG_LOADED), ((float)len / (float)RomFileSize) * 100.0f, '%');
-					SendMessage(hStatusWnd, SB_SETTEXT, 0, (LPARAM)Message);
-					Sleep(10); // Adjusted down to 10ms from 100ms
-				}
+				len = unzReadCurrentFile(file, &ROM[4], RomFileSize - 4) + 4;
 				if ((int)RomFileSize != len) {
-					free(ROM);
+					SendMessage(hStatusWnd, SB_SETTEXT, 0, (LPARAM)"");
+					CloseMappedRomFile();
 					unzCloseCurrentFile(file);
 					unzClose(file);
 					switch (len) {
@@ -932,7 +921,8 @@ DWORD WINAPI OpenChosenFile(LPVOID lpArgs) {
 					return 0;
 				}
 				if (unzCloseCurrentFile(file) == UNZ_CRCERROR) {
-					free(ROM);
+					SendMessage(hStatusWnd, SB_SETTEXT, 0, (LPARAM)"");
+					CloseMappedRomFile();
 					unzClose(file);
 					DisplayError(GS(MSG_FAIL_OPEN_ZIP));
 					EnableOpenMenuItems();
@@ -949,7 +939,7 @@ DWORD WINAPI OpenChosenFile(LPVOID lpArgs) {
 			}
 		}
 		if (FoundRom == FALSE) {
-			free(ROM);
+			SendMessage(hStatusWnd, SB_SETTEXT, 0, (LPARAM)"");
 			DisplayError(GS(MSG_FAIL_OPEN_ZIP));
 			unzClose(file);
 			EnableOpenMenuItems();
@@ -961,7 +951,7 @@ DWORD WINAPI OpenChosenFile(LPVOID lpArgs) {
 		}
 	}
 	else {
-		DWORD dwRead, dwToRead, TotalRead;
+		DWORD dwRead;
 		HANDLE hFile;
 
 		hFile = CreateFile(CurrentFileName, GENERIC_READ, FILE_SHARE_READ, NULL,
@@ -977,8 +967,7 @@ DWORD WINAPI OpenChosenFile(LPVOID lpArgs) {
 		}
 
 		SetFilePointer(hFile, 0, 0, FILE_BEGIN);
-		ReadFile(hFile, Test, 4, &dwRead, NULL);
-		if (!IsValidRomImage(Test)) {
+		if (!ReadFile(hFile, Test, 4, &dwRead, NULL) || !IsValidRomImage(Test)) {
 			CloseHandle(hFile);
 			SendMessage(hStatusWnd, SB_SETTEXT, 0, (LPARAM)"");
 			DisplayError(GS(MSG_FAIL_IMAGE));
@@ -986,43 +975,21 @@ DWORD WINAPI OpenChosenFile(LPVOID lpArgs) {
 			ShowRomList(hMainWindow);
 			return 0;
 		}
-		RomFileSize = GetFileSize(hFile, NULL);
 
-		if (!Allocate_ROM()) {
-			CloseHandle(hFile);
+		// Create a temporary file for memory-mapping the ROM
+		RomFileSize = GetFileSize(hFile, NULL);
+		if (CreateMappedRomFile() == FALSE) {
 			SendMessage(hStatusWnd, SB_SETTEXT, 0, (LPARAM)"");
-			DisplayError(GS(MSG_MEM_ALLOC_ERROR));
+			DisplayError(GS(MSG_FAIL_CREATE_TEMP));
 			EnableOpenMenuItems();
 			ShowRomList(hMainWindow);
 			return 0;
 		}
 
-		SendMessage(hStatusWnd, SB_SETTEXT, 0, (LPARAM)GS(MSG_LOADING));
 		SetFilePointer(hFile, 0, 0, FILE_BEGIN);
 
-		TotalRead = 0;
-		for (count = 0; count < (int)RomFileSize; count += ReadFromRomSection) {
-			dwToRead = RomFileSize - count;
-			if (dwToRead > ReadFromRomSection) { dwToRead = ReadFromRomSection; }
-
-			if (!ReadFile(hFile, &ROM[count], dwToRead, &dwRead, NULL)) {
-				free(ROM);
-				CloseHandle(hFile);
-				SendMessage(hStatusWnd, SB_SETTEXT, 0, (LPARAM)"");
-				DisplayError(GS(MSG_FAIL_OPEN_IMAGE));
-				EnableOpenMenuItems();
-				ShowRomList(hMainWindow);
-				return 0;
-			}
-			TotalRead += dwRead;
-			sprintf(Message, "%s: %.2f%c", GS(MSG_LOADED), ((float)TotalRead / (float)RomFileSize) * 100.0f, '%');
-			SendMessage(hStatusWnd, SB_SETTEXT, 0, (LPARAM)Message);
-			Sleep(10); // Adjusted down to 10ms from 100ms
-		}
-		dwRead = TotalRead;
-
-		if (RomFileSize != dwRead) {
-			free(ROM);
+		if (!ReadFile(hFile, ROM, RomFileSize, &dwRead, NULL) || RomFileSize != dwRead) {
+			CloseMappedRomFile();
 			CloseHandle(hFile);
 			SendMessage(hStatusWnd, SB_SETTEXT, 0, (LPARAM)"");
 			DisplayError(GS(MSG_FAIL_OPEN_IMAGE));
@@ -1048,14 +1015,6 @@ DWORD WINAPI OpenChosenFile(LPVOID lpArgs) {
 		ROM[0x67d] = 0;
 		ROM[0x67e] = 0;
 		ROM[0x67f] = 0;
-	}
-
-	// Write unzipped/byte-swapped/patched ROM to a temporary file
-	if (CreateTempRomFile() == FALSE) {
-		SendMessage(hStatusWnd, SB_SETTEXT, 0, (LPARAM)"");
-		DisplayError(GS(MSG_FAIL_CREATE_TEMP));
-		EnableOpenMenuItems();
-		ShowRomList(hMainWindow);
 	}
 
 	SendMessage(hStatusWnd, SB_SETTEXT, 0, (LPARAM)"");
@@ -1291,7 +1250,7 @@ void RecalculateCRCs(BYTE* data, DWORD data_size) {
 
 	t1 = t2 = t3 = t4 = t5 = t6 = seed;
 
-	for (i = 0x00001000; i < 0x00101000; i += 4) {
+	for (i = 0x00001000; i < CRC_SRC_SIZE; i += 4) {
 		if ((unsigned int)(i + 3) > data_size)
 			d = 0;
 		else
@@ -1309,7 +1268,9 @@ void RecalculateCRCs(BYTE* data, DWORD data_size) {
 
 		if (chip == CIC_NUS_6105) {
 			j = 0x40 + 0x0710 + (i & 0xFF);
-			t1 += (data[j + 3] << 24 | data[j + 2] << 16 | data[j + 1] << 8 | data[j]) ^ d;
+			if ((unsigned int)(j + 3) <= data_size) {
+				t1 += (data[j + 3] << 24 | data[j + 2] << 16 | data[j + 1] << 8 | data[j]) ^ d;
+			}
 		}
 		else
 			t1 += t5 ^ d;
@@ -1346,7 +1307,7 @@ void RecalculateCRCs(BYTE* data, DWORD data_size) {
 
 void LoadRomRecalcCRCs(char* FileName, BYTE* CRC1, BYTE* CRC2) {
 	BYTE* data = NULL;
-	DWORD data_size = 0, count;
+	DWORD data_size = 0;
 
 	// As much as this pains me, this is mostly a copy of code that already exists as a copy and paste nightmare
 	// Some of the code has been reduced because the checks have already been performed
@@ -1385,7 +1346,7 @@ void LoadRomRecalcCRCs(char* FileName, BYTE* CRC1, BYTE* CRC2) {
 			unzReadCurrentFile(file, Test, 4);
 			if (IsValidRomImage(Test)) {
 				FoundRom = TRUE;
-				data_size = info.uncompressed_size;
+				data_size = min(CRC_SRC_SIZE, info.uncompressed_size);
 
 				data = (BYTE*)malloc(sizeof(BYTE) * data_size);
 				if (!data) {
@@ -1395,12 +1356,9 @@ void LoadRomRecalcCRCs(char* FileName, BYTE* CRC1, BYTE* CRC2) {
 					return;
 				}
 				memcpy(data, Test, 4);
-				//len = unzReadCurrentFile(file,&ROM[4],RomFileSize - 4) + 4;
-				len = 4;
-				for (count = 4; count < data_size; count += ReadFromRomSection) {
-					len += unzReadCurrentFile(file, &data[count], ReadFromRomSection);
-				}
+				len = unzReadCurrentFile(file, &ROM[4], RomFileSize - 4) + 4;
 				if ((int)data_size != len) {
+					free(data);
 					unzCloseCurrentFile(file);
 					unzClose(file);
 					switch (len) {
@@ -1416,6 +1374,7 @@ void LoadRomRecalcCRCs(char* FileName, BYTE* CRC1, BYTE* CRC2) {
 					return;
 				}
 				if (unzCloseCurrentFile(file) == UNZ_CRCERROR) {
+					free(data);
 					unzClose(file);
 					DisplayError(GS(MSG_FAIL_OPEN_ZIP));
 					return;
@@ -1434,7 +1393,7 @@ void LoadRomRecalcCRCs(char* FileName, BYTE* CRC1, BYTE* CRC2) {
 		}
 	}
 	else {
-		DWORD dwRead, dwToRead, TotalRead;
+		DWORD dwRead;
 		HANDLE hFile;
 		BYTE Test[4];
 
@@ -1454,7 +1413,7 @@ void LoadRomRecalcCRCs(char* FileName, BYTE* CRC1, BYTE* CRC2) {
 			DisplayError(GS(MSG_FAIL_IMAGE));
 			return;
 		}
-		data_size = GetFileSize(hFile, NULL);
+		data_size = min(CRC_SRC_SIZE, GetFileSize(hFile, NULL));
 
 		data = (BYTE*)malloc(sizeof(BYTE) * data_size);
 		if (!data) {
@@ -1465,22 +1424,8 @@ void LoadRomRecalcCRCs(char* FileName, BYTE* CRC1, BYTE* CRC2) {
 
 		SetFilePointer(hFile, 0, 0, FILE_BEGIN);
 
-		TotalRead = 0;
-		for (count = 0; count < RomFileSize; count += ReadFromRomSection) {
-			dwToRead = RomFileSize - count;
-			if (dwToRead > ReadFromRomSection) { dwToRead = ReadFromRomSection; }
-
-			if (!ReadFile(hFile, &data[count], dwToRead, &dwRead, NULL)) {
-				CloseHandle(hFile);
-				SendMessage(hStatusWnd, SB_SETTEXT, 0, (LPARAM)"");
-				DisplayError(GS(MSG_FAIL_OPEN_IMAGE));
-				return;
-			}
-			TotalRead += dwRead;
-		}
-		dwRead = TotalRead;
-
-		if (RomFileSize != dwRead) {
+		if (!ReadFile(hFile, data, data_size, &dwRead, NULL) || data_size != dwRead) {
+			free(data);
 			CloseHandle(hFile);
 			DisplayError(GS(MSG_FAIL_OPEN_IMAGE));
 			return;
@@ -1497,8 +1442,7 @@ void LoadRomRecalcCRCs(char* FileName, BYTE* CRC1, BYTE* CRC2) {
 	*(DWORD*)CRC2 = *(DWORD*)&data[0x14];
 
 	// Make sure to free allocated space
-	if (data != NULL)
-		free(data);
+	free(data);
 }
 
 // This was a test, unzipping is a limiting factor when calculating the xxhash

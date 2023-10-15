@@ -38,7 +38,6 @@ extern int Addressing64Bits;
 extern BYTE ISViewerBuffer[0x200];
 
 /* Memory Control */
-int  Allocate_ROM                ( void );
 int  Allocate_Memory             ( void );	
 void Release_Memory              ( void );
 

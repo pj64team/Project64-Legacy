@@ -1443,8 +1443,11 @@ BOOL r4300i_LB_VAddr ( MIPS_DWORD VAddr, BYTE * Value ) {
 	}
 
 	// DRAM, DMEM, and IMEM can all be accessed directly through the host's virtual memory.
-	if (PAddr < RdramSize || (PAddr >= 0x04000000 && PAddr < 0x04002000)) {
+	if (PAddr < RdramSize) {
 		*Value = *(BYTE*)(N64MEM + (PAddr ^ 3));
+	}
+	else if (((PAddr & ~0x03E000) >= 0x04000000 && (PAddr & ~0x03E000) < 0x04004000)) {
+    *Value = *(BYTE*)(N64MEM + (((PAddr & ~0x3E000) & ~0x2000) ^ 3));
 	}
 	else {
 		DWORD DValue = 0;
@@ -1466,9 +1469,12 @@ BOOL r4300i_LB_VAddr_NonCPU(MIPS_DWORD VAddr, BYTE *Value) {
 	}
 
 	// DRAM, DMEM, and IMEM can all be accessed directly through the host's virtual memory.
-	if (PAddr < RdramSize || (PAddr >= 0x04000000 && PAddr < 0x04002000)) {
+	if (PAddr < RdramSize) {
 		*Value = *(BYTE*)(N64MEM + (PAddr ^ 3));
-	} else {
+	} else if (((PAddr & ~0x03E000) >= 0x04000000 && (PAddr & ~0x03E000) < 0x04004000)) {
+    *Value = *(BYTE*)(N64MEM + (((PAddr & ~0x3E000) & ~0x2000) ^ 3));
+	}
+	else {
 		DWORD DValue = 0;
 		if (!r4300i_LB_NonMemory(PAddr^3, &DValue, FALSE)) {
 			return FALSE;
@@ -1492,9 +1498,13 @@ BOOL r4300i_LD_VAddr ( MIPS_DWORD VAddr, unsigned _int64 * Value ) {
 	}
 
 	// DRAM, DMEM, and IMEM can all be accessed directly through the host's virtual memory.
-	if (PAddr < RdramSize || (PAddr >= 0x04000000 && PAddr < 0x04002000)) {
+	if (PAddr < RdramSize) {
 		*((DWORD*)(Value)+1) = *(DWORD*)(N64MEM + PAddr);
 		*((DWORD*)(Value)) = *(DWORD*)(N64MEM + PAddr + 4);
+	}
+	else if (((PAddr & ~0x03E000) >= 0x04000000 && (PAddr & ~0x03E000) < 0x04004000)) {
+    *((DWORD*)(Value)+1) = *(DWORD*)(N64MEM + ((PAddr & ~0x3E000) & ~0x2000));
+		*((DWORD*)(Value)) = *(DWORD*)(N64MEM + (((PAddr + 4) & ~0x3E000) & ~0x2000));
 	}
 	else {
 		DWORD DValue = 0;
@@ -1583,8 +1593,11 @@ BOOL r4300i_LH_VAddr ( MIPS_DWORD VAddr, WORD * Value ) {
 	}
 
 	// DRAM, DMEM, and IMEM can all be accessed directly through the host's virtual memory.
-	if (PAddr < RdramSize || (PAddr >= 0x04000000 && PAddr < 0x04002000)) {
+	if (PAddr < RdramSize) {
 		*Value = *(WORD*)(N64MEM + (PAddr ^ 2));
+	}
+	else if (((PAddr & ~0x03E000) >= 0x04000000 && (PAddr & ~0x03E000) < 0x04004000)) {
+    *Value = *(WORD*)(N64MEM + (((PAddr & ~0x3E000) & ~0x2000) ^ 2));
 	}
 	else {
 		DWORD DValue = 0;
@@ -1606,9 +1619,12 @@ BOOL r4300i_LH_VAddr_NonCPU ( MIPS_DWORD VAddr, WORD * Value ) {
 	}
 
 	// DRAM, DMEM, and IMEM can all be accessed directly through the host's virtual memory.
-	if (PAddr < RdramSize || (PAddr >= 0x04000000 && PAddr < 0x04002000)) {
+	if (PAddr < RdramSize) {
 		*Value = *(WORD*)(N64MEM + (PAddr ^ 2));
-	} else {
+	else if (((PAddr & ~0x03E000) >= 0x04000000 && (PAddr & ~0x03E000) < 0x04004000)) {
+    *Value = *(WORD*)(N64MEM + (((PAddr & ~0x3E000) & ~0x2000) ^ 2));
+	}
+	else {
 		DWORD DValue = 0;
 		if (!r4300i_LH_NonMemory(PAddr^2, &DValue, FALSE)) {
 			return FALSE;
@@ -1706,6 +1722,9 @@ int r4300i_LW_NonMemory ( DWORD PAddr, DWORD * Value ) {
 		case 0x04040010: *Value = SP_STATUS_REG; break;
 		case 0x04040014: *Value = SP_DMA_FULL_REG; break;
 		case 0x04040018: *Value = SP_DMA_BUSY_REG; break;
+		case 0x0404001C:
+			*Value = SP_SEMAPHORE_REG;
+			SP_SEMAPHORE_REG = 1; break;
 		case 0x04080000: *Value = SP_PC_REG; break;
 		default:
 			* Value = 0;
@@ -1891,8 +1910,11 @@ BOOL r4300i_LW_VAddr ( MIPS_DWORD VAddr, DWORD * Value ) {
 	}
 	
 	// DRAM, DMEM, and IMEM can all be accessed directly through the host's virtual memory.
-	if (PAddr < RdramSize || (PAddr >= 0x04000000 && PAddr < 0x04002000)) {
+	if (PAddr < RdramSize) {
 		*Value = *(DWORD*)(N64MEM + PAddr);
+	}
+	else if (((PAddr & ~0x03E000) >= 0x04000000 && (PAddr & ~0x03E000) < 0x04004000)) {
+    *Value = *(DWORD*)(N64MEM + ((PAddr& ~0x3E000) & ~0x2000));
 	}
 	else {
 		r4300i_LW_NonMemory(PAddr, Value);
@@ -1912,9 +1934,13 @@ BOOL r4300i_LW_VAddr_NonCPU ( MIPS_DWORD VAddr, DWORD * Value ) {
 	}
 
 	// DRAM, DMEM, and IMEM can all be accessed directly through the host's virtual memory.
-	if (PAddr < RdramSize || (PAddr >= 0x04000000 && PAddr < 0x04002000)) {
+	if (PAddr < RdramSize) {
 		*Value = *(DWORD*)(N64MEM + PAddr);
-	} else if (!r4300i_LW_NonMemory(PAddr, Value)) {
+	} 
+	else if (((PAddr & ~0x03E000) >= 0x04000000 && (PAddr & ~0x03E000) < 0x04004000)) {
+    *Value = *(DWORD*)(N64MEM + ((PAddr& ~0x3E000) & ~0x2000));
+	}
+	else if (!r4300i_LW_NonMemory(PAddr, Value)) {
 		// TODO: Returning false here is the right thing to do.
 		// But it changes the behavior of the memory editor when viewing MMIO registers.
 		//return FALSE;
@@ -2014,12 +2040,19 @@ BOOL r4300i_SB_VAddr ( MIPS_DWORD VAddr, MIPS_DWORD* Value ) {
 	}
 
 	// DRAM, DMEM, and IMEM can all be accessed directly through the host's virtual memory.
-	if (PAddr < RdramSize || (PAddr >= 0x04000000 && PAddr < 0x04002000)) {
+	if (PAddr < RdramSize) {
 		*(BYTE*)(N64MEM + (PAddr ^ 3)) = Value->UB[0];
 	}
+	else if (((PAddr & ~0x03E000) >= 0x04000000 && (PAddr & ~0x03E000) < 0x04004000)) {
+		int tmp = PAddr & 3;
+		for (int i = 0; i <= tmp;i++)
+      *(BYTE*)(N64MEM + (((PAddr & ~3 & ~0x3E000) & ~0X2000) ^ 3)) = Value->UB[tmp - i];
+		for (int i = tmp+1; i < 4; i++)
+      *(BYTE*)(N64MEM + (((PAddr & ~3 & ~0x3E000) & ~0X2000) ^ 3)) = 0;
+	}
 	else {
-		RegisterCurrentlyWritten = Value;
-		r4300i_SB_NonMemory(PAddr ^ 3, Value->UB[0]);
+	RegisterCurrentlyWritten = Value;
+	r4300i_SB_NonMemory(PAddr ^ 3, Value->UB[0]);
 	}
 	
 	return TRUE;
@@ -2037,8 +2070,15 @@ BOOL r4300i_SB_VAddr_NonCPU ( MIPS_DWORD VAddr, BYTE Value ) {
 	}
 
 	// DRAM, DMEM, and IMEM can all be accessed directly through the host's virtual memory.
-	if (PAddr < RdramSize || (PAddr >= 0x04000000 && PAddr < 0x04002000)) {
+	if (PAddr < RdramSize) {
 		*(BYTE*)(N64MEM + (PAddr ^ 3)) = Value;
+	}
+  else if (((PAddr & ~0x03E000) >= 0x04000000 && (PAddr & ~0x03E000) < 0x04004000)) {
+		int tmp = PAddr & 3;
+		for (int i = 0; i <= tmp;i++)
+      *(BYTE*)(N64MEM + (((PAddr & ~3 & ~0x3E000) & ~0X2000) ^ 3)) = Value->UB[tmp - i];
+		for (int i = tmp+1; i < 4; i++)
+      *(BYTE*)(N64MEM + (((PAddr & ~3 & ~0x3E000) & ~0X2000) ^ 3)) = 0;
 	}
 	else {
 		r4300i_SB_NonMemory(PAddr ^ 3, Value);
@@ -2135,9 +2175,12 @@ BOOL r4300i_SD_VAddr ( MIPS_DWORD VAddr, unsigned _int64 Value ) {
 	}
 
 	// DRAM, DMEM, and IMEM can all be accessed directly through the host's virtual memory.
-	if (PAddr < RdramSize || (PAddr >= 0x04000000 && PAddr < 0x04002000)) {
+	if (PAddr < RdramSize) {
 		*(DWORD*)(N64MEM + PAddr) = *((DWORD*)(&Value)+1);
 		*(DWORD*)(N64MEM + PAddr + 4) = *((DWORD*)(&Value));
+	}
+	else if (((PAddr & ~0x03E000) >= 0x04000000 && (PAddr & ~0x03E000) < 0x04004000)) {
+    *(DWORD*)(N64MEM + ((PAddr & ~0x3E000 & ~0x2000))) = *((DWORD*)(&Value)+1);
 	}
 	else {
 		r4300i_SW_NonMemory(PAddr, *((DWORD*)(&Value) + 1));
@@ -2160,8 +2203,15 @@ BOOL r4300i_SH_VAddr ( MIPS_DWORD VAddr, MIPS_DWORD* Value) {
 	}
 
 	// DRAM, DMEM, and IMEM can all be accessed directly through the host's virtual memory.
-	if (PAddr < RdramSize || (PAddr >= 0x04000000 && PAddr < 0x04002000)) {
+	if (PAddr < RdramSize) {
 		*(WORD*)(N64MEM + (PAddr ^ 2)) = Value->UHW[0];
+	}
+	else if (((PAddr & ~0x03E000) >= 0x04000000 && (PAddr & ~0x03E000) < 0x04004000)) {
+		if ((VAddr & 2) == 0)
+      *(WORD*)(N64MEM + ((PAddr & ~0x3E000) & ~0x2000)) = 0;
+		else
+      *(WORD*)(N64MEM + ((PAddr & ~0x3E000) & ~0x2000)) = Value->UHW[1];
+    *(WORD*)(N64MEM + (((PAddr & ~0x3E000) & ~0x2000) ^ 2)) = Value->UHW[0];
 	}
 	else {
 		RegisterCurrentlyWritten = Value;
@@ -2183,8 +2233,15 @@ BOOL r4300i_SH_VAddr_NonCPU ( MIPS_DWORD VAddr, WORD Value ) {
 	}
 
 	// DRAM, DMEM, and IMEM can all be accessed directly through the host's virtual memory.
-	if (PAddr < RdramSize || (PAddr >= 0x04000000 && PAddr < 0x04002000)) {
+	if (PAddr < RdramSize) {
 		*(WORD*)(N64MEM + (PAddr ^ 2)) = Value;
+	}
+  else if (((PAddr & ~0x03E000) >= 0x04000000 && (PAddr & ~0x03E000) < 0x04004000)) {
+		if ((VAddr & 2) == 0)
+      *(WORD*)(N64MEM + ((PAddr & ~0x3E000) & ~0x2000)) = 0;
+		else
+      *(WORD*)(N64MEM + ((PAddr & ~0x3E000) & ~0x2000)) = Value->UHW[1];
+    *(WORD*)(N64MEM + (((PAddr & ~0x3E000) & ~0x2000) ^ 2)) = Value->UHW[0];
 	}
 	else {
 		r4300i_SH_NonMemory(PAddr ^ 2, Value);
@@ -2262,9 +2319,9 @@ int r4300i_SW_NonMemory ( DWORD PAddr, DWORD Value ) {
 		}
 		break;
 	case 0x04000000: 
-		if (PAddr < 0x04002000) {
+		if (PAddr < 0x04004000) {
 			DWORD OldProtect;
-			
+			PAddr &= ~0x2000;
 			if (VirtualProtect((N64MEM + PAddr), 4, PAGE_READWRITE, &OldProtect) == 0) {
 				DisplayError("Failed to unprotect %X\n2", PAddr);
 			}
@@ -2292,42 +2349,122 @@ int r4300i_SW_NonMemory ( DWORD PAddr, DWORD Value ) {
 			SP_DMA_WRITE();
 			break;
 		case 0x04040010: 
-			if ( ( Value & SP_CLR_HALT ) != 0) { SP_STATUS_REG &= ~SP_STATUS_HALT; }
-			if ( ( Value & SP_SET_HALT ) != 0) { SP_STATUS_REG |= SP_STATUS_HALT;  }
-			if ( ( Value & SP_CLR_BROKE ) != 0) { SP_STATUS_REG &= ~SP_STATUS_BROKE; }
-			if ( ( Value & SP_CLR_INTR ) != 0) { 
-				MI_INTR_REG &= ~MI_INTR_SP; 
-				CheckInterrupts();
-			}
-			if (ShowDebugMessages)
-				if ( ( Value & SP_SET_INTR ) != 0) { DisplayError("SP_SET_INTR"); }
 
-			if ( ( Value & SP_CLR_SSTEP ) != 0) { SP_STATUS_REG &= ~SP_STATUS_SSTEP; }
-			if ( ( Value & SP_SET_SSTEP ) != 0) { SP_STATUS_REG |= SP_STATUS_SSTEP;  }
-			if ( ( Value & SP_CLR_INTR_BREAK ) != 0) { SP_STATUS_REG &= ~SP_STATUS_INTR_BREAK; }
-			if ( ( Value & SP_SET_INTR_BREAK ) != 0) { SP_STATUS_REG |= SP_STATUS_INTR_BREAK;  }
-			if ( ( Value & SP_CLR_SIG0 ) != 0) { SP_STATUS_REG &= ~SP_STATUS_SIG0; }
-			if ( ( Value & SP_SET_SIG0 ) != 0) { SP_STATUS_REG |= SP_STATUS_SIG0;  }
-			if ( ( Value & SP_CLR_SIG1 ) != 0) { SP_STATUS_REG &= ~SP_STATUS_SIG1; }
-			if ( ( Value & SP_SET_SIG1 ) != 0) { SP_STATUS_REG |= SP_STATUS_SIG1;  }
-			if ( ( Value & SP_CLR_SIG2 ) != 0) { SP_STATUS_REG &= ~SP_STATUS_SIG2; }
-			if ( ( Value & SP_SET_SIG2 ) != 0) { SP_STATUS_REG |= SP_STATUS_SIG2;  }
-			if ( ( Value & SP_CLR_SIG3 ) != 0) { SP_STATUS_REG &= ~SP_STATUS_SIG3; }
-			if ( ( Value & SP_SET_SIG3 ) != 0) { SP_STATUS_REG |= SP_STATUS_SIG3;  }
-			if ( ( Value & SP_CLR_SIG4 ) != 0) { SP_STATUS_REG &= ~SP_STATUS_SIG4; }
-			if ( ( Value & SP_SET_SIG4 ) != 0) { SP_STATUS_REG |= SP_STATUS_SIG4;  }
-			if ( ( Value & SP_CLR_SIG5 ) != 0) { SP_STATUS_REG &= ~SP_STATUS_SIG5; }
-			if ( ( Value & SP_SET_SIG5 ) != 0) { SP_STATUS_REG |= SP_STATUS_SIG5;  }
-			if ( ( Value & SP_CLR_SIG6 ) != 0) { SP_STATUS_REG &= ~SP_STATUS_SIG6; }
-			if ( ( Value & SP_SET_SIG6 ) != 0) { SP_STATUS_REG |= SP_STATUS_SIG6;  }
-			if ( ( Value & SP_CLR_SIG7 ) != 0) { SP_STATUS_REG &= ~SP_STATUS_SIG7; }
-			if ( ( Value & SP_SET_SIG7 ) != 0) { SP_STATUS_REG |= SP_STATUS_SIG7;  }
-			
-			if ( ( Value & SP_SET_SIG0 ) != 0 && AudioSignal) 
-			{ 
-				MI_INTR_REG |= MI_INTR_SP; 
-				CheckInterrupts();				
+			switch (Value & (SP_CLR_HALT | SP_SET_HALT))
+			{
+			case SP_CLR_HALT: SP_STATUS_REG &= ~SP_STATUS_HALT;
+				break;
+			case SP_SET_HALT: SP_STATUS_REG |= SP_STATUS_HALT;
+				break;
 			}
+
+			if ( ( Value & SP_CLR_BROKE ) != 0) { SP_STATUS_REG &= ~SP_STATUS_BROKE; }
+
+			//if (ShowDebugMessages)
+			//	if ( ( Value & SP_SET_INTR ) != 0) { DisplayError("SP_SET_INTR"); }
+
+			switch (Value & (SP_CLR_INTR | SP_SET_INTR))
+			{
+			case SP_CLR_INTR: MI_INTR_REG &= ~MI_INTR_SP;
+				CheckInterrupts();
+				break;
+			case SP_SET_INTR: MI_INTR_REG |= MI_INTR_SP;
+				break;
+			}
+			//if (ShowDebugMessages)
+			//	if ((Value & SP_SET_INTR) != 0) { DisplayError("SP_SET_INTR"); }
+
+			switch (Value & (SP_CLR_SSTEP | SP_SET_SSTEP))
+			{
+			case SP_CLR_SSTEP: SP_STATUS_REG &= ~SP_STATUS_SSTEP;
+				break;
+			case SP_SET_SSTEP: SP_STATUS_REG |= SP_STATUS_SSTEP;
+				break;
+			}
+
+			switch (Value & (SP_CLR_INTR_BREAK | SP_SET_INTR_BREAK))
+			{
+			case SP_CLR_INTR_BREAK: SP_STATUS_REG &= ~SP_STATUS_INTR_BREAK;
+				break;
+			case SP_SET_INTR_BREAK: SP_STATUS_REG |= SP_STATUS_INTR_BREAK;
+				break;
+			}
+
+			switch (Value & (SP_CLR_SIG0 | SP_SET_SIG0))
+			{
+			case  SP_CLR_SIG0: SP_STATUS_REG &= ~SP_STATUS_SIG0;
+				break;
+			case  SP_SET_SIG0: SP_STATUS_REG |= SP_STATUS_SIG0;
+				if (AudioSignal)
+				{
+					MI_INTR_REG |= MI_INTR_SP;
+					CheckInterrupts();
+				}
+				break;
+			}
+
+			switch (Value & (SP_CLR_SIG1 | SP_SET_SIG1))
+			{
+			case  SP_CLR_SIG1: SP_STATUS_REG &= ~SP_STATUS_SIG1;
+				break;
+			case  SP_SET_SIG1: SP_STATUS_REG |= SP_STATUS_SIG1;
+				break;
+			}
+
+			switch (Value & (SP_CLR_SIG2 | SP_SET_SIG2))
+			{
+			case  SP_CLR_SIG2: SP_STATUS_REG &= ~SP_STATUS_SIG2;
+				break;
+			case  SP_SET_SIG2: SP_STATUS_REG |= SP_STATUS_SIG2;
+				break;
+			}
+
+			switch (Value & (SP_CLR_SIG3 | SP_SET_SIG3))
+			{
+			case  SP_CLR_SIG3: SP_STATUS_REG &= ~SP_STATUS_SIG3;
+				break;
+			case  SP_SET_SIG3: SP_STATUS_REG |= SP_STATUS_SIG3;
+				break;
+			}
+
+			switch (Value & (SP_CLR_SIG4 | SP_SET_SIG4))
+			{
+			case  SP_CLR_SIG4: SP_STATUS_REG &= ~SP_STATUS_SIG4;
+				break;
+			case  SP_SET_SIG4: SP_STATUS_REG |= SP_STATUS_SIG4;
+				break;
+			}
+
+			switch (Value & (SP_CLR_SIG5 | SP_SET_SIG5))
+			{
+			case  SP_CLR_SIG5: SP_STATUS_REG &= ~SP_STATUS_SIG5;
+				break;
+			case  SP_SET_SIG5: SP_STATUS_REG |= SP_STATUS_SIG5;
+				break;
+			}
+
+			switch (Value & (SP_CLR_SIG6 | SP_SET_SIG6))
+			{
+			case  SP_CLR_SIG6: SP_STATUS_REG &= ~SP_STATUS_SIG6;
+				break;
+			case  SP_SET_SIG6: SP_STATUS_REG |= SP_STATUS_SIG6;
+				break;
+			}
+
+			switch (Value & (SP_CLR_SIG7 | SP_SET_SIG7))
+			{
+			case  SP_CLR_SIG7: SP_STATUS_REG &= ~SP_STATUS_SIG7;
+				break;
+			case  SP_SET_SIG7: SP_STATUS_REG |= SP_STATUS_SIG7;
+				break;
+			}
+
+
+			//if ( ( Value & SP_SET_SIG0 ) != 0 && AudioSignal) 
+			//{ 
+			//	MI_INTR_REG |= MI_INTR_SP; 
+			//	CheckInterrupts();				
+			//}
 
 			// Automated Delay RSP / Delay RDP, based on information from Mupen64 Plus HLE RSP source code
 			// // If the ucode boot size (DMEM + 0xFED) is not within 0 to 1000 then assume the rsp is being called by the operating system
@@ -2634,10 +2771,14 @@ BOOL r4300i_SW_VAddr ( MIPS_DWORD VAddr, DWORD Value ) {
 	}
 
 	// DRAM, DMEM, and IMEM can all be accessed directly through the host's virtual memory.
-	if (PAddr < RdramSize || (PAddr >= 0x04000000 && PAddr < 0x04002000)) {
+	if (PAddr < RdramSize) {
 		*(DWORD*)(N64MEM + PAddr) = Value;
 	}
-	else {
+	else if (((PAddr & ~0x03E000) >= 0x04000000 && (PAddr & ~0x03E000) < 0x04004000)) {
+    *(DWORD*)(N64MEM + ((PAddr & ~0x3E000) & ~0x2000)) = Value;
+	}
+  else
+	{
 		r4300i_SW_NonMemory(PAddr, Value);
 	}
 
@@ -2656,8 +2797,11 @@ BOOL r4300i_SW_VAddr_NonCPU ( MIPS_DWORD VAddr, DWORD Value ) {
 	}
 
 	// DRAM, DMEM, and IMEM can all be accessed directly through the host's virtual memory.
-	if (PAddr < RdramSize || (PAddr >= 0x04000000 && PAddr < 0x04002000)) {
+	if (PAddr < RdramSize) {
 		*(DWORD*)(N64MEM + PAddr) = Value;
+	}
+  else if (((PAddr & ~0x03E000) >= 0x04000000 && (PAddr & ~0x03E000) < 0x04004000)) {
+    *(DWORD*)(N64MEM + ((PAddr & ~0x3E000) & ~0x2000)) = Value;
 	}
 	else {
 		r4300i_SW_NonMemory(PAddr, Value);
@@ -2669,7 +2813,7 @@ BOOL r4300i_SW_VAddr_NonCPU ( MIPS_DWORD VAddr, DWORD Value ) {
 void Release_Memory ( void ) {
 	FreeSyncMemory();
 	if (OrigMem != NULL) { VirtualFree(OrigMem,0,MEM_RELEASE); }
-	CloseTempRomFile();
+	CloseMappedRomFile();
 	VirtualFree( TLB_ReadMap, 0 , MEM_RELEASE);
 	VirtualFree( TLB_WriteMap, 0 , MEM_RELEASE);
 	VirtualFree( N64MEM, 0 , MEM_RELEASE);

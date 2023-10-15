@@ -595,8 +595,8 @@ InterruptsDisabled:
 	CurrentFrame = 0;
 	CurrentPercent = 0;
 	DisplayFPS();
-	//DisplayError(GS(MSG_PERM_LOOP));
-	//ExitThread(0);
+	DisplayError(GS(MSG_PERM_LOOP));
+	ExitThread(0);
 }
 
 BOOL Machine_LoadState(void) {
@@ -1223,20 +1223,16 @@ void RefreshScreen (void ){
 }
 
 #define NUMCYCLES 200
+#define RSP_TIMER_INC 100
 int RSPisRunning = 0;
 int CheckRSPInterrupt = 0;
 
 void RunRsp (void) {
-	if (RSPisRunning) {
-		DoRspCycles(NUMCYCLES);
-		if ((SP_STATUS_REG & SP_STATUS_HALT) & 1 != 0)
-			RSPisRunning = 0;
-	}
 	if ( ( SP_STATUS_REG & SP_STATUS_HALT ) == 0) {
 		DWORD Task = *( DWORD *)(DMEM + 0xFC0);
 
 		if (RSPisRunning) {
-			DoRspCycles(NUMCYCLES);
+			int temp = DoRspCycles(NUMCYCLES);
 			if ((SP_STATUS_REG & SP_STATUS_HALT) != 0)
 			{
 				RSPisRunning = 0;
@@ -1244,8 +1240,11 @@ void RunRsp (void) {
 					CheckInterrupts();
 				CheckRSPInterrupt = 0;
 			}
-			//else
-			//	SP_STATUS_REG &= ~SP_STATUS_BROKE;
+			else
+			{
+				Timers.NextTimer[RspTimer] = RSP_TIMER_INC;
+				Timers.Active[RspTimer] = TRUE;
+			}
 			return;
 		}
 
@@ -1310,8 +1309,6 @@ void RunRsp (void) {
 			DoRspCycles(NUMCYCLES);
 			if ((SP_STATUS_REG & SP_STATUS_HALT) != 0)
 				RSPisRunning = 0;
-			//else
-			//	SP_STATUS_REG &= ~SP_STATUS_BROKE;
 			StartTimer(Label);
 		} else {
 			RSPisRunning = 1;
@@ -1319,8 +1316,12 @@ void RunRsp (void) {
 
 			if ((SP_STATUS_REG & SP_STATUS_HALT) != 0)
 				RSPisRunning = 0;
-			//else
-			//	SP_STATUS_REG &= ~SP_STATUS_BROKE;
+			else
+
+			{
+				Timers.NextTimer[RspTimer] = RSP_TIMER_INC;
+				Timers.Active[RspTimer] = TRUE;
+			}
 		}
 #ifdef CFB_READ
 			if (VI_ORIGIN_REG > 0x280) {
@@ -1329,7 +1330,8 @@ void RunRsp (void) {
 #endif
 		if ((SP_STATUS_REG & SP_STATUS_HALT) == 0) {
 			if ((DPC_STATUS_REG & DPC_STATUS_FREEZE) == 0) {
-				ChangeTimer(RspTimer, Timers.Timer + 100);
+				Timers.NextTimer[RspTimer] = RSP_TIMER_INC;
+				Timers.Active[RspTimer] = TRUE;
 			}
 		}
 	} 

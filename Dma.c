@@ -483,7 +483,7 @@ void SP_DMA_READ(void) {
 	length = ((length + 7) & 0x01FF8);
 	for (int i = 0; i <= count; i++)
 	{
-		if (SP_MEM_ADDR_REG & 0x1000)
+		if (IDMEM_SELECT == 0x1000)
 		{
 			for (int ix = 0; ix < length; ix++)
 			{
