@@ -47,6 +47,15 @@ BYTE ISViewerBuffer[0x200];
 BYTE ISViewerTempBuffer[0x1000+0x200+1];
 DWORD ISViewerTempBufferLength;
 
+int Addressing64Bits;
+
+int Allocate_ROM ( void ) {	
+	ROM = (BYTE *)malloc(RomFileSize);
+	WrittenToRom = FALSE;
+	WrittenToRomCount = 0;
+	return ROM == NULL ? FALSE : TRUE;
+}
+
 int Allocate_Memory ( void ) {	
 	RdramSize = 0x400000;
 	
@@ -1420,19 +1429,25 @@ int r4300i_LB_NonMemory ( DWORD PAddr, DWORD * Value, BOOL SignExtend ) {
 	}
 }
 
-BOOL r4300i_LB_VAddr ( DWORD VAddr, BYTE * Value ) {
+BOOL r4300i_LB_VAddr ( MIPS_DWORD VAddr, BYTE * Value ) {
 	CheckForWatchPoint(VAddr, WP_READ, sizeof(BYTE));
 
-	if (TLB_ReadMap[VAddr >> 12] == 0) { return FALSE; }
-
-	DWORD PAddr = (DWORD)TLB_ReadMap[VAddr >> 12] + VAddr - (DWORD)N64MEM;
+	DWORD PAddr;
+	if (!Addressing64Bits) {
+		if (TLB_ReadMap[VAddr.UW[0] >> 12] == 0) { return FALSE; }
+		PAddr = (DWORD)TLB_ReadMap[VAddr.UW[0] >> 12] + VAddr.UW[0] - (DWORD)N64MEM;
+	}
+	else {
+		LogMessage("TODO: LB64");
+		return FALSE;
+	}
 
 	// DRAM, DMEM, and IMEM can all be accessed directly through the host's virtual memory.
 	if (PAddr < RdramSize) {
-		*Value = *(BYTE*)(TLB_ReadMap[VAddr >> 12] + (VAddr ^ 3));
+		*Value = *(BYTE*)(N64MEM + (PAddr ^ 3));
 	}
 	else if (((PAddr & ~0x03E000) >= 0x04000000 && (PAddr & ~0x03E000) < 0x04004000)) {
-		*Value = *(BYTE*)(TLB_ReadMap[(VAddr & ~0x3E000) >> 12] + (((VAddr & ~0x3E000) & ~0x2000) ^ 3));
+    *Value = *(BYTE*)(N64MEM + (((PAddr & ~0x3E000) & ~0x2000) ^ 3));
 	}
 	else {
 		DWORD DValue = 0;
@@ -1442,16 +1457,22 @@ BOOL r4300i_LB_VAddr ( DWORD VAddr, BYTE * Value ) {
 	return TRUE;
 }
 
-BOOL r4300i_LB_VAddr_NonCPU(DWORD VAddr, BYTE *Value) {
-	if (TLB_ReadMap[VAddr >> 12] == 0) { return FALSE; }
-
-	DWORD PAddr = (DWORD)TLB_ReadMap[VAddr >> 12] + VAddr - (DWORD)N64MEM;
+BOOL r4300i_LB_VAddr_NonCPU(MIPS_DWORD VAddr, BYTE *Value) {
+	DWORD PAddr;
+	if (!Addressing64Bits) {
+		if (TLB_ReadMap[VAddr.UW[0] >> 12] == 0) { return FALSE; }
+		PAddr = (DWORD)TLB_ReadMap[VAddr.UW[0] >> 12] + VAddr.UW[0] - (DWORD)N64MEM;
+	}
+	else {
+		LogMessage("TODO: LB64");
+		return FALSE;
+	}
 
 	// DRAM, DMEM, and IMEM can all be accessed directly through the host's virtual memory.
 	if (PAddr < RdramSize) {
-		*Value = *(BYTE *)(TLB_ReadMap[VAddr >> 12] + (VAddr ^ 3));
+		*Value = *(BYTE*)(N64MEM + (PAddr ^ 3));
 	} else if (((PAddr & ~0x03E000) >= 0x04000000 && (PAddr & ~0x03E000) < 0x04004000)) {
-		*Value = *(BYTE*)(TLB_ReadMap[(VAddr & ~0x3E000) >> 12] + (((VAddr & ~0x3E000) & ~0x2000) ^ 3));
+    *Value = *(BYTE*)(N64MEM + (((PAddr & ~0x3E000) & ~0x2000) ^ 3));
 	}
 	else {
 		DWORD DValue = 0;
@@ -1463,21 +1484,27 @@ BOOL r4300i_LB_VAddr_NonCPU(DWORD VAddr, BYTE *Value) {
 	return TRUE;
 }
 
-BOOL r4300i_LD_VAddr ( DWORD VAddr, unsigned _int64 * Value ) {
+BOOL r4300i_LD_VAddr ( MIPS_DWORD VAddr, unsigned _int64 * Value ) {
 	CheckForWatchPoint(VAddr, WP_READ, sizeof(unsigned _int64));
 
-	if (TLB_ReadMap[VAddr >> 12] == 0) { return FALSE; }
-
-	DWORD PAddr = (DWORD)TLB_ReadMap[VAddr >> 12] + VAddr - (DWORD)N64MEM;
+	DWORD PAddr;
+	if (!Addressing64Bits) {
+		if (TLB_ReadMap[VAddr.UW[0] >> 12] == 0) { return FALSE; }
+		PAddr = (DWORD)TLB_ReadMap[VAddr.UW[0] >> 12] + VAddr.UW[0] - (DWORD)N64MEM;
+	}
+	else {
+		LogMessage("TODO: LD64");
+		return FALSE;
+	}
 
 	// DRAM, DMEM, and IMEM can all be accessed directly through the host's virtual memory.
 	if (PAddr < RdramSize) {
-		*((DWORD*)(Value)+1) = *(DWORD*)(TLB_ReadMap[VAddr >> 12] + VAddr);
-		*((DWORD*)(Value)) = *(DWORD*)(TLB_ReadMap[VAddr >> 12] + VAddr + 4);
+		*((DWORD*)(Value)+1) = *(DWORD*)(N64MEM + PAddr);
+		*((DWORD*)(Value)) = *(DWORD*)(N64MEM + PAddr + 4);
 	}
 	else if (((PAddr & ~0x03E000) >= 0x04000000 && (PAddr & ~0x03E000) < 0x04004000)) {
-		*((DWORD*)(Value)+1) = *(DWORD*)(TLB_ReadMap[(VAddr & ~0x3E000) >> 12] + ((VAddr & ~0x3E000) & ~0x2000));
-		*((DWORD*)(Value)) = *(DWORD*)(TLB_ReadMap[(VAddr & ~0x3E000) >> 12] + ((VAddr & ~0x3E000) & ~0x2000) + 4);
+    *((DWORD*)(Value)+1) = *(DWORD*)(N64MEM + ((PAddr & ~0x3E000) & ~0x2000));
+		*((DWORD*)(Value)) = *(DWORD*)(N64MEM + (((PAddr + 4) & ~0x3E000) & ~0x2000));
 	}
 	else {
 		DWORD DValue = 0;
@@ -1552,19 +1579,25 @@ int r4300i_LH_NonMemory ( DWORD PAddr, DWORD * Value, int SignExtend ) {
 	}
 }
 
-BOOL r4300i_LH_VAddr ( DWORD VAddr, WORD * Value ) {
+BOOL r4300i_LH_VAddr ( MIPS_DWORD VAddr, WORD * Value ) {
 	CheckForWatchPoint(VAddr, WP_READ, sizeof(WORD));
 
-	if (TLB_ReadMap[VAddr >> 12] == 0) { return FALSE; }
-
-	DWORD PAddr = (DWORD)TLB_ReadMap[VAddr >> 12] + VAddr - (DWORD)N64MEM;
+	DWORD PAddr;
+	if (!Addressing64Bits) {
+		if (TLB_ReadMap[VAddr.UW[0] >> 12] == 0) { return FALSE; }
+		PAddr = (DWORD)TLB_ReadMap[VAddr.UW[0] >> 12] + VAddr.UW[0] - (DWORD)N64MEM;
+	}
+	else {
+		LogMessage("TODO: LH64");
+		return FALSE;
+	}
 
 	// DRAM, DMEM, and IMEM can all be accessed directly through the host's virtual memory.
 	if (PAddr < RdramSize) {
-		*Value = *(WORD*)(TLB_ReadMap[VAddr >> 12] + (VAddr ^ 2));
+		*Value = *(WORD*)(N64MEM + (PAddr ^ 2));
 	}
 	else if (((PAddr & ~0x03E000) >= 0x04000000 && (PAddr & ~0x03E000) < 0x04004000)) {
-		*Value = *(WORD*)(TLB_ReadMap[(VAddr & ~0x3E000) >> 12] + (((VAddr & ~0x3E000) & ~0x2000) ^ 2));
+    *Value = *(WORD*)(N64MEM + (((PAddr & ~0x3E000) & ~0x2000) ^ 2));
 	}
 	else {
 		DWORD DValue = 0;
@@ -1574,16 +1607,22 @@ BOOL r4300i_LH_VAddr ( DWORD VAddr, WORD * Value ) {
 	return TRUE;
 }
 
-BOOL r4300i_LH_VAddr_NonCPU ( DWORD VAddr, WORD * Value ) {
-	if (TLB_ReadMap[VAddr >> 12] == 0) { return FALSE; }
-
-	DWORD PAddr = (DWORD)TLB_ReadMap[VAddr >> 12] + VAddr - (DWORD)N64MEM;
+BOOL r4300i_LH_VAddr_NonCPU ( MIPS_DWORD VAddr, WORD * Value ) {
+	DWORD PAddr;
+	if (!Addressing64Bits) {
+		if (TLB_ReadMap[VAddr.UW[0] >> 12] == 0) { return FALSE; }
+		PAddr = (DWORD)TLB_ReadMap[VAddr.UW[0] >> 12] + VAddr.UW[0] - (DWORD)N64MEM;
+	}
+	else {
+		LogMessage("TODO: LH64");
+		return FALSE;
+	}
 
 	// DRAM, DMEM, and IMEM can all be accessed directly through the host's virtual memory.
 	if (PAddr < RdramSize) {
-		*Value = *(WORD *)(TLB_ReadMap[VAddr >> 12] + (VAddr ^ 2));
-	} else if (((PAddr & ~0x03E000) >= 0x04000000 && (PAddr & ~0x03E000) < 0x04004000)) {
-		*Value = *(WORD*)(TLB_ReadMap[(VAddr & ~0x3E000) >> 12] + (((VAddr & ~0x3E000) & ~0x2000) ^ 2));
+		*Value = *(WORD*)(N64MEM + (PAddr ^ 2));
+	else if (((PAddr & ~0x03E000) >= 0x04000000 && (PAddr & ~0x03E000) < 0x04004000)) {
+    *Value = *(WORD*)(N64MEM + (((PAddr & ~0x3E000) & ~0x2000) ^ 2));
 	}
 	else {
 		DWORD DValue = 0;
@@ -1857,19 +1896,25 @@ int r4300i_LW_NonMemory ( DWORD PAddr, DWORD * Value ) {
 	return TRUE;
 }
 
-BOOL r4300i_LW_VAddr ( DWORD VAddr, DWORD * Value ) {
+BOOL r4300i_LW_VAddr ( MIPS_DWORD VAddr, DWORD * Value ) {
 	CheckForWatchPoint(VAddr, WP_READ, sizeof(DWORD));
-	
-	if (TLB_ReadMap[VAddr >> 12] == 0) { return FALSE; }
 
-	DWORD PAddr = (DWORD)TLB_ReadMap[VAddr >> 12] + VAddr - (DWORD)N64MEM;
+	DWORD PAddr;
+	if (!Addressing64Bits) {
+		if (TLB_ReadMap[VAddr.UW[0] >> 12] == 0) { return FALSE; }
+		PAddr = (DWORD)TLB_ReadMap[VAddr.UW[0] >> 12] + VAddr.UW[0] - (DWORD)N64MEM;
+	}
+	else {
+		LogMessage("TODO: LW64");
+		return FALSE;
+	}
 	
 	// DRAM, DMEM, and IMEM can all be accessed directly through the host's virtual memory.
-	if (PAddr < RdramSize ) {
-		*Value = *(DWORD*)(TLB_ReadMap[VAddr >> 12] + VAddr);
+	if (PAddr < RdramSize) {
+		*Value = *(DWORD*)(N64MEM + PAddr);
 	}
 	else if (((PAddr & ~0x03E000) >= 0x04000000 && (PAddr & ~0x03E000) < 0x04004000)) {
-		*Value = *(DWORD*)(TLB_ReadMap[(VAddr & ~0x3E000) >> 12] + ((VAddr & ~0x3E000) & ~0x2000));
+    *Value = *(DWORD*)(N64MEM + ((PAddr& ~0x3E000) & ~0x2000));
 	}
 	else {
 		r4300i_LW_NonMemory(PAddr, Value);
@@ -1877,17 +1922,23 @@ BOOL r4300i_LW_VAddr ( DWORD VAddr, DWORD * Value ) {
 	return TRUE;
 }
 
-BOOL r4300i_LW_VAddr_NonCPU ( DWORD VAddr, DWORD * Value ) {
-	if (TLB_ReadMap[VAddr >> 12] == 0) { return FALSE; }
-
-	DWORD PAddr = (DWORD)TLB_ReadMap[VAddr >> 12] + VAddr - (DWORD)N64MEM;
+BOOL r4300i_LW_VAddr_NonCPU ( MIPS_DWORD VAddr, DWORD * Value ) {
+	DWORD PAddr;
+	if (!Addressing64Bits) {
+		if (TLB_ReadMap[VAddr.UW[0] >> 12] == 0) { return FALSE; }
+		PAddr = (DWORD)TLB_ReadMap[VAddr.UW[0] >> 12] + VAddr.UW[0] - (DWORD)N64MEM;
+	}
+	else {
+		LogMessage("TODO: LW64");
+		return FALSE;
+	}
 
 	// DRAM, DMEM, and IMEM can all be accessed directly through the host's virtual memory.
 	if (PAddr < RdramSize) {
-		*Value = *(DWORD *)(TLB_ReadMap[VAddr >> 12] + VAddr);
-	}
+		*Value = *(DWORD*)(N64MEM + PAddr);
+	} 
 	else if (((PAddr & ~0x03E000) >= 0x04000000 && (PAddr & ~0x03E000) < 0x04004000)) {
-		*Value = *(DWORD*)(TLB_ReadMap[(VAddr & ~0x3E000) >> 12] + ((VAddr & ~0x3E000) & ~0x2000));
+    *Value = *(DWORD*)(N64MEM + ((PAddr& ~0x3E000) & ~0x2000));
 	}
 	else if (!r4300i_LW_NonMemory(PAddr, Value)) {
 		// TODO: Returning false here is the right thing to do.
@@ -1975,25 +2026,29 @@ int r4300i_SB_NonMemory ( DWORD PAddr, BYTE Value ) {
 	return TRUE;
 }
 
-BOOL r4300i_SB_VAddr ( DWORD VAddr, MIPS_DWORD* Value ) {
+BOOL r4300i_SB_VAddr ( MIPS_DWORD VAddr, MIPS_DWORD* Value ) {
 	CheckForWatchPoint(VAddr, WP_WRITE, sizeof(BYTE));
 
-	if (TLB_WriteMap[VAddr >> 12] == 0) { return FALSE; }
-
-	DWORD PAddr = (DWORD)TLB_WriteMap[VAddr >> 12] + VAddr - (DWORD)N64MEM;
+	DWORD PAddr;
+	if (!Addressing64Bits) {
+		if (TLB_WriteMap[VAddr.UW[0] >> 12] == 0) { return FALSE; }
+		PAddr = (DWORD)TLB_WriteMap[VAddr.UW[0] >> 12] + VAddr.UW[0] - (DWORD)N64MEM;
+	}
+	else {
+		LogMessage("TODO: SB64");
+		return FALSE;
+	}
 
 	// DRAM, DMEM, and IMEM can all be accessed directly through the host's virtual memory.
 	if (PAddr < RdramSize) {
-		*(BYTE*)(TLB_WriteMap[VAddr >> 12] + (VAddr ^ 3)) = Value->UB[0];
+		*(BYTE*)(N64MEM + (PAddr ^ 3)) = Value->UB[0];
 	}
 	else if (((PAddr & ~0x03E000) >= 0x04000000 && (PAddr & ~0x03E000) < 0x04004000)) {
-		if (PAddr < 0x04001000)
-			VAddr += 0;
-		int tmp = VAddr & 3;
+		int tmp = PAddr & 3;
 		for (int i = 0; i <= tmp;i++)
-			*(BYTE*)(TLB_WriteMap[(VAddr & ~0x3E000) >> 12] + ((i + (VAddr & ~3 & ~0x3E000) & ~0x2000) ^ 3)) = Value->UB[tmp - i];
+      *(BYTE*)(N64MEM + (((PAddr & ~3 & ~0x3E000) & ~0X2000) ^ 3)) = Value->UB[tmp - i];
 		for (int i = tmp+1; i < 4; i++)
-			*(BYTE*)(TLB_WriteMap[(VAddr & ~0x3E000) >> 12] + (((i)+(VAddr & ~3 & ~0x3E000) & ~0x2000) ^ 3)) = 0;
+      *(BYTE*)(N64MEM + (((PAddr & ~3 & ~0x3E000) & ~0X2000) ^ 3)) = 0;
 	}
 	else {
 	RegisterCurrentlyWritten = Value;
@@ -2003,9 +2058,32 @@ BOOL r4300i_SB_VAddr ( DWORD VAddr, MIPS_DWORD* Value ) {
 	return TRUE;
 }
 
-BOOL r4300i_SB_VAddr_NonCPU ( DWORD VAddr, BYTE Value ) {
-	if (TLB_WriteMap[VAddr >> 12] == 0) { return FALSE; }
-	*(BYTE *)(TLB_WriteMap[VAddr >> 12] + (VAddr ^ 3)) = Value;
+BOOL r4300i_SB_VAddr_NonCPU ( MIPS_DWORD VAddr, BYTE Value ) {
+	DWORD PAddr;
+	if (!Addressing64Bits) {
+		if (TLB_WriteMap[VAddr.UW[0] >> 12] == 0) { return FALSE; }
+		PAddr = (DWORD)TLB_WriteMap[VAddr.UW[0] >> 12] + VAddr.UW[0] - (DWORD)N64MEM;
+	}
+	else {
+		LogMessage("TODO: SB64");
+		return FALSE;
+	}
+
+	// DRAM, DMEM, and IMEM can all be accessed directly through the host's virtual memory.
+	if (PAddr < RdramSize) {
+		*(BYTE*)(N64MEM + (PAddr ^ 3)) = Value;
+	}
+  else if (((PAddr & ~0x03E000) >= 0x04000000 && (PAddr & ~0x03E000) < 0x04004000)) {
+		int tmp = PAddr & 3;
+		for (int i = 0; i <= tmp;i++)
+      *(BYTE*)(N64MEM + (((PAddr & ~3 & ~0x3E000) & ~0X2000) ^ 3)) = Value->UB[tmp - i];
+		for (int i = tmp+1; i < 4; i++)
+      *(BYTE*)(N64MEM + (((PAddr & ~3 & ~0x3E000) & ~0X2000) ^ 3)) = 0;
+	}
+	else {
+		r4300i_SB_NonMemory(PAddr ^ 3, Value);
+	}
+	
 	return TRUE;
 }
 
@@ -2083,21 +2161,26 @@ int r4300i_SH_NonMemory ( DWORD PAddr, WORD Value ) {
 	return TRUE;
 }
 
-BOOL r4300i_SD_VAddr ( DWORD VAddr, unsigned _int64 Value ) {
+BOOL r4300i_SD_VAddr ( MIPS_DWORD VAddr, unsigned _int64 Value ) {
 	CheckForWatchPoint(VAddr, WP_WRITE, sizeof(unsigned _int64));
 
-	if (TLB_WriteMap[VAddr >> 12] == 0) { return FALSE; }
-
-	DWORD PAddr = (DWORD)TLB_WriteMap[VAddr >> 12] + VAddr - (DWORD)N64MEM;
+	DWORD PAddr;
+	if (!Addressing64Bits) {
+		if (TLB_WriteMap[VAddr.UW[0] >> 12] == 0) { return FALSE; }
+		PAddr = (DWORD)TLB_WriteMap[VAddr.UW[0] >> 12] + VAddr.UW[0] - (DWORD)N64MEM;
+	}
+	else {
+		LogMessage("TODO: SD64");
+		return FALSE;
+	}
 
 	// DRAM, DMEM, and IMEM can all be accessed directly through the host's virtual memory.
 	if (PAddr < RdramSize) {
-		*(DWORD*)(TLB_WriteMap[VAddr >> 12] + VAddr) = *((DWORD*)(&Value) + 1);
-		*(DWORD*)(TLB_WriteMap[VAddr >> 12] + VAddr + 4) = *((DWORD*)(&Value));
+		*(DWORD*)(N64MEM + PAddr) = *((DWORD*)(&Value)+1);
+		*(DWORD*)(N64MEM + PAddr + 4) = *((DWORD*)(&Value));
 	}
 	else if (((PAddr & ~0x03E000) >= 0x04000000 && (PAddr & ~0x03E000) < 0x04004000)) {
-		*(DWORD*)(TLB_WriteMap[(VAddr & ~0x3E000) >> 12] + ((VAddr & ~0x3E000) & ~0x2000)) = *((DWORD*)(&Value) + 1);
-		//*(DWORD*)(TLB_WriteMap[(VAddr & ~0x3E000) >> 12] + ((VAddr & ~0x3E000) & ~0x2000) + 4) = *((DWORD*)(&Value));
+    *(DWORD*)(N64MEM + ((PAddr & ~0x3E000 & ~0x2000))) = *((DWORD*)(&Value)+1);
 	}
 	else {
 		r4300i_SW_NonMemory(PAddr, *((DWORD*)(&Value) + 1));
@@ -2106,22 +2189,29 @@ BOOL r4300i_SD_VAddr ( DWORD VAddr, unsigned _int64 Value ) {
 	return TRUE;
 }
 
-BOOL r4300i_SH_VAddr ( DWORD VAddr, MIPS_DWORD* Value) {
+BOOL r4300i_SH_VAddr ( MIPS_DWORD VAddr, MIPS_DWORD* Value) {
 	CheckForWatchPoint(VAddr, WP_WRITE, sizeof(WORD));
-	if (TLB_WriteMap[VAddr >> 12] == 0) { return FALSE; }
 
-	DWORD PAddr = (DWORD)TLB_WriteMap[VAddr >> 12] + VAddr - (DWORD)N64MEM;
+	DWORD PAddr;
+	if (!Addressing64Bits) {
+		if (TLB_WriteMap[VAddr.UW[0] >> 12] == 0) { return FALSE; }
+		PAddr = (DWORD)TLB_WriteMap[VAddr.UW[0] >> 12] + VAddr.UW[0] - (DWORD)N64MEM;
+	}
+	else {
+		LogMessage("TODO: SH64");
+		return FALSE;
+	}
 
 	// DRAM, DMEM, and IMEM can all be accessed directly through the host's virtual memory.
 	if (PAddr < RdramSize) {
-		*(WORD*)(TLB_WriteMap[VAddr >> 12] + (VAddr ^ 2)) = Value->UHW[0];
+		*(WORD*)(N64MEM + (PAddr ^ 2)) = Value->UHW[0];
 	}
 	else if (((PAddr & ~0x03E000) >= 0x04000000 && (PAddr & ~0x03E000) < 0x04004000)) {
 		if ((VAddr & 2) == 0)
-			*(WORD*)(TLB_WriteMap[(VAddr & ~0x3E000) >> 12] + (((VAddr & ~0x3E000) & ~0x2000))) = 0;
+      *(WORD*)(N64MEM + ((PAddr & ~0x3E000) & ~0x2000)) = 0;
 		else
-			*(WORD*)(TLB_WriteMap[(VAddr & ~0x3E000) >> 12] + (((VAddr & ~0x3E000) & ~0x2000))) = Value->UHW[1];
-		*(WORD*)(TLB_WriteMap[(VAddr & ~0x3E000) >> 12] + (((VAddr & ~0x3E000) & ~0x2000) ^ 2)) = Value->UHW[0];
+      *(WORD*)(N64MEM + ((PAddr & ~0x3E000) & ~0x2000)) = Value->UHW[1];
+    *(WORD*)(N64MEM + (((PAddr & ~0x3E000) & ~0x2000) ^ 2)) = Value->UHW[0];
 	}
 	else {
 		RegisterCurrentlyWritten = Value;
@@ -2131,9 +2221,32 @@ BOOL r4300i_SH_VAddr ( DWORD VAddr, MIPS_DWORD* Value) {
 	return TRUE;
 }
 
-BOOL r4300i_SH_VAddr_NonCPU ( DWORD VAddr, WORD Value ) {
-	if (TLB_WriteMap[VAddr >> 12] == 0) { return FALSE; }
-	*(WORD *)(TLB_WriteMap[VAddr >> 12] + (VAddr ^ 2)) = Value;
+BOOL r4300i_SH_VAddr_NonCPU ( MIPS_DWORD VAddr, WORD Value ) {
+	DWORD PAddr;
+	if (!Addressing64Bits) {
+		if (TLB_WriteMap[VAddr.UW[0] >> 12] == 0) { return FALSE; }
+		PAddr = (DWORD)TLB_WriteMap[VAddr.UW[0] >> 12] + VAddr.UW[0] - (DWORD)N64MEM;
+	}
+	else {
+		LogMessage("TODO: SH64");
+		return FALSE;
+	}
+
+	// DRAM, DMEM, and IMEM can all be accessed directly through the host's virtual memory.
+	if (PAddr < RdramSize) {
+		*(WORD*)(N64MEM + (PAddr ^ 2)) = Value;
+	}
+  else if (((PAddr & ~0x03E000) >= 0x04000000 && (PAddr & ~0x03E000) < 0x04004000)) {
+		if ((VAddr & 2) == 0)
+      *(WORD*)(N64MEM + ((PAddr & ~0x3E000) & ~0x2000)) = 0;
+		else
+      *(WORD*)(N64MEM + ((PAddr & ~0x3E000) & ~0x2000)) = Value->UHW[1];
+    *(WORD*)(N64MEM + (((PAddr & ~0x3E000) & ~0x2000) ^ 2)) = Value->UHW[0];
+	}
+	else {
+		r4300i_SH_NonMemory(PAddr ^ 2, Value);
+	}
+	
 	return TRUE;
 }
 
@@ -2644,20 +2757,27 @@ int r4300i_SW_NonMemory ( DWORD PAddr, DWORD Value ) {
 	return TRUE;
 }
 
-BOOL r4300i_SW_VAddr ( DWORD VAddr, DWORD Value ) {
+BOOL r4300i_SW_VAddr ( MIPS_DWORD VAddr, DWORD Value ) {
 	CheckForWatchPoint(VAddr, WP_WRITE, sizeof(DWORD));
 
-	if (TLB_WriteMap[VAddr >> 12] == 0) { return FALSE; }
-
-	DWORD PAddr = (DWORD)TLB_WriteMap[VAddr >> 12] + VAddr - (DWORD)N64MEM;
+	DWORD PAddr;
+	if (!Addressing64Bits) {
+		if (TLB_WriteMap[VAddr.UW[0] >> 12] == 0) { return FALSE; }
+		PAddr = (DWORD)TLB_WriteMap[VAddr.UW[0] >> 12] + VAddr.UW[0] - (DWORD)N64MEM;
+	}
+	else {
+		LogMessage("TODO: SW64");
+		return FALSE;
+	}
 
 	// DRAM, DMEM, and IMEM can all be accessed directly through the host's virtual memory.
 	if (PAddr < RdramSize) {
-		*(DWORD*)(TLB_WriteMap[VAddr >> 12] + VAddr) = Value;
+		*(DWORD*)(N64MEM + PAddr) = Value;
 	}
 	else if (((PAddr & ~0x03E000) >= 0x04000000 && (PAddr & ~0x03E000) < 0x04004000)) {
-		*(DWORD*)(TLB_WriteMap[(VAddr & ~0x3E000) >> 12] + ((VAddr & ~0x3E000) & ~0x2000)) = Value;
-	} else
+    *(DWORD*)(N64MEM + ((PAddr & ~0x3E000) & ~0x2000)) = Value;
+	}
+  else
 	{
 		r4300i_SW_NonMemory(PAddr, Value);
 	}
@@ -2665,9 +2785,28 @@ BOOL r4300i_SW_VAddr ( DWORD VAddr, DWORD Value ) {
 	return TRUE;
 }
 
-BOOL r4300i_SW_VAddr_NonCPU ( DWORD VAddr, DWORD Value ) {
-	if (TLB_WriteMap[VAddr >> 12] == 0) { return FALSE; }
-	*(DWORD *)(TLB_WriteMap[VAddr >> 12] + VAddr) = Value;
+BOOL r4300i_SW_VAddr_NonCPU ( MIPS_DWORD VAddr, DWORD Value ) {
+	DWORD PAddr;
+	if (!Addressing64Bits) {
+		if (TLB_WriteMap[VAddr.UW[0] >> 12] == 0) { return FALSE; }
+		PAddr = (DWORD)TLB_WriteMap[VAddr.UW[0] >> 12] + VAddr.UW[0] - (DWORD)N64MEM;
+	}
+	else {
+		LogMessage("TODO: SW64");
+		return FALSE;
+	}
+
+	// DRAM, DMEM, and IMEM can all be accessed directly through the host's virtual memory.
+	if (PAddr < RdramSize) {
+		*(DWORD*)(N64MEM + PAddr) = Value;
+	}
+  else if (((PAddr & ~0x03E000) >= 0x04000000 && (PAddr & ~0x03E000) < 0x04004000)) {
+    *(DWORD*)(N64MEM + ((PAddr & ~0x3E000) & ~0x2000)) = Value;
+	}
+	else {
+		r4300i_SW_NonMemory(PAddr, Value);
+	}
+	
 	return TRUE;
 }
 
@@ -2754,4 +2893,13 @@ void ResetRecompCode (void) {
 //		N64_Blocks.NoOfPifRomBlocks = 0;
 //		memset(JumpTable + (0x1FC00000 >> 2),0,0x1000);
 //	}
+}
+
+BOOL IsValidAddress(MIPS_DWORD address) {
+	if (Addressing64Bits) {
+		return TRUE;
+	}
+	else {
+		return IsSignExtended(address);
+	}
 }

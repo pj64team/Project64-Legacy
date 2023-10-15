@@ -209,6 +209,7 @@ LRESULT CALLBACK LogGeneralProc (HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lPa
 
 void Log_LW (DWORD PC, DWORD VAddr) {
 	DWORD Value;
+	MIPS_DWORD Address;
 
 	if (!LogOptions.GenerateLog) { return; }
 
@@ -224,7 +225,8 @@ void Log_LW (DWORD PC, DWORD VAddr) {
 		if ( VAddr >= 0xA0000000 && VAddr < (0xA0000000 + RdramSize)) { return; }
 		if ( VAddr >= 0xA3F00000 && VAddr <= 0xA3F00024) {
 			if (!LogOptions.LogRDRamRegisters) { return; }
-			r4300i_LW_VAddr_NonCPU(VAddr,&Value);
+			Address.DW = (long)VAddr;
+			r4300i_LW_VAddr_NonCPU(Address,&Value);
 
 			switch (VAddr) {
 			case 0xA3F00000: LogMessage("%08X: read from RDRAM_CONFIG_REG/RDRAM_DEVICE_TYPE_REG (%08X)",PC, Value); return;
@@ -243,7 +245,8 @@ void Log_LW (DWORD PC, DWORD VAddr) {
 		if ( VAddr >= 0xA4000000 && VAddr <= 0xA4001FFC ) { return; }
 		if ( VAddr >= 0xA4040000 && VAddr <= 0xA404001C ) {
 			if (!LogOptions.LogSPRegisters) { return; }
-			r4300i_LW_VAddr_NonCPU(VAddr,&Value);
+			Address.DW = (long)VAddr;
+			r4300i_LW_VAddr_NonCPU(Address,&Value);
 
 			switch (VAddr) {
 			case 0xA4040000: LogMessage("%08X: read from SP_MEM_ADDR_REG (%08X)",PC, Value); break;
@@ -259,13 +262,15 @@ void Log_LW (DWORD PC, DWORD VAddr) {
 		}		
 		if ( VAddr == 0xA4080000) {
 			if (!LogOptions.LogSPRegisters) { return; }
-			r4300i_LW_VAddr_NonCPU(VAddr,&Value);
+			Address.DW = (long)VAddr;
+			r4300i_LW_VAddr_NonCPU(Address,&Value);
 			LogMessage("%08X: read from SP_PC (%08X)",PC, Value);
 			return;
 		}
 		if (VAddr >= 0xA4100000 && VAddr <= 0xA410001C) {
 			if (!LogOptions.LogDPCRegisters) { return; }
-			r4300i_LW_VAddr_NonCPU(VAddr,&Value);
+			Address.DW = (long)VAddr;
+			r4300i_LW_VAddr_NonCPU(Address,&Value);
 
 			switch (VAddr) {
 			case 0xA4100000: LogMessage("%08X: read from DPC_START_REG (%08X)",PC, Value); return;
@@ -280,7 +285,8 @@ void Log_LW (DWORD PC, DWORD VAddr) {
 		}
 		if (VAddr >= 0xA4300000 && VAddr <= 0xA430000C) {
 			if (!LogOptions.LogMIPSInterface) { return; }
-			r4300i_LW_VAddr_NonCPU(VAddr,&Value);
+			Address.DW = (long)VAddr;
+			r4300i_LW_VAddr_NonCPU(Address,&Value);
 
 			switch (VAddr) {
 			case 0xA4300000: LogMessage("%08X: read from MI_INIT_MODE_REG/MI_MODE_REG (%08X)",PC, Value); return;
@@ -291,7 +297,8 @@ void Log_LW (DWORD PC, DWORD VAddr) {
 		}
 		if (VAddr >= 0xA4400000 && VAddr <= 0xA4400034) {
 			if (!LogOptions.LogVideoInterface) { return; }
-			r4300i_LW_VAddr_NonCPU(VAddr,&Value);
+			Address.DW = (long)VAddr;
+			r4300i_LW_VAddr_NonCPU(Address,&Value);
 
 			switch (VAddr) {
 			case 0xA4400000: LogMessage("%08X: read from VI_STATUS_REG/VI_CONTROL_REG (%08X)",PC, Value); return;
@@ -312,7 +319,8 @@ void Log_LW (DWORD PC, DWORD VAddr) {
 		}
 		if (VAddr >= 0xA4500000 && VAddr <= 0xA4500014) {
 			if (!LogOptions.LogAudioInterface) { return; }
-			r4300i_LW_VAddr_NonCPU(VAddr,&Value);
+			Address.DW = (long)VAddr;
+			r4300i_LW_VAddr_NonCPU(Address,&Value);
 
 			switch (VAddr) {
 			case 0xA4500000: LogMessage("%08X: read from AI_DRAM_ADDR_REG (%08X)",PC, Value); return;
@@ -325,7 +333,8 @@ void Log_LW (DWORD PC, DWORD VAddr) {
 		}
 		if (VAddr >= 0xA4600000 && VAddr <= 0xA4600030) {
 			if (!LogOptions.LogPerInterface) { return; }
-			r4300i_LW_VAddr_NonCPU(VAddr,&Value);
+			Address.DW = (long)VAddr;
+			r4300i_LW_VAddr_NonCPU(Address,&Value);
 
 			switch (VAddr) {
 			case 0xA4600000: LogMessage("%08X: read from PI_DRAM_ADDR_REG (%08X)",PC, Value); return;
@@ -345,7 +354,8 @@ void Log_LW (DWORD PC, DWORD VAddr) {
 		}
 		if (VAddr >= 0xA4700000 && VAddr <= 0xA470001C) {
 			if (!LogOptions.LogRDRAMInterface) { return; }
-			r4300i_LW_VAddr_NonCPU(VAddr,&Value);
+			Address.DW = (long)VAddr;
+			r4300i_LW_VAddr_NonCPU(Address,&Value);
 
 			switch (VAddr) {
 			case 0xA4700000: LogMessage("%08X: read from RI_MODE_REG (%08X)",PC, Value); return;
@@ -360,32 +370,37 @@ void Log_LW (DWORD PC, DWORD VAddr) {
 		}
 		if ( VAddr == 0xA4800000) {
 			if (!LogOptions.LogSerialInterface) { return; }
-			r4300i_LW_VAddr_NonCPU(VAddr,&Value);
+			Address.DW = (long)VAddr;
+			r4300i_LW_VAddr_NonCPU(Address,&Value);
 			LogMessage("%08X: read from SI_DRAM_ADDR_REG (%08X)",PC, Value);
 			return;
 		}
 		if ( VAddr == 0xA4800004) {
 			if (!LogOptions.LogSerialInterface) { return; }
-			r4300i_LW_VAddr_NonCPU(VAddr,&Value);
+			Address.DW = (long)VAddr;
+			r4300i_LW_VAddr_NonCPU(Address,&Value);
 			LogMessage("%08X: read from SI_PIF_ADDR_RD64B_REG (%08X)",PC, Value);
 			return;
 		}
 		if ( VAddr == 0xA4800010) {
 			if (!LogOptions.LogSerialInterface) { return; }
-			r4300i_LW_VAddr_NonCPU(VAddr,&Value);
+			Address.DW = (long)VAddr;
+			r4300i_LW_VAddr_NonCPU(Address,&Value);
 			LogMessage("%08X: read from SI_PIF_ADDR_WR64B_REG (%08X)",PC, Value);
 			return;
 		}
 		if ( VAddr == 0xA4800018) {
 			if (!LogOptions.LogSerialInterface) { return; }
-			r4300i_LW_VAddr_NonCPU(VAddr,&Value);
+			Address.DW = (long)VAddr;
+			r4300i_LW_VAddr_NonCPU(Address,&Value);
 			LogMessage("%08X: read from SI_STATUS_REG (%08X)",PC, Value);
 			return;
 		}
 		if ( VAddr >= 0xBFC00000 && VAddr <= 0xBFC007C0 ) { return; }
 		if ( VAddr >= 0xBFC007C0 && VAddr <= 0xBFC007FC ) {
 			if (!LogOptions.LogPRDirectMemLoads) { return; }
-			r4300i_LW_VAddr_NonCPU(VAddr,&Value);
+			Address.DW = (long)VAddr;
+			r4300i_LW_VAddr_NonCPU(Address,&Value);
 			LogMessage("%08X: read word from Pif Ram at 0x%X (%08X)",PC,VAddr - 0xBFC007C0, Value);
 			return;
 		}
@@ -393,7 +408,8 @@ void Log_LW (DWORD PC, DWORD VAddr) {
 	    if ( VAddr >= 0xB0000000 && VAddr < 0xB0000040) {
 			if (!LogOptions.LogRomHeader) { return; }
 
-			r4300i_LW_VAddr_NonCPU(VAddr,&Value);
+			Address.DW = (long)VAddr;
+			r4300i_LW_VAddr_NonCPU(Address,&Value);
 	        switch (VAddr) {        
 		    case 0xB0000004: LogMessage("%08X: read from Rom Clock Rate (%08X)",PC, Value); break;
 		    case 0xB0000008: LogMessage("%08X: read from Rom Boot address offset (%08X)",PC, Value); break;

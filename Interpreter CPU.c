@@ -714,7 +714,9 @@ void BuildInterpreter (void ) {
 }
 
 void ExecuteInterpreterOpCode (void) {
-	if (!r4300i_LW_VAddr_NonCPU(PROGRAM_COUNTER, &Opcode.Hex)) {
+	MIPS_DWORD Address;
+	Address.DW = (long)PROGRAM_COUNTER;
+	if (!r4300i_LW_VAddr_NonCPU(Address, &Opcode.Hex)) {
 		DoTLBMiss(NextInstruction == JUMP, PROGRAM_COUNTER, TRUE);
 		NextInstruction = NORMAL;
 		return;

@@ -165,7 +165,9 @@ int DisplayR4300iCommand (DWORD location, int InsertPos) {
 	}
 
 	Redraw = FALSE;
-	if (!r4300i_LW_VAddr_NonCPU(location, &OpCode)) {
+	MIPS_DWORD Address;
+	Address.DW = (long)location;
+	if (!r4300i_LW_VAddr_NonCPU(Address, &OpCode)) {
 		r4300iCommandLine[InsertPos].Location = location;
 		r4300iCommandLine[InsertPos].status = 0;
 		sprintf(r4300iCommandLine[InsertPos].String," 0x%08X\tCould not resolve address",location);
@@ -220,7 +222,9 @@ int WriteR4300iCommand(char *commands, DWORD location) {
 		}
 	}
 
-	if (!r4300i_LW_VAddr_NonCPU(location, &OpCode)) {
+	MIPS_DWORD Address;
+	Address.DW = (long)location;
+	if (!r4300i_LW_VAddr_NonCPU(Address, &OpCode)) {
 		res += sprintf(commands, "0x%08X  Could not resolve address\r\n", location);
 		return res;
 	}

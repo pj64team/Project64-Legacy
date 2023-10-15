@@ -233,8 +233,10 @@ void CloseCpu (void) {
 
 int DelaySlotEffectsCompare (DWORD PC, DWORD Reg1, DWORD Reg2) {
 	OPCODE Command;
+	MIPS_DWORD Address;
+	Address.DW = (long)(PC + 4);
 
-	if (!r4300i_LW_VAddr_NonCPU(PC + 4, &Command.Hex)) {
+	if (!r4300i_LW_VAddr_NonCPU(Address, &Command.Hex)) {
 		if (ShowDebugMessages) {
 			char msg[100];
 			sprintf(msg, "%s\r\nPC: %08X", "Failed to load word 2" , PC + 4);
@@ -398,8 +400,10 @@ int DelaySlotEffectsCompare (DWORD PC, DWORD Reg1, DWORD Reg2) {
 
 int DelaySlotEffectsJump (DWORD JumpPC) {
 	OPCODE Command;
+	MIPS_DWORD Address;
+	Address.DW = (long)JumpPC;
 
-	if (!r4300i_LW_VAddr_NonCPU(JumpPC, &Command.Hex)) { return TRUE; }
+	if (!r4300i_LW_VAddr_NonCPU(Address, &Command.Hex)) { return TRUE; }
 	if (SelfModCheck == ModCode_ChangeMemory) {
 		if ( (Command.Hex >> 16) == 0x7C7C) {
 			Command.Hex = OrigMem[(Command.Hex & 0xFFFF)].OriginalValue;
@@ -443,8 +447,10 @@ int DelaySlotEffectsJump (DWORD JumpPC) {
 				{
 					int EffectDelaySlot;
 					OPCODE NewCommand;
+					MIPS_DWORD AddressAfterJumpDest;
+					AddressAfterJumpDest.DW = (long)(JumpPC + 4);
 
-					if (!r4300i_LW_VAddr_NonCPU(JumpPC + 4, &NewCommand.Hex)) { return TRUE; }
+					if (!r4300i_LW_VAddr_NonCPU(AddressAfterJumpDest, &NewCommand.Hex)) { return TRUE; }
 					
 					EffectDelaySlot = FALSE;
 					if (NewCommand.BRANCH.op == R4300i_CP1) {
@@ -716,6 +722,9 @@ BOOL Machine_LoadState(void) {
 			else {
 				unzReadCurrentFile(file, CP0, sizeof(QWORD) * 32);
 			}
+			if ((STATUS_REGISTER & STATUS_KX) != 0) {
+				Addressing64Bits = 1;
+			}
 			unzReadCurrentFile(file,FPCR,sizeof(DWORD)*32);
 			unzReadCurrentFile(file,&HI,sizeof(_int64));
 			unzReadCurrentFile(file,&LO,sizeof(_int64));
@@ -851,7 +860,9 @@ BOOL Machine_LoadState(void) {
 		else {
 			ReadFile(hSaveFile, CP0, sizeof(QWORD) * 32,&dwRead,NULL);
 		}
-		ReadFile( hSaveFile,CP0,sizeof(DWORD)*32,&dwRead,NULL);
+		if ((STATUS_REGISTER & STATUS_KX) != 0) {
+			Addressing64Bits = 1;
+		}
 		ReadFile( hSaveFile,FPCR,sizeof(DWORD)*32,&dwRead,NULL);
 		ReadFile( hSaveFile,&HI,sizeof(_int64),&dwRead,NULL);
 		ReadFile( hSaveFile,&LO,sizeof(_int64),&dwRead,NULL);
