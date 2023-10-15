@@ -35,7 +35,7 @@ extern "C" {
 	extern BYTE RomHeader[0x1000];
 	extern DWORD PrevCRC1, PrevCRC2;
 
-	void CloseTempRomFile(void);
+	void CloseMappedRomFile(void);
 	void AddRecentFile(HWND hWnd, char* addition);
 	BOOL LoadDataFromRomFile(char* FileName, BYTE* Data, int DataLen, int* RomSize);
 	BOOL LoadRomHeader(void);
