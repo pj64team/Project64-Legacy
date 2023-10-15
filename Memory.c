@@ -47,13 +47,6 @@ BYTE ISViewerBuffer[0x200];
 BYTE ISViewerTempBuffer[0x1000+0x200+1];
 DWORD ISViewerTempBufferLength;
 
-int Allocate_ROM ( void ) {	
-	ROM = (BYTE *)malloc(RomFileSize);
-	WrittenToRom = FALSE;
-	WrittenToRomCount = 0;
-	return ROM == NULL ? FALSE : TRUE;
-}
-
 int Allocate_Memory ( void ) {	
 	RdramSize = 0x400000;
 	
@@ -2671,7 +2664,7 @@ BOOL r4300i_SW_VAddr_NonCPU ( DWORD VAddr, DWORD Value ) {
 void Release_Memory ( void ) {
 	FreeSyncMemory();
 	if (OrigMem != NULL) { VirtualFree(OrigMem,0,MEM_RELEASE); }
-	CloseTempRomFile();
+	CloseMappedRomFile();
 	VirtualFree( TLB_ReadMap, 0 , MEM_RELEASE);
 	VirtualFree( TLB_WriteMap, 0 , MEM_RELEASE);
 	VirtualFree( N64MEM, 0 , MEM_RELEASE);
