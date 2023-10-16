@@ -42,7 +42,7 @@ GFXDEBUG_INFO GFXDebug;
 RSPDEBUG_INFO RspDebug;
 CONTROL Controllers[4];
 BOOL PluginsInitilized = FALSE;
-
+void TerminateAudioThread();
 BOOL PluginsChanged ( HWND hDlg );
 BOOL ValidPluginVersion ( PLUGIN_INFO * PluginInfo );
 volatile BOOL bTerminateAudioThread = FALSE;
