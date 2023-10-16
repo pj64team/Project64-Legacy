@@ -1298,6 +1298,11 @@ void RunRsp (void) {
 			DoRspCycles(NUMCYCLES);
 			if ((SP_STATUS_REG & SP_STATUS_HALT) != 0)
 				RSPisRunning = 0;
+			else
+			{
+				Timers.NextTimer[RspTimer] = RSP_TIMER_INC;
+				Timers.Active[RspTimer] = TRUE;
+			}
 			StartTimer(Label);
 		} else {
 			RSPisRunning = 1;
@@ -1306,7 +1311,6 @@ void RunRsp (void) {
 			if ((SP_STATUS_REG & SP_STATUS_HALT) != 0)
 				RSPisRunning = 0;
 			else
-
 			{
 				Timers.NextTimer[RspTimer] = RSP_TIMER_INC;
 				Timers.Active[RspTimer] = TRUE;
