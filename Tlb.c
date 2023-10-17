@@ -247,3 +247,37 @@ void _fastcall WriteTLBEntry (int index) {
 	if (HaveDebugger)
 		RefreshTLBWindow();
 }
+
+// This method assumes the address is validated by IsValidAddress method
+BOOL Translate64BitsVAddrToPAddr(MIPS_DWORD VAddr, DWORD* PAddr) {
+	switch ((VAddr.UDW >> 60) & 0xF) {
+	case 0x9:
+		if (VAddr.UW[1] == 0x90000000) { // TLB Unmapped
+			*PAddr = VAddr.UW[0] & 0x1FFFFFFF;
+			return TRUE;
+		}
+		else {
+			LogMessage("translate 64 Bits Address: %llx", VAddr.UDW);
+			return FALSE;
+		}
+		break;
+	case 0xF:
+		switch ((VAddr.UW[0] >> 28) & 0xF) {
+		case 0x8: // TLB Unmapped
+		case 0x9:
+			*PAddr = VAddr.UW[0] - 0x80000000;
+			return TRUE;
+		case 0xA: // TLB Unmapped
+		case 0xB:
+			*PAddr = VAddr.UW[0] - 0xA0000000;
+			return TRUE;
+		default:
+			LogMessage("translate 64 Bits Address: %llx", VAddr.UDW);
+			return FALSE;
+		}
+		break;
+	default:
+		LogMessage("translate 64 Bits Address: %llx", VAddr.UDW);
+		return FALSE;
+	}
+}
