@@ -1356,7 +1356,7 @@ void LoadRomRecalcCRCs(char* FileName, BYTE* CRC1, BYTE* CRC2) {
 					return;
 				}
 				memcpy(data, Test, 4);
-				len = unzReadCurrentFile(file, &ROM[4], RomFileSize - 4) + 4;
+				len = unzReadCurrentFile(file, &data[4], data_size - 4) + 4;
 				if ((int)data_size != len) {
 					free(data);
 					unzCloseCurrentFile(file);
