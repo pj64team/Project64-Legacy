@@ -725,6 +725,9 @@ BOOL Machine_LoadState(void) {
 			if ((STATUS_REGISTER & STATUS_KX) != 0) {
 				Addressing64Bits = 1;
 			}
+			else {
+				Addressing64Bits = 0;
+			}
 			unzReadCurrentFile(file,FPCR,sizeof(DWORD)*32);
 			unzReadCurrentFile(file,&HI,sizeof(_int64));
 			unzReadCurrentFile(file,&LO,sizeof(_int64));
@@ -862,6 +865,9 @@ BOOL Machine_LoadState(void) {
 		}
 		if ((STATUS_REGISTER & STATUS_KX) != 0) {
 			Addressing64Bits = 1;
+		}
+		else {
+			Addressing64Bits = 0;
 		}
 		ReadFile( hSaveFile,FPCR,sizeof(DWORD)*32,&dwRead,NULL);
 		ReadFile( hSaveFile,&HI,sizeof(_int64),&dwRead,NULL);

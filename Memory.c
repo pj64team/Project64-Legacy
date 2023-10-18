@@ -58,6 +58,9 @@ int Allocate_ROM ( void ) {
 
 int Allocate_Memory ( void ) {	
 	RdramSize = 0x400000;
+
+	WrittenToRom = FALSE;
+	WrittenToRomCount = 0;
 	
 	N64MEM = (unsigned char *) VirtualAlloc( NULL, 0x20000000, MEM_RESERVE | MEM_TOP_DOWN, PAGE_READWRITE );
 	if(N64MEM==NULL) {  
@@ -1448,7 +1451,7 @@ BOOL r4300i_LB_VAddr ( MIPS_DWORD VAddr, BYTE * Value ) {
 		*Value = *(BYTE*)(N64MEM + (PAddr ^ 3));
 	}
 	else if (((PAddr & ~0x03E000) >= 0x04000000 && (PAddr & ~0x03E000) < 0x04004000)) {
-    *Value = *(BYTE*)(N64MEM + (((PAddr & ~0x3E000) & ~0x2000) ^ 3));
+		*Value = *(BYTE*)(N64MEM + (((PAddr & ~0x3E000) & ~0x2000) ^ 3));
 	}
 	else {
 		DWORD DValue = 0;
@@ -1474,7 +1477,7 @@ BOOL r4300i_LB_VAddr_NonCPU(MIPS_DWORD VAddr, BYTE *Value) {
 	if (PAddr < RdramSize) {
 		*Value = *(BYTE*)(N64MEM + (PAddr ^ 3));
 	} else if (((PAddr & ~0x03E000) >= 0x04000000 && (PAddr & ~0x03E000) < 0x04004000)) {
-    *Value = *(BYTE*)(N64MEM + (((PAddr & ~0x3E000) & ~0x2000) ^ 3));
+		*Value = *(BYTE*)(N64MEM + (((PAddr & ~0x3E000) & ~0x2000) ^ 3));
 	}
 	else {
 		DWORD DValue = 0;
@@ -2054,14 +2057,11 @@ BOOL r4300i_SB_VAddr ( MIPS_DWORD VAddr, MIPS_DWORD* Value ) {
 	}
 	else if (((PAddr & ~0x03E000) >= 0x04000000 && (PAddr & ~0x03E000) < 0x04004000)) {
 		int tmp = PAddr & 3;
-		for (int i = 0; i <= tmp;i++)
-      *(BYTE*)(N64MEM + (((PAddr & ~3 & ~0x3E000) & ~0X2000) ^ 3)) = Value->UB[tmp - i];
-		for (int i = tmp+1; i < 4; i++)
-      *(BYTE*)(N64MEM + (((PAddr & ~3 & ~0x3E000) & ~0X2000) ^ 3)) = 0;
+		*(DWORD*)(N64MEM + (((PAddr & ~3) & ~0x3E000) & ~0x2000)) = Value->W[0] << ((3 - tmp) * 8);
 	}
 	else {
-	RegisterCurrentlyWritten = Value;
-	r4300i_SB_NonMemory(PAddr ^ 3, Value->UB[0]);
+		RegisterCurrentlyWritten = Value;
+		r4300i_SB_NonMemory(PAddr ^ 3, Value->UB[0]);
 	}
 	
 	return TRUE;
@@ -2085,10 +2085,7 @@ BOOL r4300i_SB_VAddr_NonCPU ( MIPS_DWORD VAddr, BYTE Value ) {
 	}
 	else if (((PAddr & ~0x03E000) >= 0x04000000 && (PAddr & ~0x03E000) < 0x04004000)) {
 		int tmp = PAddr & 3;
-		for (int i = 0; i <= tmp; i++)
-			*(BYTE*)(N64MEM + (((PAddr & ~3 & ~0x3E000) & ~0X2000) ^ 3)) = (Value >> ((tmp - i) * 8)) & 0xFF;
-		for (int i = tmp+1; i < 4; i++)
-			*(BYTE*)(N64MEM + (((PAddr & ~3 & ~0x3E000) & ~0X2000) ^ 3)) = 0;
+		*(DWORD*)(N64MEM + (((PAddr & ~3) & ~0x3E000) & ~0x2000)) = Value << ((3 - tmp) * 8);
 	}
 	else {
 		r4300i_SB_NonMemory(PAddr ^ 3, Value);
@@ -2105,7 +2102,6 @@ int r4300i_SH_NonMemory ( DWORD PAddr, WORD Value ) {
 			WrittenToRomCount = COUNT_REGISTER;
 			WroteToRom = Value << 16;
 			PI_STATUS_REG |= PI_STATUS_IO_BUSY;
-			//LogMessage("%X: Wrote To Rom %X from %X",PROGRAM_COUNTER,Value,PAddr);
 		}
 		return TRUE;
 	}

@@ -1742,6 +1742,9 @@ void _fastcall r4300i_COP0_MT (void) {
 		if ((CP0[Opcode.REG.rd].UW[0] & STATUS_KX) != 0) {
 			Addressing64Bits = 1;
 		}
+		else {
+			Addressing64Bits = 0;
+		}
 		CheckInterrupts();
 		break;		
 	case 13: //cause
