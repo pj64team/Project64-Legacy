@@ -1509,7 +1509,7 @@ BOOL r4300i_LD_VAddr ( MIPS_DWORD VAddr, unsigned _int64 * Value ) {
 		*((DWORD*)(Value)) = *(DWORD*)(N64MEM + PAddr + 4);
 	}
 	else if (((PAddr & ~0x03E000) >= 0x04000000 && (PAddr & ~0x03E000) < 0x04004000)) {
-    *((DWORD*)(Value)+1) = *(DWORD*)(N64MEM + ((PAddr & ~0x3E000) & ~0x2000));
+		*((DWORD*)(Value)+1) = *(DWORD*)(N64MEM + ((PAddr & ~0x3E000) & ~0x2000));
 		*((DWORD*)(Value)) = *(DWORD*)(N64MEM + (((PAddr + 4) & ~0x3E000) & ~0x2000));
 	}
 	else {
@@ -2787,7 +2787,7 @@ BOOL r4300i_SW_VAddr ( MIPS_DWORD VAddr, DWORD Value ) {
 	else if (((PAddr & ~0x03E000) >= 0x04000000 && (PAddr & ~0x03E000) < 0x04004000)) {
     *(DWORD*)(N64MEM + ((PAddr & ~0x3E000) & ~0x2000)) = Value;
 	}
-  else
+	else
 	{
 		r4300i_SW_NonMemory(PAddr, Value);
 	}
