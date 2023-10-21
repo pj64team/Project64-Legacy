@@ -248,33 +248,28 @@ void _fastcall WriteTLBEntry (int index) {
 		RefreshTLBWindow();
 }
 
-/*static BOOL Translate64BitsVAddrToPAddrThroughTLB(MIPS_DWORD VAddr, DWORD* PAddr) {
+static BOOL Translate64BitsVAddrToPAddrThroughTLB(MIPS_DWORD VAddr, DWORD* PAddr) {
 	static int lastMatchingEntry = 0;
+	static const QWORD vpnMask = 0xC00000FFFFFFE000LL;
 	int Counter, Entry = lastMatchingEntry;
-	LogMessage("begin translation of %llx", VAddr.UDW);
 
 	for (Counter = 0; Counter < 32; ++Counter) {
-		LogMessage("Entry: %d, Counter:%d", Entry, Counter);
-		QWORD vpn = (VAddr.UDW & (~((QWORD)tlb[Entry].PageMask.BreakDownPageMask.Mask) << 13)) & 0x3FFFFFFFFFFFFFFFLL;
-		//QWORD EntryHi = ENTRYHI_REGISTER & (~((QWORD)tlb[Entry].PageMask.BreakDownPageMask.Mask) << 13);
-		QWORD EntryHi = ((QWORD)tlb[Entry].EntryHi.BreakDownEntryHi.VPN2 << 13) & (~((QWORD)tlb[Entry].PageMask.BreakDownPageMask.Mask) << 13);
-		LogMessage("vpn=%llx", vpn);
-		LogMessage("ehi=%llx", EntryHi);
-		LogMessage("msk=%llx", (QWORD)tlb[Entry].PageMask.BreakDownPageMask.Mask);
-		LogMessage("msk=%llx", ((QWORD)tlb[Entry].PageMask.BreakDownPageMask.Mask << 13));
+		QWORD vpn = ((VAddr.UDW & vpnMask) & (~((QWORD)tlb[Entry].PageMask.BreakDownPageMask.Mask) << 13));
+		QWORD EntryHi = ((tlb[Entry].EntryHi.Value & vpnMask) & (~((QWORD)tlb[Entry].PageMask.BreakDownPageMask.Mask) << 13));
 
 		if (vpn == EntryHi) {
-			LogMessage("vpn equal!!!");
 			BOOL Global = tlb[Entry].EntryLo0.BreakDownEntryLo0.GLOBAL && tlb[Entry].EntryLo1.BreakDownEntryLo1.GLOBAL;
 			BOOL SameAsid = ((tlb[Entry].EntryHi.Value & 0xFF) == (ENTRYHI_REGISTER & 0xFF));
 
 			if (Global || SameAsid) {
-				if (((VAddr.UDW >> 12) & 1) == 0) {
-					*PAddr = (tlb[Entry].EntryLo0.BreakDownEntryLo0.PFN << 12) | (VAddr.UDW & 0xFFF);
+				if (((VAddr.UDW >> 12) & (tlb[Entry].PageMask.BreakDownPageMask.Mask + 1)) == 0) {
+					*PAddr = (tlb[Entry].EntryLo0.BreakDownEntryLo0.PFN << 12) |
+						     (VAddr.UDW & (tlb[Entry].PageMask.BreakDownPageMask.Mask << 12 | 0xFFF));
 				}
 				else
 				{
-					*PAddr = (tlb[Entry].EntryLo1.BreakDownEntryLo1.PFN << 12) | (VAddr.UDW & 0xFFF);
+					*PAddr = (tlb[Entry].EntryLo1.BreakDownEntryLo1.PFN << 12) |
+						     (VAddr.UDW & (tlb[Entry].PageMask.BreakDownPageMask.Mask << 12 | 0xFFF));
 				}
 				lastMatchingEntry = Entry;
 				return TRUE;
@@ -292,11 +287,15 @@ void _fastcall WriteTLBEntry (int index) {
 		}
 	}
 	return FALSE;
-}*/
+}
 
 // This method assumes the address is validated by IsValidAddress method
 BOOL Translate64BitsVAddrToPAddr(MIPS_DWORD VAddr, DWORD* PAddr) {
 	switch ((VAddr.UDW >> 60) & 0xF) {
+	case 0x0:
+	case 0x4:
+	case 0xC:
+		return Translate64BitsVAddrToPAddrThroughTLB(VAddr, PAddr);
 	case 0x9: // TLB Unmapped
 		*PAddr = VAddr.UW[0] & 0xFFFFFFFF;
 		return TRUE;

@@ -2915,9 +2915,24 @@ void ResetRecompCode (void) {
 BOOL IsValidAddress(MIPS_DWORD address) {
 	if (Addressing64Bits) {
 		switch ((address.UDW >> 60) & 0xF) {
-		case 0x9: // TLB Unmapped
+		case 0x0:
+			if (address.UW[1] < 0x100) {
+				return TRUE;
+			}
+			return FALSE;
+		case 0x4:
+			if (address.UW[1] < 0x40000100) {
+				return TRUE;
+			}
+			return FALSE;
+		case 0x9:
 			if (address.UW[1] == 0x90000000 ||
 				address.UW[1] == 0x98000000) {
+				return TRUE;
+			}
+			return FALSE;
+		case 0xC:
+			if (address.UW[1] < 0xC0000100) {
 				return TRUE;
 			}
 			return FALSE;
