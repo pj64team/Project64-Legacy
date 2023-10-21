@@ -39,6 +39,7 @@
 #define EPC_REGISTER			CP0[14].UDW
 #define PRID_REGISTER           CP0[15].UW[0]
 #define CONFIG_REGISTER			CP0[16].UW[0]
+#define LLADDR_REGISTER			CP0[17].UW[0]
 #define XCONTEXT_REGISTER       CP0[20].UDW
 #define TAGLO_REGISTER			CP0[28].UW[0]
 #define TAGHI_REGISTER			CP0[29].UW[0]
@@ -361,7 +362,7 @@ typedef struct {
 extern char *GPR_Name[32], *GPR_NameHi[32], *GPR_NameLo[32], *FPR_Name[32], *FPR_NameHi[32],
 	*FPR_NameLo[32],*FPR_Ctrl_Name[32],*Cop0_Name[32];
 extern DWORD PROGRAM_COUNTER, *FPCR,*RegRDRAM,*RegSP,*RegDPC,*RegMI,*RegVI,*RegAI,*RegPI,
-	*RegRI,*RegSI, HalfLine, RegModValue, ViFieldSerration, LLBit, LLAddr;
+	*RegRI,*RegSI, HalfLine, RegModValue, ViFieldSerration, LLBit;
 extern void* FPRDoubleLocation[32], * FPRFloatLoadStoreLocation[32], *FPRFloatUpperHalfLocation[32], *FPRFloatFSLocation[32];
 extern void* FPRFloatOtherLocation[32], *FPRDoubleFTFDLocation[32];
 extern MIPS_DWORD *GPR, *FPR, HI, LO, *CP0;

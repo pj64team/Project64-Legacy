@@ -1489,7 +1489,7 @@ BOOL r4300i_LB_VAddr_NonCPU(MIPS_DWORD VAddr, BYTE *Value) {
 	return TRUE;
 }
 
-BOOL r4300i_LD_VAddr ( MIPS_DWORD VAddr, unsigned _int64 * Value ) {
+BOOL r4300i_LD_VAddr ( MIPS_DWORD VAddr, unsigned _int64 * Value, DWORD* outPAddr ) {
 	CheckForWatchPoint(VAddr, WP_READ, sizeof(unsigned _int64));
 
 	DWORD PAddr;
@@ -1501,6 +1501,9 @@ BOOL r4300i_LD_VAddr ( MIPS_DWORD VAddr, unsigned _int64 * Value ) {
 		if (!Translate64BitsVAddrToPAddr(VAddr, &PAddr)) {
 			return FALSE;
 		}
+	}
+	if (outPAddr) {
+		*outPAddr = PAddr;
 	}
 
 	// DRAM, DMEM, and IMEM can all be accessed directly through the host's virtual memory.
@@ -1905,7 +1908,7 @@ int r4300i_LW_NonMemory ( DWORD PAddr, DWORD * Value ) {
 	return TRUE;
 }
 
-BOOL r4300i_LW_VAddr ( MIPS_DWORD VAddr, DWORD * Value ) {
+BOOL r4300i_LW_VAddr ( MIPS_DWORD VAddr, DWORD * Value, DWORD* outPAddr ) {
 	CheckForWatchPoint(VAddr, WP_READ, sizeof(DWORD));
 
 	DWORD PAddr;
@@ -1917,6 +1920,9 @@ BOOL r4300i_LW_VAddr ( MIPS_DWORD VAddr, DWORD * Value ) {
 		if (!Translate64BitsVAddrToPAddr(VAddr, &PAddr)) {
 			return FALSE;
 		}
+	}
+	if (outPAddr) {
+		*outPAddr = PAddr;
 	}
 	
 	// DRAM, DMEM, and IMEM can all be accessed directly through the host's virtual memory.

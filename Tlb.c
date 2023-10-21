@@ -298,7 +298,7 @@ void _fastcall WriteTLBEntry (int index) {
 BOOL Translate64BitsVAddrToPAddr(MIPS_DWORD VAddr, DWORD* PAddr) {
 	switch ((VAddr.UDW >> 60) & 0xF) {
 	case 0x9: // TLB Unmapped
-		*PAddr = VAddr.UW[0] & 0x1FFFFFFF;
+		*PAddr = VAddr.UW[0] & 0xFFFFFFFF;
 		return TRUE;
 	case 0xF:
 		switch ((VAddr.UW[0] >> 28) & 0xF) {

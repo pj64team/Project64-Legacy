@@ -749,7 +749,6 @@ BOOL Machine_LoadState(void) {
 			SetFpuLocations();
 
 			// Specific data introducted in 2023.1
-			unzReadCurrentFile(file, &LLAddr, sizeof(DWORD));
 			unzReadCurrentFile(file, &lastUnusedCOP0Register, sizeof(int));
 			unzReadCurrentFile(file, &WrittenToRom, sizeof(BOOL));
 			unzReadCurrentFile(file, &WrittenToRomCount, sizeof(DWORD));
@@ -890,7 +889,6 @@ BOOL Machine_LoadState(void) {
 		SetFpuLocations();
 
 		// Specific data introducted in 2023.1
-		ReadFile(hSaveFile, &LLAddr, sizeof(DWORD), &dwRead, NULL);
 		ReadFile(hSaveFile, &lastUnusedCOP0Register, sizeof(int), &dwRead, NULL);
 		ReadFile(hSaveFile, &WrittenToRom, sizeof(BOOL), &dwRead, NULL);
 		ReadFile(hSaveFile, &WrittenToRomCount, sizeof(DWORD), &dwRead, NULL);
@@ -1025,7 +1023,6 @@ BOOL Machine_SaveState(void) {
 		zipWriteInFileInZip( file,IMEM,0x1000);
 
 		// Specific data introducted in 2023.1
-		zipWriteInFileInZip(file, &LLAddr, sizeof(DWORD));
 		zipWriteInFileInZip(file, &lastUnusedCOP0Register, sizeof(int));
 		zipWriteInFileInZip(file, &WrittenToRom, sizeof(BOOL));
 		zipWriteInFileInZip(file, &WrittenToRomCount, sizeof(DWORD));
@@ -1098,7 +1095,6 @@ BOOL Machine_SaveState(void) {
 		WriteFile( hSaveFile,IMEM,0x1000,&dwWritten,NULL);
 
 		// Specific data introducted in 2023.1
-		WriteFile(hSaveFile, &LLAddr, sizeof(DWORD), &dwWritten, NULL);
 		WriteFile(hSaveFile, &lastUnusedCOP0Register, sizeof(int), &dwWritten, NULL);
 		WriteFile(hSaveFile, &WrittenToRom, sizeof(BOOL), &dwWritten, NULL);
 		WriteFile(hSaveFile, &WrittenToRomCount, sizeof(DWORD), &dwWritten, NULL);

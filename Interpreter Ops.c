@@ -414,7 +414,7 @@ void _fastcall r4300i_LDL (void) {
 	MIPS_DWORD AlignedAddress = Address;
 	AlignedAddress.UW[0] &= ~7;
 
-	if (!r4300i_LD_VAddr(AlignedAddress,&Value)) {
+	if (!r4300i_LD_VAddr(AlignedAddress,&Value, NULL)) {
 		if (ShowTLBMisses) {
 			DisplayError("LDL TLB: %llX", Address.UDW);
 		}
@@ -445,7 +445,7 @@ void _fastcall r4300i_LDR (void) {
 	MIPS_DWORD AlignedAddress = Address;
 	AlignedAddress.UW[0] &= ~7;
 
-	if (!r4300i_LD_VAddr(AlignedAddress, &Value)) {
+	if (!r4300i_LD_VAddr(AlignedAddress, &Value, NULL)) {
 		if (ShowTLBMisses) {
 			DisplayError("LDR TLB: %llX", Address.UDW);
 		}
@@ -506,7 +506,7 @@ void _fastcall r4300i_LWL (void) {
 	MIPS_DWORD AlignedAddress = Address;
 	AlignedAddress.UW[0] &= ~3;
 
-	if (!r4300i_LW_VAddr(AlignedAddress,&Value)) {
+	if (!r4300i_LW_VAddr(AlignedAddress,&Value,NULL)) {
 		if (ShowTLBMisses) {
 			DisplayError("LWL TLB: %llX", Address.UDW);
 		}
@@ -527,7 +527,7 @@ void _fastcall r4300i_LW (void) {
 	if (ShowDebugMessages)
 		Log_LW(PROGRAM_COUNTER,Address.UW[0]);
 
-	if (!r4300i_LW_VAddr(Address,&GPR[Opcode.BRANCH.rt].UW[0])) {
+	if (!r4300i_LW_VAddr(Address,&GPR[Opcode.BRANCH.rt].UW[0], NULL)) {
 		if (ShowTLBMisses) {
 			DisplayError("LW TLB: %llX",Address.UDW);
 		}
@@ -587,7 +587,7 @@ void _fastcall r4300i_LWR (void) {
 	MIPS_DWORD AlignedAddress = Address;
 	AlignedAddress.UW[0] &= ~3;
 
-	if (!r4300i_LW_VAddr(AlignedAddress,&Value)) {
+	if (!r4300i_LW_VAddr(AlignedAddress,&Value, NULL)) {
 		if (ShowTLBMisses) {
 			DisplayError("LWR TLB: %llX", Address.UDW);
 		}
@@ -606,7 +606,7 @@ void _fastcall r4300i_LWU (void) {
 		return;
 	}
 
-	if (!r4300i_LW_VAddr(Address,&GPR[Opcode.BRANCH.rt].UW[0])) {
+	if (!r4300i_LW_VAddr(Address,&GPR[Opcode.BRANCH.rt].UW[0], NULL)) {
 		if (ShowTLBMisses) {
 			DisplayError("LWU TLB: %llX",Address.UDW);
 		}
@@ -662,7 +662,7 @@ void _fastcall r4300i_SWL (void) {
 	MIPS_DWORD AlignedAddress = Address;
 	AlignedAddress.UW[0] &= ~3;
 
-	if (!r4300i_LW_VAddr(AlignedAddress,&Value)) {
+	if (!r4300i_LW_VAddr(AlignedAddress,&Value,NULL)) {
 		if (ShowTLBMisses) {
 			DisplayError("SWL TLB: %llX", Address.UDW);
 		}
@@ -724,7 +724,7 @@ void _fastcall r4300i_SDL (void) {
 	MIPS_DWORD AlignedAddress = Address;
 	AlignedAddress.UW[0] &= ~7;
 
-	if (!r4300i_LD_VAddr(AlignedAddress,&Value)) {
+	if (!r4300i_LD_VAddr(AlignedAddress,&Value,NULL)) {
 		if (ShowTLBMisses) {
 			DisplayError("SDL TLB: %llX", Address.UDW);
 		}
@@ -767,7 +767,7 @@ void _fastcall r4300i_SDR (void) {
 	MIPS_DWORD AlignedAddress = Address;
 	AlignedAddress.UW[0] &= ~7;
 
-	if (!r4300i_LD_VAddr(AlignedAddress,&Value)) {
+	if (!r4300i_LD_VAddr(AlignedAddress,&Value,NULL)) {
 		if (ShowTLBMisses) {
 			DisplayError("SDR TLB: %llX", Address.UDW);
 		}
@@ -801,7 +801,7 @@ void _fastcall r4300i_SWR (void) {
 	MIPS_DWORD AlignedAddress = Address;
 	AlignedAddress.UW[0] &= ~3;
 
-	if (!r4300i_LW_VAddr(AlignedAddress,&Value)) {
+	if (!r4300i_LW_VAddr(AlignedAddress,&Value,NULL)) {
 		if (ShowTLBMisses) {
 			DisplayError("SWR TLB: %llX", Address.UDW);
 		}
@@ -832,18 +832,19 @@ void _fastcall r4300i_LL (void) {
 		ADDRESS_ERROR_EXCEPTION(Address.UDW,TRUE);
 		return;
 	}
+	DWORD PAddr;
+	DWORD tmp;
 
-	if (!r4300i_LW_VAddr(Address,&GPR[Opcode.BRANCH.rt].UW[0])) {
+	if (!r4300i_LW_VAddr(Address,&tmp,&PAddr)) {
 		if (ShowTLBMisses) {
 			DisplayError("LL TLB: %llX",Address.UDW);
 		}
 		TLB_READ_EXCEPTION(Address.UDW);
 	} else {
 		LLBit = 1;
-		LLAddr = Address.UW[0];
-		TranslateVaddr(&LLAddr);
+		LLADDR_REGISTER = PAddr >> 4;
 		if (Opcode.BRANCH.rt == 0) { return; }
-		GPR[Opcode.BRANCH.rt].DW = GPR[Opcode.BRANCH.rt].W[0];
+		GPR[Opcode.BRANCH.rt].DW = (long)tmp;
 	}
 }
 
@@ -854,8 +855,10 @@ void _fastcall r4300i_LLD(void) {
 		ADDRESS_ERROR_EXCEPTION(Address.UDW, TRUE);
 		return;
 	}
+	DWORD PAddr;
+	MIPS_DWORD tmp;
 
-	if (!r4300i_LD_VAddr(Address, &GPR[Opcode.BRANCH.rt].UDW)) {
+	if (!r4300i_LD_VAddr(Address, &tmp.UDW,&PAddr)) {
 		if (ShowTLBMisses) {
 			DisplayError("LL TLB: %llX", Address.UDW);
 		}
@@ -863,9 +866,9 @@ void _fastcall r4300i_LLD(void) {
 	}
 	else {
 		LLBit = 1;
-		LLAddr = Address.UW[0];
-		TranslateVaddr(&LLAddr);
+		LLADDR_REGISTER = PAddr >> 4;
 		if (Opcode.BRANCH.rt == 0) { return; }
+		GPR[Opcode.BRANCH.rt] = tmp;
 	}
 }
 
@@ -877,7 +880,7 @@ void _fastcall r4300i_LWC1 (void) {
 		ADDRESS_ERROR_EXCEPTION(Address.UDW,TRUE);
 		return;
 	}
-	if (!r4300i_LW_VAddr(Address,&*(DWORD *)FPRFloatLoadStoreLocation[Opcode.FP.ft])) {
+	if (!r4300i_LW_VAddr(Address,&*(DWORD *)FPRFloatLoadStoreLocation[Opcode.FP.ft],NULL)) {
 		if (ShowTLBMisses) {
 			DisplayError("LWC1 TLB: %llX",Address.UDW);
 		}
@@ -933,7 +936,7 @@ void _fastcall r4300i_LD (void) {
 		ADDRESS_ERROR_EXCEPTION(Address.UDW, TRUE);
 		return;
 	}
-	if (!r4300i_LD_VAddr(Address,&GPR[Opcode.BRANCH.rt].UDW)) {
+	if (!r4300i_LD_VAddr(Address,&GPR[Opcode.BRANCH.rt].UDW,NULL)) {
 		if (ShowTLBMisses) {
 			DisplayError("LD TLB: %llX", Address.UDW);
 		}
@@ -956,7 +959,7 @@ void _fastcall r4300i_LDC1 (void) {
 		ADDRESS_ERROR_EXCEPTION(Address.UDW,TRUE);
 		return;
 	}
-	if (!r4300i_LD_VAddr(Address,&*(unsigned __int64 *)FPRDoubleLocation[Opcode.FP.ft])) {
+	if (!r4300i_LD_VAddr(Address,&*(unsigned __int64 *)FPRDoubleLocation[Opcode.FP.ft],NULL)) {
 		if (ShowTLBMisses) {
 			DisplayError("LDC1 TLB: %llX", Address.UDW);
 		}

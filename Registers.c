@@ -78,7 +78,7 @@ char *Cop0_Name[32] = {"Index","Random","EntryLo0","EntryLo1","Context","PageMas
                     "24","25","ECC","CacheErr","TagLo","TagHi","ErrEPC","31"};
 
 DWORD PROGRAM_COUNTER, *FPCR,*RegRDRAM,*RegSP,*RegDPC,*RegMI,*RegVI,*RegAI,*RegPI,
-	*RegRI,*RegSI, HalfLine, RegModValue, ViFieldSerration, LLBit, LLAddr;
+	*RegRI,*RegSI, HalfLine, RegModValue, ViFieldSerration, LLBit;
 void * FPRDoubleLocation[32], * FPRFloatLoadStoreLocation[32], *FPRFloatUpperHalfLocation[32], *FPRFloatFSLocation[32];
 void* FPRFloatOtherLocation[32], *FPRDoubleFTFDLocation[32];
 MIPS_DWORD *GPR, *FPR, HI, LO, *CP0;

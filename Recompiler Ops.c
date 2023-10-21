@@ -2545,7 +2545,7 @@ void Compile_R4300i_LL (BLOCK_SECTION * Section) {
 		if (Compile_LW(MipsRegLo(Opcode.BRANCH.rt), Address)) {
 			MoveConstToVariable(1, &LLBit, "LLBit");
 			TranslateVaddr(&Address);
-			MoveConstToVariable(Address, &LLAddr, "LLAddr");
+			MoveConstToVariable(Address, &LLADDR_REGISTER, "LLAddr");
 			return;
 		}
 
@@ -2587,9 +2587,9 @@ void Compile_R4300i_LL (BLOCK_SECTION * Section) {
 		Map_GPR_32bit(Section,Opcode.BRANCH.rt,TRUE,-1);
 		MoveX86regPointerToX86reg(TempReg1, TempReg2,MipsRegLo(Opcode.BRANCH.rt));
 		MoveConstToVariable(1,&LLBit,"LLBit");
-		MoveX86regToVariable(TempReg1,&LLAddr,"LLAddr");
-		AddX86regToVariable(TempReg2,&LLAddr,"LLAddr");
-		SubConstFromVariable((DWORD)N64MEM,&LLAddr,"LLAddr");
+		MoveX86regToVariable(TempReg1,&LLADDR_REGISTER,"LLAddr");
+		AddX86regToVariable(TempReg2,&LLADDR_REGISTER,"LLAddr");
+		SubConstFromVariable((DWORD)N64MEM,&LLADDR_REGISTER,"LLAddr");
 	} else {
 		if (IsMapped(Opcode.IMM.base)) { 
 			ProtectGPR(Section,Opcode.IMM.base);
@@ -2611,7 +2611,7 @@ void Compile_R4300i_LL (BLOCK_SECTION * Section) {
 			}
 		}
 		AndConstToX86Reg(MipsRegLo(Opcode.BRANCH.rt),0x1FFFFFFF);
-		MoveX86regToVariable(MipsRegLo(Opcode.BRANCH.rt),&LLAddr,"LLAddr");
+		MoveX86regToVariable(MipsRegLo(Opcode.BRANCH.rt),&LLADDR_REGISTER,"LLAddr");
 		MoveN64MemToX86reg(MipsRegLo(Opcode.BRANCH.rt),MipsRegLo(Opcode.BRANCH.rt));
 		MoveConstToVariable(1,&LLBit,"LLBit");
 	}
