@@ -2914,7 +2914,21 @@ void ResetRecompCode (void) {
 
 BOOL IsValidAddress(MIPS_DWORD address) {
 	if (Addressing64Bits) {
-		return TRUE;
+		switch ((address.UDW >> 60) & 0xF) {
+		case 0x9: // TLB Unmapped
+			if (address.UW[1] == 0x90000000 ||
+				address.UW[1] == 0x98000000) {
+				return TRUE;
+			}
+			return FALSE;
+		case 0xF:
+			if (address.UW[1] != 0xFFFFFFFF)
+				return FALSE;
+			return TRUE;
+		default:
+			LogMessage("Is it a valid address ? %llx", address.UDW);
+			return FALSE;
+		}
 	}
 	else {
 		return IsSignExtended(address);
