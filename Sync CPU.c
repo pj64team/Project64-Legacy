@@ -223,9 +223,9 @@ void StartErrorLog (void) {
 	
 	Error_Message("=== Error Has occured !?! ===");
 	Error_Message("Block Address: 0x%X",CurrentBlock);
-	if (PROGRAM_COUNTER != Registers.PROGRAM_COUNTER) {
-		Error_Message("interp PC: 0x%08X",PROGRAM_COUNTER);
-		Error_Message("Recomp PC: 0x%08X",Registers.PROGRAM_COUNTER);
+	if (PROGRAM_COUNTER.UDW != Registers.PROGRAM_COUNTER.UDW) {
+		Error_Message("interp PC: 0x%016llX",PROGRAM_COUNTER.UDW);
+		Error_Message("Recomp PC: 0x%016llX",Registers.PROGRAM_COUNTER.UDW);
 	} else {
 		Error_Message("PC: 0x%08X",PROGRAM_COUNTER);
 	}
@@ -256,12 +256,12 @@ void __cdecl StartSyncCPU (void ) {
 	SyncJumpToLocation = -1;
 	__try {
 		for (;;) {
-			Addr = PROGRAM_COUNTER;
+			Addr = PROGRAM_COUNTER.UW[0];
 			if (UseTlb) {
 				if (!TranslateVaddr(&Addr)) {
-					DoTLBMiss(NextInstruction == DELAY_SLOT,PROGRAM_COUNTER, TRUE);
+					DoTLBMiss(NextInstruction == DELAY_SLOT,PROGRAM_COUNTER.UDW, TRUE);
 					NextInstruction = NORMAL;
-					Addr = PROGRAM_COUNTER;
+					Addr = PROGRAM_COUNTER.UW[0];
 					if (!TranslateVaddr(&Addr)) {
 						DisplayError("Failed to tranlate PC to a PAddr: %X\n\nEmulation stopped",PROGRAM_COUNTER);
 						ExitThread(0);
@@ -381,7 +381,7 @@ void SyncSystem (void) {
 	int count, i, error;
 
 	error = FALSE;
-	if (PROGRAM_COUNTER != Registers.PROGRAM_COUNTER) {
+	if (PROGRAM_COUNTER.UDW != Registers.PROGRAM_COUNTER.UDW) {
 		error = TRUE;
 		Error_Message("*** Program counter is not equal!!!");	
 		Error_Message("");
@@ -541,9 +541,9 @@ void SyncToPC (void) {
 
 	//LogMessage("Recompiler (PC: %X  count: %X)",PROGRAM_COUNTER,CP0[9]);
 	RecNextInstruction = NextInstruction;
-	RecJumpToLocation = JumpToLocation;
+	RecJumpToLocation = JumpToLocation.UW[0];
 	NextInstruction = SyncNextInstruction;
-	JumpToLocation = SyncJumpToLocation;
+	JumpToLocation.UW[0] = SyncJumpToLocation;
 
 	SwitchSyncRegisters();
 	/*if ((DWORD)RecompPos > 0x609844D8) {
@@ -564,9 +564,9 @@ void SyncToPC (void) {
 	SwitchSyncRegisters();
 
 	SyncNextInstruction = NextInstruction;
-	SyncJumpToLocation = JumpToLocation;
+	SyncJumpToLocation = JumpToLocation.UW[0];
 	NextInstruction = RecNextInstruction;
-	JumpToLocation = RecJumpToLocation;
+	JumpToLocation.UW[0] = RecJumpToLocation;
 	
 	MemAddrUsedCount[0] = 0;	
 	MemAddrUsedCount[1] = 0;

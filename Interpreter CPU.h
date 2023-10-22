@@ -26,7 +26,7 @@
 void BuildInterpreter         ( void );
 void ExecuteInterpreterOpCode ( void );
 void __cdecl StartInterpreterCPU      ( void );
-void TestInterpreterJump      ( DWORD PC, DWORD TargetPC, int Reg1, int Reg2 );
+void TestInterpreterJump      ( MIPS_DWORD PC, MIPS_DWORD TargetPC, int Reg1, int Reg2 );
 void TriggerDebugger(void);
 
 extern void (__fastcall *R4300i_Opcode[64])(void);

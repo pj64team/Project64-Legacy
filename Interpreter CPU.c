@@ -715,9 +715,9 @@ void BuildInterpreter (void ) {
 
 void ExecuteInterpreterOpCode (void) {
 	MIPS_DWORD Address;
-	Address.DW = (long)PROGRAM_COUNTER;
+	Address = PROGRAM_COUNTER;
 	if (!r4300i_LW_VAddr_NonCPU(Address, &Opcode.Hex)) {
-		DoTLBMiss(NextInstruction == JUMP, PROGRAM_COUNTER, TRUE);
+		DoTLBMiss(NextInstruction == JUMP, PROGRAM_COUNTER.UDW, TRUE);
 		NextInstruction = NORMAL;
 		return;
 	}
@@ -753,12 +753,12 @@ void ExecuteInterpreterOpCode (void) {
 
 	switch (NextInstruction) {
 	case NORMAL: 
-		PROGRAM_COUNTER += 4; 
+		PROGRAM_COUNTER.UDW += 4; 
 		break;
 	case DELAY_SLOT:
 		COUNT_REGISTER += CPOAdjust * 2;
 		NextInstruction = JUMP;
-		PROGRAM_COUNTER += 4; 
+		PROGRAM_COUNTER.UDW += 4; 
 		break;
 	case JUMP:
 		PROGRAM_COUNTER  = JumpToLocation;
@@ -794,7 +794,7 @@ void __cdecl StartInterpreterCPU (void ) {
 	__try {
 		for (;;) {
 			if (HaveDebugger) {
-				if (NoOfBpoints != 0 && CheckForR4300iBPoint(PROGRAM_COUNTER)) {
+				if (NoOfBpoints != 0 && CheckForR4300iBPoint(PROGRAM_COUNTER.UW[0])) {
 					TriggerDebugger();
 				}
 
@@ -802,11 +802,11 @@ void __cdecl StartInterpreterCPU (void ) {
 					do {
 						if (CPU_Action.Skipping == TRUE) {
 							CPU_Action.Skipping = FALSE;
-							PROGRAM_COUNTER += 4;
+							PROGRAM_COUNTER.UDW += 4;
 							continue;
 						}
 
-						SetR4300iCommandViewto(PROGRAM_COUNTER);
+						SetR4300iCommandViewto(PROGRAM_COUNTER.UW[0]);
 						UpdateCurrentR4300iRegisterPanel();
 						Refresh_Memory();
 
@@ -829,8 +829,8 @@ void __cdecl StartInterpreterCPU (void ) {
 	}
 }
 
-void TestInterpreterJump (DWORD PC, DWORD TargetPC, int Reg1, int Reg2) {
-	if (PC != TargetPC) { return; }
+void TestInterpreterJump (MIPS_DWORD PC, MIPS_DWORD TargetPC, int Reg1, int Reg2) {
+	if (PC.UDW != TargetPC.UDW) { return; }
 	if (DelaySlotEffectsCompare(PC,Reg1,Reg2)) { return; }
 	if (CPU_Type != CPU_Interpreter) { return; }
 	InPermLoop();
@@ -841,7 +841,7 @@ void TriggerDebugger(void) {
 	Refresh_Memory();
 	if (InR4300iCommandsWindow) {
 		Enter_R4300i_Commands_Window();
-		SetR4300iCommandViewto(PROGRAM_COUNTER);
+		SetR4300iCommandViewto(PROGRAM_COUNTER.UW[0]);
 		if (!CPU_Action.Stepping) {
 			SetR4300iCommandToStepping();
 		}

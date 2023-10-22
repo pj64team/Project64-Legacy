@@ -107,20 +107,20 @@ int RoundingModel = _RC_NEAR;
 void _fastcall r4300i_J (void) {
 	if(NextInstruction == JUMP) return;
 	NextInstruction = DELAY_SLOT;
-	JumpToLocation = (PROGRAM_COUNTER & 0xF0000000) + (Opcode.JMP.target << 2);
+	JumpToLocation.UDW = (PROGRAM_COUNTER.UDW & 0xFFFFFFFFF0000000LL) + (Opcode.JMP.target << 2);
 	TestInterpreterJump(PROGRAM_COUNTER,JumpToLocation,0,0);
 }
 
 void _fastcall r4300i_JAL (void) {
 	if (NextInstruction == JUMP)
 	{
-		GPR[31].DW = (long)(JumpToLocation + 4);
+		GPR[31].UDW = JumpToLocation.UDW + 4;
 		return;
 	}
 	NextInstruction = DELAY_SLOT;
-	JumpToLocation = (PROGRAM_COUNTER & 0xF0000000) + (Opcode.JMP.target << 2);
+	JumpToLocation.UDW = (PROGRAM_COUNTER.UDW & 0xFFFFFFFFF0000000LL) + (Opcode.JMP.target << 2);
 	TestInterpreterJump(PROGRAM_COUNTER,JumpToLocation,0,0);
-	GPR[31].DW= (long)(PROGRAM_COUNTER + 8);
+	GPR[31].UDW = PROGRAM_COUNTER.UDW + 8;
 }
 
 void _fastcall r4300i_BEQ (void) {
@@ -128,20 +128,20 @@ void _fastcall r4300i_BEQ (void) {
 	NextInstruction = DELAY_SLOT;
 	if (GPR[Opcode.BRANCH.rs].DW == GPR[Opcode.BRANCH.rt].DW) {
 		if (inDelay) {
-			PROGRAM_COUNTER = JumpToLocation - 4; // It will be incremented to JumpToLocation in main loop
-			JumpToLocation = JumpToLocation + ((short)Opcode.BRANCH.offset << 2);
+			PROGRAM_COUNTER.UDW = JumpToLocation.UDW - 4; // It will be incremented to JumpToLocation in main loop
+			JumpToLocation.UDW = JumpToLocation.UDW + ((short)Opcode.BRANCH.offset << 2);
 		}
 		else {
-			JumpToLocation = PROGRAM_COUNTER + ((short)Opcode.BRANCH.offset << 2) + 4;
+			JumpToLocation.UDW = PROGRAM_COUNTER.UDW + ((short)Opcode.BRANCH.offset << 2) + 4;
 		}
 		TestInterpreterJump(PROGRAM_COUNTER, JumpToLocation, Opcode.BRANCH.rs, Opcode.BRANCH.rt);
 	} else {
 		if (inDelay) {
-			PROGRAM_COUNTER = JumpToLocation - 4; // It will be incremented to JumpToLocation in main loop
-			JumpToLocation = JumpToLocation + 4;
+			PROGRAM_COUNTER.UDW = JumpToLocation.UDW - 4; // It will be incremented to JumpToLocation in main loop
+			JumpToLocation.UDW = JumpToLocation.UDW + 4;
 		}
 		else {
-			JumpToLocation = PROGRAM_COUNTER + 8;
+			JumpToLocation.UDW = PROGRAM_COUNTER.UDW + 8;
 		}
 	}
 }
@@ -151,20 +151,20 @@ void _fastcall r4300i_BNE (void) {
 	NextInstruction = DELAY_SLOT;
 	if (GPR[Opcode.BRANCH.rs].DW != GPR[Opcode.BRANCH.rt].DW) {
 		if (inDelay) {
-			PROGRAM_COUNTER = JumpToLocation - 4; // It will be incremented to JumpToLocation in main loop
-			JumpToLocation = JumpToLocation + ((short)Opcode.BRANCH.offset << 2);
+			PROGRAM_COUNTER.UDW = JumpToLocation.UDW - 4; // It will be incremented to JumpToLocation in main loop
+			JumpToLocation.UDW = JumpToLocation.UDW + ((short)Opcode.BRANCH.offset << 2);
 		}
 		else {
-			JumpToLocation = PROGRAM_COUNTER + ((short)Opcode.BRANCH.offset << 2) + 4;
+			JumpToLocation.UDW = PROGRAM_COUNTER.UDW + ((short)Opcode.BRANCH.offset << 2) + 4;
 		}
 		TestInterpreterJump(PROGRAM_COUNTER,JumpToLocation,Opcode.BRANCH.rs,Opcode.BRANCH.rt);
 	} else {
 		if (inDelay) {
-			PROGRAM_COUNTER = JumpToLocation - 4; // It will be incremented to JumpToLocation in main loop
-			JumpToLocation = JumpToLocation + 4;
+			PROGRAM_COUNTER.UDW = JumpToLocation.UDW - 4; // It will be incremented to JumpToLocation in main loop
+			JumpToLocation.UDW = JumpToLocation.UDW + 4;
 		}
 		else {
-			JumpToLocation = PROGRAM_COUNTER + 8;
+			JumpToLocation.UDW = PROGRAM_COUNTER.UDW + 8;
 		}
 	}
 }
@@ -174,20 +174,20 @@ void _fastcall r4300i_BLEZ (void) {
 	NextInstruction = DELAY_SLOT;
 	if (GPR[Opcode.BRANCH.rs].DW <= 0) {
 		if (inDelay) {
-			PROGRAM_COUNTER = JumpToLocation - 4; // It will be incremented to JumpToLocation in main loop
-			JumpToLocation = JumpToLocation + ((short)Opcode.BRANCH.offset << 2);
+			PROGRAM_COUNTER.UDW = JumpToLocation.UDW - 4; // It will be incremented to JumpToLocation in main loop
+			JumpToLocation.UDW = JumpToLocation.UDW + ((short)Opcode.BRANCH.offset << 2);
 		}
 		else {
-			JumpToLocation = PROGRAM_COUNTER + ((short)Opcode.BRANCH.offset << 2) + 4;
+			JumpToLocation.UDW = PROGRAM_COUNTER.UDW + ((short)Opcode.BRANCH.offset << 2) + 4;
 		}
 		TestInterpreterJump(PROGRAM_COUNTER,JumpToLocation,Opcode.BRANCH.rs,0);
 	} else {
 		if (inDelay) {
-			PROGRAM_COUNTER = JumpToLocation - 4; // It will be incremented to JumpToLocation in main loop
-			JumpToLocation = JumpToLocation + 4;
+			PROGRAM_COUNTER.UDW = JumpToLocation.UDW - 4; // It will be incremented to JumpToLocation in main loop
+			JumpToLocation.UDW = JumpToLocation.UDW + 4;
 		}
 		else {
-			JumpToLocation = PROGRAM_COUNTER + 8;
+			JumpToLocation.UDW = PROGRAM_COUNTER.UDW + 8;
 		}
 	}
 }
@@ -197,20 +197,20 @@ void _fastcall r4300i_BGTZ (void) {
 	NextInstruction = DELAY_SLOT;
 	if (GPR[Opcode.BRANCH.rs].DW > 0) {
 		if (inDelay) {
-			PROGRAM_COUNTER = JumpToLocation - 4; // It will be incremented to JumpToLocation in main loop
-			JumpToLocation = JumpToLocation + ((short)Opcode.BRANCH.offset << 2);
+			PROGRAM_COUNTER.UDW = JumpToLocation.UDW - 4; // It will be incremented to JumpToLocation in main loop
+			JumpToLocation.UDW = JumpToLocation.UDW + ((short)Opcode.BRANCH.offset << 2);
 		}
 		else {
-			JumpToLocation = PROGRAM_COUNTER + ((short)Opcode.BRANCH.offset << 2) + 4;
+			JumpToLocation.UDW = PROGRAM_COUNTER.UDW + ((short)Opcode.BRANCH.offset << 2) + 4;
 		}
 		TestInterpreterJump(PROGRAM_COUNTER,JumpToLocation,Opcode.BRANCH.rs,0);
 	} else {
 		if (inDelay) {
-			PROGRAM_COUNTER = JumpToLocation - 4; // It will be incremented to JumpToLocation in main loop
-			JumpToLocation = JumpToLocation + 4;
+			PROGRAM_COUNTER.UDW = JumpToLocation.UDW - 4; // It will be incremented to JumpToLocation in main loop
+			JumpToLocation.UDW = JumpToLocation.UDW + 4;
 		}
 		else {
-			JumpToLocation = PROGRAM_COUNTER + 8;
+			JumpToLocation.UDW = PROGRAM_COUNTER.UDW + 8;
 		}
 	}
 }
@@ -292,20 +292,20 @@ void _fastcall r4300i_BEQL (void) {
 	if (GPR[Opcode.BRANCH.rs].DW == GPR[Opcode.BRANCH.rt].DW) {
 		NextInstruction = DELAY_SLOT;
 		if (inDelay) {
-			PROGRAM_COUNTER = JumpToLocation - 4; // It will be incremented to JumpToLocation in main loop
-			JumpToLocation = JumpToLocation + ((short)Opcode.BRANCH.offset << 2);
+			PROGRAM_COUNTER.UDW = JumpToLocation.UDW - 4; // It will be incremented to JumpToLocation in main loop
+			JumpToLocation.UDW = JumpToLocation.UDW + ((short)Opcode.BRANCH.offset << 2);
 		}
 		else {
-			JumpToLocation = PROGRAM_COUNTER + ((short)Opcode.BRANCH.offset << 2) + 4;
+			JumpToLocation.UDW = PROGRAM_COUNTER.UDW + ((short)Opcode.BRANCH.offset << 2) + 4;
 		}
 		TestInterpreterJump(PROGRAM_COUNTER,JumpToLocation,Opcode.BRANCH.rs,Opcode.BRANCH.rt);
 	} else {
 		NextInstruction = JUMP;
 		if (inDelay) {
-			JumpToLocation = JumpToLocation + 4;
+			JumpToLocation.UDW = JumpToLocation.UDW + 4;
 		}
 		else {
-			JumpToLocation = PROGRAM_COUNTER + 8;
+			JumpToLocation.UDW = PROGRAM_COUNTER.UDW + 8;
 		}
 	}
 }
@@ -315,20 +315,20 @@ void _fastcall r4300i_BNEL (void) {
 	if (GPR[Opcode.BRANCH.rs].DW != GPR[Opcode.BRANCH.rt].DW) {
 		NextInstruction = DELAY_SLOT;
 		if (inDelay) {
-			PROGRAM_COUNTER = JumpToLocation - 4; // It will be incremented to JumpToLocation in main loop
-			JumpToLocation = JumpToLocation + ((short)Opcode.BRANCH.offset << 2);
+			PROGRAM_COUNTER.UDW = JumpToLocation.UDW - 4; // It will be incremented to JumpToLocation in main loop
+			JumpToLocation.UDW = JumpToLocation.UDW + ((short)Opcode.BRANCH.offset << 2);
 		}
 		else {
-			JumpToLocation = PROGRAM_COUNTER + ((short)Opcode.BRANCH.offset << 2) + 4;
+			JumpToLocation.UDW = PROGRAM_COUNTER.UDW + ((short)Opcode.BRANCH.offset << 2) + 4;
 		}
 		TestInterpreterJump(PROGRAM_COUNTER,JumpToLocation,Opcode.BRANCH.rs,Opcode.BRANCH.rt);
 	} else {
 		NextInstruction = JUMP;
 		if (inDelay) {
-			JumpToLocation = JumpToLocation + 4;
+			JumpToLocation.UDW = JumpToLocation.UDW + 4;
 		}
 		else {
-			JumpToLocation = PROGRAM_COUNTER + 8;
+			JumpToLocation.UDW = PROGRAM_COUNTER.UDW + 8;
 		}
 	}
 }
@@ -338,20 +338,20 @@ void _fastcall r4300i_BLEZL (void) {
 	if (GPR[Opcode.BRANCH.rs].DW <= 0) {
 		NextInstruction = DELAY_SLOT;
 		if (inDelay) {
-			PROGRAM_COUNTER = JumpToLocation - 4; // It will be incremented to JumpToLocation in main loop
-			JumpToLocation = JumpToLocation + ((short)Opcode.BRANCH.offset << 2);
+			PROGRAM_COUNTER.UDW = JumpToLocation.UDW - 4; // It will be incremented to JumpToLocation in main loop
+			JumpToLocation.UDW = JumpToLocation.UDW + ((short)Opcode.BRANCH.offset << 2);
 		}
 		else {
-			JumpToLocation = PROGRAM_COUNTER + ((short)Opcode.BRANCH.offset << 2) + 4;
+			JumpToLocation.UDW = PROGRAM_COUNTER.UDW + ((short)Opcode.BRANCH.offset << 2) + 4;
 		}
 		TestInterpreterJump(PROGRAM_COUNTER,JumpToLocation,Opcode.BRANCH.rs,0);
 	} else {
 		NextInstruction = JUMP;
 		if (inDelay) {
-			JumpToLocation = JumpToLocation + 4;
+			JumpToLocation.UDW = JumpToLocation.UDW + 4;
 		}
 		else {
-			JumpToLocation = PROGRAM_COUNTER + 8;
+			JumpToLocation.UDW = PROGRAM_COUNTER.UDW + 8;
 		}
 	}
 }
@@ -361,20 +361,20 @@ void _fastcall r4300i_BGTZL (void) {
 	if (GPR[Opcode.BRANCH.rs].DW > 0) {
 		NextInstruction = DELAY_SLOT;
 		if (inDelay) {
-			PROGRAM_COUNTER = JumpToLocation - 4; // It will be incremented to JumpToLocation in main loop
-			JumpToLocation = JumpToLocation + ((short)Opcode.BRANCH.offset << 2);
+			PROGRAM_COUNTER.UDW = JumpToLocation.UDW - 4; // It will be incremented to JumpToLocation in main loop
+			JumpToLocation.UDW = JumpToLocation.UDW + ((short)Opcode.BRANCH.offset << 2);
 		}
 		else {
-			JumpToLocation = PROGRAM_COUNTER + ((short)Opcode.BRANCH.offset << 2) + 4;
+			JumpToLocation.UDW = PROGRAM_COUNTER.UDW + ((short)Opcode.BRANCH.offset << 2) + 4;
 		}
 		TestInterpreterJump(PROGRAM_COUNTER,JumpToLocation,Opcode.BRANCH.rs,0);
 	} else {
 		NextInstruction = JUMP;
 		if (inDelay) {
-			JumpToLocation = JumpToLocation + 4;
+			JumpToLocation.UDW = JumpToLocation.UDW + 4;
 		}
 		else {
-			JumpToLocation = PROGRAM_COUNTER + 8;
+			JumpToLocation.UDW = PROGRAM_COUNTER.UDW + 8;
 		}
 	}
 }
@@ -1044,8 +1044,8 @@ void _fastcall r4300i_SPECIAL_SRAV (void) {
 void _fastcall r4300i_SPECIAL_JR (void) {
 	if (NextInstruction == JUMP) return;
 	NextInstruction = DELAY_SLOT;
-	JumpToLocation = GPR[Opcode.BRANCH.rs].UW[0];
-	if (JumpToLocation & 3) {
+	JumpToLocation = GPR[Opcode.BRANCH.rs];
+	if (JumpToLocation.UW[0] & 3) {
 		PROGRAM_COUNTER = JumpToLocation;
 		DoAddressError(FALSE, GPR[Opcode.BRANCH.rs].UDW, TRUE);
 		NextInstruction = JUMP;
@@ -1055,18 +1055,18 @@ void _fastcall r4300i_SPECIAL_JR (void) {
 
 void _fastcall r4300i_SPECIAL_JALR (void) {
 	if (NextInstruction == JUMP) {
-		GPR[Opcode.REG.rd].DW = (long)(JumpToLocation + 4);
+		GPR[Opcode.REG.rd].UDW = JumpToLocation.UDW + 4;
 		return;
 	}
 	NextInstruction = DELAY_SLOT;
-	JumpToLocation = GPR[Opcode.BRANCH.rs].UW[0];
-	if (JumpToLocation & 3) {
+	JumpToLocation = GPR[Opcode.BRANCH.rs];
+	if (JumpToLocation.UW[0] & 3) {
 		PROGRAM_COUNTER = JumpToLocation;
 		DoAddressError(FALSE, GPR[Opcode.BRANCH.rs].UDW, TRUE);
 		NextInstruction = JUMP;
 		JumpToLocation = PROGRAM_COUNTER;
 	} else {
-		GPR[Opcode.REG.rd].DW = (long)(PROGRAM_COUNTER + 8);
+		GPR[Opcode.REG.rd].UDW = PROGRAM_COUNTER.UDW + 8;
 	}
 }
 
@@ -1439,20 +1439,20 @@ void _fastcall r4300i_REGIMM_BLTZ (void) {
 	NextInstruction = DELAY_SLOT;
 	if (GPR[Opcode.BRANCH.rs].DW < 0) {
 		if (inDelay) {
-			PROGRAM_COUNTER = JumpToLocation - 4; // It will be incremented to JumpToLocation in main loop
-			JumpToLocation = JumpToLocation + ((short)Opcode.BRANCH.offset << 2);
+			PROGRAM_COUNTER.UDW = JumpToLocation.UDW - 4; // It will be incremented to JumpToLocation in main loop
+			JumpToLocation.UDW = JumpToLocation.UDW + ((short)Opcode.BRANCH.offset << 2);
 		}
 		else {
-			JumpToLocation = PROGRAM_COUNTER + ((short)Opcode.BRANCH.offset << 2) + 4;
+			JumpToLocation.UDW = PROGRAM_COUNTER.UDW + ((short)Opcode.BRANCH.offset << 2) + 4;
 		}
 		TestInterpreterJump(PROGRAM_COUNTER,JumpToLocation,Opcode.BRANCH.rs,0);
 	} else {
 		if (inDelay) {
-			PROGRAM_COUNTER = JumpToLocation - 4; // It will be incremented to JumpToLocation in main loop
-			JumpToLocation = JumpToLocation + 4;
+			PROGRAM_COUNTER.UDW = JumpToLocation.UDW - 4; // It will be incremented to JumpToLocation in main loop
+			JumpToLocation.UDW = JumpToLocation.UDW + 4;
 		}
 		else {
-			JumpToLocation = PROGRAM_COUNTER + 8;
+			JumpToLocation.UDW = PROGRAM_COUNTER.UDW + 8;
 		}
 	}
 }
@@ -1462,20 +1462,20 @@ void _fastcall r4300i_REGIMM_BGEZ (void) {
 	NextInstruction = DELAY_SLOT;
 	if (GPR[Opcode.BRANCH.rs].DW >= 0) {
 		if (inDelay) {
-			PROGRAM_COUNTER = JumpToLocation - 4; // It will be incremented to JumpToLocation in main loop
-			JumpToLocation = JumpToLocation + ((short)Opcode.BRANCH.offset << 2);
+			PROGRAM_COUNTER.UDW = JumpToLocation.UDW - 4; // It will be incremented to JumpToLocation in main loop
+			JumpToLocation.UDW = JumpToLocation.UDW + ((short)Opcode.BRANCH.offset << 2);
 		}
 		else {
-			JumpToLocation = PROGRAM_COUNTER + ((short)Opcode.BRANCH.offset << 2) + 4;
+			JumpToLocation.UDW = PROGRAM_COUNTER.UDW + ((short)Opcode.BRANCH.offset << 2) + 4;
 		}
 		TestInterpreterJump(PROGRAM_COUNTER,JumpToLocation,Opcode.BRANCH.rs,0);
 	} else {
 		if (inDelay) {
-			PROGRAM_COUNTER = JumpToLocation - 4; // It will be incremented to JumpToLocation in main loop
-			JumpToLocation = JumpToLocation + 4;
+			PROGRAM_COUNTER.UDW = JumpToLocation.UDW - 4; // It will be incremented to JumpToLocation in main loop
+			JumpToLocation.UDW = JumpToLocation.UDW + 4;
 		}
 		else {
-			JumpToLocation = PROGRAM_COUNTER + 8;
+			JumpToLocation.UDW = PROGRAM_COUNTER.UDW + 8;
 		}
 	}
 }
@@ -1485,20 +1485,20 @@ void _fastcall r4300i_REGIMM_BLTZL (void) {
 	if (GPR[Opcode.BRANCH.rs].DW < 0) {
 		NextInstruction = DELAY_SLOT;
 		if (inDelay) {
-			PROGRAM_COUNTER = JumpToLocation - 4; // It will be incremented to JumpToLocation in main loop
-			JumpToLocation = JumpToLocation + ((short)Opcode.BRANCH.offset << 2);
+			PROGRAM_COUNTER.UDW = JumpToLocation.UDW - 4; // It will be incremented to JumpToLocation in main loop
+			JumpToLocation.UDW = JumpToLocation.UDW + ((short)Opcode.BRANCH.offset << 2);
 		}
 		else {
-			JumpToLocation = PROGRAM_COUNTER + ((short)Opcode.BRANCH.offset << 2) + 4;
+			JumpToLocation.UDW = PROGRAM_COUNTER.UDW + ((short)Opcode.BRANCH.offset << 2) + 4;
 		}
 		TestInterpreterJump(PROGRAM_COUNTER,JumpToLocation,Opcode.BRANCH.rs,0);
 	} else {
 		NextInstruction = JUMP;
 		if (inDelay) {
-			JumpToLocation = JumpToLocation + 4;
+			JumpToLocation.UDW = JumpToLocation.UDW + 4;
 		}
 		else {
-			JumpToLocation = PROGRAM_COUNTER + 8;
+			JumpToLocation.UDW = PROGRAM_COUNTER.UDW + 8;
 		}
 	}
 }
@@ -1508,20 +1508,20 @@ void _fastcall r4300i_REGIMM_BGEZL (void) {
 	if (GPR[Opcode.BRANCH.rs].DW >= 0) {
 		NextInstruction = DELAY_SLOT;
 		if (inDelay) {
-			PROGRAM_COUNTER = JumpToLocation - 4; // It will be incremented to JumpToLocation in main loop
-			JumpToLocation = JumpToLocation + ((short)Opcode.BRANCH.offset << 2);
+			PROGRAM_COUNTER.UDW = JumpToLocation.UDW - 4; // It will be incremented to JumpToLocation in main loop
+			JumpToLocation.UDW = JumpToLocation.UDW + ((short)Opcode.BRANCH.offset << 2);
 		}
 		else {
-			JumpToLocation = PROGRAM_COUNTER + ((short)Opcode.BRANCH.offset << 2) + 4;
+			JumpToLocation.UDW = PROGRAM_COUNTER.UDW + ((short)Opcode.BRANCH.offset << 2) + 4;
 		}
 		TestInterpreterJump(PROGRAM_COUNTER,JumpToLocation,Opcode.BRANCH.rs,0);
 	} else {
 		NextInstruction = JUMP;
 		if (inDelay) {
-			JumpToLocation = JumpToLocation + 4;
+			JumpToLocation.UDW = JumpToLocation.UDW + 4;
 		}
 		else {
-			JumpToLocation = PROGRAM_COUNTER + 8;
+			JumpToLocation.UDW = PROGRAM_COUNTER.UDW + 8;
 		}
 	}
 }
@@ -1531,24 +1531,24 @@ void _fastcall r4300i_REGIMM_BLTZAL (void) {
 	NextInstruction = DELAY_SLOT;
 	if (GPR[Opcode.BRANCH.rs].DW < 0) {
 		if (inDelay) {
-			GPR[31].DW = JumpToLocation + 4;
-			PROGRAM_COUNTER = JumpToLocation - 4; // It will be incremented to JumpToLocation in main loop
-			JumpToLocation = JumpToLocation + ((short)Opcode.BRANCH.offset << 2);
+			GPR[31].UDW = JumpToLocation.UDW + 4;
+			PROGRAM_COUNTER.UDW = JumpToLocation.UDW - 4; // It will be incremented to JumpToLocation in main loop
+			JumpToLocation.UDW = JumpToLocation.UDW + ((short)Opcode.BRANCH.offset << 2);
 		}
 		else {
-			GPR[31].DW = (long)(PROGRAM_COUNTER + 8);
-			JumpToLocation = PROGRAM_COUNTER + ((short)Opcode.BRANCH.offset << 2) + 4;
+			GPR[31].UDW = PROGRAM_COUNTER.UDW + 8;
+			JumpToLocation.UDW = PROGRAM_COUNTER.UDW + ((short)Opcode.BRANCH.offset << 2) + 4;
 		}
 		TestInterpreterJump(PROGRAM_COUNTER,JumpToLocation,Opcode.BRANCH.rs,0);
 	} else {
 		if (inDelay) {
-			GPR[31].DW = (long)(JumpToLocation + 4);
-			PROGRAM_COUNTER = JumpToLocation - 4; // It will be incremented to JumpToLocation in main loop
-			JumpToLocation = JumpToLocation + 4;
+			GPR[31].UDW = JumpToLocation.UDW + 4;
+			PROGRAM_COUNTER.UDW = JumpToLocation.UDW - 4; // It will be incremented to JumpToLocation in main loop
+			JumpToLocation.UDW = JumpToLocation.UDW + 4;
 		}
 		else {
-			GPR[31].DW = (long)(PROGRAM_COUNTER + 8);
-			JumpToLocation = PROGRAM_COUNTER + 8;
+			GPR[31].UDW = PROGRAM_COUNTER.UDW + 8;
+			JumpToLocation.UDW = PROGRAM_COUNTER.UDW + 8;
 		}
 	}
 }
@@ -1558,24 +1558,24 @@ void _fastcall r4300i_REGIMM_BGEZAL (void) {
 	NextInstruction = DELAY_SLOT;
 	if (GPR[Opcode.BRANCH.rs].DW >= 0) {
 		if (inDelay) {
-			GPR[31].DW = JumpToLocation + 4;
-			PROGRAM_COUNTER = JumpToLocation-4; // It will be incremented to JumpToLocation in main loop
-			JumpToLocation = JumpToLocation + ((short)Opcode.BRANCH.offset << 2);
+			GPR[31].UDW = JumpToLocation.UDW + 4;
+			PROGRAM_COUNTER.UDW = JumpToLocation.UDW - 4; // It will be incremented to JumpToLocation in main loop
+			JumpToLocation.UDW = JumpToLocation.UDW + ((short)Opcode.BRANCH.offset << 2);
 		}
 		else {
-			GPR[31].DW = (long)(PROGRAM_COUNTER + 8);
-			JumpToLocation = PROGRAM_COUNTER + ((short)Opcode.BRANCH.offset << 2) + 4;
+			GPR[31].UDW = PROGRAM_COUNTER.UDW + 8;
+			JumpToLocation.UDW = PROGRAM_COUNTER.UDW + ((short)Opcode.BRANCH.offset << 2) + 4;
 		}
 		TestInterpreterJump(PROGRAM_COUNTER,JumpToLocation,Opcode.BRANCH.rs,0);
 	} else {
 		if (inDelay) {
-			GPR[31].DW = (long)(JumpToLocation + 4);
-			PROGRAM_COUNTER = JumpToLocation - 4; // It will be incremented to JumpToLocation in main loop
-			JumpToLocation = JumpToLocation + 4;
+			GPR[31].UDW = JumpToLocation.UDW + 4;
+			PROGRAM_COUNTER.UDW = JumpToLocation.UDW - 4; // It will be incremented to JumpToLocation in main loop
+			JumpToLocation.UDW = JumpToLocation.UDW + 4;
 		}
 		else {
-			GPR[31].DW = (long)(PROGRAM_COUNTER + 8);
-			JumpToLocation = PROGRAM_COUNTER + 8;
+			GPR[31].UDW = PROGRAM_COUNTER.UDW + 8;
+			JumpToLocation.UDW = PROGRAM_COUNTER.UDW + 8;
 		}
 	}
 }
@@ -1585,25 +1585,25 @@ void _fastcall r4300i_REGIMM_BLTZALL(void) {
 	if (GPR[Opcode.BRANCH.rs].DW >= 0) {
 		NextInstruction = DELAY_SLOT;
 		if (inDelay) {
-			GPR[31].DW = JumpToLocation + 4;
-			PROGRAM_COUNTER = JumpToLocation - 4; // It will be incremented to JumpToLocation in main loop
-			JumpToLocation = JumpToLocation + ((short)Opcode.BRANCH.offset << 2);
+			GPR[31].UDW = JumpToLocation.UDW + 4;
+			PROGRAM_COUNTER.UDW = JumpToLocation.UDW - 4; // It will be incremented to JumpToLocation in main loop
+			JumpToLocation.UDW = JumpToLocation.UDW + ((short)Opcode.BRANCH.offset << 2);
 		}
 		else {
-			GPR[31].DW = (long)(PROGRAM_COUNTER + 8);
-			JumpToLocation = PROGRAM_COUNTER + ((short)Opcode.BRANCH.offset << 2) + 4;
+			GPR[31].UDW = PROGRAM_COUNTER.UDW + 8;
+			JumpToLocation.UDW = PROGRAM_COUNTER.UDW + ((short)Opcode.BRANCH.offset << 2) + 4;
 		}
 		TestInterpreterJump(PROGRAM_COUNTER, JumpToLocation, Opcode.BRANCH.rs, 0);
 	}
 	else {
 		NextInstruction = JUMP;
 		if (inDelay) {
-			GPR[31].DW = (long)(JumpToLocation + 4);
-			JumpToLocation = JumpToLocation + 4;
+			GPR[31].UDW = JumpToLocation.UDW + 4;
+			JumpToLocation.UDW = JumpToLocation.UDW + 4;
 		}
 		else {
-			GPR[31].DW = (long)(PROGRAM_COUNTER + 8);
-			JumpToLocation = PROGRAM_COUNTER + 8;
+			GPR[31].UDW = PROGRAM_COUNTER.UDW + 8;
+			JumpToLocation.UDW = PROGRAM_COUNTER.UDW + 8;
 		}
 	}
 }
@@ -1613,25 +1613,25 @@ void _fastcall r4300i_REGIMM_BGEZALL (void) {
 	if (GPR[Opcode.BRANCH.rs].DW >= 0) {
 		NextInstruction = DELAY_SLOT;
 		if (inDelay) {
-			GPR[31].DW = JumpToLocation + 4;
-			PROGRAM_COUNTER = JumpToLocation - 4; // It will be incremented to JumpToLocation in main loop
-			JumpToLocation = JumpToLocation + ((short)Opcode.BRANCH.offset << 2);
+			GPR[31].UDW = JumpToLocation.UDW + 4;
+			PROGRAM_COUNTER.UDW = JumpToLocation.UDW - 4; // It will be incremented to JumpToLocation in main loop
+			JumpToLocation.UDW = JumpToLocation.UDW + ((short)Opcode.BRANCH.offset << 2);
 		}
 		else {
-			GPR[31].DW = (long)(PROGRAM_COUNTER + 8);
-			JumpToLocation = PROGRAM_COUNTER + ((short)Opcode.BRANCH.offset << 2) + 4;
+			GPR[31].UDW = PROGRAM_COUNTER.UDW + 8;
+			JumpToLocation.UDW = PROGRAM_COUNTER.UDW + ((short)Opcode.BRANCH.offset << 2) + 4;
 		}
 		TestInterpreterJump(PROGRAM_COUNTER, JumpToLocation, Opcode.BRANCH.rs, 0);
 	}
 	else {
 		NextInstruction = JUMP;
 		if (inDelay) {
-			GPR[31].DW = (long)(JumpToLocation + 4);
-			JumpToLocation = JumpToLocation + 4;
+			GPR[31].UDW = JumpToLocation.UDW + 4;
+			JumpToLocation.UDW = JumpToLocation.UDW + 4;
 		}
 		else {
-			GPR[31].DW = (long)(PROGRAM_COUNTER + 8);
-			JumpToLocation = PROGRAM_COUNTER + 8;
+			GPR[31].UDW = PROGRAM_COUNTER.UDW + 8;
+			JumpToLocation.UDW = PROGRAM_COUNTER.UDW + 8;
 		}
 	}
 }
@@ -1961,10 +1961,10 @@ void _fastcall r4300i_COP0_CO_TLBP (void) {
 void _fastcall r4300i_COP0_CO_ERET (void) {
 	NextInstruction = JUMP;
 	if ((STATUS_REGISTER & STATUS_ERL) != 0) {
-		JumpToLocation = ERROREPC_REGISTER;
+		JumpToLocation.UDW = ERROREPC_REGISTER;
 		STATUS_REGISTER &= ~STATUS_ERL;
 	} else {
-		JumpToLocation = EPC_REGISTER;
+		JumpToLocation.UDW = EPC_REGISTER;
 		STATUS_REGISTER &= ~STATUS_EXL;
 	}
 	LLBit = 0;
@@ -2040,18 +2040,18 @@ void _fastcall r4300i_COP1_BCF (void) {
 	NextInstruction = DELAY_SLOT;
 	if ((FPCR[31] & FPCSR_C) == 0) {
 		if (inDelay) {
-			PROGRAM_COUNTER = JumpToLocation - 4; // It will be incremented to JumpToLocation in main loop
-			JumpToLocation = JumpToLocation + ((short)Opcode.BRANCH.offset << 2);
+			PROGRAM_COUNTER.UDW = JumpToLocation.UDW - 4; // It will be incremented to JumpToLocation in main loop
+			JumpToLocation.UDW = JumpToLocation.UDW + ((short)Opcode.BRANCH.offset << 2);
 		}
 		else {
-			JumpToLocation = PROGRAM_COUNTER + ((short)Opcode.BRANCH.offset << 2) + 4;
+			JumpToLocation.UDW = PROGRAM_COUNTER.UDW + ((short)Opcode.BRANCH.offset << 2) + 4;
 		}
 	} else {
 		if (inDelay) {
-			JumpToLocation = JumpToLocation + 4;
+			JumpToLocation.UDW = JumpToLocation.UDW + 4;
 		}
 		else {
-			JumpToLocation = PROGRAM_COUNTER + 8;
+			JumpToLocation.UDW = PROGRAM_COUNTER.UDW + 8;
 		}
 	}
 }
@@ -2062,18 +2062,18 @@ void _fastcall r4300i_COP1_BCT (void) {
 	NextInstruction = DELAY_SLOT;
 	if ((FPCR[31] & FPCSR_C) != 0) {
 		if (inDelay) {
-			PROGRAM_COUNTER = JumpToLocation - 4; // It will be incremented to JumpToLocation in main loop
-			JumpToLocation = JumpToLocation + ((short)Opcode.BRANCH.offset << 2);
+			PROGRAM_COUNTER.UDW = JumpToLocation.UDW - 4; // It will be incremented to JumpToLocation in main loop
+			JumpToLocation.UDW = JumpToLocation.UDW + ((short)Opcode.BRANCH.offset << 2);
 		}
 		else {
-			JumpToLocation = PROGRAM_COUNTER + ((short)Opcode.BRANCH.offset << 2) + 4;
+			JumpToLocation.UDW = PROGRAM_COUNTER.UDW + ((short)Opcode.BRANCH.offset << 2) + 4;
 		}
 	} else {
 		if (inDelay) {
-			JumpToLocation = JumpToLocation + 4;
+			JumpToLocation.UDW = JumpToLocation.UDW + 4;
 		}
 		else {
-			JumpToLocation = PROGRAM_COUNTER + 8;
+			JumpToLocation.UDW = PROGRAM_COUNTER.UDW + 8;
 		}
 	}
 }
@@ -2084,19 +2084,19 @@ void _fastcall r4300i_COP1_BCFL (void) {
 	if ((FPCR[31] & FPCSR_C) == 0) {
 		NextInstruction = DELAY_SLOT;
 		if(inDelay) {
-			PROGRAM_COUNTER = JumpToLocation - 4; // It will be incremented to JumpToLocation in main loop
-			JumpToLocation = JumpToLocation + ((short)Opcode.BRANCH.offset << 2);
+			PROGRAM_COUNTER.UDW = JumpToLocation.UDW - 4; // It will be incremented to JumpToLocation in main loop
+			JumpToLocation.UDW = JumpToLocation.UDW + ((short)Opcode.BRANCH.offset << 2);
 		}
 		else {
-			JumpToLocation = PROGRAM_COUNTER + ((short)Opcode.BRANCH.offset << 2) + 4;
+			JumpToLocation.UDW = PROGRAM_COUNTER.UDW + ((short)Opcode.BRANCH.offset << 2) + 4;
 		}
 	} else {
 		NextInstruction = JUMP;
 		if (inDelay) {
-			JumpToLocation = JumpToLocation + 4;
+			JumpToLocation.UDW = JumpToLocation.UDW + 4;
 		}
 		else {
-			JumpToLocation = PROGRAM_COUNTER + 8;
+			JumpToLocation.UDW = PROGRAM_COUNTER.UDW + 8;
 		}
 	}
 }
@@ -2107,19 +2107,19 @@ void _fastcall r4300i_COP1_BCTL (void) {
 	if ((FPCR[31] & FPCSR_C) != 0) {
 		NextInstruction = DELAY_SLOT;
 		if (inDelay) {
-			PROGRAM_COUNTER = JumpToLocation - 4; // It will be incremented to JumpToLocation in main loop
-			JumpToLocation = JumpToLocation + ((short)Opcode.BRANCH.offset << 2);
+			PROGRAM_COUNTER.UDW = JumpToLocation.UDW - 4; // It will be incremented to JumpToLocation in main loop
+			JumpToLocation.UDW = JumpToLocation.UDW + ((short)Opcode.BRANCH.offset << 2);
 		}
 		else {
-			JumpToLocation = PROGRAM_COUNTER + ((short)Opcode.BRANCH.offset << 2) + 4;
+			JumpToLocation.UDW = PROGRAM_COUNTER.UDW + ((short)Opcode.BRANCH.offset << 2) + 4;
 		}
 	} else {
 		NextInstruction = JUMP;
 		if (inDelay) {
-			JumpToLocation = JumpToLocation + 4;
+			JumpToLocation.UDW = JumpToLocation.UDW + 4;
 		}
 		else {
-			JumpToLocation = PROGRAM_COUNTER + 8;
+			JumpToLocation.UDW = PROGRAM_COUNTER.UDW + 8;
 		}
 	}
 }
@@ -3400,7 +3400,7 @@ void _fastcall R4300i_UnknownOpcode (void) {
 	char Message[200];
 
 	sprintf(Message,"%s: %08X\n%s\n\n", GS(MSG_UNHANDLED_OP), PROGRAM_COUNTER,
-	R4300iOpcodeName(Opcode.Hex,PROGRAM_COUNTER));
+	R4300iOpcodeName(Opcode.Hex,PROGRAM_COUNTER.UW[0]));
 	strcat(Message,"Stoping Emulation !");
 	
 	if (HaveDebugger && !inFullScreen) {

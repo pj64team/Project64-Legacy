@@ -39,7 +39,8 @@
 #include "RomTools_Common.h"
 
 int CPOAdjust = 0;
-int NextInstruction, JumpToLocation, ManualPaused, CPU_Paused, CountPerOp;
+int NextInstruction, ManualPaused, CPU_Paused, CountPerOp;
+MIPS_DWORD JumpToLocation;
 char SaveAsFileName[MAX_PATH], LoadFileName[MAX_PATH];
 int DlistCount, AlistCount, CurrentSaveSlot;
 enum SaveType SaveUsing;
@@ -231,15 +232,15 @@ void CloseCpu (void) {
 	SendMessage( hStatusWnd, SB_SETTEXT, 0, (LPARAM)GS(MSG_EMULATION_ENDED) );
 }
 
-int DelaySlotEffectsCompare (DWORD PC, DWORD Reg1, DWORD Reg2) {
+int DelaySlotEffectsCompare (MIPS_DWORD PC, DWORD Reg1, DWORD Reg2) {
 	OPCODE Command;
 	MIPS_DWORD Address;
-	Address.DW = (long)(PC + 4);
+	Address.UDW = PC.UDW + 4;
 
 	if (!r4300i_LW_VAddr_NonCPU(Address, &Command.Hex)) {
 		if (ShowDebugMessages) {
 			char msg[100];
-			sprintf(msg, "%s\r\nPC: %08X", "Failed to load word 2" , PC + 4);
+			sprintf(msg, "%s\r\nPC: %016llX", "Failed to load word 2" , PC.UDW + 4);
 			DisplayError(msg);
 		}
 		Command.Hex = 0x0;
@@ -304,7 +305,7 @@ int DelaySlotEffectsCompare (DWORD PC, DWORD Reg1, DWORD Reg2) {
 			break;
 		default:
 			if (ShowDebugMessages)
-				DisplayError("Does %s effect Delay slot at %X?",R4300iOpcodeName(Command.Hex,PC+4), PC);
+				DisplayError("Does %s effect Delay slot at %llX?",R4300iOpcodeName(Command.Hex,PC.UDW+4), PC);
 			return TRUE;
 		}
 		break;
@@ -325,12 +326,12 @@ int DelaySlotEffectsCompare (DWORD PC, DWORD Reg1, DWORD Reg2) {
 				case R4300i_COP0_CO_TLBP: break;
 				default: 
 					if (ShowDebugMessages)
-						DisplayError("Does %s effect Delay slot at %X?\n6",R4300iOpcodeName(Command.Hex,PC+4), PC);
+						DisplayError("Does %s effect Delay slot at %llX?\n6",R4300iOpcodeName(Command.Hex,PC.UDW+4), PC);
 					return TRUE;
 				}
 			} else {
 				if (ShowDebugMessages)
-					DisplayError("Does %s effect Delay slot at %X?\n7",R4300iOpcodeName(Command.Hex,PC+4), PC);
+					DisplayError("Does %s effect Delay slot at %X?\n7",R4300iOpcodeName(Command.Hex,PC.UDW+4), PC);
 				return TRUE;
 			}
 		}
@@ -351,7 +352,7 @@ int DelaySlotEffectsCompare (DWORD PC, DWORD Reg1, DWORD Reg2) {
 		case R4300i_COP1_L: break;
 		default:
 			if (ShowDebugMessages)
-				DisplayError("Does %s effect Delay slot at %X?",R4300iOpcodeName(Command.Hex,PC+4), PC);
+				DisplayError("Does %s effect Delay slot at %llX?",R4300iOpcodeName(Command.Hex,PC.UDW+4), PC);
 			return TRUE;
 		}
 		break;
@@ -392,16 +393,16 @@ int DelaySlotEffectsCompare (DWORD PC, DWORD Reg1, DWORD Reg2) {
 	case R4300i_SD: break;
 	default:
 		if (ShowDebugMessages)
-			DisplayError("Does %s effect Delay slot at %X?",R4300iOpcodeName(Command.Hex,PC+4), PC);
+			DisplayError("Does %s effect Delay slot at %llX?",R4300iOpcodeName(Command.Hex,PC.UDW+4), PC);
 		return TRUE;
 	}
 	return FALSE;
 }
 
-int DelaySlotEffectsJump (DWORD JumpPC) {
+int DelaySlotEffectsJump (MIPS_DWORD JumpPC) {
 	OPCODE Command;
 	MIPS_DWORD Address;
-	Address.DW = (long)JumpPC;
+	Address = JumpPC;
 
 	if (!r4300i_LW_VAddr_NonCPU(Address, &Command.Hex)) { return TRUE; }
 	if (SelfModCheck == ModCode_ChangeMemory) {
@@ -448,7 +449,7 @@ int DelaySlotEffectsJump (DWORD JumpPC) {
 					int EffectDelaySlot;
 					OPCODE NewCommand;
 					MIPS_DWORD AddressAfterJumpDest;
-					AddressAfterJumpDest.DW = (long)(JumpPC + 4);
+					AddressAfterJumpDest.UDW = JumpPC.UDW + 4;
 
 					if (!r4300i_LW_VAddr_NonCPU(AddressAfterJumpDest, &NewCommand.Hex)) { return TRUE; }
 					
@@ -710,7 +711,13 @@ BOOL Machine_LoadState(void) {
 			RdramSize = SaveRDRAMSize;
 			unzReadCurrentFile(file,&Value,sizeof(Value));
 			ChangeTimer(ViTimer,Value);
-			unzReadCurrentFile(file,&PROGRAM_COUNTER,sizeof(PROGRAM_COUNTER));
+			if (formatVersion == SaveStateFormat_ORIGINAL) {
+				unzReadCurrentFile(file, &PROGRAM_COUNTER.UW[0], sizeof(PROGRAM_COUNTER.UW[0]));
+				PROGRAM_COUNTER.DW = PROGRAM_COUNTER.W[0];
+			}
+			else {
+				unzReadCurrentFile(file, &PROGRAM_COUNTER, sizeof(PROGRAM_COUNTER));
+			}
 			unzReadCurrentFile(file,GPR,sizeof(_int64)*32);
 			unzReadCurrentFile(file,FPR,sizeof(_int64)*32);
 			if (formatVersion == SaveStateFormat_ORIGINAL) {
@@ -850,7 +857,13 @@ BOOL Machine_LoadState(void) {
 
 		ReadFile( hSaveFile,&Value,sizeof(Value),&dwRead,NULL);
 		ChangeTimer(ViTimer,Value);
-		ReadFile( hSaveFile,&PROGRAM_COUNTER,sizeof(PROGRAM_COUNTER),&dwRead,NULL);
+		if (formatVersion == SaveStateFormat_ORIGINAL) {
+			ReadFile(hSaveFile, &PROGRAM_COUNTER.UW[0], sizeof(PROGRAM_COUNTER.UW[0]), &dwRead, NULL);
+			PROGRAM_COUNTER.DW = PROGRAM_COUNTER.W[0];
+		}
+		else {
+			ReadFile(hSaveFile, &PROGRAM_COUNTER, sizeof(PROGRAM_COUNTER), &dwRead, NULL);
+		}
 		ReadFile( hSaveFile,GPR,sizeof(_int64)*32,&dwRead,NULL);
 		ReadFile( hSaveFile,FPR,sizeof(_int64)*32,&dwRead,NULL);
 		if (formatVersion == SaveStateFormat_ORIGINAL) {
@@ -944,7 +957,7 @@ BOOL Machine_LoadState(void) {
 		SyncNextInstruction = NORMAL;
 		SyncJumpToLocation = -1;
 		NextInstruction = NORMAL;
-		JumpToLocation = -1;
+		JumpToLocation.DW = -1;
 		MemAddrUsedCount[0] = 0;
 		MemAddrUsedCount[1] = 0;
 		SyncToPC ();
