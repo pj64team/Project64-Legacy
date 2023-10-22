@@ -213,10 +213,16 @@ void _fastcall DoTLBMiss ( BOOL DelaySlot, QWORD BadVaddr, BOOL FromRead ) {
 		} else {
 			EPC_REGISTER = PROGRAM_COUNTER.UDW;
 		}
-		if (AddressDefined(BadVaddr)) {
-			PROGRAM_COUNTER.UDW = 0xFFFFFFFF80000180LL;
-		} else {
-			PROGRAM_COUNTER.UDW = 0xFFFFFFFF80000000LL;
+		if (!Addressing64Bits) {
+			if (AddressDefined(BadVaddr)) {
+				PROGRAM_COUNTER.UDW = 0xFFFFFFFF80000180LL;
+			}
+			else {
+				PROGRAM_COUNTER.UDW = 0xFFFFFFFF80000000LL;
+			}
+		}
+		else {
+			PROGRAM_COUNTER.UDW = 0xFFFFFFFF80000080LL;
 		}
 		STATUS_REGISTER |= STATUS_EXL;
 	} else {
