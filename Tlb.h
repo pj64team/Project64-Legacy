@@ -101,4 +101,4 @@ void TLB_Probe      ( void );
 void TLB_Read       ( void );
 BOOL TranslateVaddr ( DWORD * Addr);
 void _fastcall WriteTLBEntry  ( int index );
-BOOL Translate64BitsVAddrToPAddr(MIPS_DWORD VAddr, DWORD* PAddr);
+BOOL Translate64BitsVAddrToPAddr(MIPS_DWORD VAddr, DWORD* PAddr, BOOL ReadOnly);

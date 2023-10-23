@@ -1441,7 +1441,7 @@ BOOL r4300i_LB_VAddr ( MIPS_DWORD VAddr, BYTE * Value ) {
 		PAddr = (DWORD)TLB_ReadMap[VAddr.UW[0] >> 12] + VAddr.UW[0] - (DWORD)N64MEM;
 	}
 	else {
-		if (!Translate64BitsVAddrToPAddr(VAddr, &PAddr)) {
+		if (!Translate64BitsVAddrToPAddr(VAddr, &PAddr, TRUE)) {
 			return FALSE;
 		}
 	}
@@ -1468,7 +1468,7 @@ BOOL r4300i_LB_VAddr_NonCPU(MIPS_DWORD VAddr, BYTE *Value) {
 		PAddr = (DWORD)TLB_ReadMap[VAddr.UW[0] >> 12] + VAddr.UW[0] - (DWORD)N64MEM;
 	}
 	else {
-		if (!Translate64BitsVAddrToPAddr(VAddr, &PAddr)) {
+		if (!Translate64BitsVAddrToPAddr(VAddr, &PAddr, TRUE)) {
 			return FALSE;
 		}
 	}
@@ -1498,7 +1498,7 @@ BOOL r4300i_LD_VAddr ( MIPS_DWORD VAddr, unsigned _int64 * Value, DWORD* outPAdd
 		PAddr = (DWORD)TLB_ReadMap[VAddr.UW[0] >> 12] + VAddr.UW[0] - (DWORD)N64MEM;
 	}
 	else {
-		if (!Translate64BitsVAddrToPAddr(VAddr, &PAddr)) {
+		if (!Translate64BitsVAddrToPAddr(VAddr, &PAddr, TRUE)) {
 			return FALSE;
 		}
 	}
@@ -1597,7 +1597,7 @@ BOOL r4300i_LH_VAddr ( MIPS_DWORD VAddr, WORD * Value ) {
 		PAddr = (DWORD)TLB_ReadMap[VAddr.UW[0] >> 12] + VAddr.UW[0] - (DWORD)N64MEM;
 	}
 	else {
-		if (!Translate64BitsVAddrToPAddr(VAddr, &PAddr)) {
+		if (!Translate64BitsVAddrToPAddr(VAddr, &PAddr, TRUE)) {
 			return FALSE;
 		}
 	}
@@ -1624,7 +1624,7 @@ BOOL r4300i_LH_VAddr_NonCPU ( MIPS_DWORD VAddr, WORD * Value ) {
 		PAddr = (DWORD)TLB_ReadMap[VAddr.UW[0] >> 12] + VAddr.UW[0] - (DWORD)N64MEM;
 	}
 	else {
-		if (!Translate64BitsVAddrToPAddr(VAddr, &PAddr)) {
+		if (!Translate64BitsVAddrToPAddr(VAddr, &PAddr, TRUE)) {
 			return FALSE;
 		}
 	}
@@ -1917,7 +1917,7 @@ BOOL r4300i_LW_VAddr ( MIPS_DWORD VAddr, DWORD * Value, DWORD* outPAddr ) {
 		PAddr = (DWORD)TLB_ReadMap[VAddr.UW[0] >> 12] + VAddr.UW[0] - (DWORD)N64MEM;
 	}
 	else {
-		if (!Translate64BitsVAddrToPAddr(VAddr, &PAddr)) {
+		if (!Translate64BitsVAddrToPAddr(VAddr, &PAddr, TRUE)) {
 			return FALSE;
 		}
 	}
@@ -1945,7 +1945,7 @@ BOOL r4300i_LW_VAddr_NonCPU ( MIPS_DWORD VAddr, DWORD * Value ) {
 		PAddr = (DWORD)TLB_ReadMap[VAddr.UW[0] >> 12] + VAddr.UW[0] - (DWORD)N64MEM;
 	}
 	else {
-		if (!Translate64BitsVAddrToPAddr(VAddr, &PAddr)) {
+		if (!Translate64BitsVAddrToPAddr(VAddr, &PAddr, TRUE)) {
 			return FALSE;
 		}
 	}
@@ -2052,7 +2052,7 @@ BOOL r4300i_SB_VAddr ( MIPS_DWORD VAddr, MIPS_DWORD* Value ) {
 		PAddr = (DWORD)TLB_WriteMap[VAddr.UW[0] >> 12] + VAddr.UW[0] - (DWORD)N64MEM;
 	}
 	else {
-		if (!Translate64BitsVAddrToPAddr(VAddr, &PAddr)) {
+		if (!Translate64BitsVAddrToPAddr(VAddr, &PAddr, FALSE)) {
 			return FALSE;
 		}
 	}
@@ -2080,7 +2080,7 @@ BOOL r4300i_SB_VAddr_NonCPU ( MIPS_DWORD VAddr, BYTE Value ) {
 		PAddr = (DWORD)TLB_WriteMap[VAddr.UW[0] >> 12] + VAddr.UW[0] - (DWORD)N64MEM;
 	}
 	else {
-		if (!Translate64BitsVAddrToPAddr(VAddr, &PAddr)) {
+		if (!Translate64BitsVAddrToPAddr(VAddr, &PAddr, FALSE)) {
 			return FALSE;
 		}
 	}
@@ -2182,7 +2182,7 @@ BOOL r4300i_SD_VAddr ( MIPS_DWORD VAddr, unsigned _int64 Value ) {
 		PAddr = (DWORD)TLB_WriteMap[VAddr.UW[0] >> 12] + VAddr.UW[0] - (DWORD)N64MEM;
 	}
 	else {
-		if (!Translate64BitsVAddrToPAddr(VAddr, &PAddr)) {
+		if (!Translate64BitsVAddrToPAddr(VAddr, &PAddr, FALSE)) {
 			return FALSE;
 		}
 	}
@@ -2211,7 +2211,7 @@ BOOL r4300i_SH_VAddr ( MIPS_DWORD VAddr, MIPS_DWORD* Value) {
 		PAddr = (DWORD)TLB_WriteMap[VAddr.UW[0] >> 12] + VAddr.UW[0] - (DWORD)N64MEM;
 	}
 	else {
-		if (!Translate64BitsVAddrToPAddr(VAddr, &PAddr)) {
+		if (!Translate64BitsVAddrToPAddr(VAddr, &PAddr, FALSE)) {
 			return FALSE;
 		}
 	}
@@ -2242,7 +2242,7 @@ BOOL r4300i_SH_VAddr_NonCPU ( MIPS_DWORD VAddr, WORD Value ) {
 		PAddr = (DWORD)TLB_WriteMap[VAddr.UW[0] >> 12] + VAddr.UW[0] - (DWORD)N64MEM;
 	}
 	else {
-		if (!Translate64BitsVAddrToPAddr(VAddr, &PAddr)) {
+		if (!Translate64BitsVAddrToPAddr(VAddr, &PAddr, FALSE)) {
 			return FALSE;
 		}
 	}
@@ -2781,7 +2781,7 @@ BOOL r4300i_SW_VAddr ( MIPS_DWORD VAddr, DWORD Value ) {
 		PAddr = (DWORD)TLB_WriteMap[VAddr.UW[0] >> 12] + VAddr.UW[0] - (DWORD)N64MEM;
 	}
 	else {
-		if (!Translate64BitsVAddrToPAddr(VAddr, &PAddr)) {
+		if (!Translate64BitsVAddrToPAddr(VAddr, &PAddr, FALSE)) {
 			return FALSE;
 		}
 	}
@@ -2808,7 +2808,7 @@ BOOL r4300i_SW_VAddr_NonCPU ( MIPS_DWORD VAddr, DWORD Value ) {
 		PAddr = (DWORD)TLB_WriteMap[VAddr.UW[0] >> 12] + VAddr.UW[0] - (DWORD)N64MEM;
 	}
 	else {
-		if (!Translate64BitsVAddrToPAddr(VAddr, &PAddr)) {
+		if (!Translate64BitsVAddrToPAddr(VAddr, &PAddr, FALSE)) {
 			return FALSE;
 		}
 	}
@@ -2932,7 +2932,7 @@ BOOL IsValidAddress(MIPS_DWORD address) {
 			}
 			return FALSE;
 		case 0xC:
-			if (address.UW[1] < 0xC0000100) {
+			if (address.UDW < 0xC00000FF80000000LL) {
 				return TRUE;
 			}
 			return FALSE;

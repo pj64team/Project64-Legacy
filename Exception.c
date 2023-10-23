@@ -102,6 +102,7 @@ void DoAddressError ( BOOL DelaySlot, QWORD BadVaddr, BOOL FromRead) {
 	XCONTEXT_REGISTER &= 0xFFFFFFFE00000000LL;
 	XCONTEXT_REGISTER |= ((QWORD)BadVaddr >> 9) & 0x7FFFFFF0LL;
 	XCONTEXT_REGISTER |= ((QWORD)BadVaddr >> 31) & 0x180000000LL;
+	ENTRYHI_REGISTER = BadVaddr & 0xC00000FFFFFFE000LL;
 	if (DelaySlot) {
 		CAUSE_REGISTER |= CAUSE_BD;
 		EPC_REGISTER = PROGRAM_COUNTER.UDW - 4;
@@ -195,8 +196,16 @@ void DoIntrException ( BOOL DelaySlot ) {
 
 void _fastcall DoTLBMiss ( BOOL DelaySlot, QWORD BadVaddr, BOOL FromRead ) {
 	CAUSE_REGISTER = FromRead ? EXC_RMISS : EXC_WMISS;
-	if (CAUSE_REGISTER == EXC_WMISS && TLB_ReadMap[BadVaddr >> 12] != 0) {
-		CAUSE_REGISTER = EXC_MOD;
+	if (CAUSE_REGISTER == EXC_WMISS) {
+		if (!Addressing64Bits) {
+			if (TLB_ReadMap[BadVaddr >> 12] != 0) CAUSE_REGISTER = EXC_MOD;
+		}
+		else {
+			MIPS_DWORD Addr;
+			DWORD PAddr;
+			Addr.UDW = BadVaddr;
+			if (Translate64BitsVAddrToPAddr(Addr, PAddr, TRUE)) CAUSE_REGISTER = EXC_MOD;
+		}
 	}
 	BAD_VADDR_REGISTER = BadVaddr;
 	CONTEXT_REGISTER &= 0xFFFFFFFFFF80000FLL;
@@ -204,7 +213,7 @@ void _fastcall DoTLBMiss ( BOOL DelaySlot, QWORD BadVaddr, BOOL FromRead ) {
 	XCONTEXT_REGISTER &= 0xFFFFFFFE00000000LL;
 	XCONTEXT_REGISTER |= ((QWORD)BadVaddr >> 9) & 0x7FFFFFF0LL;
 	XCONTEXT_REGISTER |= ((QWORD)BadVaddr >> 31) & 0x180000000LL;
-	ENTRYHI_REGISTER = (ENTRYHI_REGISTER & 0xFF) | (BadVaddr & 0xC0000FFFFFFE000LL);
+	ENTRYHI_REGISTER = (ENTRYHI_REGISTER & 0xFF) | (BadVaddr & 0xC00000FFFFFFE000LL);
 	
 	if ((STATUS_REGISTER & STATUS_EXL) == 0) {
 		if (DelaySlot) {

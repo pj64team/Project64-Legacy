@@ -3399,7 +3399,7 @@ void _fastcall R4300i_UnknownOpcode (void) {
 #ifdef STOP_ON_UNKNOWN_OPCODE
 	char Message[200];
 
-	sprintf(Message,"%s: %08X\n%s\n\n", GS(MSG_UNHANDLED_OP), PROGRAM_COUNTER,
+	sprintf(Message,"%s: %016llX\n%s\n\n", GS(MSG_UNHANDLED_OP), PROGRAM_COUNTER.UDW,
 	R4300iOpcodeName(Opcode.Hex,PROGRAM_COUNTER.UW[0]));
 	strcat(Message,"Stoping Emulation !");
 	
