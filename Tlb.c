@@ -249,6 +249,7 @@ void _fastcall WriteTLBEntry (int index) {
 }
 
 static BOOL Translate64BitsVAddrToPAddrThroughTLB(MIPS_DWORD VAddr, DWORD* PAddr, BOOL ReadOnly) {
+	LogMessage("%llx: translate %llx", PROGRAM_COUNTER.UDW, VAddr.UDW);
 	static int lastMatchingEntry = 0;
 	static const QWORD vpnMask = 0xC00000FFFFFFE000LL;
 	int Counter, Entry = lastMatchingEntry;
@@ -259,7 +260,7 @@ static BOOL Translate64BitsVAddrToPAddrThroughTLB(MIPS_DWORD VAddr, DWORD* PAddr
 
 		if (vpn == EntryHi) {
 			BOOL Global = tlb[Entry].EntryLo0.BreakDownEntryLo0.GLOBAL && tlb[Entry].EntryLo1.BreakDownEntryLo1.GLOBAL;
-			BOOL SameAsid = ((tlb[Entry].EntryHi.Value & 0xFF) == (ENTRYHI_REGISTER & 0xFF));
+			BOOL SameAsid = ((tlb[Entry].EntryHi.Value & 0xFF) == (VAddr.UDW & 0xFF));
 
 			if (Global || SameAsid) {
 				if (((VAddr.UDW >> 12) & (tlb[Entry].PageMask.BreakDownPageMask.Mask + 1)) == 0) {
@@ -293,6 +294,7 @@ static BOOL Translate64BitsVAddrToPAddrThroughTLB(MIPS_DWORD VAddr, DWORD* PAddr
 			++Entry;
 		}
 	}
+	LogMessage("No match");
 	return FALSE;
 }
 
@@ -304,6 +306,7 @@ BOOL Translate64BitsVAddrToPAddr(MIPS_DWORD VAddr, DWORD* PAddr, BOOL ReadOnly) 
 	case 0xC:
 		return Translate64BitsVAddrToPAddrThroughTLB(VAddr, PAddr, ReadOnly);
 	case 0x9: // TLB Unmapped
+		LogMessage("%llx: translate2 %llx", PROGRAM_COUNTER.UDW, VAddr.UDW);
 		*PAddr = VAddr.UW[0] & 0xFFFFFFFF;
 		return TRUE;
 	case 0xF:
