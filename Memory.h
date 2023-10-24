@@ -46,12 +46,12 @@ int  r4300i_CPU_MemoryFilter     ( DWORD dwExptCode, LPEXCEPTION_POINTERS lpEP )
 int  r4300i_LB_NonMemory         ( DWORD PAddr, DWORD * Value, BOOL SignExtend );
 BOOL r4300i_LB_VAddr             ( MIPS_DWORD VAddr, BYTE * Value );
 BOOL r4300i_LB_VAddr_NonCPU      ( MIPS_DWORD VAddr, BYTE * Value );
-BOOL r4300i_LD_VAddr             ( MIPS_DWORD VAddr, unsigned _int64 * Value );
+BOOL r4300i_LD_VAddr             ( MIPS_DWORD VAddr, unsigned _int64 * Value, DWORD* outPAddr );
 int  r4300i_LH_NonMemory         ( DWORD PAddr, DWORD * Value, int SignExtend );
 BOOL r4300i_LH_VAddr             ( MIPS_DWORD VAddr, WORD * Value );
 BOOL r4300i_LH_VAddr_NonCPU      ( MIPS_DWORD VAddr, WORD * Value );
 int  r4300i_LW_NonMemory         ( DWORD PAddr, DWORD * Value );
-BOOL r4300i_LW_VAddr             ( MIPS_DWORD VAddr, DWORD * Value );
+BOOL r4300i_LW_VAddr             ( MIPS_DWORD VAddr, DWORD * Value, DWORD* outPAddr );
 BOOL r4300i_LW_VAddr_NonCPU      ( MIPS_DWORD VAddr, DWORD * Value );
 int  r4300i_SB_NonMemory         ( DWORD PAddr, BYTE Value );
 BOOL r4300i_SB_VAddr             ( MIPS_DWORD VAddr, MIPS_DWORD* Value);

@@ -62,8 +62,8 @@ extern LOG_OPTIONS LogOptions;
 
 void EnterLogOptions ( HWND hwndOwner );
 void LoadLogOptions  ( LOG_OPTIONS * LogOptions, BOOL AlwaysFill );
-void Log_LW          ( DWORD PC, DWORD VAddr );
+void Log_LW          ( MIPS_DWORD PC, DWORD VAddr );
 void __cdecl LogMessage      ( char * Message, ... );
-void Log_SW          ( DWORD PC, DWORD VAddr, DWORD Value );
+void Log_SW          ( MIPS_DWORD PC, DWORD VAddr, DWORD Value );
 void StartLog        ( void );
 void StopLog         ( void );

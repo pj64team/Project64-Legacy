@@ -207,7 +207,7 @@ LRESULT CALLBACK LogGeneralProc (HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lPa
 	return TRUE;
 }
 
-void Log_LW (DWORD PC, DWORD VAddr) {
+void Log_LW (MIPS_DWORD PC, DWORD VAddr) {
 	DWORD Value;
 	MIPS_DWORD Address;
 
@@ -442,7 +442,7 @@ void __cdecl LogMessage (char * Message, ...) {
 	WriteFile( hLogFile,Msg,strlen(Msg),&dwWritten,NULL );
 }
 
-void Log_SW (DWORD PC, DWORD VAddr, DWORD Value) {
+void Log_SW (MIPS_DWORD PC, DWORD VAddr, DWORD Value) {
 	if (!LogOptions.GenerateLog) { return; }
 
 	if ( VAddr < 0xA0000000 || VAddr >= 0xC0000000 ) {

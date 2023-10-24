@@ -77,8 +77,8 @@ void ChangeCompareTimer(void);
 void ChangeTimer(int Type, int Value);
 void CheckTimer(void);
 void CloseCpu(void);
-int  DelaySlotEffectsCompare(DWORD PC, DWORD Reg1, DWORD Reg2);
-int  DelaySlotEffectsJump(DWORD JumpPC);
+int  DelaySlotEffectsCompare(MIPS_DWORD PC, DWORD Reg1, DWORD Reg2);
+int  DelaySlotEffectsJump(MIPS_DWORD JumpPC);
 void DoSomething(void);
 void InPermLoop(void);
 void InitiliazeCPUFlags(void);
@@ -125,7 +125,8 @@ void __cdecl SetFrameBuffer(DWORD Address, DWORD Length);
 #endif
 
 extern int CPOAdjust;
-extern int NextInstruction, JumpToLocation, ManualPaused, CPU_Paused, CountPerOp;
+extern int NextInstruction, ManualPaused, CPU_Paused, CountPerOp;
+extern MIPS_DWORD JumpToLocation;
 extern char SaveAsFileName[MAX_PATH], LoadFileName[MAX_PATH];
 extern int DlistCount, AlistCount, CurrentSaveSlot;
 extern enum SaveType SaveUsing;

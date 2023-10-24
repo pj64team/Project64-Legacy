@@ -51,9 +51,11 @@ void Compile_R4300i_Branch (BLOCK_SECTION * Section, void (*CompareFunc)(BLOCK_S
 		CPU_Message("  %X %s",Section->CompilePC,R4300iOpcodeName(Opcode.Hex,Section->CompilePC));
 		
 		if ((Section->CompilePC & 0xFFC) != 0xFFC) {
+			MIPS_DWORD CompilePC;
+			CompilePC.DW = (int)Section->CompilePC;
 			switch (BranchType) {
-			case BranchTypeRs: EffectDelaySlot = DelaySlotEffectsCompare(Section->CompilePC,Opcode.BRANCH.rs,0); break;
-			case BranchTypeRsRt: EffectDelaySlot = DelaySlotEffectsCompare(Section->CompilePC,Opcode.BRANCH.rs,Opcode.BRANCH.rt); break;
+			case BranchTypeRs: EffectDelaySlot = DelaySlotEffectsCompare(CompilePC,Opcode.BRANCH.rs,0); break;
+			case BranchTypeRsRt: EffectDelaySlot = DelaySlotEffectsCompare(CompilePC,Opcode.BRANCH.rs,Opcode.BRANCH.rt); break;
 			case BranchTypeCop1: 
 				{
 					OPCODE Command;
@@ -2545,7 +2547,7 @@ void Compile_R4300i_LL (BLOCK_SECTION * Section) {
 		if (Compile_LW(MipsRegLo(Opcode.BRANCH.rt), Address)) {
 			MoveConstToVariable(1, &LLBit, "LLBit");
 			TranslateVaddr(&Address);
-			MoveConstToVariable(Address, &LLAddr, "LLAddr");
+			MoveConstToVariable(Address, &LLADDR_REGISTER, "LLAddr");
 			return;
 		}
 
@@ -2587,9 +2589,9 @@ void Compile_R4300i_LL (BLOCK_SECTION * Section) {
 		Map_GPR_32bit(Section,Opcode.BRANCH.rt,TRUE,-1);
 		MoveX86regPointerToX86reg(TempReg1, TempReg2,MipsRegLo(Opcode.BRANCH.rt));
 		MoveConstToVariable(1,&LLBit,"LLBit");
-		MoveX86regToVariable(TempReg1,&LLAddr,"LLAddr");
-		AddX86regToVariable(TempReg2,&LLAddr,"LLAddr");
-		SubConstFromVariable((DWORD)N64MEM,&LLAddr,"LLAddr");
+		MoveX86regToVariable(TempReg1,&LLADDR_REGISTER,"LLAddr");
+		AddX86regToVariable(TempReg2,&LLADDR_REGISTER,"LLAddr");
+		SubConstFromVariable((DWORD)N64MEM,&LLADDR_REGISTER,"LLAddr");
 	} else {
 		if (IsMapped(Opcode.IMM.base)) { 
 			ProtectGPR(Section,Opcode.IMM.base);
@@ -2611,7 +2613,7 @@ void Compile_R4300i_LL (BLOCK_SECTION * Section) {
 			}
 		}
 		AndConstToX86Reg(MipsRegLo(Opcode.BRANCH.rt),0x1FFFFFFF);
-		MoveX86regToVariable(MipsRegLo(Opcode.BRANCH.rt),&LLAddr,"LLAddr");
+		MoveX86regToVariable(MipsRegLo(Opcode.BRANCH.rt),&LLADDR_REGISTER,"LLAddr");
 		MoveN64MemToX86reg(MipsRegLo(Opcode.BRANCH.rt),MipsRegLo(Opcode.BRANCH.rt));
 		MoveConstToVariable(1,&LLBit,"LLBit");
 	}
@@ -3073,7 +3075,9 @@ void Compile_R4300i_SPECIAL_JR (BLOCK_SECTION * Section) {
 			NextInstruction = END_BLOCK;
 			return;
 		}
-		if (DelaySlotEffectsCompare(Section->CompilePC,Opcode.BRANCH.rs,0)) {
+		MIPS_DWORD CompilePC;
+		CompilePC.DW = (int)Section->CompilePC;
+		if (DelaySlotEffectsCompare(CompilePC,Opcode.BRANCH.rs,0)) {
 			if (IsConst(Opcode.BRANCH.rs)) { 
 				MoveConstToVariable(MipsRegLo(Opcode.BRANCH.rs),&PROGRAM_COUNTER, "PROGRAM_COUNTER");
 			} else 	if (IsMapped(Opcode.BRANCH.rs)) { 
@@ -3083,8 +3087,10 @@ void Compile_R4300i_SPECIAL_JR (BLOCK_SECTION * Section) {
 			}
 		}
 		NextInstruction = DO_DELAY_SLOT;
-	} else if (NextInstruction == DELAY_SLOT_DONE ) {		
-		if (DelaySlotEffectsCompare(Section->CompilePC,Opcode.BRANCH.rs,0)) {
+	} else if (NextInstruction == DELAY_SLOT_DONE ) {
+		MIPS_DWORD CompilePC;
+		CompilePC.DW = (int)Section->CompilePC;
+		if (DelaySlotEffectsCompare(CompilePC,Opcode.BRANCH.rs,0)) {
 			CompileExit((DWORD)-1,Section->RegWorking,Normal,TRUE,NULL);
 		} else {
 			if (IsConst(Opcode.BRANCH.rs)) { 
@@ -3111,7 +3117,9 @@ void Compile_R4300i_SPECIAL_JALR (BLOCK_SECTION * Section) {
 	
 	if ( NextInstruction == NORMAL ) {
 		CPU_Message("  %X %s",Section->CompilePC,R4300iOpcodeName(Opcode.Hex,Section->CompilePC));
-		if (DelaySlotEffectsCompare(Section->CompilePC,Opcode.BRANCH.rs,0)) {
+		MIPS_DWORD CompilePC;
+		CompilePC.DW = (int)Section->CompilePC;
+		if (DelaySlotEffectsCompare(CompilePC,Opcode.BRANCH.rs,0)) {
 			Compile_R4300i_UnknownOpcode(Section);
 		}
 		UnMap_GPR(Section, Opcode.REG.rd, FALSE);
@@ -5425,10 +5433,10 @@ void Compile_R4300i_COP0_CO_TLBP( BLOCK_SECTION * Section) {
 
 void compiler_COP0_CO_ERET (void) {
 	if ((STATUS_REGISTER & STATUS_ERL) != 0) {
-		PROGRAM_COUNTER = ERROREPC_REGISTER;
+		PROGRAM_COUNTER.DW = ERROREPC_REGISTER;
 		STATUS_REGISTER &= ~STATUS_ERL;
 	} else {
-		PROGRAM_COUNTER = EPC_REGISTER;
+		PROGRAM_COUNTER.DW = EPC_REGISTER;
 		STATUS_REGISTER &= ~STATUS_EXL;
 	}
 	LLBit = 0;

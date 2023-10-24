@@ -157,7 +157,7 @@ BYTE * Compiler4300iBlock(void) {
 
 	memset(&BlockInfo,0,sizeof(BlockInfo));
 	BlockInfo.CompiledLocation = RecompPos;
-	BlockInfo.StartVAddr = PROGRAM_COUNTER;
+	BlockInfo.StartVAddr = PROGRAM_COUNTER.UW[0];
 
 	AnalyseBlock();
 	
@@ -232,7 +232,7 @@ BYTE * Compiler4300iBlock(void) {
 }
 
 BYTE * CompileDelaySlot(void) {
-	DWORD StartAddress = PROGRAM_COUNTER;
+	DWORD StartAddress = PROGRAM_COUNTER.UW[0];
 	BLOCK_SECTION *Section, DelaySection;
 	BYTE * Block = RecompPos;
 	int count, x86Reg;
@@ -268,10 +268,10 @@ BYTE * CompileDelaySlot(void) {
 	}
 	MarkCodeBlock(StartAddress);
 	CPU_Message("x86 code at: %X",Block);
-	CPU_Message("Delay Slot location: %X",PROGRAM_COUNTER );
+	CPU_Message("Delay Slot location: %X",PROGRAM_COUNTER.UW[0] );
 	CPU_Message("====== recompiled code ======");
 
-	InitilzeSection (Section, NULL, PROGRAM_COUNTER, 0);
+	InitilzeSection (Section, NULL, PROGRAM_COUNTER.UW[0], 0);
 	InitilizeRegSet(&Section->RegStart);
 	memcpy(&Section->RegWorking,&Section->RegStart,sizeof(REG_INFO));		
 
@@ -1294,7 +1294,9 @@ void _fastcall FillSectionInfo(BLOCK_SECTION * Section) {
 				Section->Cont.TargetPC = Section->CompilePC + 8;
 				Section->Jump.TargetPC = Section->CompilePC + ((short)Command.BRANCH.offset << 2) + 4;
 				if (Section->CompilePC == Section->Jump.TargetPC) {
-					if (!DelaySlotEffectsCompare(Section->CompilePC,Command.BRANCH.rs,0)) {
+					MIPS_DWORD CompilePC;
+					CompilePC.DW = (int)Section->CompilePC;
+					if (!DelaySlotEffectsCompare(CompilePC,Command.BRANCH.rs,0)) {
 						Section->Jump.PermLoop = TRUE;
 					}
 				} 
@@ -1304,8 +1306,10 @@ void _fastcall FillSectionInfo(BLOCK_SECTION * Section) {
 				NextInstruction = LIKELY_DELAY_SLOT;
 				Section->Cont.TargetPC = Section->CompilePC + 8;
 				Section->Jump.TargetPC = Section->CompilePC + ((short)Command.BRANCH.offset << 2) + 4;
-				if (Section->CompilePC == Section->Jump.TargetPC) { 
-					if (!DelaySlotEffectsCompare(Section->CompilePC,Command.BRANCH.rs,0)) {
+				if (Section->CompilePC == Section->Jump.TargetPC) {
+					MIPS_DWORD CompilePC;
+					CompilePC.DW = (int)Section->CompilePC;
+					if (!DelaySlotEffectsCompare(CompilePC,Command.BRANCH.rs,0)) {
 						Section->Jump.PermLoop = TRUE;
 					}
 				} 
@@ -1317,8 +1321,10 @@ void _fastcall FillSectionInfo(BLOCK_SECTION * Section) {
 				MipsRegState(31) = STATE_CONST_32;
 				Section->Cont.TargetPC = Section->CompilePC + 8;
 				Section->Jump.TargetPC = Section->CompilePC + ((short)Command.BRANCH.offset << 2) + 4;
-				if (Section->CompilePC == Section->Jump.TargetPC) { 
-					if (!DelaySlotEffectsCompare(Section->CompilePC,Command.BRANCH.rs,0)) {
+				if (Section->CompilePC == Section->Jump.TargetPC) {
+					MIPS_DWORD CompilePC;
+					CompilePC.DW = (int)Section->CompilePC;
+					if (!DelaySlotEffectsCompare(CompilePC,Command.BRANCH.rs,0)) {
 						Section->Jump.PermLoop = TRUE;
 					}
 				} 
@@ -1339,7 +1345,9 @@ void _fastcall FillSectionInfo(BLOCK_SECTION * Section) {
 			MipsRegState(31) = STATE_CONST_32;
 			Section->Jump.TargetPC = (Section->CompilePC & 0xF0000000) + (Command.JMP.target << 2);
 			if (Section->CompilePC == Section->Jump.TargetPC) {
-				if (!DelaySlotEffectsCompare(Section->CompilePC,31,0)) {
+				MIPS_DWORD CompilePC;
+				CompilePC.DW = (int)Section->CompilePC;
+				if (!DelaySlotEffectsCompare(CompilePC,31,0)) {
 					Section->Jump.PermLoop = TRUE;
 				}
 			} 
@@ -1357,7 +1365,9 @@ void _fastcall FillSectionInfo(BLOCK_SECTION * Section) {
 			Section->Cont.TargetPC = Section->CompilePC + 8;
 			Section->Jump.TargetPC = Section->CompilePC + ((short)Command.BRANCH.offset << 2) + 4;
 			if (Section->CompilePC == Section->Jump.TargetPC) {
-				if (!DelaySlotEffectsCompare(Section->CompilePC,Command.BRANCH.rs,Command.BRANCH.rt)) {
+				MIPS_DWORD CompilePC;
+				CompilePC.DW = (int)Section->CompilePC;
+				if (!DelaySlotEffectsCompare(CompilePC,Command.BRANCH.rs,Command.BRANCH.rt)) {
 					Section->Jump.PermLoop = TRUE;
 				}
 			} 
@@ -1543,7 +1553,9 @@ void _fastcall FillSectionInfo(BLOCK_SECTION * Section) {
 			Section->Cont.TargetPC = Section->CompilePC + 8;
 			Section->Jump.TargetPC = Section->CompilePC + ((short)Command.BRANCH.offset << 2) + 4;
 			if (Section->CompilePC == Section->Jump.TargetPC) {
-				if (!DelaySlotEffectsCompare(Section->CompilePC,Command.BRANCH.rs,Command.BRANCH.rt)) {
+				MIPS_DWORD CompilePC;
+				CompilePC.DW = (int)Section->CompilePC;
+				if (!DelaySlotEffectsCompare(CompilePC,Command.BRANCH.rs,Command.BRANCH.rt)) {
 					Section->Jump.PermLoop = TRUE;
 				}
 			} 
@@ -1835,7 +1847,9 @@ void GenerateSectionLinkage (BLOCK_SECTION * Section) {
 	}
 	if (!UseLinking) {  
 		if (Section->CompilePC == Section->Jump.TargetPC && (Section->Cont.TargetPC == -1)) {
-			if (!DelaySlotEffectsJump(Section->CompilePC)) {
+			MIPS_DWORD CompilePC;
+			CompilePC.DW = (int)Section->CompilePC;
+			if (!DelaySlotEffectsJump(CompilePC)) {
 				WriteBackRegisters(Section); 
 				memcpy(&Section->Jump.RegSet,&Section->RegWorking, sizeof(REG_INFO));
 				Call_Direct(InPermLoop,"InPermLoop");
@@ -3002,12 +3016,12 @@ void __cdecl StartRecompilerCPU (void ) {
 			DWORD Value;
 
 			for (;;) {
-				Addr = PROGRAM_COUNTER;
+				Addr = PROGRAM_COUNTER.UW[0];
 				if (UseTlb) {
 					if (!TranslateVaddr(&Addr)) {
-						DoTLBMiss(NextInstruction == DELAY_SLOT,PROGRAM_COUNTER, TRUE);
+						DoTLBMiss(NextInstruction == DELAY_SLOT,PROGRAM_COUNTER.W[0], TRUE);
 						NextInstruction = NORMAL;
-						Addr = PROGRAM_COUNTER;
+						Addr = PROGRAM_COUNTER.UW[0];
 						if (!TranslateVaddr(&Addr)) {
 							DisplayError("Failed to tranlate PC to a PAddr: %X\n\nEmulation stopped",PROGRAM_COUNTER);
 							ExitThread(0);
@@ -3028,7 +3042,7 @@ void __cdecl StartRecompilerCPU (void ) {
 						DWORD Index = (Value & 0xFFFF);
 						Block = OrigMem[Index].CompiledLocation;
 						if (OrigMem[Index].PAddr != Addr) { Block = NULL; }
-						if (OrigMem[Index].VAddr != PROGRAM_COUNTER) { Block = NULL; }
+						if (OrigMem[Index].VAddr != PROGRAM_COUNTER.UW[0]) { Block = NULL; }
 						if (Index >= TargetIndex) { Block = NULL; }
 					} else {
 						Block = NULL;
@@ -3046,7 +3060,7 @@ void __cdecl StartRecompilerCPU (void ) {
 						OrigMem[(WORD)(TargetIndex)].OriginalValue = MemValue;
 						OrigMem[(WORD)(TargetIndex)].CompiledLocation = Block;
 						OrigMem[(WORD)(TargetIndex)].PAddr = Addr;
-						OrigMem[(WORD)(TargetIndex)].VAddr = PROGRAM_COUNTER;
+						OrigMem[(WORD)(TargetIndex)].VAddr = PROGRAM_COUNTER.UW[0];
 						TargetIndex += 1;
 						*(DelaySlotTable + (Addr >> 12)) = (void *)Value;
 						NextInstruction = NORMAL;
@@ -3065,7 +3079,7 @@ void __cdecl StartRecompilerCPU (void ) {
 						DWORD Index = (Value & 0xFFFF);
 						Block = OrigMem[Index].CompiledLocation;						
 						if (OrigMem[Index].PAddr != Addr) { Block = NULL; }
-						if (OrigMem[Index].VAddr != PROGRAM_COUNTER) { Block = NULL; }
+						if (OrigMem[Index].VAddr != PROGRAM_COUNTER.UW[0]) { Block = NULL; }
 						if (Index >= TargetIndex) { Block = NULL; }
 					} else {
 						Block = NULL;
@@ -3097,7 +3111,7 @@ void __cdecl StartRecompilerCPU (void ) {
 					OrigMem[(WORD)(TargetIndex)].OriginalValue = MemValue;
 					OrigMem[(WORD)(TargetIndex)].CompiledLocation = Block;
 					OrigMem[(WORD)(TargetIndex)].PAddr = Addr;					
-					OrigMem[(WORD)(TargetIndex)].VAddr = PROGRAM_COUNTER;
+					OrigMem[(WORD)(TargetIndex)].VAddr = PROGRAM_COUNTER.UW[0];
 					TargetIndex += 1;
 					*(DWORD *)(N64MEM + Addr) = Value;					
 					NextInstruction = NORMAL;
@@ -3105,10 +3119,10 @@ void __cdecl StartRecompilerCPU (void ) {
 				if (Profiling && IndividualBlock) {
 					static DWORD ProfAddress = 0;
 
-					if ((PROGRAM_COUNTER & ~0xFFF) != ProfAddress) {
+					if ((PROGRAM_COUNTER.UW[0] & ~0xFFF) != ProfAddress) {
 						char Label[100];
 		
-						ProfAddress = PROGRAM_COUNTER & ~0xFFF;
+						ProfAddress = PROGRAM_COUNTER.UW[0] & ~0xFFF;
 						sprintf(Label,"PC: %X to %X",ProfAddress,ProfAddress+ 0xFFC);
 						StartTimer(Label);				
 					}
@@ -3128,12 +3142,12 @@ void __cdecl StartRecompilerCPU (void ) {
 			} // end for(;;)
 		} // end if (SelfModCheck == ModCode_ChangeMemory) {
 		for (;;) {
-			Addr = PROGRAM_COUNTER;
+			Addr = PROGRAM_COUNTER.UW[0];
 			if (UseTlb) {
 				if (!TranslateVaddr(&Addr)) {
-					DoTLBMiss(NextInstruction == DELAY_SLOT,PROGRAM_COUNTER, TRUE);
+					DoTLBMiss(NextInstruction == DELAY_SLOT,PROGRAM_COUNTER.W[0], TRUE);
 					NextInstruction = NORMAL;
-					Addr = PROGRAM_COUNTER;
+					Addr = PROGRAM_COUNTER.UW[0];
 					if (!TranslateVaddr(&Addr)) {
 						DisplayError("Failed to tranlate PC to a PAddr: %X\n\nEmulation stopped",PROGRAM_COUNTER);
 						ExitThread(0);
@@ -3171,8 +3185,8 @@ void __cdecl StartRecompilerCPU (void ) {
 			__try {
 				if (Addr > 0x10000000)
 				{
-					if (PROGRAM_COUNTER >= 0xB0000000 && PROGRAM_COUNTER < (RomFileSize | 0xB0000000)) {
-						while (PROGRAM_COUNTER >= 0xB0000000 && PROGRAM_COUNTER < (RomFileSize | 0xB0000000)) {
+					if (PROGRAM_COUNTER.UW[0] >= 0xB0000000 && PROGRAM_COUNTER.UW[0] < (RomFileSize | 0xB0000000)) {
+						while (PROGRAM_COUNTER.UW[0] >= 0xB0000000 && PROGRAM_COUNTER.UW[0] < (RomFileSize | 0xB0000000)) {
 							ExecuteInterpreterOpCode();
 						}
 						continue;
@@ -3183,8 +3197,8 @@ void __cdecl StartRecompilerCPU (void ) {
 				}
 				Block = *(JumpTable + (Addr >> 2));
 			} __except(EXCEPTION_EXECUTE_HANDLER) {
-				if (PROGRAM_COUNTER >= 0xB0000000 && PROGRAM_COUNTER < (RomFileSize | 0xB0000000)) {
-					while (PROGRAM_COUNTER >= 0xB0000000 && PROGRAM_COUNTER < (RomFileSize | 0xB0000000)) {
+				if (PROGRAM_COUNTER.UW[0] >= 0xB0000000 && PROGRAM_COUNTER.UW[0] < (RomFileSize | 0xB0000000)) {
+					while (PROGRAM_COUNTER.UW[0] >= 0xB0000000 && PROGRAM_COUNTER.UW[0] < (RomFileSize | 0xB0000000)) {
 						ExecuteInterpreterOpCode();
 					}
 					continue;
@@ -3259,10 +3273,10 @@ void __cdecl StartRecompilerCPU (void ) {
 			if (Profiling && IndividualBlock) {
 				static DWORD ProfAddress = 0;
 
-				if ((PROGRAM_COUNTER & ~0xFFF) != ProfAddress) {
+				if ((PROGRAM_COUNTER.UW[0] & ~0xFFF) != ProfAddress) {
 					char Label[100];
 	
-					ProfAddress = PROGRAM_COUNTER & ~0xFFF;
+					ProfAddress = PROGRAM_COUNTER.UW[0] & ~0xFFF;
 					sprintf(Label,"PC: %X to %X",ProfAddress,ProfAddress+ 0xFFC);
 					StartTimer(Label);				
 				}

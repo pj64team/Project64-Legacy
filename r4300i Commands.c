@@ -187,7 +187,7 @@ int DisplayR4300iCommand (DWORD location, int InsertPos) {
 	}
 	
 	status = 0;
-	if (location == PROGRAM_COUNTER) { status = R4300i_Status_PC; }
+	if (location == PROGRAM_COUNTER.UW[0]) { status = R4300i_Status_PC; }
 	if (HasR4300iBPoint(location)) { status |= R4300i_Status_BP; }
 	if (has_selection && location >= selection_range[0] && location <= selection_range[1]) { status |= R4300i_Status_Selected; }
 

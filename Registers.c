@@ -77,11 +77,11 @@ char *Cop0_Name[32] = {"Index","Random","EntryLo0","EntryLo1","Context","PageMas
                     "Config","LLAddr","WatchLo","WatchHi","XContext","21","22","23",
                     "24","25","ECC","CacheErr","TagLo","TagHi","ErrEPC","31"};
 
-DWORD PROGRAM_COUNTER, *FPCR,*RegRDRAM,*RegSP,*RegDPC,*RegMI,*RegVI,*RegAI,*RegPI,
-	*RegRI,*RegSI, HalfLine, RegModValue, ViFieldSerration, LLBit, LLAddr;
+DWORD *FPCR,*RegRDRAM,*RegSP,*RegDPC,*RegMI,*RegVI,*RegAI,*RegPI,
+	*RegRI,*RegSI, HalfLine, RegModValue, ViFieldSerration, LLBit;
 void * FPRDoubleLocation[32], * FPRFloatLoadStoreLocation[32], *FPRFloatUpperHalfLocation[32], *FPRFloatFSLocation[32];
 void* FPRFloatOtherLocation[32], *FPRDoubleFTFDLocation[32];
-MIPS_DWORD *GPR, *FPR, HI, LO, *CP0;
+MIPS_DWORD PROGRAM_COUNTER, *GPR, *FPR, HI, LO, *CP0;
 N64_REGISTERS Registers;
 int fpuControl;
 int lastUnusedCOP0Register;
@@ -362,7 +362,7 @@ void InitalizeR4300iRegisters (int UsePif, int Country, enum CIC_CHIP CIC_Chip) 
 	SetFpuLocations();
 	cop2LatchedValue.UDW = 0;
 	if (UsePif) {
-		PROGRAM_COUNTER = 0xBFC00000;			
+		PROGRAM_COUNTER.DW = (int)0xBFC00000;			
 		switch (CIC_Chip) {
 		case CIC_NUS_6101:
 			PIF_Ram[36] = 0x00;
@@ -397,7 +397,7 @@ void InitalizeR4300iRegisters (int UsePif, int Country, enum CIC_CHIP CIC_Chip) 
 		}
 	} else {
 		memcpy( (N64MEM+0x4000040), (ROM + 0x040), 0xFBC);
-		PROGRAM_COUNTER	  = 0xA4000040;	
+		PROGRAM_COUNTER.DW = (int)0xA4000040;	
 		
 		GPR[0].DW=0x0000000000000000;
 		GPR[6].DW=0xFFFFFFFFA4001F0C;
