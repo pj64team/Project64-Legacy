@@ -41,16 +41,16 @@ void __cdecl CheckInterrupts ( void ) {
 		MI_INTR_REG |= (AudioIntrReg & MI_INTR_AI);
 	}
 	if ((MI_INTR_MASK_REG & MI_INTR_REG) != 0) {
-		FAKE_CAUSE_REGISTER |= CAUSE_IP2;
+		CAUSE_REGISTER |= CAUSE_IP2;
 	} else  {
-		FAKE_CAUSE_REGISTER &= ~CAUSE_IP2;
+		CAUSE_REGISTER &= ~CAUSE_IP2;
 	}
 
 	if (( STATUS_REGISTER & STATUS_IE   ) == 0 ) { return; }
 	if (( STATUS_REGISTER & STATUS_EXL  ) != 0 ) { return; }
 	if (( STATUS_REGISTER & STATUS_ERL  ) != 0 ) { return; }
 
-	if (( STATUS_REGISTER & FAKE_CAUSE_REGISTER & 0xFF00) != 0) {
+	if (( STATUS_REGISTER & CAUSE_REGISTER & 0xFF00) != 0) {
 		if (!CPU_Action.DoInterrupt) {
 			CPU_Action.DoSomething = TRUE;
 			CPU_Action.DoInterrupt = TRUE;
@@ -67,7 +67,8 @@ void DoIntegerOverflow(BOOL DelaySlot) {
 			DisplayError("ERL set in AddressError Exception");
 		}
 	}
-	CAUSE_REGISTER = EXC_OV;
+	CAUSE_REGISTER &= 0xFF00;
+	CAUSE_REGISTER |= EXC_OV;
 	if (DelaySlot) {
 		CAUSE_REGISTER |= CAUSE_BD;
 		EPC_REGISTER = PROGRAM_COUNTER.UDW - 4;
@@ -91,10 +92,11 @@ void DoAddressError ( BOOL DelaySlot, QWORD BadVaddr, BOOL FromRead) {
 			DisplayError("ERL set in AddressError Exception");
 		}
 	}
+	CAUSE_REGISTER &= 0xFF00;
 	if (FromRead) {
-		CAUSE_REGISTER = EXC_RADE;
+		CAUSE_REGISTER |= EXC_RADE;
 	} else {
-		CAUSE_REGISTER = EXC_WADE;
+		CAUSE_REGISTER |= EXC_WADE;
 	}
 	BAD_VADDR_REGISTER = BadVaddr;
 	CONTEXT_REGISTER &= 0xFFFFFFFFFF80000FLL;
@@ -122,7 +124,8 @@ void _fastcall DoFPException(BOOL DelaySlot) {
 			DisplayError("ERL set in Break Exception");
 		}
 	}
-	CAUSE_REGISTER = EXC_FPE;
+	CAUSE_REGISTER &= 0xFF00;
+	CAUSE_REGISTER |= EXC_FPE;
 	if (DelaySlot) {
 		CAUSE_REGISTER |= CAUSE_BD;
 		EPC_REGISTER = PROGRAM_COUNTER.UDW - 4;
@@ -143,8 +146,8 @@ void _fastcall DoBreakException ( BOOL DelaySlot) {
 			DisplayError("ERL set in Break Exception");
 		}
 	}
-
-	CAUSE_REGISTER = EXC_BREAK;
+	CAUSE_REGISTER &= 0xFF00;
+	CAUSE_REGISTER |= EXC_BREAK;
 	if (DelaySlot) {
 		CAUSE_REGISTER |= CAUSE_BD;
 		EPC_REGISTER = PROGRAM_COUNTER.UDW - 4;
@@ -164,8 +167,8 @@ void _fastcall DoCopUnusableException ( BOOL DelaySlot, int Coprocessor ) {
 			DisplayError("ERL set in Break Exception");
 		}
 	}
-
-	CAUSE_REGISTER = EXC_CPU;
+	CAUSE_REGISTER &= 0xFF00;
+	CAUSE_REGISTER |= EXC_CPU;
 	if (Coprocessor == 1) { CAUSE_REGISTER |= 0x10000000; }
 	else if (Coprocessor == 2) { CAUSE_REGISTER |= 0x20000000; }
 	if (DelaySlot) {
@@ -182,7 +185,7 @@ void DoIntrException ( BOOL DelaySlot ) {
 	if (( STATUS_REGISTER & STATUS_IE   ) == 0 ) { return; }
 	if (( STATUS_REGISTER & STATUS_EXL  ) != 0 ) { return; }
 	if (( STATUS_REGISTER & STATUS_ERL  ) != 0 ) { return; }
-	CAUSE_REGISTER = FAKE_CAUSE_REGISTER;
+	CAUSE_REGISTER &= 0xFF00;
 	CAUSE_REGISTER |= EXC_INT;
 	if (DelaySlot) {
 		CAUSE_REGISTER |= CAUSE_BD;
@@ -195,7 +198,8 @@ void DoIntrException ( BOOL DelaySlot ) {
 }
 
 void _fastcall DoTLBMiss ( BOOL DelaySlot, QWORD BadVaddr, BOOL FromRead ) {
-	CAUSE_REGISTER = FromRead ? EXC_RMISS : EXC_WMISS;
+	CAUSE_REGISTER &= 0xFF00;
+	CAUSE_REGISTER |= FromRead ? EXC_RMISS : EXC_WMISS;
 	if (CAUSE_REGISTER == EXC_WMISS) {
 		if (!Addressing64Bits) {
 			if (TLB_ReadMap[BadVaddr >> 12] != 0) CAUSE_REGISTER = EXC_MOD;
@@ -250,8 +254,8 @@ void _fastcall DoSysCallException(BOOL DelaySlot) {
 			DisplayError("ERL set in SysCall Exception");
 		}
 	}
-
-	CAUSE_REGISTER = EXC_SYSCALL;
+	CAUSE_REGISTER &= 0xFF00;
+	CAUSE_REGISTER |= EXC_SYSCALL;
 	if (DelaySlot) {
 		CAUSE_REGISTER |= CAUSE_BD;
 		EPC_REGISTER = PROGRAM_COUNTER.UDW - 4;
@@ -272,8 +276,8 @@ void _fastcall DoIllegalInstructionException(BOOL DelaySlot) {
 			DisplayError("ERL set in SysCall Exception");
 		}
 	}
-
-	CAUSE_REGISTER = EXC_II;
+	CAUSE_REGISTER &= 0xFF00;
+	CAUSE_REGISTER |= EXC_II;
 	if (DelaySlot) {
 		CAUSE_REGISTER |= CAUSE_BD;
 		EPC_REGISTER = PROGRAM_COUNTER.UDW - 4;
@@ -294,8 +298,8 @@ void _fastcall DoTrapException(BOOL DelaySlot) {
 			DisplayError("ERL set in Break Exception");
 		}
 	}
-
-	CAUSE_REGISTER = EXC_TRAP;
+	CAUSE_REGISTER &= 0xFF00;
+	CAUSE_REGISTER |= EXC_TRAP;
 	if (DelaySlot) {
 		CAUSE_REGISTER |= CAUSE_BD;
 		EPC_REGISTER = PROGRAM_COUNTER.UDW - 4;

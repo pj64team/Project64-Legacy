@@ -559,7 +559,6 @@ void SyncToPC (void) {
 		ExecuteInterpreterOpCode();
 	}
 	SyncRegisters.MI[2] = Registers.MI[2]; //MI_INTR_REG
-	SyncRegisters.CP0[32] = Registers.CP0[32]; //FAKE_CAUSE_REGISTER
 	SyncSystem ();
 	SwitchSyncRegisters();
 

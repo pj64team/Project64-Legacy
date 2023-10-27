@@ -1777,7 +1777,7 @@ int r4300i_LW_NonMemory ( DWORD PAddr, DWORD * Value ) {
 		case 0x0440000C: *Value = VI_INTR_REG; break;
 		case 0x04400010: 
 			UpdateCurrentHalfLine();
-			*Value = HalfLine; 
+			*Value = HalfLine;
 			break;
 		case 0x04400014: *Value = VI_BURST_REG; break;
 		case 0x04400018: *Value = VI_V_SYNC_REG; break;
@@ -1955,7 +1955,7 @@ BOOL r4300i_LW_VAddr_NonCPU ( MIPS_DWORD VAddr, DWORD * Value ) {
 		*Value = *(DWORD*)(N64MEM + PAddr);
 	} 
 	else if (((PAddr & ~0x03E000) >= 0x04000000 && (PAddr & ~0x03E000) < 0x04004000)) {
-    *Value = *(DWORD*)(N64MEM + ((PAddr& ~0x3E000) & ~0x2000));
+		*Value = *(DWORD*)(N64MEM + ((PAddr& ~0x3E000) & ~0x2000));
 	}
 	else if (!r4300i_LW_NonMemory(PAddr, Value)) {
 		// TODO: Returning false here is the right thing to do.
@@ -2585,6 +2585,7 @@ int r4300i_SW_NonMemory ( DWORD PAddr, DWORD Value ) {
 			if ( ( Value & MI_INTR_MASK_SET_PI ) != 0 ) { MI_INTR_MASK_REG |= MI_INTR_MASK_PI; }
 			if ( ( Value & MI_INTR_MASK_CLR_DP ) != 0 ) { MI_INTR_MASK_REG &= ~MI_INTR_MASK_DP; }
 			if ( ( Value & MI_INTR_MASK_SET_DP ) != 0 ) { MI_INTR_MASK_REG |= MI_INTR_MASK_DP; }
+			CheckInterrupts();
 			break;
 		default:
 			return FALSE;

@@ -5217,7 +5217,7 @@ void Compile_R4300i_COP0_MT (BLOCK_SECTION * Section) {
 			AddConstToVariable(BlockCycleCount,&CP0[9],Cop0_Name[9]);
 			SubConstFromVariable(BlockCycleCount,&Timers.Timer,"Timer");
 			BlockCycleCount = 0;
-			AndConstToVariable((DWORD)~CAUSE_IP7,&FAKE_CAUSE_REGISTER,"FAKE_CAUSE_REGISTER");
+			AndConstToVariable((DWORD)~CAUSE_IP7,&CAUSE_REGISTER,"CAUSE_REGISTER");
 			Pushad();
 			Call_Direct(ChangeCompareTimer,"ChangeCompareTimer");
 			Popad();
@@ -5325,7 +5325,7 @@ void Compile_R4300i_COP0_DMT(BLOCK_SECTION * Section) {
 			AddConstToVariable(BlockCycleCount,&CP0[9],Cop0_Name[9]);
 			SubConstFromVariable(BlockCycleCount,&Timers.Timer,"Timer");
 			BlockCycleCount = 0;
-			AndConstToVariable((DWORD)~CAUSE_IP7,&FAKE_CAUSE_REGISTER,"FAKE_CAUSE_REGISTER");
+			AndConstToVariable((DWORD)~CAUSE_IP7,&CAUSE_REGISTER,"CAUSE_REGISTER");
 			Pushad();
 			Call_Direct(ChangeCompareTimer,"ChangeCompareTimer");
 			Popad();

@@ -306,7 +306,6 @@ BOOL Translate64BitsVAddrToPAddr(MIPS_DWORD VAddr, DWORD* PAddr, BOOL ReadOnly) 
 	case 0xC:
 		return Translate64BitsVAddrToPAddrThroughTLB(VAddr, PAddr, ReadOnly);
 	case 0x9: // TLB Unmapped
-		LogMessage("%llx: translate2 %llx", PROGRAM_COUNTER.UDW, VAddr.UDW);
 		*PAddr = VAddr.UW[0] & 0xFFFFFFFF;
 		return TRUE;
 	case 0xF:

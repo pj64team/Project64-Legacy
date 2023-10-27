@@ -1447,7 +1447,7 @@ void TimerDone (void) {
 
 	switch (Timers.CurrentTimerType) {
 	case CompareTimer:
-		FAKE_CAUSE_REGISTER |= CAUSE_IP7;
+		CAUSE_REGISTER |= CAUSE_IP7;
 		CheckInterrupts();
 		ChangeCompareTimer();
 		break;

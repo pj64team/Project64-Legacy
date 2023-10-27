@@ -1728,7 +1728,7 @@ void _fastcall r4300i_COP0_MT (void) {
 		break;
 	case 11: //Compare
 		CP0[Opcode.REG.rd].UW[0] = GPR[Opcode.BRANCH.rt].UW[0];
-		FAKE_CAUSE_REGISTER &= ~CAUSE_IP7;
+		CAUSE_REGISTER &= ~CAUSE_IP7;
 		ChangeCompareTimer();
 		break;		
 	case 12: //Status
@@ -1752,9 +1752,11 @@ void _fastcall r4300i_COP0_MT (void) {
 		CheckInterrupts();
 		break;		
 	case 13: //cause
-		CP0[Opcode.REG.rd].UW[0] &= 0xFFFFCFF;
-		if (ShowDebugMessages)
-			if ((GPR[Opcode.BRANCH.rt].UW[0] & 0x300) != 0 ){ DisplayError("Set IP0 or IP1"); }
+		CP0[Opcode.REG.rd].UW[0] = (CP0[Opcode.REG.rd].UW[0] & 0xFFFFFCFF) | (GPR[Opcode.BRANCH.rt].UW[0] & 0x300);
+		if ((GPR[Opcode.BRANCH.rt].UW[0] & 0x300) != 0) {
+			if (ShowDebugMessages) { DisplayError("Set IP0 or IP1"); }
+			LogMessage("Set IP0 or IP1");
+		}
 		break;
 	case 14: //EPC
 		CP0[Opcode.REG.rd].DW = GPR[Opcode.BRANCH.rt].W[0];
@@ -1864,7 +1866,7 @@ void _fastcall r4300i_COP0_DMT(void) {
 		break;
 	case 11: //Compare
 		CP0[Opcode.REG.rd].UW[0] = GPR[Opcode.BRANCH.rt].UW[0];
-		FAKE_CAUSE_REGISTER &= ~CAUSE_IP7;
+		CAUSE_REGISTER &= ~CAUSE_IP7;
 		ChangeCompareTimer();
 		break;
 	case 12: //Status
@@ -1888,9 +1890,11 @@ void _fastcall r4300i_COP0_DMT(void) {
 		CheckInterrupts();
 		break;
 	case 13: //cause
-		CP0[Opcode.REG.rd].UW[0] &= 0xFFFFCFF;
-		if (ShowDebugMessages)
-			if ((GPR[Opcode.BRANCH.rt].UW[0] & 0x300) != 0) { DisplayError("Set IP0 or IP1"); }
+		CP0[Opcode.REG.rd].UW[0] = (CP0[Opcode.REG.rd].UW[0] & 0xFFFFFCFF) | (GPR[Opcode.BRANCH.rt].UW[0] & 0x300);
+		if ((GPR[Opcode.BRANCH.rt].UW[0] & 0x300) != 0) {
+			if (ShowDebugMessages) { DisplayError("Set IP0 or IP1"); }
+			LogMessage("Set IP0 or IP1");
+		}
 		break;
 	case 14: //EPC
 		CP0[Opcode.REG.rd].DW = GPR[Opcode.BRANCH.rt].DW;
