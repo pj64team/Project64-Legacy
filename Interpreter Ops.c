@@ -1951,11 +1951,6 @@ void _fastcall r4300i_COP0_CO_TLBR (void) {
 
 void _fastcall r4300i_COP0_CO_TLBWI (void) {
 	if (!UseTlb) { return; }
-/*	if (PROGRAM_COUNTER == 0x00136260 && INDEX_REGISTER == 0x1F) {
-		DisplayError("TLBWI");
-	} else {
-		WriteTLBEntry(INDEX_REGISTER & 0x1F);
-	}*/
 	WriteTLBEntry(INDEX_REGISTER & 0x1F);
 }
 

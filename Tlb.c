@@ -28,6 +28,9 @@
 #include "debugger.h"
 #include "cpu.h"
 
+BOOL LastFailWriteProtectedPage = FALSE;
+BOOL LastFailInvalidPage = FALSE;
+
 void SetupTLB_Entry (int Entry);
 
 FASTTLB FastTlb[64];
@@ -135,7 +138,7 @@ void TLB_Probe (void) {
 	
 	if (HaveDebugger && LogOptions.GenerateLog) { 
 		if (LogOptions.LogTLB) { 
-			LogMessage("%08X: TLB Probe:  EntryHI :%llX",PROGRAM_COUNTER,ENTRYHI_REGISTER);
+			LogMessage("%016llX: TLB Probe:  EntryHI :%llX",PROGRAM_COUNTER,ENTRYHI_REGISTER);
 		}
 	}
 
@@ -162,7 +165,7 @@ void TLB_Read (void) {
 
 	if (HaveDebugger && LogOptions.GenerateLog) { 
 		if (LogOptions.LogTLB) { 
-			LogMessage("%08X: TLB Read:  index :%X     %X - %X",PROGRAM_COUNTER,INDEX_REGISTER,
+			LogMessage("%016llX: TLB Read:  index :%X     %llX - %llX",PROGRAM_COUNTER,INDEX_REGISTER,
 				tlb[index].EntryHi.Value,(tlb[index].EntryHi.Value & ~tlb[index].PageMask.Value));
 		}
 	}
@@ -193,7 +196,7 @@ void _fastcall WriteTLBEntry (int index) {
 		FastTlb[FastIndx + 1].ValidEntry && FastTlb[FastIndx + 1].VALID))
 	{
 		if (HaveDebugger && LogOptions.GenerateLog && LogOptions.LogTLB) { 
-			LogMessage("%08X: TLB write:  Index: %d   PageMask: %X  EntryLo0: %X  EntryLo1: %X  EntryHi: %llX",PROGRAM_COUNTER,
+			LogMessage("%016llX: TLB write:  Index: %d   PageMask: %X  EntryLo0: %X  EntryLo1: %X  EntryHi: %llX",PROGRAM_COUNTER,
 				index,PAGE_MASK_REGISTER,ENTRYLO0_REGISTER,ENTRYLO1_REGISTER,ENTRYHI_REGISTER);
 			LogMessage("       Being Ignored");
 			LogMessage("");
@@ -230,7 +233,7 @@ void _fastcall WriteTLBEntry (int index) {
 	tlb[index].EntryDefined = TRUE;
 	
 	if (HaveDebugger && LogOptions.GenerateLog && LogOptions.LogTLB) { 
-		LogMessage("%08X: TLB write:  Index: %d   PageMask: %X  EntryLo0: %X  EntryLo1: %X  EntryHi: %llX",PROGRAM_COUNTER,
+		LogMessage("%016llX: TLB write:  Index: %d   PageMask: %X  EntryLo0: %X  EntryLo1: %X  EntryHi: %llX",PROGRAM_COUNTER,
 			index,PAGE_MASK_REGISTER,ENTRYLO0_REGISTER,ENTRYLO1_REGISTER,ENTRYHI_REGISTER);
 		LogMessage("      Entry 1:  VStart: %X   VEnd: %X  Physical Start: %X",
 			tlb[index].EntryHi.BreakDownEntryHi.VPN2 << 13, //VStart
@@ -249,10 +252,11 @@ void _fastcall WriteTLBEntry (int index) {
 }
 
 static BOOL Translate64BitsVAddrToPAddrThroughTLB(MIPS_DWORD VAddr, DWORD* PAddr, BOOL ReadOnly) {
-	LogMessage("%llx: translate %llx", PROGRAM_COUNTER.UDW, VAddr.UDW);
 	static int lastMatchingEntry = 0;
 	static const QWORD vpnMask = 0xC00000FFFFFFE000LL;
 	int Counter, Entry = lastMatchingEntry;
+	LastFailWriteProtectedPage = FALSE;
+	LastFailInvalidPage = FALSE;
 
 	for (Counter = 0; Counter < 32; ++Counter) {
 		QWORD vpn = ((VAddr.UDW & vpnMask) & (~((QWORD)tlb[Entry].PageMask.BreakDownPageMask.Mask) << 13));
@@ -264,20 +268,40 @@ static BOOL Translate64BitsVAddrToPAddrThroughTLB(MIPS_DWORD VAddr, DWORD* PAddr
 
 			if (Global || SameAsid) {
 				if (((VAddr.UDW >> 12) & (tlb[Entry].PageMask.BreakDownPageMask.Mask + 1)) == 0) {
-					if (ReadOnly || tlb[Entry].EntryLo0.BreakDownEntryLo0.D) {
-						*PAddr = (tlb[Entry].EntryLo0.BreakDownEntryLo0.PFN << 12) |
-							(VAddr.UDW & (tlb[Entry].PageMask.BreakDownPageMask.Mask << 12 | 0xFFF));
-						lastMatchingEntry = Entry;
-						return TRUE;
+					lastMatchingEntry = Entry;
+					if (tlb[Entry].EntryLo0.BreakDownEntryLo0.V) {
+						if (ReadOnly || tlb[Entry].EntryLo0.BreakDownEntryLo0.D) {
+							*PAddr = (tlb[Entry].EntryLo0.BreakDownEntryLo0.PFN << 12) |
+								(VAddr.UDW & (tlb[Entry].PageMask.BreakDownPageMask.Mask << 12 | 0xFFF));
+							return TRUE;
+						}
+						else {
+							LastFailWriteProtectedPage = TRUE;
+							return FALSE;
+						}
+					}
+					else {
+						LastFailInvalidPage = TRUE;
+						return FALSE;
 					}
 				}
 				else
 				{
-					if (ReadOnly || tlb[Entry].EntryLo1.BreakDownEntryLo1.D) {
-						*PAddr = (tlb[Entry].EntryLo1.BreakDownEntryLo1.PFN << 12) |
-							(VAddr.UDW & (tlb[Entry].PageMask.BreakDownPageMask.Mask << 12 | 0xFFF));
-						lastMatchingEntry = Entry;
-						return TRUE;
+					lastMatchingEntry = Entry;
+					if (tlb[Entry].EntryLo1.BreakDownEntryLo1.V) {
+						if (ReadOnly || tlb[Entry].EntryLo1.BreakDownEntryLo1.D) {
+							*PAddr = (tlb[Entry].EntryLo1.BreakDownEntryLo1.PFN << 12) |
+								(VAddr.UDW & (tlb[Entry].PageMask.BreakDownPageMask.Mask << 12 | 0xFFF));
+							return TRUE;
+						}
+						else {
+							LastFailWriteProtectedPage = TRUE;
+							return FALSE;
+						}
+					}
+					else {
+						LastFailInvalidPage = TRUE;
+						return FALSE;
 					}
 				}
 				
@@ -294,8 +318,16 @@ static BOOL Translate64BitsVAddrToPAddrThroughTLB(MIPS_DWORD VAddr, DWORD* PAddr
 			++Entry;
 		}
 	}
-	LogMessage("No match");
+	
 	return FALSE;
+}
+
+BOOL IsLastFailWriteProtectedPage() {
+	return LastFailWriteProtectedPage;
+}
+
+BOOL IsLastFailInvalidPage() {
+	return LastFailInvalidPage;
 }
 
 // This method assumes the address is validated by IsValidAddress method

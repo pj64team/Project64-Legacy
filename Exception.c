@@ -202,13 +202,19 @@ void _fastcall DoTLBMiss ( BOOL DelaySlot, QWORD BadVaddr, BOOL FromRead ) {
 	CAUSE_REGISTER |= FromRead ? EXC_RMISS : EXC_WMISS;
 	if (CAUSE_REGISTER == EXC_WMISS) {
 		if (!Addressing64Bits) {
-			if (TLB_ReadMap[BadVaddr >> 12] != 0) CAUSE_REGISTER = EXC_MOD;
+			if (TLB_ReadMap[BadVaddr >> 12] != 0) {
+				CAUSE_REGISTER &= 0xFF00;
+				CAUSE_REGISTER |= EXC_MOD;
+			}
 		}
 		else {
 			MIPS_DWORD Addr;
 			DWORD PAddr;
 			Addr.UDW = BadVaddr;
-			if (Translate64BitsVAddrToPAddr(Addr, PAddr, TRUE)) CAUSE_REGISTER = EXC_MOD;
+			if(IsLastFailWriteProtectedPage()) {
+				CAUSE_REGISTER &= 0xFF00;
+				CAUSE_REGISTER |= EXC_MOD;
+			}
 		}
 	}
 	BAD_VADDR_REGISTER = BadVaddr;
@@ -235,7 +241,12 @@ void _fastcall DoTLBMiss ( BOOL DelaySlot, QWORD BadVaddr, BOOL FromRead ) {
 			}
 		}
 		else {
-			PROGRAM_COUNTER.UDW = 0xFFFFFFFF80000080LL;
+			if (!IsLastFailInvalidPage()) {
+				PROGRAM_COUNTER.UDW = 0xFFFFFFFF80000080LL;
+			}
+			else {
+				PROGRAM_COUNTER.UDW = 0xFFFFFFFF80000180LL;
+			}
 		}
 		STATUS_REGISTER |= STATUS_EXL;
 	} else {
