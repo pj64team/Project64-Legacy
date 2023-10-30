@@ -241,7 +241,7 @@ void _fastcall DoTLBMiss ( BOOL DelaySlot, QWORD BadVaddr, BOOL FromRead ) {
 			}
 		}
 		else {
-			if (!IsLastFailInvalidPage()) {
+			if (!IsLastFailInvalidPage() && !IsLastFailWriteProtectedPage()) {
 				PROGRAM_COUNTER.UDW = 0xFFFFFFFF80000080LL;
 			}
 			else {

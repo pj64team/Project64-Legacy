@@ -134,6 +134,7 @@ void SetupTLB_Entry (int Entry) {
 }
 
 void TLB_Probe (void) {
+	static const QWORD vpnMask = 0xC00000FFFFFFE000LL;
 	int Counter;
 	
 	if (HaveDebugger && LogOptions.GenerateLog) { 
@@ -264,7 +265,7 @@ static BOOL Translate64BitsVAddrToPAddrThroughTLB(MIPS_DWORD VAddr, DWORD* PAddr
 
 		if (vpn == EntryHi) {
 			BOOL Global = tlb[Entry].EntryLo0.BreakDownEntryLo0.GLOBAL && tlb[Entry].EntryLo1.BreakDownEntryLo1.GLOBAL;
-			BOOL SameAsid = ((tlb[Entry].EntryHi.Value & 0xFF) == (VAddr.UDW & 0xFF));
+			BOOL SameAsid = ((tlb[Entry].EntryHi.Value & 0xFF) == (ENTRYHI_REGISTER & 0xFF));
 
 			if (Global || SameAsid) {
 				if (((VAddr.UDW >> 12) & (tlb[Entry].PageMask.BreakDownPageMask.Mask + 1)) == 0) {
