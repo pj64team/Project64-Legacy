@@ -351,6 +351,11 @@ BOOL Translate64BitsVAddrToPAddr(MIPS_DWORD VAddr, DWORD* PAddr, BOOL ReadOnly) 
 		case 0xB:
 			*PAddr = VAddr.UW[0] - 0xA0000000;
 			return TRUE;
+		case 0xC:
+		case 0xD:
+		case 0xE:
+		case 0XF:
+			return Translate64BitsVAddrToPAddrThroughTLB(VAddr, PAddr, ReadOnly);
 		default:
 			LogMessage("translate 64 Bits Address: %llx", VAddr.UDW);
 			return FALSE;

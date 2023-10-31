@@ -2914,6 +2914,7 @@ void ResetRecompCode (void) {
 }
 
 BOOL IsValidAddress(MIPS_DWORD address) {
+	BOOL kernelMode = (STATUS_REGISTER & STATUS_KSU) == STATUS_KERNEL || (STATUS_REGISTER & STATUS_EXL) || (STATUS_REGISTER & STATUS_ERL);
 	if (Addressing64Bits) {
 		switch ((address.UDW >> 60) & 0xF) {
 		case 0x0:
@@ -2922,24 +2923,33 @@ BOOL IsValidAddress(MIPS_DWORD address) {
 			}
 			return FALSE;
 		case 0x4:
-			if (address.UW[1] < 0x40000100) {
+			if (kernelMode && address.UW[1] < 0x40000100) {
 				return TRUE;
 			}
 			return FALSE;
 		case 0x9:
-			if (address.UW[1] == 0x90000000 ||
-				address.UW[1] == 0x98000000) {
-				return TRUE;
+			if (kernelMode) {
+				if (address.UW[1] == 0x90000000 ||
+					address.UW[1] == 0x98000000) {
+					return TRUE;
+				}
 			}
 			return FALSE;
 		case 0xC:
-			if (address.UDW < 0xC00000FF80000000LL) {
+			if (kernelMode && address.UDW < 0xC00000FF80000000LL) {
 				return TRUE;
 			}
 			return FALSE;
 		case 0xF:
-			if (address.UW[1] != 0xFFFFFFFF)
+			if (!kernelMode) {
 				return FALSE;
+			}
+			if (address.UW[1] != 0xFFFFFFFF) {
+				return FALSE;
+			}
+			if (address.UW[1] < 0x80000000) {
+				return FALSE;
+			}
 			return TRUE;
 		default:
 			LogMessage("Is it a valid address ? %llx", address.UDW);
@@ -2947,6 +2957,9 @@ BOOL IsValidAddress(MIPS_DWORD address) {
 		}
 	}
 	else {
+		if (!kernelMode && (address.UW[0] & 0x80000000) != 0) {
+			return FALSE;
+		}
 		return IsSignExtended(address);
 	}
 }

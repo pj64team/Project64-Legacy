@@ -1738,12 +1738,13 @@ void _fastcall r4300i_COP0_MT (void) {
 		} else {
 			CP0[Opcode.REG.rd].UW[0] = GPR[Opcode.BRANCH.rt].UW[0] & 0XFFF7FFFF;
 		}
-		if ((CP0[Opcode.REG.rd].UW[0] & STATUS_KSU) != STATUS_KERNEL) { 
+		if ((CP0[Opcode.REG.rd].UW[0] & STATUS_KSU) != STATUS_KERNEL &&
+			(CP0[Opcode.REG.rd].UW[0] & STATUS_KSU) != STATUS_USER) {
 			if (ShowDebugMessages)
-				DisplayError("Left kernel mode ??");
-			LogMessage("Left kernel mode ??");
+				DisplayError("Left kernel mode or user mode ??");
 		}
-		if ((CP0[Opcode.REG.rd].UW[0] & STATUS_KX) != 0) {
+		if (((CP0[Opcode.REG.rd].UW[0] & STATUS_KX) != 0 && (CP0[Opcode.REG.rd].UW[0] & STATUS_KSU) == STATUS_KERNEL) ||
+			((CP0[Opcode.REG.rd].UW[0] & STATUS_UX) != 0 && (CP0[Opcode.REG.rd].UW[0] & STATUS_KSU) == STATUS_USER)) {
 			Addressing64Bits = 1;
 		}
 		else {
@@ -1877,11 +1878,13 @@ void _fastcall r4300i_COP0_DMT(void) {
 		else {
 			CP0[Opcode.REG.rd].UW[0] = GPR[Opcode.BRANCH.rt].UW[0] & 0xFFF7FFFF;
 		}
-		if ((CP0[Opcode.REG.rd].UW[0] & 0x18) != 0) {
+		if ((CP0[Opcode.REG.rd].UW[0] & STATUS_KSU) != STATUS_KERNEL &&
+			(CP0[Opcode.REG.rd].UW[0] & STATUS_KSU) != STATUS_USER) {
 			if (ShowDebugMessages)
-				DisplayError("Left kernel mode ??");
+				DisplayError("Left kernel mode or user mode ??");
 		}
-		if ((CP0[Opcode.REG.rd].UW[0] & STATUS_KX) != 0) {
+		if (((CP0[Opcode.REG.rd].UW[0] & STATUS_KX) != 0 && (CP0[Opcode.REG.rd].UW[0] & STATUS_KSU) == STATUS_KERNEL) ||
+			((CP0[Opcode.REG.rd].UW[0] & STATUS_UX) != 0 && (CP0[Opcode.REG.rd].UW[0] & STATUS_KSU) == STATUS_USER)) {
 			Addressing64Bits = 1;
 		}
 		else {
