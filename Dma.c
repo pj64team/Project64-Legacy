@@ -213,7 +213,7 @@ void PI_DMA_WRITE (void) {
 		CheckTimer();
 		return;
 	}
-
+	
 	if ( PI_CART_ADDR_REG >= 0x10000000 && PI_CART_ADDR_REG <= 0x1FBFFFFF) {
 		PI_CART_ADDR_REG -= 0x10000000;
 		if (PI_CART_ADDR_REG + PI_WR_LEN_REG + 1 < RomFileSize) {

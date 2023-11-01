@@ -729,7 +729,8 @@ BOOL Machine_LoadState(void) {
 			else {
 				unzReadCurrentFile(file, CP0, sizeof(QWORD) * 32);
 			}
-			if ((STATUS_REGISTER & STATUS_KX) != 0) {
+			if (((STATUS_REGISTER & STATUS_KX) != 0 && (STATUS_REGISTER & STATUS_KSU) == STATUS_KERNEL) ||
+				((STATUS_REGISTER & STATUS_UX) != 0 && (STATUS_REGISTER & STATUS_KSU) == STATUS_USER)) {
 				Addressing64Bits = 1;
 			}
 			else {
@@ -875,7 +876,8 @@ BOOL Machine_LoadState(void) {
 		else {
 			ReadFile(hSaveFile, CP0, sizeof(QWORD) * 32,&dwRead,NULL);
 		}
-		if ((STATUS_REGISTER & STATUS_KX) != 0) {
+		if (((STATUS_REGISTER & STATUS_KX) != 0 && (STATUS_REGISTER & STATUS_KSU) == STATUS_KERNEL) ||
+			((STATUS_REGISTER & STATUS_UX) != 0 && (STATUS_REGISTER & STATUS_KSU) == STATUS_USER)) {
 			Addressing64Bits = 1;
 		}
 		else {
@@ -1447,7 +1449,7 @@ void TimerDone (void) {
 
 	switch (Timers.CurrentTimerType) {
 	case CompareTimer:
-		FAKE_CAUSE_REGISTER |= CAUSE_IP7;
+		CAUSE_REGISTER |= CAUSE_IP7;
 		CheckInterrupts();
 		ChangeCompareTimer();
 		break;

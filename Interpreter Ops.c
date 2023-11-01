@@ -1639,7 +1639,7 @@ void _fastcall r4300i_REGIMM_BGEZALL (void) {
 /************************** COP0 functions **************************/
 void _fastcall r4300i_COP0_MF (void) {
 	if (HaveDebugger && LogOptions.LogCP0reads) {
-		LogMessage("%08X: R4300i Read from %s (0x%08X)", PROGRAM_COUNTER,
+		LogMessage("%016llX: R4300i Read from %s (0x%08X)", PROGRAM_COUNTER.UDW,
 			Cop0_Name[Opcode.REG.rd], CP0[Opcode.REG.rd].W[0]);
 	}
 	GPR[Opcode.BRANCH.rt].DW = (int)CP0[Opcode.REG.rd].W[0];
@@ -1654,11 +1654,11 @@ void _fastcall r4300i_COP0_DMF(void) {
 		case 14: //EPC
 		case 20: //XContext:
 		case 30: //ErrEPC
-			LogMessage("%08X: R4300i Read from %s (0x%016llX)", PROGRAM_COUNTER,
+			LogMessage("%016llX: R4300i Read from %s (0x%016llX)", PROGRAM_COUNTER.UDW,
 				Cop0_Name[Opcode.REG.rd], CP0[Opcode.REG.rd].UDW);
 			break;
 		default:
-			LogMessage("%08X: R4300i Read from %s (0x%08X)", PROGRAM_COUNTER,
+			LogMessage("%016llX: R4300i Read from %s (0x%08X)", PROGRAM_COUNTER.UDW,
 				Cop0_Name[Opcode.REG.rd], CP0[Opcode.REG.rd].UW[0]);
 		}
 	}
@@ -1681,10 +1681,10 @@ void _fastcall r4300i_COP0_DMF(void) {
 
 void _fastcall r4300i_COP0_MT (void) {
 	if (HaveDebugger && LogOptions.LogCP0changes) {
-		LogMessage("%08X: Writing 0x%X to %s register (Originally: 0x%08X)",PROGRAM_COUNTER,
+		LogMessage("%016llX: Writing 0x%X to %s register (Originally: 0x%08X)",PROGRAM_COUNTER.UDW,
 			GPR[Opcode.BRANCH.rt].UW[0],Cop0_Name[Opcode.REG.rd], CP0[Opcode.REG.rd].UW[0]);
 		if (Opcode.REG.rd == 11) { //Compare
-			LogMessage("%08X: Cause register changed from %08X to %08X",PROGRAM_COUNTER,
+			LogMessage("%016llX: Cause register changed from %08X to %08X",PROGRAM_COUNTER.UDW,
 				CAUSE_REGISTER, (CAUSE_REGISTER & ~CAUSE_IP7));
 		}
 	}
@@ -1728,7 +1728,7 @@ void _fastcall r4300i_COP0_MT (void) {
 		break;
 	case 11: //Compare
 		CP0[Opcode.REG.rd].UW[0] = GPR[Opcode.BRANCH.rt].UW[0];
-		FAKE_CAUSE_REGISTER &= ~CAUSE_IP7;
+		CAUSE_REGISTER &= ~CAUSE_IP7;
 		ChangeCompareTimer();
 		break;		
 	case 12: //Status
@@ -1738,11 +1738,13 @@ void _fastcall r4300i_COP0_MT (void) {
 		} else {
 			CP0[Opcode.REG.rd].UW[0] = GPR[Opcode.BRANCH.rt].UW[0] & 0XFFF7FFFF;
 		}
-		if ((CP0[Opcode.REG.rd].UW[0] & STATUS_KSU) != STATUS_KERNEL) { 
+		if ((CP0[Opcode.REG.rd].UW[0] & STATUS_KSU) != STATUS_KERNEL &&
+			(CP0[Opcode.REG.rd].UW[0] & STATUS_KSU) != STATUS_USER) {
 			if (ShowDebugMessages)
-				DisplayError("Left kernel mode ??");
+				DisplayError("Left kernel mode or user mode ??");
 		}
-		if ((CP0[Opcode.REG.rd].UW[0] & STATUS_KX) != 0) {
+		if (((CP0[Opcode.REG.rd].UW[0] & STATUS_KX) != 0 && (CP0[Opcode.REG.rd].UW[0] & STATUS_KSU) == STATUS_KERNEL) ||
+			((CP0[Opcode.REG.rd].UW[0] & STATUS_UX) != 0 && (CP0[Opcode.REG.rd].UW[0] & STATUS_KSU) == STATUS_USER)) {
 			Addressing64Bits = 1;
 		}
 		else {
@@ -1751,9 +1753,11 @@ void _fastcall r4300i_COP0_MT (void) {
 		CheckInterrupts();
 		break;		
 	case 13: //cause
-		CP0[Opcode.REG.rd].UW[0] &= 0xFFFFCFF;
-		if (ShowDebugMessages)
-			if ((GPR[Opcode.BRANCH.rt].UW[0] & 0x300) != 0 ){ DisplayError("Set IP0 or IP1"); }
+		CP0[Opcode.REG.rd].UW[0] = (CP0[Opcode.REG.rd].UW[0] & 0xFFFFFCFF) | (GPR[Opcode.BRANCH.rt].UW[0] & 0x300);
+		if ((GPR[Opcode.BRANCH.rt].UW[0] & 0x300) != 0) {
+			if (ShowDebugMessages) { DisplayError("Set IP0 or IP1"); }
+			LogMessage("Set IP0 or IP1");
+		}
 		break;
 	case 14: //EPC
 		CP0[Opcode.REG.rd].DW = GPR[Opcode.BRANCH.rt].W[0];
@@ -1806,7 +1810,7 @@ void _fastcall r4300i_COP0_DMT(void) {
 	if (HaveDebugger && LogOptions.LogCP0changes) {
 		switch (Opcode.REG.rd) {
 		case 11: //Compare:
-			LogMessage("%08X: Cause register changed from %08X to %08X", PROGRAM_COUNTER,
+			LogMessage("%016llX: Cause register changed from %08X to %08X", PROGRAM_COUNTER.UDW,
 				CAUSE_REGISTER, (CAUSE_REGISTER & ~CAUSE_IP7));
 			break;
 		case 4: //Context
@@ -1814,11 +1818,11 @@ void _fastcall r4300i_COP0_DMT(void) {
 		case 10: //Entry Hi
 		case 14: //EPC
 		case 20: //XContext:
-			LogMessage("%08X: Writing 0x%llX to %s register (Originally: 0x%016llX)", PROGRAM_COUNTER,
+			LogMessage("%016llX: Writing 0x%llX to %s register (Originally: 0x%016llX)", PROGRAM_COUNTER.UDW,
 				GPR[Opcode.BRANCH.rt].UDW, Cop0_Name[Opcode.REG.rd], CP0[Opcode.REG.rd].UDW);
 			break;
 		default:
-			LogMessage("%08X: Writing 0x%llX to %s register (Originally: 0x%08X)", PROGRAM_COUNTER,
+			LogMessage("%016llX: Writing 0x%llX to %s register (Originally: 0x%08X)", PROGRAM_COUNTER.UDW,
 				GPR[Opcode.BRANCH.rt].UDW, Cop0_Name[Opcode.REG.rd], CP0[Opcode.REG.rd].UW[0]);
 		}
 	}
@@ -1863,7 +1867,7 @@ void _fastcall r4300i_COP0_DMT(void) {
 		break;
 	case 11: //Compare
 		CP0[Opcode.REG.rd].UW[0] = GPR[Opcode.BRANCH.rt].UW[0];
-		FAKE_CAUSE_REGISTER &= ~CAUSE_IP7;
+		CAUSE_REGISTER &= ~CAUSE_IP7;
 		ChangeCompareTimer();
 		break;
 	case 12: //Status
@@ -1874,16 +1878,26 @@ void _fastcall r4300i_COP0_DMT(void) {
 		else {
 			CP0[Opcode.REG.rd].UW[0] = GPR[Opcode.BRANCH.rt].UW[0] & 0xFFF7FFFF;
 		}
-		if ((CP0[Opcode.REG.rd].UW[0] & 0x18) != 0) {
+		if ((CP0[Opcode.REG.rd].UW[0] & STATUS_KSU) != STATUS_KERNEL &&
+			(CP0[Opcode.REG.rd].UW[0] & STATUS_KSU) != STATUS_USER) {
 			if (ShowDebugMessages)
-				DisplayError("Left kernel mode ??");
+				DisplayError("Left kernel mode or user mode ??");
+		}
+		if (((CP0[Opcode.REG.rd].UW[0] & STATUS_KX) != 0 && (CP0[Opcode.REG.rd].UW[0] & STATUS_KSU) == STATUS_KERNEL) ||
+			((CP0[Opcode.REG.rd].UW[0] & STATUS_UX) != 0 && (CP0[Opcode.REG.rd].UW[0] & STATUS_KSU) == STATUS_USER)) {
+			Addressing64Bits = 1;
+		}
+		else {
+			Addressing64Bits = 0;
 		}
 		CheckInterrupts();
 		break;
 	case 13: //cause
-		CP0[Opcode.REG.rd].UW[0] &= 0xFFFFCFF;
-		if (ShowDebugMessages)
-			if ((GPR[Opcode.BRANCH.rt].UW[0] & 0x300) != 0) { DisplayError("Set IP0 or IP1"); }
+		CP0[Opcode.REG.rd].UW[0] = (CP0[Opcode.REG.rd].UW[0] & 0xFFFFFCFF) | (GPR[Opcode.BRANCH.rt].UW[0] & 0x300);
+		if ((GPR[Opcode.BRANCH.rt].UW[0] & 0x300) != 0) {
+			if (ShowDebugMessages) { DisplayError("Set IP0 or IP1"); }
+			LogMessage("Set IP0 or IP1");
+		}
 		break;
 	case 14: //EPC
 		CP0[Opcode.REG.rd].DW = GPR[Opcode.BRANCH.rt].DW;
@@ -1940,11 +1954,6 @@ void _fastcall r4300i_COP0_CO_TLBR (void) {
 
 void _fastcall r4300i_COP0_CO_TLBWI (void) {
 	if (!UseTlb) { return; }
-/*	if (PROGRAM_COUNTER == 0x00136260 && INDEX_REGISTER == 0x1F) {
-		DisplayError("TLBWI");
-	} else {
-		WriteTLBEntry(INDEX_REGISTER & 0x1F);
-	}*/
 	WriteTLBEntry(INDEX_REGISTER & 0x1F);
 }
 

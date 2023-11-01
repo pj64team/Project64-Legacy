@@ -1777,7 +1777,7 @@ int r4300i_LW_NonMemory ( DWORD PAddr, DWORD * Value ) {
 		case 0x0440000C: *Value = VI_INTR_REG; break;
 		case 0x04400010: 
 			UpdateCurrentHalfLine();
-			*Value = HalfLine; 
+			*Value = HalfLine;
 			break;
 		case 0x04400014: *Value = VI_BURST_REG; break;
 		case 0x04400018: *Value = VI_V_SYNC_REG; break;
@@ -1955,7 +1955,7 @@ BOOL r4300i_LW_VAddr_NonCPU ( MIPS_DWORD VAddr, DWORD * Value ) {
 		*Value = *(DWORD*)(N64MEM + PAddr);
 	} 
 	else if (((PAddr & ~0x03E000) >= 0x04000000 && (PAddr & ~0x03E000) < 0x04004000)) {
-    *Value = *(DWORD*)(N64MEM + ((PAddr& ~0x3E000) & ~0x2000));
+		*Value = *(DWORD*)(N64MEM + ((PAddr& ~0x3E000) & ~0x2000));
 	}
 	else if (!r4300i_LW_NonMemory(PAddr, Value)) {
 		// TODO: Returning false here is the right thing to do.
@@ -2585,6 +2585,7 @@ int r4300i_SW_NonMemory ( DWORD PAddr, DWORD Value ) {
 			if ( ( Value & MI_INTR_MASK_SET_PI ) != 0 ) { MI_INTR_MASK_REG |= MI_INTR_MASK_PI; }
 			if ( ( Value & MI_INTR_MASK_CLR_DP ) != 0 ) { MI_INTR_MASK_REG &= ~MI_INTR_MASK_DP; }
 			if ( ( Value & MI_INTR_MASK_SET_DP ) != 0 ) { MI_INTR_MASK_REG |= MI_INTR_MASK_DP; }
+			CheckInterrupts();
 			break;
 		default:
 			return FALSE;
@@ -2913,6 +2914,7 @@ void ResetRecompCode (void) {
 }
 
 BOOL IsValidAddress(MIPS_DWORD address) {
+	BOOL kernelMode = (STATUS_REGISTER & STATUS_KSU) == STATUS_KERNEL || (STATUS_REGISTER & STATUS_EXL) || (STATUS_REGISTER & STATUS_ERL);
 	if (Addressing64Bits) {
 		switch ((address.UDW >> 60) & 0xF) {
 		case 0x0:
@@ -2921,24 +2923,33 @@ BOOL IsValidAddress(MIPS_DWORD address) {
 			}
 			return FALSE;
 		case 0x4:
-			if (address.UW[1] < 0x40000100) {
+			if (kernelMode && address.UW[1] < 0x40000100) {
 				return TRUE;
 			}
 			return FALSE;
 		case 0x9:
-			if (address.UW[1] == 0x90000000 ||
-				address.UW[1] == 0x98000000) {
-				return TRUE;
+			if (kernelMode) {
+				if (address.UW[1] == 0x90000000 ||
+					address.UW[1] == 0x98000000) {
+					return TRUE;
+				}
 			}
 			return FALSE;
 		case 0xC:
-			if (address.UDW < 0xC00000FF80000000LL) {
+			if (kernelMode && address.UDW < 0xC00000FF80000000LL) {
 				return TRUE;
 			}
 			return FALSE;
 		case 0xF:
-			if (address.UW[1] != 0xFFFFFFFF)
+			if (!kernelMode) {
 				return FALSE;
+			}
+			if (address.UW[1] != 0xFFFFFFFF) {
+				return FALSE;
+			}
+			if (address.UW[1] < 0x80000000) {
+				return FALSE;
+			}
 			return TRUE;
 		default:
 			LogMessage("Is it a valid address ? %llx", address.UDW);
@@ -2946,6 +2957,9 @@ BOOL IsValidAddress(MIPS_DWORD address) {
 		}
 	}
 	else {
+		if (!kernelMode && (address.UW[0] & 0x80000000) != 0) {
+			return FALSE;
+		}
 		return IsSignExtended(address);
 	}
 }

@@ -775,10 +775,11 @@ void ExecuteInterpreterOpCode (void) {
 			}
 			if (CPU_Type != CPU_SyncCores) {
 				if ((int)Timers.Timer < 0) {  TimerDone(); }
-				if (CPU_Action.DoSomething) { DoSomething(); }
+				//if (CPU_Action.DoSomething) { DoSomething(); }
 			}
 		}
-	}		
+	}
+	if (CPU_Action.DoSomething) { DoSomething(); }
 }
 
 void __cdecl StartInterpreterCPU (void ) { 
