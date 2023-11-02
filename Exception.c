@@ -76,6 +76,7 @@ void DoIntegerOverflow(BOOL DelaySlot) {
 		EPC_REGISTER = PROGRAM_COUNTER.UDW;
 	}
 	STATUS_REGISTER |= STATUS_EXL;
+	UpdateCPUMode();
 	PROGRAM_COUNTER.UDW = 0xFFFFFFFF80000180LL;
 }
 
@@ -112,6 +113,7 @@ void DoAddressError ( BOOL DelaySlot, QWORD BadVaddr, BOOL FromRead) {
 		EPC_REGISTER = PROGRAM_COUNTER.UDW;
 	}
 	STATUS_REGISTER |= STATUS_EXL;
+	UpdateCPUMode();
 	PROGRAM_COUNTER.UDW = 0xFFFFFFFF80000180LL;
 }
 
@@ -134,6 +136,7 @@ void _fastcall DoFPException(BOOL DelaySlot) {
 		EPC_REGISTER = PROGRAM_COUNTER.UDW;
 	}
 	STATUS_REGISTER |= STATUS_EXL;
+	UpdateCPUMode();
 	PROGRAM_COUNTER.UDW = 0xFFFFFFFF80000180LL;
 }
 
@@ -155,6 +158,7 @@ void _fastcall DoBreakException ( BOOL DelaySlot) {
 		EPC_REGISTER = PROGRAM_COUNTER.UDW;
 	}
 	STATUS_REGISTER |= STATUS_EXL;
+	UpdateCPUMode();
 	PROGRAM_COUNTER.UDW = 0xFFFFFFFF80000180LL;
 }
 
@@ -178,6 +182,7 @@ void _fastcall DoCopUnusableException ( BOOL DelaySlot, int Coprocessor ) {
 		EPC_REGISTER = PROGRAM_COUNTER.UDW;
 	}
 	STATUS_REGISTER |= STATUS_EXL;
+	UpdateCPUMode();
 	PROGRAM_COUNTER.UDW = 0xFFFFFFFF80000180LL;
 }
 
@@ -194,6 +199,7 @@ void DoIntrException ( BOOL DelaySlot ) {
 		EPC_REGISTER = PROGRAM_COUNTER.UDW;
 	}
 	STATUS_REGISTER |= STATUS_EXL;
+	UpdateCPUMode();
 	PROGRAM_COUNTER.UDW = 0xFFFFFFFF80000180LL;
 }
 
@@ -254,6 +260,7 @@ void _fastcall DoTLBMiss ( BOOL DelaySlot, QWORD BadVaddr, BOOL FromRead ) {
 			DisplayError("EXL Set\nAddress Defined: %s",AddressDefined(BadVaddr)?"TRUE":"FALSE");
 		PROGRAM_COUNTER.UDW = 0xFFFFFFFF80000180LL;
 	}
+	UpdateCPUMode();
 }
 
 void _fastcall DoSysCallException(BOOL DelaySlot) {
@@ -275,6 +282,7 @@ void _fastcall DoSysCallException(BOOL DelaySlot) {
 		EPC_REGISTER = PROGRAM_COUNTER.UDW;
 	}
 	STATUS_REGISTER |= STATUS_EXL;
+	UpdateCPUMode();
 	PROGRAM_COUNTER.UDW = 0xFFFFFFFF80000180LL;
 }
 
@@ -297,6 +305,7 @@ void _fastcall DoIllegalInstructionException(BOOL DelaySlot) {
 		EPC_REGISTER = PROGRAM_COUNTER.UDW;
 	}
 	STATUS_REGISTER |= STATUS_EXL;
+	UpdateCPUMode();
 	PROGRAM_COUNTER.UDW = 0xFFFFFFFF80000180LL;
 }
 
@@ -319,5 +328,6 @@ void _fastcall DoTrapException(BOOL DelaySlot) {
 		EPC_REGISTER = PROGRAM_COUNTER.UDW;
 	}
 	STATUS_REGISTER |= STATUS_EXL;
+	UpdateCPUMode();
 	PROGRAM_COUNTER.UDW = 0xFFFFFFFF80000180LL;
 }

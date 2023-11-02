@@ -357,6 +357,7 @@ void InitalizeR4300iRegisters (int UsePif, int Country, enum CIC_CHIP CIC_Chip) 
 	REVISION_REGISTER   = 0x00000A00;
 	STATUS_REGISTER     = 0x34000000;
 	Addressing64Bits = 0;
+	KernelMode = TRUE;
 	PRID_REGISTER       = 0xB22;
 	lastUnusedCOP0Register = -1;
 	SetFpuLocations();
