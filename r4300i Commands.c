@@ -31,7 +31,7 @@
 #include "CPU.h"
 #include "debugger.h"
 
-char CommandName[100];
+char CommandName[110];
 
 #define R4300i_MaxCommandLines		37
 

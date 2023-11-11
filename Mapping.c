@@ -105,7 +105,7 @@ char * LabelName (MIPS_DWORD Address) {
 	DWORD count;
 
 	if (!HaveDebugger) {
-		sprintf(strLabelName, "0x%08X", Address);
+		sprintf(strLabelName, "0x%016llX", Address.UDW);
 		return strLabelName;
 	}
 	else {
@@ -115,7 +115,7 @@ char * LabelName (MIPS_DWORD Address) {
 				return strLabelName;
 			}
 		}
-		sprintf(strLabelName, "0x%08X", Address);
+		sprintf(strLabelName, "0x%016llX", Address.UDW);
 		return strLabelName;
 	}
 }
