@@ -234,10 +234,10 @@ void CloseCpu (void) {
 
 int DelaySlotEffectsCompare (MIPS_DWORD PC, DWORD Reg1, DWORD Reg2) {
 	OPCODE Command;
-	MIPS_DWORD Address;
-	Address.UDW = PC.UDW + 4;
+	MIPS_DWORD DelaySlotAddress;
+	DelaySlotAddress.UDW = PC.UDW + 4;
 
-	if (!r4300i_LW_VAddr_NonCPU(Address, &Command.Hex)) {
+	if (!r4300i_LW_VAddr_NonCPU(DelaySlotAddress, &Command.Hex)) {
 		if (ShowDebugMessages) {
 			char msg[100];
 			sprintf(msg, "%s\r\nPC: %016llX", "Failed to load word 2" , PC.UDW + 4);
@@ -305,7 +305,7 @@ int DelaySlotEffectsCompare (MIPS_DWORD PC, DWORD Reg1, DWORD Reg2) {
 			break;
 		default:
 			if (ShowDebugMessages)
-				DisplayError("Does %s effect Delay slot at %llX?",R4300iOpcodeName(Command.Hex,PC.UDW+4), PC);
+				DisplayError("Does %s effect Delay slot at %llX?",R4300iOpcodeName(Command.Hex,DelaySlotAddress), PC);
 			return TRUE;
 		}
 		break;
@@ -326,12 +326,12 @@ int DelaySlotEffectsCompare (MIPS_DWORD PC, DWORD Reg1, DWORD Reg2) {
 				case R4300i_COP0_CO_TLBP: break;
 				default: 
 					if (ShowDebugMessages)
-						DisplayError("Does %s effect Delay slot at %llX?\n6",R4300iOpcodeName(Command.Hex,PC.UDW+4), PC);
+						DisplayError("Does %s effect Delay slot at %llX?\n6",R4300iOpcodeName(Command.Hex, DelaySlotAddress), PC);
 					return TRUE;
 				}
 			} else {
 				if (ShowDebugMessages)
-					DisplayError("Does %s effect Delay slot at %X?\n7",R4300iOpcodeName(Command.Hex,PC.UDW+4), PC);
+					DisplayError("Does %s effect Delay slot at %X?\n7",R4300iOpcodeName(Command.Hex, DelaySlotAddress), PC);
 				return TRUE;
 			}
 		}
@@ -352,7 +352,7 @@ int DelaySlotEffectsCompare (MIPS_DWORD PC, DWORD Reg1, DWORD Reg2) {
 		case R4300i_COP1_L: break;
 		default:
 			if (ShowDebugMessages)
-				DisplayError("Does %s effect Delay slot at %llX?",R4300iOpcodeName(Command.Hex,PC.UDW+4), PC);
+				DisplayError("Does %s effect Delay slot at %llX?",R4300iOpcodeName(Command.Hex, DelaySlotAddress), PC);
 			return TRUE;
 		}
 		break;
@@ -393,7 +393,7 @@ int DelaySlotEffectsCompare (MIPS_DWORD PC, DWORD Reg1, DWORD Reg2) {
 	case R4300i_SD: break;
 	default:
 		if (ShowDebugMessages)
-			DisplayError("Does %s effect Delay slot at %llX?",R4300iOpcodeName(Command.Hex,PC.UDW+4), PC);
+			DisplayError("Does %s effect Delay slot at %llX?",R4300iOpcodeName(Command.Hex, DelaySlotAddress), PC);
 		return TRUE;
 	}
 	return FALSE;

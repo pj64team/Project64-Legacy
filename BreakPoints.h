@@ -27,12 +27,12 @@
 #define __breakpoints_h 
 
 void __cdecl Enter_BPoint_Window    ( void );
-int  Add_R4300iBPoint       ( DWORD Location );
-int  CheckForR4300iBPoint   ( DWORD Location );
-int  HasR4300iBPoint        ( DWORD Location );
-void ToggleR4300iBPoint     ( DWORD Location );
+int  Add_R4300iBPoint       ( MIPS_DWORD Location );
+int  CheckForR4300iBPoint   ( MIPS_DWORD Location );
+int  HasR4300iBPoint        ( MIPS_DWORD Location );
+void ToggleR4300iBPoint     ( MIPS_DWORD Location );
 void __cdecl RefreshBreakPoints     ( void );
-void RemoveR4300iBreakPoint ( DWORD Location );
+void RemoveR4300iBreakPoint ( MIPS_DWORD Location );
 void UpdateBPointGUI        ( void );
 void UpdateBP_FunctionList  ( void );
 
@@ -42,7 +42,7 @@ void UpdateBP_FunctionList  ( void );
 #define RSP_BP					3
 
 typedef struct {
-   unsigned int Location;
+   MIPS_DWORD Location;
    BOOL enabled;
 } BPOINT;
 

@@ -308,6 +308,72 @@ DWORD AsciiToHex(char* HexValue) {
 	return Value;
 }
 
+QWORD AsciiToHex64(char* HexValue) {
+	DWORD Count, Finish;
+	QWORD Value = 0;
+
+	Finish = strlen(HexValue);
+	if (Finish > 16)
+		Finish = 16;
+
+	for (Count = 0; Count < Finish; Count++) {
+		Value = (Value << 4);
+		switch (HexValue[Count]) {
+		case '0':
+			break;
+		case '1':
+			Value += 1;
+			break;
+		case '2':
+			Value += 2;
+			break;
+		case '3':
+			Value += 3;
+			break;
+		case '4':
+			Value += 4;
+			break;
+		case '5':
+			Value += 5;
+			break;
+		case '6':
+			Value += 6;
+			break;
+		case '7':
+			Value += 7;
+			break;
+		case '8':
+			Value += 8;
+			break;
+		case '9':
+			Value += 9;
+			break;
+		case 'A': case 'a':
+			Value += 10;
+			break;
+		case 'B': case 'b':
+			Value += 11;
+			break;
+		case 'C': case 'c':
+			Value += 12;
+			break;
+		case 'D': case 'd':
+			Value += 13;
+			break;
+		case 'E': case 'e':
+			Value += 14;
+			break;
+		case 'F': case 'f':
+			Value += 15;
+			break;
+		default:
+			Value = (Value >> 4);
+			Count = Finish;
+		}
+	}
+	return Value;
+}
+
 void ChangeWinSize(HWND hWnd, long width, long height, HWND hStatusBar) {
 	WINDOWPLACEMENT wndpl;
 	RECT rc1, swrect;

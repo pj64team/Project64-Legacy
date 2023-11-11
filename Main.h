@@ -141,6 +141,7 @@ extern DWORD ModVI;
 
 /******** Function Prototype *********/
 DWORD AsciiToHex          ( char * HexValue );
+QWORD AsciiToHex64        ( char* HexValue );
 void AlwaysOnTopWindow    ( HWND hWnd );
 void  __cdecl DisplayError       ( char * Message, ... );
 void  __cdecl DisplayErrorFatal  ( char * Message, ... );

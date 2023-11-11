@@ -41,7 +41,7 @@ void GetMapDirectory ( char * Directory );
 int  ProcessMapFile ( BYTE * File, DWORD FileLen );
 void SetMapDirectory ( char * Directory );
 
-void AddMapEntry ( DWORD Address, char * Label) {
+void AddMapEntry ( MIPS_DWORD Address, char * Label) {
 	if (Label == NULL) { return; }
 	
 	if (NoOfMapEntries == 0) {
@@ -101,7 +101,7 @@ void GetMapDirectory ( char * Directory ) {
 	RegCloseKey(hKeyResults);	
 }
 
-char * LabelName (DWORD Address) {
+char * LabelName (MIPS_DWORD Address) {
 	DWORD count;
 
 	if (!HaveDebugger) {
@@ -110,7 +110,7 @@ char * LabelName (DWORD Address) {
 	}
 	else {
 		for (count = 0; count < NoOfMapEntries; count++) {
-			if (MapTable[count].VAddr == Address) {
+			if (MapTable[count].VAddr.UDW == Address.UDW) {
 				sprintf(strLabelName, "%s", MapTable[count].Label);
 				return strLabelName;
 			}
@@ -238,7 +238,7 @@ int OpenMapFile(char * FileName) {
 int ProcessCODFile(BYTE * File, DWORD FileLen) {
 	BYTE * CurrentPos = File;
 	char Label[40];
-	DWORD Address;
+	MIPS_DWORD Address;
 	int Length;
 
 	while ( CurrentPos < File + FileLen ) {
@@ -246,11 +246,19 @@ int ProcessCODFile(BYTE * File, DWORD FileLen) {
 		CurrentPos += 1;
 		if (*CurrentPos != 'x') { return FALSE; }
 		CurrentPos += 1;
-	
-		if (strchr(CurrentPos,',') - CurrentPos != 8) { return FALSE; }
-		Address = AsciiToHex (CurrentPos);
-		CurrentPos += 9;
 
+		int FirstFieldLength = strchr(CurrentPos, ',') - CurrentPos;
+		if (FirstFieldLength == 8) {
+			Address.DW = (int)AsciiToHex(CurrentPos);
+			CurrentPos += 9;
+		}
+		else if (FirstFieldLength == 16) {
+			Address.UDW = AsciiToHex64(CurrentPos);
+			CurrentPos += 9;
+		}
+		else {
+			return FALSE;
+		}
 
 		if (strchr(CurrentPos,'\r') == NULL) {
 			Length = strchr(CurrentPos,'\n') - CurrentPos;

@@ -53,8 +53,10 @@ void CompileCop1Test (BLOCK_SECTION * Section) {
 void Compile_R4300i_LWC1 (BLOCK_SECTION * Section) {
 	DWORD TempReg1, TempReg2, TempReg3;
 	char Name[50];
+	MIPS_DWORD CompilePC;
+	CompilePC.DW = (int)Section->CompilePC;
 
-	CPU_Message("  %X %s",Section->CompilePC,R4300iOpcodeName(Opcode.Hex,Section->CompilePC));
+	CPU_Message("  %X %s",Section->CompilePC,R4300iOpcodeName(Opcode.Hex,CompilePC));
 
 	CompileCop1Test(Section);
 	if ((Opcode.FP.ft & 1) != 0) {
@@ -133,8 +135,10 @@ void Compile_R4300i_LWC1 (BLOCK_SECTION * Section) {
 
 void Compile_R4300i_LDC1 (BLOCK_SECTION * Section) {
 	DWORD TempReg1, TempReg2, TempReg3;
+	MIPS_DWORD CompilePC;
+	CompilePC.DW = (int)Section->CompilePC;
 
-	CPU_Message("  %X %s",Section->CompilePC,R4300iOpcodeName(Opcode.Hex,Section->CompilePC));
+	CPU_Message("  %X %s",Section->CompilePC,R4300iOpcodeName(Opcode.Hex,CompilePC));
 
 	CompileCop1Test(Section);
 
@@ -226,8 +230,10 @@ void Compile_R4300i_LDC1 (BLOCK_SECTION * Section) {
 
 void Compile_R4300i_SWC1 (BLOCK_SECTION * Section){
 	DWORD TempReg1, TempReg2, TempReg3;
+	MIPS_DWORD CompilePC;
+	CompilePC.DW = (int)Section->CompilePC;
 
-	CPU_Message("  %X %s",Section->CompilePC,R4300iOpcodeName(Opcode.Hex,Section->CompilePC));
+	CPU_Message("  %X %s",Section->CompilePC,R4300iOpcodeName(Opcode.Hex,CompilePC));
 
 	CompileCop1Test(Section);
 	
@@ -290,8 +296,10 @@ void Compile_R4300i_SWC1 (BLOCK_SECTION * Section){
 
 void Compile_R4300i_SDC1 (BLOCK_SECTION * Section){
 	DWORD TempReg1, TempReg2, TempReg3;
+	MIPS_DWORD CompilePC;
+	CompilePC.DW = (int)Section->CompilePC;
 
-	CPU_Message("  %X %s",Section->CompilePC,R4300iOpcodeName(Opcode.Hex,Section->CompilePC));
+	CPU_Message("  %X %s",Section->CompilePC,R4300iOpcodeName(Opcode.Hex,CompilePC));
 
 	CompileCop1Test(Section);
 	
@@ -370,8 +378,10 @@ void Compile_R4300i_SDC1 (BLOCK_SECTION * Section){
 /************************** COP1 functions **************************/
 void Compile_R4300i_COP1_MF (BLOCK_SECTION * Section) {
 	DWORD TempReg;
+	MIPS_DWORD CompilePC;
+	CompilePC.DW = (int)Section->CompilePC;
 
-	CPU_Message("  %X %s",Section->CompilePC,R4300iOpcodeName(Opcode.Hex,Section->CompilePC));
+	CPU_Message("  %X %s",Section->CompilePC,R4300iOpcodeName(Opcode.Hex,CompilePC));
 	if (Opcode.BRANCH.rt == 0) { return; }
 	CompileCop1Test(Section);
 
@@ -385,8 +395,10 @@ void Compile_R4300i_COP1_MF (BLOCK_SECTION * Section) {
 
 void Compile_R4300i_COP1_DMF (BLOCK_SECTION * Section) {
 	DWORD TempReg;
+	MIPS_DWORD CompilePC;
+	CompilePC.DW = (int)Section->CompilePC;
 
-	CPU_Message("  %X %s",Section->CompilePC,R4300iOpcodeName(Opcode.Hex,Section->CompilePC));
+	CPU_Message("  %X %s",Section->CompilePC,R4300iOpcodeName(Opcode.Hex,CompilePC));
 	if (Opcode.BRANCH.rt == 0) { return; }
 	CompileCop1Test(Section);
 
@@ -403,7 +415,10 @@ void Compile_R4300i_COP1_DMF (BLOCK_SECTION * Section) {
 }
 
 void Compile_R4300i_COP1_CF(BLOCK_SECTION * Section) {
-	CPU_Message("  %X %s",Section->CompilePC,R4300iOpcodeName(Opcode.Hex,Section->CompilePC));
+	MIPS_DWORD CompilePC;
+	CompilePC.DW = (int)Section->CompilePC;
+
+	CPU_Message("  %X %s",Section->CompilePC,R4300iOpcodeName(Opcode.Hex,CompilePC));
 
 	CompileCop1Test(Section);
 	
@@ -414,8 +429,10 @@ void Compile_R4300i_COP1_CF(BLOCK_SECTION * Section) {
 
 void Compile_R4300i_COP1_MT( BLOCK_SECTION * Section) {	
 	DWORD TempReg;
+	MIPS_DWORD CompilePC;
+	CompilePC.DW = (int)Section->CompilePC;
 
-	CPU_Message("  %X %s",Section->CompilePC,R4300iOpcodeName(Opcode.Hex,Section->CompilePC));
+	CPU_Message("  %X %s",Section->CompilePC,R4300iOpcodeName(Opcode.Hex,CompilePC));
 	CompileCop1Test(Section);
 	
 	if ((Opcode.FP.fs & 1) != 0) {
@@ -439,8 +456,10 @@ void Compile_R4300i_COP1_MT( BLOCK_SECTION * Section) {
 
 void Compile_R4300i_COP1_DMT( BLOCK_SECTION * Section) {
 	DWORD TempReg;
+	MIPS_DWORD CompilePC;
+	CompilePC.DW = (int)Section->CompilePC;
 
-	CPU_Message("  %X %s",Section->CompilePC,R4300iOpcodeName(Opcode.Hex,Section->CompilePC));
+	CPU_Message("  %X %s",Section->CompilePC,R4300iOpcodeName(Opcode.Hex,CompilePC));
 	CompileCop1Test(Section);
 	
 	if ((Opcode.FP.fs & 1) == 0) {
@@ -479,8 +498,10 @@ void Compile_R4300i_COP1_DMT( BLOCK_SECTION * Section) {
 
 
 void Compile_R4300i_COP1_CT(BLOCK_SECTION * Section) {
+	MIPS_DWORD CompilePC;
+	CompilePC.DW = (int)Section->CompilePC;
 
-	CPU_Message("  %X %s",Section->CompilePC,R4300iOpcodeName(Opcode.Hex,Section->CompilePC));
+	CPU_Message("  %X %s",Section->CompilePC,R4300iOpcodeName(Opcode.Hex,CompilePC));
 	CompileCop1Test(Section);
 	if (Opcode.FP.fs != 31) { Compile_R4300i_UnknownOpcode (Section); return; }
 
@@ -501,8 +522,10 @@ void Compile_R4300i_COP1_CT(BLOCK_SECTION * Section) {
 void Compile_R4300i_COP1_S_ADD (BLOCK_SECTION * Section) {
 	DWORD Reg1 = Opcode.FP.ft == Opcode.FP.fd?Opcode.FP.ft:Opcode.FP.fs;
 	DWORD Reg2 = Opcode.FP.ft == Opcode.FP.fd?Opcode.FP.fs:Opcode.FP.ft;
+	MIPS_DWORD CompilePC;
+	CompilePC.DW = (int)Section->CompilePC;
 	
-	CPU_Message("  %X %s",Section->CompilePC,R4300iOpcodeName(Opcode.Hex,Section->CompilePC));
+	CPU_Message("  %X %s",Section->CompilePC,R4300iOpcodeName(Opcode.Hex,CompilePC));
 	
 	CompileCop1Test(Section);	
 
@@ -526,8 +549,10 @@ void Compile_R4300i_COP1_S_SUB (BLOCK_SECTION * Section) {
 	DWORD Reg1 = Opcode.FP.ft == Opcode.FP.fd?Opcode.FP.ft:Opcode.FP.fs;
 	DWORD Reg2 = Opcode.FP.ft == Opcode.FP.fd?Opcode.FP.fs:Opcode.FP.ft;
 	DWORD TempReg;
+	MIPS_DWORD CompilePC;
+	CompilePC.DW = (int)Section->CompilePC;
 	
-	CPU_Message("  %X %s",Section->CompilePC,R4300iOpcodeName(Opcode.Hex,Section->CompilePC));
+	CPU_Message("  %X %s",Section->CompilePC,R4300iOpcodeName(Opcode.Hex,CompilePC));
 	
 	CompileCop1Test(Section);	
 
@@ -560,8 +585,10 @@ void Compile_R4300i_COP1_S_MUL (BLOCK_SECTION * Section) {
 	DWORD Reg1 = Opcode.FP.ft == Opcode.FP.fd?Opcode.FP.ft:Opcode.FP.fs;
 	DWORD Reg2 = Opcode.FP.ft == Opcode.FP.fd?Opcode.FP.fs:Opcode.FP.ft;
 	DWORD TempReg;
+	MIPS_DWORD CompilePC;
+	CompilePC.DW = (int)Section->CompilePC;
 	
-	CPU_Message("  %X %s",Section->CompilePC,R4300iOpcodeName(Opcode.Hex,Section->CompilePC));
+	CPU_Message("  %X %s",Section->CompilePC,R4300iOpcodeName(Opcode.Hex,CompilePC));
 	
 	CompileCop1Test(Section);	
 
@@ -584,8 +611,10 @@ void Compile_R4300i_COP1_S_DIV (BLOCK_SECTION * Section) {
 	DWORD Reg1 = Opcode.FP.ft == Opcode.FP.fd?Opcode.FP.ft:Opcode.FP.fs;
 	DWORD Reg2 = Opcode.FP.ft == Opcode.FP.fd?Opcode.FP.fs:Opcode.FP.ft;
 	DWORD TempReg;
+	MIPS_DWORD CompilePC;
+	CompilePC.DW = (int)Section->CompilePC;
 	
-	CPU_Message("  %X %s",Section->CompilePC,R4300iOpcodeName(Opcode.Hex,Section->CompilePC));
+	CPU_Message("  %X %s",Section->CompilePC,R4300iOpcodeName(Opcode.Hex,CompilePC));
 	
 	CompileCop1Test(Section);	
 
@@ -616,33 +645,48 @@ void Compile_R4300i_COP1_S_DIV (BLOCK_SECTION * Section) {
 }
 
 void Compile_R4300i_COP1_S_ABS (BLOCK_SECTION * Section) {
-	CPU_Message("  %X %s",Section->CompilePC,R4300iOpcodeName(Opcode.Hex,Section->CompilePC));
+	MIPS_DWORD CompilePC;
+	CompilePC.DW = (int)Section->CompilePC;
+
+	CPU_Message("  %X %s",Section->CompilePC,R4300iOpcodeName(Opcode.Hex,CompilePC));
 	Load_FPR_ToTop(Section,Opcode.FP.fd,Opcode.FP.fs,FPU_Float);
 	fpuAbs();
 	UnMap_FPR(Section,Opcode.FP.fd,TRUE);
 }
 
 void Compile_R4300i_COP1_S_NEG (BLOCK_SECTION * Section) {
-	CPU_Message("  %X %s",Section->CompilePC,R4300iOpcodeName(Opcode.Hex,Section->CompilePC));
+	MIPS_DWORD CompilePC;
+	CompilePC.DW = (int)Section->CompilePC;
+
+	CPU_Message("  %X %s",Section->CompilePC,R4300iOpcodeName(Opcode.Hex,CompilePC));
 	Load_FPR_ToTop(Section,Opcode.FP.fd,Opcode.FP.fs,FPU_Float);
 	fpuNeg();
 	UnMap_FPR(Section,Opcode.FP.fd,TRUE);
 }
 
 void Compile_R4300i_COP1_S_SQRT (BLOCK_SECTION * Section) {
-	CPU_Message("  %X %s",Section->CompilePC,R4300iOpcodeName(Opcode.Hex,Section->CompilePC));
+	MIPS_DWORD CompilePC;
+	CompilePC.DW = (int)Section->CompilePC;
+
+	CPU_Message("  %X %s",Section->CompilePC,R4300iOpcodeName(Opcode.Hex,CompilePC));
 	Load_FPR_ToTop(Section,Opcode.FP.fd,Opcode.FP.fs,FPU_Float);
 	fpuSqrt();
 	UnMap_FPR(Section,Opcode.FP.fd,TRUE);
 }
 
 void Compile_R4300i_COP1_S_MOV (BLOCK_SECTION * Section) {
-	CPU_Message("  %X %s",Section->CompilePC,R4300iOpcodeName(Opcode.Hex,Section->CompilePC));
+	MIPS_DWORD CompilePC;
+	CompilePC.DW = (int)Section->CompilePC;
+
+	CPU_Message("  %X %s",Section->CompilePC,R4300iOpcodeName(Opcode.Hex,CompilePC));
 	Load_FPR_ToTop(Section,Opcode.FP.fd,Opcode.FP.fs,FPU_Float);
 }
 
 void Compile_R4300i_COP1_S_TRUNC_L (BLOCK_SECTION * Section) {
-	CPU_Message("  %X %s",Section->CompilePC,R4300iOpcodeName(Opcode.Hex,Section->CompilePC));
+	MIPS_DWORD CompilePC;
+	CompilePC.DW = (int)Section->CompilePC;
+
+	CPU_Message("  %X %s",Section->CompilePC,R4300iOpcodeName(Opcode.Hex,CompilePC));
 	
 	CompileCop1Test(Section);	
 	if (Opcode.FP.fd != Opcode.FP.fs || !RegInStack(Section,Opcode.FP.fd,FPU_Float)) { 
@@ -652,7 +696,10 @@ void Compile_R4300i_COP1_S_TRUNC_L (BLOCK_SECTION * Section) {
 }
 
 void Compile_R4300i_COP1_S_CEIL_L (BLOCK_SECTION * Section) {			//added by Witten
-	CPU_Message("  %X %s",Section->CompilePC,R4300iOpcodeName(Opcode.Hex,Section->CompilePC));
+	MIPS_DWORD CompilePC;
+	CompilePC.DW = (int)Section->CompilePC;
+
+	CPU_Message("  %X %s",Section->CompilePC,R4300iOpcodeName(Opcode.Hex,CompilePC));
 	
 	CompileCop1Test(Section);	
 	if (Opcode.FP.fd != Opcode.FP.fs || !RegInStack(Section,Opcode.FP.fd,FPU_Float)) { 
@@ -662,7 +709,10 @@ void Compile_R4300i_COP1_S_CEIL_L (BLOCK_SECTION * Section) {			//added by Witte
 }
 
 void Compile_R4300i_COP1_S_FLOOR_L (BLOCK_SECTION * Section) {			//added by Witten
-	CPU_Message("  %X %s",Section->CompilePC,R4300iOpcodeName(Opcode.Hex,Section->CompilePC));
+	MIPS_DWORD CompilePC;
+	CompilePC.DW = (int)Section->CompilePC;
+
+	CPU_Message("  %X %s",Section->CompilePC,R4300iOpcodeName(Opcode.Hex,CompilePC));
 	
 	CompileCop1Test(Section);	
 	if (Opcode.FP.fd != Opcode.FP.fs || !RegInStack(Section,Opcode.FP.fd,FPU_Float)) { 
@@ -672,7 +722,10 @@ void Compile_R4300i_COP1_S_FLOOR_L (BLOCK_SECTION * Section) {			//added by Witt
 }
 
 void Compile_R4300i_COP1_S_ROUND_W (BLOCK_SECTION * Section) {
-	CPU_Message("  %X %s",Section->CompilePC,R4300iOpcodeName(Opcode.Hex,Section->CompilePC));
+	MIPS_DWORD CompilePC;
+	CompilePC.DW = (int)Section->CompilePC;
+
+	CPU_Message("  %X %s",Section->CompilePC,R4300iOpcodeName(Opcode.Hex,CompilePC));
 	
 	CompileCop1Test(Section);	
 	if (Opcode.FP.fd != Opcode.FP.fs || !RegInStack(Section,Opcode.FP.fd,FPU_Float)) { 
@@ -682,7 +735,10 @@ void Compile_R4300i_COP1_S_ROUND_W (BLOCK_SECTION * Section) {
 }
 
 void Compile_R4300i_COP1_S_TRUNC_W (BLOCK_SECTION * Section) {
-	CPU_Message("  %X %s",Section->CompilePC,R4300iOpcodeName(Opcode.Hex,Section->CompilePC));
+	MIPS_DWORD CompilePC;
+	CompilePC.DW = (int)Section->CompilePC;
+
+	CPU_Message("  %X %s",Section->CompilePC,R4300iOpcodeName(Opcode.Hex,CompilePC));
 	
 	CompileCop1Test(Section);	
 	if (Opcode.FP.fd != Opcode.FP.fs || !RegInStack(Section,Opcode.FP.fd,FPU_Float)) { 
@@ -692,7 +748,10 @@ void Compile_R4300i_COP1_S_TRUNC_W (BLOCK_SECTION * Section) {
 }
 
 void Compile_R4300i_COP1_S_CEIL_W (BLOCK_SECTION * Section) {			// added by Witten
-	CPU_Message("  %X %s",Section->CompilePC,R4300iOpcodeName(Opcode.Hex,Section->CompilePC));
+	MIPS_DWORD CompilePC;
+	CompilePC.DW = (int)Section->CompilePC;
+
+	CPU_Message("  %X %s",Section->CompilePC,R4300iOpcodeName(Opcode.Hex,CompilePC));
 	
 	CompileCop1Test(Section);	
 	if (Opcode.FP.fd != Opcode.FP.fs || !RegInStack(Section,Opcode.FP.fd,FPU_Float)) { 
@@ -702,7 +761,10 @@ void Compile_R4300i_COP1_S_CEIL_W (BLOCK_SECTION * Section) {			// added by Witt
 }
 
 void Compile_R4300i_COP1_S_FLOOR_W (BLOCK_SECTION * Section) {
-	CPU_Message("  %X %s",Section->CompilePC,R4300iOpcodeName(Opcode.Hex,Section->CompilePC));
+	MIPS_DWORD CompilePC;
+	CompilePC.DW = (int)Section->CompilePC;
+
+	CPU_Message("  %X %s",Section->CompilePC,R4300iOpcodeName(Opcode.Hex,CompilePC));
 	
 	CompileCop1Test(Section);	
 	if (Opcode.FP.fd != Opcode.FP.fs || !RegInStack(Section,Opcode.FP.fd,FPU_Float)) { 
@@ -712,7 +774,10 @@ void Compile_R4300i_COP1_S_FLOOR_W (BLOCK_SECTION * Section) {
 }
 
 void Compile_R4300i_COP1_S_CVT_D (BLOCK_SECTION * Section) {
-	CPU_Message("  %X %s",Section->CompilePC,R4300iOpcodeName(Opcode.Hex,Section->CompilePC));
+	MIPS_DWORD CompilePC;
+	CompilePC.DW = (int)Section->CompilePC;
+
+	CPU_Message("  %X %s",Section->CompilePC,R4300iOpcodeName(Opcode.Hex,CompilePC));
 	
 	CompileCop1Test(Section);	
 	if (Opcode.FP.fd != Opcode.FP.fs || !RegInStack(Section,Opcode.FP.fd,FPU_Float)) {
@@ -722,7 +787,10 @@ void Compile_R4300i_COP1_S_CVT_D (BLOCK_SECTION * Section) {
 }
 
 void Compile_R4300i_COP1_S_CVT_W (BLOCK_SECTION * Section) {
-	CPU_Message("  %X %s",Section->CompilePC,R4300iOpcodeName(Opcode.Hex,Section->CompilePC));
+	MIPS_DWORD CompilePC;
+	CompilePC.DW = (int)Section->CompilePC;
+
+	CPU_Message("  %X %s",Section->CompilePC,R4300iOpcodeName(Opcode.Hex,CompilePC));
 	
 	CompileCop1Test(Section);	
 	if (Opcode.FP.fd != Opcode.FP.fs || !RegInStack(Section,Opcode.FP.fd,FPU_Float)) {
@@ -732,7 +800,10 @@ void Compile_R4300i_COP1_S_CVT_W (BLOCK_SECTION * Section) {
 }
 
 void Compile_R4300i_COP1_S_CVT_L (BLOCK_SECTION * Section) {
-	CPU_Message("  %X %s",Section->CompilePC,R4300iOpcodeName(Opcode.Hex,Section->CompilePC));
+	MIPS_DWORD CompilePC;
+	CompilePC.DW = (int)Section->CompilePC;
+
+	CPU_Message("  %X %s",Section->CompilePC,R4300iOpcodeName(Opcode.Hex,CompilePC));
 	
 	CompileCop1Test(Section);	
 	if (Opcode.FP.fd != Opcode.FP.fs || !RegInStack(Section,Opcode.FP.fd,FPU_Float)) {
@@ -745,9 +816,10 @@ void Compile_R4300i_COP1_S_CMP (BLOCK_SECTION * Section) {
 	DWORD Reg1 = RegInStack(Section,Opcode.FP.ft, FPU_Float)?Opcode.FP.ft:Opcode.FP.fs;
 	DWORD Reg2 = RegInStack(Section,Opcode.FP.ft, FPU_Float)?Opcode.FP.fs:Opcode.FP.ft;
 	int x86reg, cmp = 0;
-
+	MIPS_DWORD CompilePC;
+	CompilePC.DW = (int)Section->CompilePC;
 	
-	CPU_Message("  %X %s",Section->CompilePC,R4300iOpcodeName(Opcode.Hex,Section->CompilePC));
+	CPU_Message("  %X %s",Section->CompilePC,R4300iOpcodeName(Opcode.Hex,CompilePC));
 	
 	CompileCop1Test(Section);	
 	//if ((Opcode.REG.funct & 1) != 0) { Compile_R4300i_UnknownOpcode(Section); }
@@ -798,8 +870,10 @@ void Compile_R4300i_COP1_S_CMP (BLOCK_SECTION * Section) {
 void Compile_R4300i_COP1_D_ADD (BLOCK_SECTION * Section) {
 	DWORD Reg1 = Opcode.FP.ft == Opcode.FP.fd?Opcode.FP.ft:Opcode.FP.fs;
 	DWORD Reg2 = Opcode.FP.ft == Opcode.FP.fd?Opcode.FP.fs:Opcode.FP.ft;
+	MIPS_DWORD CompilePC;
+	CompilePC.DW = (int)Section->CompilePC;
 	
-	CPU_Message("  %X %s",Section->CompilePC,R4300iOpcodeName(Opcode.Hex,Section->CompilePC));
+	CPU_Message("  %X %s",Section->CompilePC,R4300iOpcodeName(Opcode.Hex,CompilePC));
 	
 	CompileCop1Test(Section);	
 
@@ -822,8 +896,10 @@ void Compile_R4300i_COP1_D_SUB (BLOCK_SECTION * Section) {
 	DWORD Reg1 = Opcode.FP.ft == Opcode.FP.fd?Opcode.FP.ft:Opcode.FP.fs;
 	DWORD Reg2 = Opcode.FP.ft == Opcode.FP.fd?Opcode.FP.fs:Opcode.FP.ft;
 	DWORD TempReg;
+	MIPS_DWORD CompilePC;
+	CompilePC.DW = (int)Section->CompilePC;
 	
-	CPU_Message("  %X %s",Section->CompilePC,R4300iOpcodeName(Opcode.Hex,Section->CompilePC));
+	CPU_Message("  %X %s",Section->CompilePC,R4300iOpcodeName(Opcode.Hex,CompilePC));
 	
 	CompileCop1Test(Section);	
 
@@ -854,8 +930,10 @@ void Compile_R4300i_COP1_D_MUL (BLOCK_SECTION * Section) {
 	DWORD Reg1 = Opcode.FP.ft == Opcode.FP.fd?Opcode.FP.ft:Opcode.FP.fs;
 	DWORD Reg2 = Opcode.FP.ft == Opcode.FP.fd?Opcode.FP.fs:Opcode.FP.ft;
 	DWORD TempReg;
+	MIPS_DWORD CompilePC;
+	CompilePC.DW = (int)Section->CompilePC;
 	
-	CPU_Message("  %X %s",Section->CompilePC,R4300iOpcodeName(Opcode.Hex,Section->CompilePC));
+	CPU_Message("  %X %s",Section->CompilePC,R4300iOpcodeName(Opcode.Hex,CompilePC));
 	
 	CompileCop1Test(Section);	
 
@@ -876,8 +954,10 @@ void Compile_R4300i_COP1_D_DIV (BLOCK_SECTION * Section) {
 	DWORD Reg1 = Opcode.FP.ft == Opcode.FP.fd?Opcode.FP.ft:Opcode.FP.fs;
 	DWORD Reg2 = Opcode.FP.ft == Opcode.FP.fd?Opcode.FP.fs:Opcode.FP.ft;
 	DWORD TempReg;
+	MIPS_DWORD CompilePC;
+	CompilePC.DW = (int)Section->CompilePC;
 	
-	CPU_Message("  %X %s",Section->CompilePC,R4300iOpcodeName(Opcode.Hex,Section->CompilePC));
+	CPU_Message("  %X %s",Section->CompilePC,R4300iOpcodeName(Opcode.Hex,CompilePC));
 	
 	CompileCop1Test(Section);	
 
@@ -904,30 +984,45 @@ void Compile_R4300i_COP1_D_DIV (BLOCK_SECTION * Section) {
 }
 
 void Compile_R4300i_COP1_D_ABS (BLOCK_SECTION * Section) {
-	CPU_Message("  %X %s",Section->CompilePC,R4300iOpcodeName(Opcode.Hex,Section->CompilePC));
+	MIPS_DWORD CompilePC;
+	CompilePC.DW = (int)Section->CompilePC;
+
+	CPU_Message("  %X %s",Section->CompilePC,R4300iOpcodeName(Opcode.Hex,CompilePC));
 	Load_FPR_ToTop(Section,Opcode.FP.fd,Opcode.FP.fs,FPU_Double);
 	fpuAbs();
 }
 
 void Compile_R4300i_COP1_D_NEG (BLOCK_SECTION * Section) {
-	CPU_Message("  %X %s",Section->CompilePC,R4300iOpcodeName(Opcode.Hex,Section->CompilePC));
+	MIPS_DWORD CompilePC;
+	CompilePC.DW = (int)Section->CompilePC;
+
+	CPU_Message("  %X %s",Section->CompilePC,R4300iOpcodeName(Opcode.Hex,CompilePC));
 	Load_FPR_ToTop(Section,Opcode.FP.fd,Opcode.FP.fs,FPU_Double);
 	fpuNeg();
 }
 
 void Compile_R4300i_COP1_D_SQRT (BLOCK_SECTION * Section) {
-	CPU_Message("  %X %s",Section->CompilePC,R4300iOpcodeName(Opcode.Hex,Section->CompilePC));
+	MIPS_DWORD CompilePC;
+	CompilePC.DW = (int)Section->CompilePC;
+
+	CPU_Message("  %X %s",Section->CompilePC,R4300iOpcodeName(Opcode.Hex,CompilePC));
 	Load_FPR_ToTop(Section,Opcode.FP.fd,Opcode.FP.fs,FPU_Double);
 	fpuSqrt();
 }
 
 void Compile_R4300i_COP1_D_MOV (BLOCK_SECTION * Section) {
-	CPU_Message("  %X %s",Section->CompilePC,R4300iOpcodeName(Opcode.Hex,Section->CompilePC));
+	MIPS_DWORD CompilePC;
+	CompilePC.DW = (int)Section->CompilePC;
+
+	CPU_Message("  %X %s",Section->CompilePC,R4300iOpcodeName(Opcode.Hex,CompilePC));
 	Load_FPR_ToTop(Section,Opcode.FP.fd,Opcode.FP.fs,FPU_Double);
 }
 
 void Compile_R4300i_COP1_D_TRUNC_L (BLOCK_SECTION * Section) {			//added by Witten
-	CPU_Message("  %X %s",Section->CompilePC,R4300iOpcodeName(Opcode.Hex,Section->CompilePC));
+	MIPS_DWORD CompilePC;
+	CompilePC.DW = (int)Section->CompilePC;
+
+	CPU_Message("  %X %s",Section->CompilePC,R4300iOpcodeName(Opcode.Hex,CompilePC));
 	
 	CompileCop1Test(Section);	
 	if (RegInStack(Section,Opcode.FP.fs,FPU_Double) || RegInStack(Section,Opcode.FP.fs,FPU_Qword)) {
@@ -940,7 +1035,10 @@ void Compile_R4300i_COP1_D_TRUNC_L (BLOCK_SECTION * Section) {			//added by Witt
 }
 
 void Compile_R4300i_COP1_D_CEIL_L (BLOCK_SECTION * Section) {			//added by Witten
-	CPU_Message("  %X %s",Section->CompilePC,R4300iOpcodeName(Opcode.Hex,Section->CompilePC));
+	MIPS_DWORD CompilePC;
+	CompilePC.DW = (int)Section->CompilePC;
+
+	CPU_Message("  %X %s",Section->CompilePC,R4300iOpcodeName(Opcode.Hex,CompilePC));
 	
 	CompileCop1Test(Section);	
 	if (RegInStack(Section,Opcode.FP.fs,FPU_Double) || RegInStack(Section,Opcode.FP.fs,FPU_Qword)) {
@@ -953,7 +1051,10 @@ void Compile_R4300i_COP1_D_CEIL_L (BLOCK_SECTION * Section) {			//added by Witte
 }
 
 void Compile_R4300i_COP1_D_FLOOR_L (BLOCK_SECTION * Section) {			//added by Witten
-	CPU_Message("  %X %s",Section->CompilePC,R4300iOpcodeName(Opcode.Hex,Section->CompilePC));
+	MIPS_DWORD CompilePC;
+	CompilePC.DW = (int)Section->CompilePC;
+
+	CPU_Message("  %X %s",Section->CompilePC,R4300iOpcodeName(Opcode.Hex,CompilePC));
 	
 	CompileCop1Test(Section);	
 	if (RegInStack(Section,Opcode.FP.fs,FPU_Double) || RegInStack(Section,Opcode.FP.fs,FPU_Qword)) {
@@ -966,7 +1067,10 @@ void Compile_R4300i_COP1_D_FLOOR_L (BLOCK_SECTION * Section) {			//added by Witt
 }
 
 void Compile_R4300i_COP1_D_ROUND_W (BLOCK_SECTION * Section) {
-	CPU_Message("  %X %s",Section->CompilePC,R4300iOpcodeName(Opcode.Hex,Section->CompilePC));
+	MIPS_DWORD CompilePC;
+	CompilePC.DW = (int)Section->CompilePC;
+
+	CPU_Message("  %X %s",Section->CompilePC,R4300iOpcodeName(Opcode.Hex,CompilePC));
 	
 	CompileCop1Test(Section);	
 	if (RegInStack(Section,Opcode.FP.fs,FPU_Double) || RegInStack(Section,Opcode.FP.fs,FPU_Qword)) {
@@ -979,7 +1083,10 @@ void Compile_R4300i_COP1_D_ROUND_W (BLOCK_SECTION * Section) {
 }
 
 void Compile_R4300i_COP1_D_TRUNC_W (BLOCK_SECTION * Section) {
-	CPU_Message("  %X %s",Section->CompilePC,R4300iOpcodeName(Opcode.Hex,Section->CompilePC));
+	MIPS_DWORD CompilePC;
+	CompilePC.DW = (int)Section->CompilePC;
+
+	CPU_Message("  %X %s",Section->CompilePC,R4300iOpcodeName(Opcode.Hex,CompilePC));
 	
 	CompileCop1Test(Section);	
 	if (RegInStack(Section,Opcode.FP.fs,FPU_Double) || RegInStack(Section,Opcode.FP.fs,FPU_Qword)) {
@@ -992,7 +1099,10 @@ void Compile_R4300i_COP1_D_TRUNC_W (BLOCK_SECTION * Section) {
 }
 
 void Compile_R4300i_COP1_D_CEIL_W (BLOCK_SECTION * Section) {				// added by Witten
-	CPU_Message("  %X %s",Section->CompilePC,R4300iOpcodeName(Opcode.Hex,Section->CompilePC));
+	MIPS_DWORD CompilePC;
+	CompilePC.DW = (int)Section->CompilePC;
+
+	CPU_Message("  %X %s",Section->CompilePC,R4300iOpcodeName(Opcode.Hex,CompilePC));
 	
 	CompileCop1Test(Section);	
 	if (RegInStack(Section,Opcode.FP.fs,FPU_Double) || RegInStack(Section,Opcode.FP.fs,FPU_Qword)) {
@@ -1005,7 +1115,10 @@ void Compile_R4300i_COP1_D_CEIL_W (BLOCK_SECTION * Section) {				// added by Wit
 }
 
 void Compile_R4300i_COP1_D_FLOOR_W (BLOCK_SECTION * Section) {			//added by Witten
-	CPU_Message("  %X %s",Section->CompilePC,R4300iOpcodeName(Opcode.Hex,Section->CompilePC));
+	MIPS_DWORD CompilePC;
+	CompilePC.DW = (int)Section->CompilePC;
+
+	CPU_Message("  %X %s",Section->CompilePC,R4300iOpcodeName(Opcode.Hex,CompilePC));
 	
 	CompileCop1Test(Section);	
 	if (RegInStack(Section,Opcode.FP.fs,FPU_Double) || RegInStack(Section,Opcode.FP.fs,FPU_Qword)) {
@@ -1018,7 +1131,10 @@ void Compile_R4300i_COP1_D_FLOOR_W (BLOCK_SECTION * Section) {			//added by Witt
 }
 
 void Compile_R4300i_COP1_D_CVT_S (BLOCK_SECTION * Section) {
-	CPU_Message("  %X %s",Section->CompilePC,R4300iOpcodeName(Opcode.Hex,Section->CompilePC));
+	MIPS_DWORD CompilePC;
+	CompilePC.DW = (int)Section->CompilePC;
+
+	CPU_Message("  %X %s",Section->CompilePC,R4300iOpcodeName(Opcode.Hex,CompilePC));
 	
 	CompileCop1Test(Section);	
 	if (RegInStack(Section,Opcode.FP.fs,FPU_Double) || RegInStack(Section,Opcode.FP.fs,FPU_Qword)) {
@@ -1031,7 +1147,10 @@ void Compile_R4300i_COP1_D_CVT_S (BLOCK_SECTION * Section) {
 }
 
 void Compile_R4300i_COP1_D_CVT_W (BLOCK_SECTION * Section) {
-	CPU_Message("  %X %s",Section->CompilePC,R4300iOpcodeName(Opcode.Hex,Section->CompilePC));
+	MIPS_DWORD CompilePC;
+	CompilePC.DW = (int)Section->CompilePC;
+
+	CPU_Message("  %X %s",Section->CompilePC,R4300iOpcodeName(Opcode.Hex,CompilePC));
 	
 	CompileCop1Test(Section);	
 	if (RegInStack(Section,Opcode.FP.fs,FPU_Double) || RegInStack(Section,Opcode.FP.fs,FPU_Qword)) {
@@ -1044,7 +1163,10 @@ void Compile_R4300i_COP1_D_CVT_W (BLOCK_SECTION * Section) {
 }
 
 void Compile_R4300i_COP1_D_CVT_L (BLOCK_SECTION * Section) {
-	CPU_Message("  %X %s",Section->CompilePC,R4300iOpcodeName(Opcode.Hex,Section->CompilePC));
+	MIPS_DWORD CompilePC;
+	CompilePC.DW = (int)Section->CompilePC;
+
+	CPU_Message("  %X %s",Section->CompilePC,R4300iOpcodeName(Opcode.Hex,CompilePC));
 	
 	CompileCop1Test(Section);	
 	if (RegInStack(Section,Opcode.FP.fs,FPU_Double) || RegInStack(Section,Opcode.FP.fs,FPU_Qword)) {
@@ -1060,9 +1182,10 @@ void Compile_R4300i_COP1_D_CMP (BLOCK_SECTION * Section) {
 	DWORD Reg1 = RegInStack(Section,Opcode.FP.ft, FPU_Float)?Opcode.FP.ft:Opcode.FP.fs;
 	DWORD Reg2 = RegInStack(Section,Opcode.FP.ft, FPU_Float)?Opcode.FP.fs:Opcode.FP.ft;
 	int x86reg, cmp = 0;
-
+	MIPS_DWORD CompilePC;
+	CompilePC.DW = (int)Section->CompilePC;
 	
-	CPU_Message("  %X %s",Section->CompilePC,R4300iOpcodeName(Opcode.Hex,Section->CompilePC));
+	CPU_Message("  %X %s",Section->CompilePC,R4300iOpcodeName(Opcode.Hex,CompilePC));
 	
 	CompileCop1Test(Section);	
 	//if ((Opcode.REG.funct & 1) != 0) { Compile_R4300i_UnknownOpcode(Section); }
@@ -1111,7 +1234,10 @@ void Compile_R4300i_COP1_D_CMP (BLOCK_SECTION * Section) {
 
 /************************** COP1: W functions ************************/
 void Compile_R4300i_COP1_W_CVT_S (BLOCK_SECTION * Section) {
-	CPU_Message("  %X %s",Section->CompilePC,R4300iOpcodeName(Opcode.Hex,Section->CompilePC));
+	MIPS_DWORD CompilePC;
+	CompilePC.DW = (int)Section->CompilePC;
+
+	CPU_Message("  %X %s",Section->CompilePC,R4300iOpcodeName(Opcode.Hex,CompilePC));
 	
 	CompileCop1Test(Section);	
 	if (Opcode.FP.fd != Opcode.FP.fs || !RegInStack(Section,Opcode.FP.fd,FPU_Dword)) { 
@@ -1121,7 +1247,10 @@ void Compile_R4300i_COP1_W_CVT_S (BLOCK_SECTION * Section) {
 }
 
 void Compile_R4300i_COP1_W_CVT_D (BLOCK_SECTION * Section) {
-	CPU_Message("  %X %s",Section->CompilePC,R4300iOpcodeName(Opcode.Hex,Section->CompilePC));
+	MIPS_DWORD CompilePC;
+	CompilePC.DW = (int)Section->CompilePC;
+
+	CPU_Message("  %X %s",Section->CompilePC,R4300iOpcodeName(Opcode.Hex,CompilePC));
 	
 	CompileCop1Test(Section);	
 	if (Opcode.FP.fd != Opcode.FP.fs || !RegInStack(Section,Opcode.FP.fd,FPU_Dword)) { 
@@ -1132,7 +1261,10 @@ void Compile_R4300i_COP1_W_CVT_D (BLOCK_SECTION * Section) {
 
 /************************** COP1: L functions ************************/
 void Compile_R4300i_COP1_L_CVT_S (BLOCK_SECTION * Section) {
-	CPU_Message("  %X %s",Section->CompilePC,R4300iOpcodeName(Opcode.Hex,Section->CompilePC));
+	MIPS_DWORD CompilePC;
+	CompilePC.DW = (int)Section->CompilePC;
+
+	CPU_Message("  %X %s",Section->CompilePC,R4300iOpcodeName(Opcode.Hex,CompilePC));
 	
 	CompileCop1Test(Section);	
 	if (Opcode.FP.fd != Opcode.FP.fs || !RegInStack(Section,Opcode.FP.fd,FPU_Qword)) { 
@@ -1142,7 +1274,10 @@ void Compile_R4300i_COP1_L_CVT_S (BLOCK_SECTION * Section) {
 }
 
 void Compile_R4300i_COP1_L_CVT_D (BLOCK_SECTION * Section) {
-	CPU_Message("  %X %s",Section->CompilePC,R4300iOpcodeName(Opcode.Hex,Section->CompilePC));
+	MIPS_DWORD CompilePC;
+	CompilePC.DW = (int)Section->CompilePC;
+
+	CPU_Message("  %X %s",Section->CompilePC,R4300iOpcodeName(Opcode.Hex,CompilePC));
 	
 	CompileCop1Test(Section);	
 	if (Opcode.FP.fd != Opcode.FP.fs || !RegInStack(Section,Opcode.FP.fd,FPU_Qword)) { 

@@ -30,7 +30,7 @@
 void Disable_R4300i_Commands_Window ( void );
 void Enable_R4300i_Commands_Window ( void );
 void __cdecl Enter_R4300i_Commands_Window ( void );
-char * R4300iOpcodeName ( DWORD OpCode, DWORD PC );
+char * R4300iOpcodeName ( DWORD OpCode, MIPS_DWORD PC );
 void RefreshR4300iCommands ( void );
 void SetR4300iCommandToRunning ( void );
 void SetR4300iCommandToStepping ( void );
@@ -38,7 +38,5 @@ void SetR4300iCommandViewto ( UINT NewLocation );
 void Update_r4300iCommandList (void);
 
 extern BOOL InR4300iCommandsWindow;
-
-char * R4300iOpcodeName ( DWORD OpCode, DWORD PC );
 
 #endif

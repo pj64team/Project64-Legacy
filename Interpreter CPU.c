@@ -795,7 +795,7 @@ void __cdecl StartInterpreterCPU (void ) {
 	__try {
 		for (;;) {
 			if (HaveDebugger) {
-				if (NoOfBpoints != 0 && CheckForR4300iBPoint(PROGRAM_COUNTER.UW[0])) {
+				if (NoOfBpoints != 0 && CheckForR4300iBPoint(PROGRAM_COUNTER)) {
 					TriggerDebugger();
 				}
 

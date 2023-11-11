@@ -39,9 +39,9 @@ typedef union tagUWORD {
 } MIPS_WORD;
 
 typedef union tagUDWORD {
+	unsigned _int64		UDW;
 	double				D;
 	_int64				DW;
-	unsigned _int64		UDW;
 	long				W[2];
 	float				F[2];
 	unsigned long		UW[2];
