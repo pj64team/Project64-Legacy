@@ -409,27 +409,27 @@ void Paint_R4300i_Commands (HWND hDlg) {
 	BeginPaint( hDlg, &ps );
 		
 	rcBox.left   = 5;   rcBox.top    = 5;
-	rcBox.right  = 561; rcBox.bottom = 563;
+	rcBox.right  = 621; rcBox.bottom = 563;
 	DrawEdge( ps.hdc, &rcBox, EDGE_RAISED, BF_RECT );
 		
 	rcBox.left   = 8;   rcBox.top    = 8;
-	rcBox.right  = 558; rcBox.bottom = 560;
+	rcBox.right  = 618; rcBox.bottom = 560;
 	DrawEdge( ps.hdc, &rcBox, EDGE_ETCHED, BF_RECT );
 		
-	rcBox.left   = 565; rcBox.top    = 7;
-	rcBox.right  = 664; rcBox.bottom = 42;
+	rcBox.left   = 625; rcBox.top    = 7;
+	rcBox.right  = 724; rcBox.bottom = 42;
 	DrawEdge( ps.hdc, &rcBox, EDGE_ETCHED, BF_RECT );
 		
-	rcBox.left   = 570; rcBox.top    = 2;
-	rcBox.right  = 618; rcBox.bottom = 15;
+	rcBox.left   = 630; rcBox.top    = 2;
+	rcBox.right  = 678; rcBox.bottom = 15;
 		
 	if (NoOfMapEntries) {
-		rcBox.left   = 565; rcBox.top    = 49;
-		rcBox.right  = 664; rcBox.bottom = 84;
+		rcBox.left   = 625; rcBox.top    = 49;
+		rcBox.right  = 724; rcBox.bottom = 84;
 		DrawEdge( ps.hdc, &rcBox, EDGE_ETCHED, BF_RECT );
 		
-		rcBox.left   = 570; rcBox.top    = 44;
-		rcBox.right  = 608; rcBox.bottom = 57;
+		rcBox.left   = 630; rcBox.top    = 44;
+		rcBox.right  = 668; rcBox.bottom = 57;
 	}
 
 	rcBox.left   = 14; rcBox.top    = 14;
@@ -445,7 +445,7 @@ void Paint_R4300i_Commands (HWND hDlg) {
 	DrawEdge( ps.hdc, &rcBox, EDGE_ETCHED , BF_RECT );
 
 	rcBox.left   = 344; rcBox.top    = 14;
-	rcBox.right  = 538; rcBox.bottom = 32;
+	rcBox.right  = 598; rcBox.bottom = 32;
 	DrawEdge( ps.hdc, &rcBox, EDGE_ETCHED , BF_RECT );
 
 	hOldFont = (HFONT)SelectObject( ps.hdc,GetStockObject(DEFAULT_GUI_FONT ) );
@@ -455,11 +455,11 @@ void Paint_R4300i_Commands (HWND hDlg) {
 	TextOut( ps.hdc, 179,16,"Opcode",6);
 	TextOut( ps.hdc, 267,16,"Instruction",11);
 	TextOut( ps.hdc, 353,16,"Arguments",9);
-	TextOut( ps.hdc, 572,2," Address ",9);
-	TextOut( ps.hdc, 572,19,"0x",2);
+	TextOut( ps.hdc, 632,2," Address ",9);
+	TextOut( ps.hdc, 632,19,"0x",2);
 	
 	if (NoOfMapEntries) {
-		TextOut( ps.hdc, 572,44," goto: ",7);
+		TextOut( ps.hdc, 632,44," goto: ",7);
 	}
 
 	SelectObject( ps.hdc,hOldFont );
@@ -717,12 +717,12 @@ void Scroll_R4300i_Commands(int lines) {
 }
 
 void R4300i_Commands_Setup ( HWND hDlg ) {
-#define WindowWidth  698
+#define WindowWidth  758
 #define WindowHeight 620
 	DWORD X, Y;
 	
 	hList = CreateWindowEx(WS_EX_STATICEDGE, "LISTBOX","", WS_CHILD | WS_VISIBLE | 
-		LBS_OWNERDRAWFIXED | LBS_NOTIFY,14,30,521,545, hDlg,
+		LBS_OWNERDRAWFIXED | LBS_NOTIFY,14,30,581,545, hDlg,
 		(HMENU)IDC_LIST, hInst,NULL );
 	if ( hList) {
 		SendMessage(hList,WM_SETFONT, (WPARAM)GetStockObject(ANSI_FIXED_FONT),0);
@@ -734,84 +734,84 @@ void R4300i_Commands_Setup ( HWND hDlg ) {
 	}
 
 	hAddress = CreateWindowEx(0,"EDIT","", WS_CHILD | ES_UPPERCASE | WS_VISIBLE | 
-		WS_BORDER | WS_TABSTOP,590,17,65,18, hDlg,(HMENU)IDC_ADDRESS,hInst, NULL );
+		WS_BORDER | WS_TABSTOP,650,17,65,18, hDlg,(HMENU)IDC_ADDRESS,hInst, NULL );
 	if (hAddress) {
 		SendMessage(hAddress,WM_SETFONT, (WPARAM)GetStockObject(DEFAULT_GUI_FONT),0);
 		SendMessage(hAddress,EM_SETLIMITTEXT, (WPARAM)8,(LPARAM)0);
 	} 
 
 	hFunctionlist = CreateWindowEx(0,"COMBOBOX","", WS_CHILD | WS_VSCROLL |
-		CBS_DROPDOWNLIST | CBS_SORT | WS_TABSTOP,570,56,89,150,hDlg,
+		CBS_DROPDOWNLIST | CBS_SORT | WS_TABSTOP,630,56,89,150,hDlg,
 		(HMENU)IDCfunctION_COMBO,hInst,NULL);		
 	if (hFunctionlist) {
 		SendMessage(hFunctionlist,WM_SETFONT, (WPARAM)GetStockObject(DEFAULT_GUI_FONT),0);
 	} 
 
 	hGoButton = CreateWindowEx(WS_EX_STATICEDGE, "BUTTON","&Go", WS_CHILD |
-		BS_DEFPUSHBUTTON | WS_VISIBLE | WS_TABSTOP, 565,56,100,24, hDlg,(HMENU)IDC_GO_BUTTON,
+		BS_DEFPUSHBUTTON | WS_VISIBLE | WS_TABSTOP, 625,56,100,24, hDlg,(HMENU)IDC_GO_BUTTON,
 		hInst,NULL );
 	if (hGoButton) {
 		SendMessage(hGoButton,WM_SETFONT, (WPARAM)GetStockObject(DEFAULT_GUI_FONT),0);
 	} 
 	
 	hBreakButton = CreateWindowEx(WS_EX_STATICEDGE, "BUTTON","&Break", WS_DISABLED |
-		WS_CHILD | BS_PUSHBUTTON | WS_VISIBLE | WS_TABSTOP | BS_TEXT, 565,85,100,24,hDlg,
+		WS_CHILD | BS_PUSHBUTTON | WS_VISIBLE | WS_TABSTOP | BS_TEXT, 625,85,100,24,hDlg,
 		(HMENU)IDC_BREAK_BUTTON,hInst,NULL );
 	if (hBreakButton) {
 		SendMessage(hBreakButton,WM_SETFONT,(WPARAM)GetStockObject(DEFAULT_GUI_FONT),0);
 	}
 
 	hStepButton = CreateWindowEx(WS_EX_STATICEDGE, "BUTTON","&Step", WS_CHILD |
-		BS_PUSHBUTTON | WS_VISIBLE | WS_TABSTOP | BS_TEXT, 565,114,100,24,hDlg,
+		BS_PUSHBUTTON | WS_VISIBLE | WS_TABSTOP | BS_TEXT, 625,114,100,24,hDlg,
 		(HMENU)IDC_STEP_BUTTON,hInst,NULL );
 	if (hStepButton) {
 		SendMessage(hStepButton,WM_SETFONT,(WPARAM)GetStockObject(DEFAULT_GUI_FONT),0);
 	}
 
 	hSkipButton = CreateWindowEx(WS_EX_STATICEDGE, "BUTTON","&Skip", WS_CHILD |
-		BS_PUSHBUTTON | WS_VISIBLE | WS_TABSTOP | BS_TEXT, 565,143,100,24,hDlg,
+		BS_PUSHBUTTON | WS_VISIBLE | WS_TABSTOP | BS_TEXT, 625,143,100,24,hDlg,
 		(HMENU)IDC_SKIP_BUTTON,hInst,NULL );
 	if (hSkipButton) {
 		SendMessage(hSkipButton,WM_SETFONT,(WPARAM)GetStockObject(DEFAULT_GUI_FONT),0);
 	}
 
 	hBPButton = CreateWindowEx(WS_EX_STATICEDGE, "BUTTON","&Break Points", WS_CHILD |
-		BS_PUSHBUTTON | WS_VISIBLE | WS_TABSTOP | BS_TEXT, 565,424,100,24,hDlg,
+		BS_PUSHBUTTON | WS_VISIBLE | WS_TABSTOP | BS_TEXT, 625,424,100,24,hDlg,
 		(HMENU)IDC_BP_BUTTON,hInst,NULL );
 	if (hBPButton) {
 		SendMessage(hBPButton,WM_SETFONT,(WPARAM)GetStockObject(DEFAULT_GUI_FONT),0);
 	}
 		
 	hR4300iRegisters = CreateWindowEx(WS_EX_STATICEDGE,"BUTTON","R4300i &Registers...",
-		WS_CHILD | BS_PUSHBUTTON | WS_VISIBLE | WS_TABSTOP | BS_TEXT, 565,453,100,24,hDlg,
+		WS_CHILD | BS_PUSHBUTTON | WS_VISIBLE | WS_TABSTOP | BS_TEXT, 625,453,100,24,hDlg,
 		(HMENU)IDC_R4300I_REGISTERS_BUTTON,hInst,NULL );
 	if (hR4300iRegisters) {
 		SendMessage(hR4300iRegisters,WM_SETFONT, (WPARAM)GetStockObject(DEFAULT_GUI_FONT),0);
 	}
 
 	hRSPDebugger = CreateWindowEx(WS_EX_STATICEDGE,"BUTTON", "RSP &Debugger...",
-		WS_CHILD | BS_PUSHBUTTON | WS_VISIBLE | WS_TABSTOP | BS_TEXT, 565,482,100,24,hDlg,
+		WS_CHILD | BS_PUSHBUTTON | WS_VISIBLE | WS_TABSTOP | BS_TEXT, 625,482,100,24,hDlg,
 		(HMENU)IDCrsP_DEBUGGER_BUTTON,hInst,NULL );
 	if (hRSPDebugger) {
 		SendMessage(hRSPDebugger,WM_SETFONT,(WPARAM)GetStockObject(DEFAULT_GUI_FONT),0);
 	}
 
 	hRSPRegisters = CreateWindowEx(WS_EX_STATICEDGE,"BUTTON", "RSP R&egisters...",
-		WS_CHILD | BS_PUSHBUTTON | WS_VISIBLE | WS_TABSTOP | BS_TEXT, 565,511,100,24,hDlg,
+		WS_CHILD | BS_PUSHBUTTON | WS_VISIBLE | WS_TABSTOP | BS_TEXT, 625,511,100,24,hDlg,
 		(HMENU)IDCrsP_REGISTERS_BUTTON,hInst,NULL );
 	if (hRSPRegisters) {
 		SendMessage(hRSPRegisters,WM_SETFONT,(WPARAM)GetStockObject(DEFAULT_GUI_FONT),0);
 	} 
 
 	hMemory = CreateWindowEx(WS_EX_STATICEDGE,"BUTTON", "&Memory...", WS_CHILD |
-		BS_PUSHBUTTON | WS_VISIBLE | WS_TABSTOP | BS_TEXT, 565,540,100,24,hDlg,
+		BS_PUSHBUTTON | WS_VISIBLE | WS_TABSTOP | BS_TEXT, 625,540,100,24,hDlg,
 		(HMENU)IDC_MEMORY_BUTTON,hInst,NULL );
 	if (hMemory) {
 		SendMessage(hMemory,WM_SETFONT,(WPARAM)GetStockObject(DEFAULT_GUI_FONT),0);
 	}
 	
 	hScrlBar = CreateWindowEx(0, "SCROLLBAR","", WS_CHILD | WS_VISIBLE |
-		WS_TABSTOP | SBS_VERT, 536,14,18,539, hDlg, (HMENU)IDC_SCRL_BAR, hInst, NULL );
+		WS_TABSTOP | SBS_VERT, 596,14,18,539, hDlg, (HMENU)IDC_SCRL_BAR, hInst, NULL );
 	if (hScrlBar) {
 		SetWindowSubclass(hScrlBar, R4300i_Commands_ListViewScroll_Proc, 0, 0);
 	}
@@ -1641,18 +1641,18 @@ void Update_r4300iCommandList (void) {
 	
 	if (NoOfMapEntries == 0) {
 		ShowWindow(hFunctionlist, FALSE);
-		SetWindowPos(hGoButton,0,565,56,0,0, SWP_NOZORDER | SWP_NOSIZE| SWP_SHOWWINDOW);
-		SetWindowPos(hBreakButton,0,565,85,0,0, SWP_NOZORDER | SWP_NOSIZE| SWP_SHOWWINDOW);
-		SetWindowPos(hStepButton,0,565,114,0,0, SWP_NOZORDER | SWP_NOSIZE| SWP_SHOWWINDOW);
-		SetWindowPos(hSkipButton,0,565,143,0,0, SWP_NOZORDER | SWP_NOSIZE| SWP_SHOWWINDOW);
+		SetWindowPos(hGoButton,0,625,56,0,0, SWP_NOZORDER | SWP_NOSIZE| SWP_SHOWWINDOW);
+		SetWindowPos(hBreakButton,0,625,85,0,0, SWP_NOZORDER | SWP_NOSIZE| SWP_SHOWWINDOW);
+		SetWindowPos(hStepButton,0,625,114,0,0, SWP_NOZORDER | SWP_NOSIZE| SWP_SHOWWINDOW);
+		SetWindowPos(hSkipButton,0,625,143,0,0, SWP_NOZORDER | SWP_NOSIZE| SWP_SHOWWINDOW);
 	} else {	
 		DWORD count, pos;
 
 		ShowWindow(hFunctionlist, TRUE);
-		SetWindowPos(hGoButton,0,565,86,0,0, SWP_NOZORDER | SWP_NOSIZE| SWP_SHOWWINDOW);
-		SetWindowPos(hBreakButton,0,565,115,0,0, SWP_NOZORDER | SWP_NOSIZE| SWP_SHOWWINDOW);
-		SetWindowPos(hStepButton,0,565,144,0,0, SWP_NOZORDER | SWP_NOSIZE| SWP_SHOWWINDOW);
-		SetWindowPos(hSkipButton,0,565,173,0,0, SWP_NOZORDER | SWP_NOSIZE| SWP_SHOWWINDOW);
+		SetWindowPos(hGoButton,0,625,86,0,0, SWP_NOZORDER | SWP_NOSIZE| SWP_SHOWWINDOW);
+		SetWindowPos(hBreakButton,0,625,115,0,0, SWP_NOZORDER | SWP_NOSIZE| SWP_SHOWWINDOW);
+		SetWindowPos(hStepButton,0,625,144,0,0, SWP_NOZORDER | SWP_NOSIZE| SWP_SHOWWINDOW);
+		SetWindowPos(hSkipButton,0,625,173,0,0, SWP_NOZORDER | SWP_NOSIZE| SWP_SHOWWINDOW);
 		
 		SendMessage(hFunctionlist,CB_RESETCONTENT,(WPARAM)0,(LPARAM)0);		
 		for (count = 0; count < NoOfMapEntries; count ++ ) {
