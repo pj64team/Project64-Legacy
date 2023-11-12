@@ -420,16 +420,10 @@ void Paint_R4300i_Commands (HWND hDlg) {
 	rcBox.right  = 784; rcBox.bottom = 42;
 	DrawEdge( ps.hdc, &rcBox, EDGE_ETCHED, BF_RECT );
 		
-	rcBox.left   = 630; rcBox.top    = 2;
-	rcBox.right  = 678; rcBox.bottom = 15;
-		
 	if (NoOfMapEntries) {
 		rcBox.left   = 625; rcBox.top    = 49;
 		rcBox.right  = 724; rcBox.bottom = 84;
 		DrawEdge( ps.hdc, &rcBox, EDGE_ETCHED, BF_RECT );
-		
-		rcBox.left   = 630; rcBox.top    = 44;
-		rcBox.right  = 668; rcBox.bottom = 57;
 	}
 
 	rcBox.left   = 14; rcBox.top    = 14;
@@ -1619,17 +1613,17 @@ void SetR4300iCommandToStepping ( void ) {
 	SetCoreToStepping();
 }
 
-void SetR4300iCommandViewto ( UINT NewLocation ) {
-	unsigned int location;
+void SetR4300iCommandViewto ( MIPS_DWORD NewLocation ) {
+	QWORD location;
 	char Value[20];
 
 	if (InR4300iCommandsWindow == FALSE) { return; }
 
 	GetWindowText(hAddress,Value,sizeof(Value));
-	location = AsciiToHex(Value) & ~3;
+	location = AsciiToHex64(Value) & ~3;
 
-	if ( NewLocation < location || NewLocation >= location + R4300i_MaxCommandLines * 4 ) {
-		sprintf(Value,"%08X",NewLocation);
+	if ( NewLocation.UDW < location || NewLocation.UDW >= location + R4300i_MaxCommandLines * 4 ) {
+		sprintf(Value,"%016llX",NewLocation.UDW);
 		SetWindowText(hAddress,Value);
 	} else {
 		RefreshR4300iCommands();

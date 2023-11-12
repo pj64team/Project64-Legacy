@@ -34,7 +34,7 @@ char * R4300iOpcodeName ( DWORD OpCode, MIPS_DWORD PC );
 void RefreshR4300iCommands ( void );
 void SetR4300iCommandToRunning ( void );
 void SetR4300iCommandToStepping ( void );
-void SetR4300iCommandViewto ( UINT NewLocation );
+void SetR4300iCommandViewto ( MIPS_DWORD NewLocation );
 void Update_r4300iCommandList (void);
 
 extern BOOL InR4300iCommandsWindow;

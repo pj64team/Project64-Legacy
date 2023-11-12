@@ -807,7 +807,7 @@ void __cdecl StartInterpreterCPU (void ) {
 							continue;
 						}
 
-						SetR4300iCommandViewto(PROGRAM_COUNTER.UW[0]);
+						SetR4300iCommandViewto(PROGRAM_COUNTER);
 						UpdateCurrentR4300iRegisterPanel();
 						Refresh_Memory();
 
@@ -842,7 +842,7 @@ void TriggerDebugger(void) {
 	Refresh_Memory();
 	if (InR4300iCommandsWindow) {
 		Enter_R4300i_Commands_Window();
-		SetR4300iCommandViewto(PROGRAM_COUNTER.UW[0]);
+		SetR4300iCommandViewto(PROGRAM_COUNTER);
 		if (!CPU_Action.Stepping) {
 			SetR4300iCommandToStepping();
 		}
