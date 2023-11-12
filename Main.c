@@ -1,10 +1,10 @@
 /*
- * Project 64 - A Nintendo 64 emulator.
+ * Project 64 Legacy - A Nintendo 64 emulator.
  *
- * (c) Copyright 2001 zilmar (zilmar@emulation64.com) and
- * Jabo (jabo@emulation64.com).
+ * (c) Copyright 2001 Zilmar, Jabo, Smiff, Gent, Witten
+ * (c) Copyright 2010 PJ64LegacyTeam
  *
- * pj64 homepage: www.pj64.net
+ * Project64 Legacy Homepage: www.project64-legacy.com
  *
  * Permission to use, copy, modify and distribute Project64 in both binary and
  * source form, for non-commercial purposes, is hereby granted without fee,
@@ -429,10 +429,10 @@ void FixMenuLang(HMENU hMenu) {
 	hSubMenu = GetSubMenu(hMenu, 2);
 	MenuSetText(hSubMenu, 0, GS(MENU_FULL_SCREEN), "Alt+Enter");
 	MenuSetText(hSubMenu, 1, GS(MENU_ON_TOP), "Ctrl+A");
-	MenuSetText(hSubMenu, 3, GS(MENU_CONFG_GFX), NULL);
-	MenuSetText(hSubMenu, 4, GS(MENU_CONFG_AUDIO), NULL);
-	MenuSetText(hSubMenu, 5, GS(MENU_CONFG_CTRL), NULL);
-	MenuSetText(hSubMenu, 6, GS(MENU_CONFG_RSP), NULL);
+	MenuSetText(hSubMenu, 3, GS(MENU_CONFG_GFX), "Ctrl+V");
+	MenuSetText(hSubMenu, 4, GS(MENU_CONFG_AUDIO), "Ctrl+U");
+	MenuSetText(hSubMenu, 5, GS(MENU_CONFG_CTRL), "Ctrl+X");
+	MenuSetText(hSubMenu, 6, GS(MENU_CONFG_RSP), "Ctrl+W");
 	MenuSetText(hSubMenu, 8, GS(MENU_SHOW_CPU), NULL);
 	MenuSetText(hSubMenu, 9, GS(MENU_SETTINGS), "Ctrl+T");
 
@@ -446,7 +446,7 @@ void FixMenuLang(HMENU hMenu) {
 #else
 	MenuSetText(hSubMenu, 0, GS(MENU_USER_MAN), NULL);
 	MenuSetText(hSubMenu, 1, GS(MENU_GAME_FAQ), NULL);
-	MenuSetText(hSubMenu, 3, GS(MENU_FORUM), NULL);
+	MenuSetText(hSubMenu, 3, GS(MENU_GITHUB), NULL);
 	MenuSetText(hSubMenu, 4, GS(MENU_HOMEPAGE), NULL);
 	MenuSetText(hSubMenu, 5, GS(MENU_DISCORD), NULL);
 	MenuSetText(hSubMenu, 7, GS(MENU_ABOUT_INI), NULL);
@@ -650,6 +650,9 @@ LRESULT CALLBACK Main_Proc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
 	HMENU hMenu;
 
 	switch (uMsg) {
+		case ID_SHOW_CURSOR:
+			ShowCursor(wParam);
+			break;
 		case WM_CREATE:
 			hStatusWnd = CreateStatusWindow(WS_CHILD | WS_VISIBLE, "", hWnd, 100);
 			SendMessage(hStatusWnd, SB_SETTEXT, 0, (LPARAM)"");
@@ -881,6 +884,7 @@ LRESULT CALLBACK Main_Proc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
 					break;
 
 				case ID_OPTIONS_CONFIG_GFX:
+					ShowCursor(TRUE);
 					SendMessage(hStatusWnd, SB_SETTEXT, 0, (LPARAM)GS(MENUDES_CONFG_GFX));
 					break;
 
@@ -1298,6 +1302,7 @@ LRESULT CALLBACK Main_Proc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
 
 					/* Witten */
 				case ID_SYSTEM_CHEATSEARCH:
+					ShowCursor(TRUE);
 					Show_CheatSearchDlg(hWnd);
 					break;
 
@@ -1345,23 +1350,43 @@ LRESULT CALLBACK Main_Proc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
 					break;
 
 				case ID_OPTIONS_CONFIG_GFX:
+					if (inFullScreen)
+						SendMessage(hWnd, WM_USER + 10, TRUE, NULL);
 					GFXDllConfig(hWnd);
+					if (inFullScreen)
+						SendMessage(hWnd, WM_USER + 10, FALSE, NULL);
 					break;
 
 				case ID_OPTIONS_CONFIG_AUDIO:
+					if (inFullScreen)
+						SendMessage(hWnd, WM_USER + 10, TRUE, NULL);
 					AiDllConfig(hWnd);
+					if (inFullScreen)
+						SendMessage(hWnd, WM_USER + 10, FALSE, NULL);
 					break;
 
 				case ID_OPTIONS_CONFIG_RSP:
+					if (inFullScreen)
+						SendMessage(hWnd, WM_USER + 10, TRUE, NULL);
 					RSPDllConfig(hWnd);
+					if (inFullScreen)
+						SendMessage(hWnd, WM_USER + 10, FALSE, NULL);
 					break;
 
 				case ID_OPTIONS_CONFIG_CONTROL:
+					if (inFullScreen)
+						SendMessage(hWnd, WM_USER + 10, TRUE, NULL);
 					ContConfig(hWnd);
+					if (inFullScreen)
+						SendMessage(hWnd, WM_USER + 10, FALSE, NULL);
 					break;
 
 				case ID_OPTIONS_SETTINGS:
+					if (inFullScreen)
+						SendMessage(hWnd, WM_USER + 10, TRUE, NULL);
 					ChangeSettings(hWnd);
+					if (inFullScreen)
+						SendMessage(hWnd, WM_USER + 10, FALSE, NULL);
 					break;
 
 				case ID_OPTIONS_CHEATS:
@@ -1629,8 +1654,8 @@ LRESULT CALLBACK Main_Proc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
 				}
 				break;}*/
 
-				case ID_HELP_SUPPORTFORUM:
-					ShellExecute(NULL, "open", "https://www.project64-legacy.com/dev", NULL, NULL, SW_SHOWMAXIMIZED);
+				case ID_HELP_GITHUB:
+					ShellExecute(NULL, "open", "https://github.com/pj64team/Project64-Legacy", NULL, NULL, SW_SHOWMAXIMIZED);
 					break;
 
 				case ID_HELP_HOMEPAGE:

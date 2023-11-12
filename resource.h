@@ -340,12 +340,13 @@
 #define ID_POPUP_ADDNEWCHEAT            40161
 #define ID_POPUP_EDIT                   40162
 #define ID_POPUP_DELETE                 40163
-#define ID_HELP_SUPPORTFORUM            40164
+#define ID_HELP_GITHUB                  40164
 #define ID_HELP_HOMEPAGE                40165
 #define ID_SYSTEM_CHEATSEARCH           40166
 #define ID_POPUPMENU_GAMEINFORMATION    40169
 #define ID_FILE_GAMEINFORMATION         40170
 #define ID_HELP_DISCORD                 40171
+#define ID_SHOW_CURSOR					40172
 
 // Next default values for new objects
 // 

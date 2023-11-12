@@ -132,6 +132,8 @@ void Close_CheatSearchDlg() {
 		DestroyWindow(hCheatSearchDlg);
 		hCheatSearchDlg = NULL;
 	}
+	if (inFullScreen)
+		ShowCursor(FALSE);
 }
 
 void Defaults_CheatSearchDlg() {

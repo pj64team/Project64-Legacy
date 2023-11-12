@@ -1,10 +1,10 @@
 /*
- * Project 64 - A Nintendo 64 emulator.
+ * Project 64 Legacy - A Nintendo 64 emulator.
  *
- * (c) Copyright 2001 zilmar (zilmar@emulation64.com) and 
- * Jabo (jabo@emulation64.com).
+ * (c) Copyright 2001 Zilmar, Jabo, Smiff, Gent, Witten 
+ * (c) Copyright 2010 PJ64LegacyTeam
  *
- * pj64 homepage: www.pj64.net
+ * Project64 Legacy Homepage: www.project64-legacy.com
  *
  * Permission to use, copy, modify and distribute Project64 in both binary and
  * source form, for non-commercial purposes, is hereby granted without fee,
@@ -1267,7 +1267,7 @@ void RunRsp (void) {
 
 		if ((SP_STATUS_REG & SP_STATUS_BROKE) == 0) {
 			if (Task == 1 && (DPC_STATUS_REG & DPC_STATUS_FREEZE) != 0) {
-				return;
+return;
 			}
 
 			switch (Task) {
@@ -1418,7 +1418,8 @@ void StartEmulation ( void ) {
 	strcpy(LoadFileName,"");
 	strcpy(SaveAsFileName,"");
 	CPURunning = TRUE;
-	SetupMenu(hMainWindow);
+	if (!inFullScreen)
+		SetupMenu(hMainWindow);
 
 	if (inFullScreen) {
 		ResetAudio(hMainWindow);
