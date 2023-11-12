@@ -1,10 +1,10 @@
 /*
- * Project 64 - A Nintendo 64 emulator.
+ * Project 64 Legacy - A Nintendo 64 emulator.
  *
- * (c) Copyright 2001 zilmar (zilmar@emulation64.com) and
- * Jabo (jabo@emulation64.com).
+ * (c) Copyright 2001 Zilmar, Jabo, Smiff, Gent, Witten
+ * (c) Copyright 2010 PJ64LegacyTeam
  *
- * pj64 homepage: www.pj64.net
+ * Project64 Legacy Homepage: www.project64-legacy.com
  *
  * Permission to use, copy, modify and distribute Project64 in both binary and
  * source form, for non-commercial purposes, is hereby granted without fee,
@@ -1690,9 +1690,11 @@ void ManageCheats(HWND hParent) {
 	);
 
 	while (ShowCursor(TRUE) < 0);
-	if (hParent) {
+	//if (hParent)
+	{
 		MSG msg;
-		EnableWindow(hParent, FALSE);
+		if (hParent)
+			EnableWindow(hParent, FALSE);
 		while (hManageWindow) {
 			if (!GetMessage(&msg, NULL, 0, 0)) {
 				DestroyWindow(hManageWindow);
@@ -1705,7 +1707,8 @@ void ManageCheats(HWND hParent) {
 			DispatchMessage(&msg);
 		}
 		EnableWindow(hParent, TRUE);
-		ShowCursor(!inFullScreen);
+		if (hParent)
+			ShowCursor(TRUE);
 		SetFocus(hParent);
 	}
 }

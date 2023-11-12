@@ -1,8 +1,7 @@
 /*
  * Project 64 Legacy - A Nintendo 64 emulator.
  *
- * (c) Copyright 2001 Zilmar, Jabo, Smiff, Gent, Witten 
- * (c) Copyright 2010 PJ64LegacyTeam
+ * (c) Copyright 2023 parasyte (jay@kodewerx.org)
  *
  * Project64 Legacy Homepage: www.project64-legacy.com
  *
@@ -23,7 +22,7 @@
  * should be forwarded to them so if they want them.
  *
  */
-void CloseEeprom    ( void );
-void EepromCommand  ( BYTE * Command );
-void ReadFromEeprom ( BYTE * Buffer, int line);
-void WriteToEeprom  ( BYTE * Buffer, int line);
+
+#pragma once
+
+#include "SessionMemBookmarks.h"

@@ -1,10 +1,10 @@
 /*
- * Project 64 - A Nintendo 64 emulator.
+ * Project 64 Legacy - A Nintendo 64 emulator.
  *
- * (c) Copyright 2001 zilmar (zilmar@emulation64.com) and
- * Jabo (jabo@emulation64.com).
+ * (c) Copyright 2001 Zilmar, Jabo, Smiff, Gent, Witten
+ * (c) Copyright 2010 PJ64LegacyTeam
  *
- * pj64 homepage: www.pj64.net
+ * Project64 Legacy Homepage: www.project64-legacy.com
  *
  * Permission to use, copy, modify and distribute Project64 in both binary and
  * source form, for non-commercial purposes, is hereby granted without fee,
@@ -122,6 +122,7 @@ void ChangeSettings(HWND hwndOwner) {
 	PROPSHEETPAGE psp[sizeof(SettingsTabs) / sizeof(SETTINGS_TAB)];
 	PROPSHEETPAGE BasicPsp[sizeof(SettingsTabsBasic) / sizeof(SETTINGS_TAB)];
 	PROPSHEETHEADER psh;
+	psh.dwFlags |= MB_SYSTEMMODAL | MB_TOPMOST;
 	int count;
 
 	for (count = 0; count < (sizeof(SettingsTabs) / sizeof(SETTINGS_TAB)); count++) {
@@ -156,9 +157,19 @@ void ChangeSettings(HWND hwndOwner) {
 	psh.ppsp = BasicMode ? (LPCPROPSHEETPAGE)&BasicPsp : (LPCPROPSHEETPAGE)&psp;
 	psh.pfnCallback = NULL;
 
+	ShowCursor(TRUE);
+
 	PropertySheet(&psh);
 	LoadSettings();
-	SetupMenu(hMainWindow);
+	if (!inFullScreen)
+		SetupMenu(hMainWindow);
+	else
+	{
+		HMENU hMenu = GetMenu(hMainWindow), hSubMenu;
+		ShowCursor(FALSE);
+		DestroyMenu(hMenu);
+	}
+
 	if (!AutoSleep && !ManualPaused && (CPU_Paused || CPU_Action.Pause)) { PauseCpu(); }
 	return;
 }
@@ -255,6 +266,7 @@ BOOL CALLBACK DefaultOptionsProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lPa
 		if (HIWORD(wParam) == BN_CLICKED && LOWORD(wParam) == IDC_USEDEBUGGER) {
 			BOOL enable_cpu_type = !(Button_GetCheck(lParam) & BST_CHECKED);
 			EnableWindow(GetDlgItem(hDlg, IDC_CPU_TYPE), enable_cpu_type);
+			ShowCursor(TRUE);
 		}
 		break;
 	case WM_NOTIFY:
