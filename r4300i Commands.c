@@ -471,7 +471,7 @@ LRESULT CALLBACK R4300i_Commands_Proc (HWND hDlg, UINT uMsg, WPARAM wParam, LPAR
 				int Selected = LBItemFromPt(hList, pDragInfo->ptCursor, FALSE);
 				if (Selected > -1) {
 					MIPS_DWORD Location = r4300iCommandLine[Selected].Location;
-					if (Location.DW != (QWORD)-1) {
+					if (Location.UDW != (QWORD)-1) {
 						has_selection = TRUE;
 						selection_anchor = Location;
 						selection_range[0] = Location;
@@ -488,7 +488,7 @@ LRESULT CALLBACK R4300i_Commands_Proc (HWND hDlg, UINT uMsg, WPARAM wParam, LPAR
 			int Selected = LBItemFromPt(hList, pDragInfo->ptCursor, FALSE);
 			if (Selected > -1) {
 				MIPS_DWORD Location = r4300iCommandLine[Selected].Location;
-				if (Location.DW != (QWORD)-1) {
+				if (Location.UDW != (QWORD)-1) {
 					selection_range[0].UDW = min(Location.UDW, selection_anchor.UDW);
 					selection_range[1].UDW = max(Location.UDW, selection_anchor.UDW);
 					RefreshR4300iCommands();
@@ -547,7 +547,7 @@ LRESULT CALLBACK R4300i_Commands_Proc (HWND hDlg, UINT uMsg, WPARAM wParam, LPAR
 					MIPS_DWORD Location;
 					Selected = SendMessage(hList, LB_GETCURSEL, (WPARAM)0, (LPARAM)0);
 					Location = r4300iCommandLine[Selected].Location;
-					if (Location.DW != (QWORD)-1) {
+					if (Location.UDW != (QWORD)-1) {
 						if (HasR4300iBPoint(Location)) {
 							RemoveR4300iBreakPoint(Location);
 						}
@@ -690,7 +690,7 @@ LRESULT CALLBACK R4300i_Commands_ListViewKeys_Proc(HWND hWnd, UINT uMsg, WPARAM 
 void Scroll_R4300i_Commands(int lines) {
 	char value[20];
 	GetWindowText(hAddress, value, sizeof(value));
-	unsigned int location = AsciiToHex(value);
+	QWORD location = AsciiToHex64(value);
 
 	if (lines > 0) {
 		if (UINT_MAX - location >= R4300i_MaxCommandLines * 4) {
@@ -706,7 +706,7 @@ void Scroll_R4300i_Commands(int lines) {
 		}
 	}
 
-	sprintf(value, "%08X", location);
+	sprintf(value, "%016llX", location);
 	SetWindowText(hAddress, value);
 }
 
