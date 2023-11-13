@@ -336,7 +336,7 @@ void __cdecl RefreshBreakPoints (void) {
 			flags[0] = 'e';
 		}
 
-		sprintf(Message," at 0x%08X (r4300i %s)", BPoint[count].Location, flags);
+		sprintf(Message," at 0x%016llX (r4300i %s)", BPoint[count].Location.UDW, flags);
 		SendMessage(hList,LB_ADDSTRING,0,(LPARAM)Message);
 		SendMessage(hList,LB_SETITEMDATA,count,(LPARAM)BPoint[count].Location.W[0]);
 	}

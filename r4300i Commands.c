@@ -694,13 +694,13 @@ void Scroll_R4300i_Commands(int lines) {
 
 	if (lines > 0) {
 		if (UINT_MAX - location >= R4300i_MaxCommandLines * 4) {
-			location += lines * 4;
+			location += (QWORD)(lines * 4);
 		} else {
 			location = UINT_MAX - R4300i_MaxCommandLines * 4 + 1;
 		}
 	} else {
-		if (location >= -lines * 4) {
-			location += lines * 4;
+		if (location >= (QWORD)(-lines * 4)) {
+			location += (QWORD)(lines * 4);
 		} else {
 			location = 0;
 		}
@@ -1310,7 +1310,7 @@ char * R4300iOpcodeName ( DWORD OpCode, MIPS_DWORD PC ) {
 	MIPS_DWORD RelativeTarget;
 	RelativeTarget.UDW = PC.UDW + ((short)command.BRANCH.offset << 2) + 4;
 	MIPS_DWORD AbsoluteTarget;
-	AbsoluteTarget.UDW = (PC.UDW & 0xF0000000) + (command.JMP.target << 2);
+	AbsoluteTarget.UDW = (PC.UDW & 0xFFFFFFFFF0000000LL) + (command.JMP.target << 2);
 		
 	switch (command.BRANCH.op) {
 	case R4300i_SPECIAL:
