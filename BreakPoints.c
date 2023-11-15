@@ -92,7 +92,7 @@ int Add_R4300iBPoint( MIPS_DWORD Location ) {
 
 void BPoint_AddButtonPressed (void) {
 	DWORD Selected, Location;
-	char Address[10];
+	char Address[18];
 	TC_ITEM item;
 
 	item.mask = TCIF_PARAM;
@@ -112,7 +112,12 @@ void BPoint_AddButtonPressed (void) {
 		GetWindowText(hR4300iLocation, Address, sizeof(Address));
 		if (BreakType == 0) {
 			MIPS_DWORD BPointAddress;
-			BPointAddress.DW = (int)AsciiToHex(Address);
+			if (strlen(Address) == 8) {
+				BPointAddress.DW = (int)AsciiToHex(Address);
+			}
+			else {
+				BPointAddress.UDW = AsciiToHex64(Address);
+			}
 			if (!Add_R4300iBPoint(BPointAddress)) {
 				SendMessage(hR4300iLocation, EM_SETSEL, (WPARAM)0, (LPARAM)-1);
 				SetFocus(hR4300iLocation);
@@ -485,8 +490,8 @@ void Setup_BPoint_Win (HWND hDlg) {
 	if (hR4300iLocation) {
 		char Address[20];
 		SendMessage(hR4300iLocation,WM_SETFONT,(WPARAM)GetStockObject(DEFAULT_GUI_FONT),0);
-		SendMessage(hR4300iLocation,EM_SETLIMITTEXT,(WPARAM)8,(LPARAM)0);
-		sprintf(Address,"%08X",PROGRAM_COUNTER);
+		SendMessage(hR4300iLocation,EM_SETLIMITTEXT,(WPARAM)16,(LPARAM)0);
+		sprintf(Address,"%016llX",PROGRAM_COUNTER.UDW);
 		SetWindowText(hR4300iLocation, Address);
 	}
 
