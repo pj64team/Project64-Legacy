@@ -186,15 +186,15 @@ LRESULT CALLBACK BPoint_Proc (HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam
 		case IDC_REMOVE_BUTTON:
 			selected = SendMessage(hList,LB_GETCURSEL,0,0);
 			if (selected < NoOfBpoints) {
-				DWORD location = SendMessage(hList,LB_GETITEMDATA,selected,0);
+				QWORD* location = SendMessage(hList,LB_GETITEMDATA,selected,0);
 				MIPS_DWORD BPointAddress;
-				BPointAddress.DW = (int)location;
+				BPointAddress.UDW = *location;
 				RemoveR4300iBreakPoint(BPointAddress);
 				break;
 			}
 			if (selected - NoOfBpoints < CountWatchPoints()) {
-				DWORD location = SendMessage(hList, LB_GETITEMDATA, selected, 0);
-				RemoveWatchPoint(location);
+				QWORD* location = SendMessage(hList, LB_GETITEMDATA, selected, 0);
+				RemoveWatchPoint((DWORD)*location);
 				RefreshBreakPoints();
 				break;
 			}
@@ -218,9 +218,9 @@ LRESULT CALLBACK BPoint_Proc (HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam
 		case IDC_LIST:
 			if (HIWORD(wParam) == LBN_DBLCLK) {
 				selected = SendMessage(hList, LB_GETCURSEL, 0, 0);
-				DWORD location = SendMessage(hList, LB_GETITEMDATA, selected, 0);
+				QWORD* location = SendMessage(hList, LB_GETITEMDATA, selected, 0);
 				MIPS_DWORD BPointAddress;
-				BPointAddress.DW = (int)location;
+				BPointAddress.UDW = *location;
 				if (selected < NoOfBpoints) {
 					ToggleR4300iBPoint(BPointAddress);
 				} else if (selected - NoOfBpoints < CountWatchPoints()) {
@@ -343,7 +343,7 @@ void __cdecl RefreshBreakPoints (void) {
 
 		sprintf(Message," at 0x%016llX (r4300i %s)", BPoint[count].Location.UDW, flags);
 		SendMessage(hList,LB_ADDSTRING,0,(LPARAM)Message);
-		SendMessage(hList,LB_SETITEMDATA,count,(LPARAM)BPoint[count].Location.W[0]);
+		SendMessage(hList,LB_SETITEMDATA,count,(LPARAM)&BPoint[count].Location.UDW);
 	}
 	RefreshWatchPoints(hList);
 	count = SendMessage(hList,LB_GETCOUNT,0,0);
@@ -486,7 +486,7 @@ void Setup_BPoint_Win (HWND hDlg) {
 	}
 
 	hR4300iLocation = CreateWindowEx(0,"EDIT","", WS_CHILD | WS_VISIBLE | WS_BORDER |
-		ES_UPPERCASE | WS_TABSTOP,115,65,100,17,hDlg,(HMENU)IDC_LOCATION_EDIT,hInst,NULL);
+		ES_UPPERCASE | WS_TABSTOP,115,65,120,17,hDlg,(HMENU)IDC_LOCATION_EDIT,hInst,NULL);
 	if (hR4300iLocation) {
 		char Address[20];
 		SendMessage(hR4300iLocation,WM_SETFONT,(WPARAM)GetStockObject(DEFAULT_GUI_FONT),0);
