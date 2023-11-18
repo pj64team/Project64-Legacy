@@ -389,7 +389,7 @@ void Enable_R4300i_Commands_Window ( void ) {
 	si.nPage  = 10;
 	SetScrollInfo(hScrlBar,SB_CTL,&si,TRUE);		
 	
-	sprintf(Location,"%llX",PROGRAM_COUNTER.UDW);
+	sprintf(Location,"%016llX",PROGRAM_COUNTER.UDW);
 	SetWindowText(hAddress,Location);
 
 	SetForegroundWindow(R4300i_Commands_hDlg);
