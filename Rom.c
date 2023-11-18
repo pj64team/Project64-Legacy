@@ -705,7 +705,7 @@ void ReadRomOptions(void) {
 	RomRamSize = 0x800000;
 	RomSaveUsing = Auto;
 	RomCF = -1;
-	RomCPUType = CPU_Default;
+	RomCPUType = CPU_Interpreter; //Changed CPU_Default to CPU_Interpreter so Unknown/Prototypes or Rom Hacks not in RDS can boot for further settings, where Default did nothing. (Gent)
 	RomSelfMod = ModCode_Default;
 	RomUseTlb = TRUE;
 	RomDelaySI = FALSE;
