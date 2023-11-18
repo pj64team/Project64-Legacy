@@ -110,20 +110,20 @@ void BPoint_AddButtonPressed (void) {
 		}
 
 		GetWindowText(hR4300iLocation, Address, sizeof(Address));
+		MIPS_DWORD BPointAddress;
+		if (strlen(Address) == 8) {
+			BPointAddress.DW = (int)AsciiToHex(Address);
+		}
+		else {
+			BPointAddress.UDW = AsciiToHex64(Address);
+		}
 		if (BreakType == 0) {
-			MIPS_DWORD BPointAddress;
-			if (strlen(Address) == 8) {
-				BPointAddress.DW = (int)AsciiToHex(Address);
-			}
-			else {
-				BPointAddress.UDW = AsciiToHex64(Address);
-			}
 			if (!Add_R4300iBPoint(BPointAddress)) {
 				SendMessage(hR4300iLocation, EM_SETSEL, (WPARAM)0, (LPARAM)-1);
 				SetFocus(hR4300iLocation);
 			}
 		} else {
-			AddWatchPoint(AsciiToHex(Address), BreakType);
+			AddWatchPoint(BPointAddress, BreakType);
 			RefreshBreakPoints();
 		}
 		break;
@@ -194,7 +194,9 @@ LRESULT CALLBACK BPoint_Proc (HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam
 			}
 			if (selected - NoOfBpoints < CountWatchPoints()) {
 				QWORD* location = SendMessage(hList, LB_GETITEMDATA, selected, 0);
-				RemoveWatchPoint((DWORD)*location);
+				MIPS_DWORD BPointAddress;
+				BPointAddress.UDW = *location;
+				RemoveWatchPoint(BPointAddress);
 				RefreshBreakPoints();
 				break;
 			}
@@ -224,7 +226,7 @@ LRESULT CALLBACK BPoint_Proc (HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam
 				if (selected < NoOfBpoints) {
 					ToggleR4300iBPoint(BPointAddress);
 				} else if (selected - NoOfBpoints < CountWatchPoints()) {
-					ToggleWatchPoint(location);
+					ToggleWatchPoint(BPointAddress);
 				} else {
 					// TODO: Support toggling RSP breakpoints
 					DisplayError("what is this BP");

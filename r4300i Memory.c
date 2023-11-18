@@ -202,7 +202,10 @@ void Update_Data_Column(struct MEMORY_VIEW_ROW* row, MIPS_WORD word, int index, 
 void Update_Data_Column_With_WatchPoint(struct MEMORY_VIEW_ROW* row, DWORD location, MIPS_WORD word, int index, int i, BOOL ShowDiff) {
 	sprintf(row->HexStr[index], "%02X", word.UB[3 - i]);
 
-	int has_watch = (int)HasWatchPoint(location + i);
+	MIPS_DWORD WatchPointLocation;
+	WatchPointLocation.DW = (int)(location + i);
+
+	int has_watch = (int)HasWatchPoint(WatchPointLocation);
 	if (has_watch & WP_ENABLED) {
 		row->Fonts[index] = hWatchFont;
 	} else {
