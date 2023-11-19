@@ -24,6 +24,7 @@
  */
 
 #include <unordered_map>
+#include <unordered_set>
 #include <windows.h>
 
 extern "C" {
@@ -34,6 +35,7 @@ extern "C" {
 }
 
 std::unordered_map<QWORD, int[8]>* WatchPoints = NULL;
+std::unordered_set<QWORD> WatchPointsAddresses; // Used to manage the watch points in GUI
 
 void InitWatchPoints(void) {
 	// Default size is implementation-defined (may as well be unknown).
@@ -59,6 +61,7 @@ void AddWatchPoint(MIPS_DWORD Location, WATCH_TYPE Type) {
 	}
 
 	(*WatchPoints)[Location.UDW & ~7][Location.UB[0] & 7] = (int)Type | WP_ENABLED;
+	WatchPointsAddresses.insert(Location.UDW);
 }
 
 void RemoveWatchPoint(MIPS_DWORD Location) {
@@ -66,6 +69,7 @@ void RemoveWatchPoint(MIPS_DWORD Location) {
 	if (search != WatchPoints->end()) {
 		int *wp = search->second;
 		wp[Location.UB[0] & 7] = WP_NONE;
+		WatchPointsAddresses.erase(Location.UDW);
 
 		int i;
 		for (i = 0; i < 8; i++) {
@@ -81,6 +85,7 @@ void RemoveWatchPoint(MIPS_DWORD Location) {
 
 void RemoveAllWatchPoints(void) {
 	WatchPoints->clear();
+	WatchPointsAddresses.clear();
 }
 
 void ToggleWatchPoint(MIPS_DWORD Location) {
@@ -177,7 +182,8 @@ void RefreshWatchPoints(HWND hList) {
 			sprintf(message, " at 0x%016llX (r4300i %s)", location, flags);
 			SendMessage(hList, LB_ADDSTRING, 0, (LPARAM)message);
 			int index = SendMessage(hList, LB_GETCOUNT, 0, 0) - 1;
-			SendMessage(hList, LB_SETITEMDATA, index, (LPARAM)location);
+			auto address = WatchPointsAddresses.find(location);
+			SendMessage(hList, LB_SETITEMDATA, index, (LPARAM)&(*address));
 		}
 	}
 }
