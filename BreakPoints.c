@@ -295,9 +295,19 @@ void __cdecl Enter_BPoint_Window ( void ) {
 
 void HideBPointPanel ( int Panel) {
 	switch( Panel ) {
-	case R4300i_BP: ShowWindow(hR4300iLocation, FALSE); break;
-	case R4300i_FUNCTION: ShowWindow(hFunctionlist, FALSE); break;
-	case RSP_BP: if (RspDebug.UseBPoints) { RspDebug.HideBPPanel(); } break;
+	case R4300i_BP:
+		ShowWindow(hR4300iLocation, FALSE);
+		ShowWindow(hTypeExec, FALSE);
+		ShowWindow(hTypeRead, FALSE);
+		ShowWindow(hTypeWrite, FALSE);
+		ShowWindow(hTypeReadWrite, FALSE);
+		break;
+	case R4300i_FUNCTION:
+		ShowWindow(hFunctionlist, FALSE);
+		break;
+	case RSP_BP:
+		if (RspDebug.UseBPoints) { RspDebug.HideBPPanel(); }
+		break;
 	}
 }
 
@@ -548,9 +558,19 @@ void Setup_BPoint_Win (HWND hDlg) {
 
 void ShowBPointPanel ( int Panel) {
 	switch( Panel ) {
-	case R4300i_BP: ShowWindow(hR4300iLocation, TRUE); break;
-	case R4300i_FUNCTION: ShowWindow(hFunctionlist, TRUE); break;
-	case RSP_BP: if (RspDebug.UseBPoints) { RspDebug.ShowBPPanel(); } break;
+	case R4300i_BP:
+		ShowWindow(hR4300iLocation, TRUE);
+		ShowWindow(hTypeExec, TRUE);
+		ShowWindow(hTypeRead, TRUE);
+		ShowWindow(hTypeWrite, TRUE);
+		ShowWindow(hTypeReadWrite, TRUE);
+		break;
+	case R4300i_FUNCTION:
+		ShowWindow(hFunctionlist, TRUE);
+		break;
+	case RSP_BP:
+		if (RspDebug.UseBPoints) { RspDebug.ShowBPPanel(); }
+		break;
 	}
 }
 

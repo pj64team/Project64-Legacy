@@ -242,19 +242,22 @@ int ProcessCODFile(BYTE * File, DWORD FileLen) {
 	int Length;
 
 	while ( CurrentPos < File + FileLen ) {
-		if (*CurrentPos != '0') { return FALSE; }
-		CurrentPos += 1;
-		if (*CurrentPos != 'x') { return FALSE; }
-		CurrentPos += 1;
-
 		int FirstFieldLength = strchr(CurrentPos, ',') - CurrentPos;
-		if (FirstFieldLength == 8) {
+
+		if (FirstFieldLength == 10 || FirstFieldLength == 18) {
+			if (*CurrentPos != '0') { return FALSE; }
+			CurrentPos += 1;
+			if (*CurrentPos != 'x') { return FALSE; }
+			CurrentPos += 1;
+		}
+		
+		if (FirstFieldLength == 8 || FirstFieldLength == 10) {
 			Address.DW = (int)AsciiToHex(CurrentPos);
 			CurrentPos += 9;
 		}
-		else if (FirstFieldLength == 16) {
+		else if (FirstFieldLength == 16 || FirstFieldLength == 18) {
 			Address.UDW = AsciiToHex64(CurrentPos);
-			CurrentPos += 9;
+			CurrentPos += 17;
 		}
 		else {
 			return FALSE;
