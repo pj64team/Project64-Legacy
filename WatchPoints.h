@@ -37,11 +37,11 @@ typedef enum {
 } WATCH_TYPE;
 
 void InitWatchPoints(void);
-void AddWatchPoint(DWORD Location, WATCH_TYPE Type);
-void RemoveWatchPoint(DWORD Location);
-void ToggleWatchPoint(DWORD Location);
+void AddWatchPoint(MIPS_DWORD Location, WATCH_TYPE Type);
+void RemoveWatchPoint(MIPS_DWORD Location);
+void ToggleWatchPoint(MIPS_DWORD Location);
 void RemoveAllWatchPoints(void);
-WATCH_TYPE HasWatchPoint(DWORD Location);
+WATCH_TYPE HasWatchPoint(MIPS_DWORD Location);
 BOOL CheckForWatchPoint(MIPS_DWORD Location, WATCH_TYPE Type, int Size);
 int CountWatchPoints(void);
 void RefreshWatchPoints(HWND hList);

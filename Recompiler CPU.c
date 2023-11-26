@@ -1278,9 +1278,12 @@ void _fastcall FillSectionInfo(BLOCK_SECTION * Section) {
 				break;
 			default:
 				if (ShowDebugMessages) {
+					MIPS_DWORD CompilePC;
+					CompilePC.DW = (int)Section->CompilePC;
+
 					if (Command.Hex == 0x00000001) { break; }
 					DisplayError("Unhandled R4300i OpCode in FillSectionInfo 5\n%s",
-						R4300iOpcodeName(Command.Hex, Section->CompilePC));
+						R4300iOpcodeName(Command.Hex, CompilePC));
 				}
 				NextInstruction = END_BLOCK;
 				Section->CompilePC -= 4;
@@ -1332,8 +1335,11 @@ void _fastcall FillSectionInfo(BLOCK_SECTION * Section) {
 			default:
 				if (ShowDebugMessages) {
 					if (Command.Hex == 0x0407000D) { break; }
+					MIPS_DWORD CompilePC;
+					CompilePC.DW = (int)Section->CompilePC;
+
 					DisplayError("Unhandled R4300i OpCode in FillSectionInfo 4\n%s",
-						R4300iOpcodeName(Command.Hex, Section->CompilePC));
+						R4300iOpcodeName(Command.Hex, CompilePC));
 				}
 				NextInstruction = END_BLOCK;
 				Section->CompilePC -= 4;
@@ -1468,17 +1474,25 @@ void _fastcall FillSectionInfo(BLOCK_SECTION * Section) {
 					case R4300i_COP0_CO_TLBP: break;
 					case R4300i_COP0_CO_ERET: NextInstruction = END_BLOCK; break;
 					default:
-						if (ShowDebugMessages)
+						if (ShowDebugMessages) {
+							MIPS_DWORD CompilePC;
+							CompilePC.DW = (int)Section->CompilePC;
+
 							DisplayError("Unhandled R4300i OpCode in FillSectionInfo\n%s",
-								R4300iOpcodeName(Command.Hex,Section->CompilePC));
+								R4300iOpcodeName(Command.Hex, CompilePC));
+						}
 
 						NextInstruction = END_BLOCK;
 						Section->CompilePC -= 4;
 					}
 				} else {
-					if (ShowDebugMessages)
+					if (ShowDebugMessages) {
+						MIPS_DWORD CompilePC;
+						CompilePC.DW = (int)Section->CompilePC;
+
 						DisplayError("Unhandled R4300i OpCode in FillSectionInfo 3\n%s",
-							R4300iOpcodeName(Command.Hex,Section->CompilePC));
+							R4300iOpcodeName(Command.Hex, CompilePC));
+					}
 
 					NextInstruction = END_BLOCK;
 					Section->CompilePC -= 4;
@@ -1537,9 +1551,13 @@ void _fastcall FillSectionInfo(BLOCK_SECTION * Section) {
 			case R4300i_COP1_W: break;
 			case R4300i_COP1_L: break;
 			default:
-				if (ShowDebugMessages)
+				if (ShowDebugMessages) {
+					MIPS_DWORD CompilePC;
+					CompilePC.DW = (int)Section->CompilePC;
+
 					DisplayError("Unhandled R4300i OpCode in FillSectionInfo 2\n%s",
-						R4300iOpcodeName(Command.Hex,Section->CompilePC));
+						R4300iOpcodeName(Command.Hex, CompilePC));
+				}
 
 				NextInstruction = END_BLOCK;
 				Section->CompilePC -= 4;
@@ -1619,9 +1637,13 @@ void _fastcall FillSectionInfo(BLOCK_SECTION * Section) {
 			if (Command.Hex == 0xF1F3F5F7) { break; }
 			if (Command.Hex == 0xC1200000) { break; }
 			if (Command.Hex == 0x4C5A5353) { break; }
-			if (ShowDebugMessages)
+			if (ShowDebugMessages) {
+				MIPS_DWORD CompilePC;
+				CompilePC.DW = (int)Section->CompilePC;
+
 				DisplayError("Unhandled R4300i OpCode in FillSectionInfo 1\n%s\n%X",
-					R4300iOpcodeName(Command.Hex,Section->CompilePC),Command.Hex);
+					R4300iOpcodeName(Command.Hex, CompilePC), Command.Hex);
+			}
 		}
 
 //		if (Section->CompilePC == 0x8005E4B8) {

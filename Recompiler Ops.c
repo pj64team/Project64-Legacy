@@ -40,7 +40,10 @@ void CompileReadTLBMiss (BLOCK_SECTION * Section, int AddressReg, int LookUpReg 
 
 /************************** Branch functions  ************************/
 void Compile_R4300i_Branch (BLOCK_SECTION * Section, void (*CompareFunc)(BLOCK_SECTION * Section), int BranchType, BOOL Link) {
-	CPU_Message("  %X %s", Section->CompilePC, R4300iOpcodeName(Opcode.Hex, Section->CompilePC));
+	MIPS_DWORD CompilePC;
+	CompilePC.DW = (int)Section->CompilePC;
+
+	CPU_Message("  %X %s", Section->CompilePC, R4300iOpcodeName(Opcode.Hex, CompilePC));
 
 	static int EffectDelaySlot, DoneJumpDelay, DoneContinueDelay;
 	static char ContLabel[100], JumpLabel[100];
@@ -48,7 +51,7 @@ void Compile_R4300i_Branch (BLOCK_SECTION * Section, void (*CompareFunc)(BLOCK_S
 	int count;
 
 	if ( NextInstruction == NORMAL ) {
-		CPU_Message("  %X %s",Section->CompilePC,R4300iOpcodeName(Opcode.Hex,Section->CompilePC));
+		CPU_Message("  %X %s",Section->CompilePC,R4300iOpcodeName(Opcode.Hex,CompilePC));
 		
 		if ((Section->CompilePC & 0xFFC) != 0xFFC) {
 			MIPS_DWORD CompilePC;
@@ -119,12 +122,12 @@ void Compile_R4300i_Branch (BLOCK_SECTION * Section, void (*CompareFunc)(BLOCK_S
 		}
 		if (EffectDelaySlot) {
 			if (Section->ContinueSection != NULL) {
-				sprintf(ContLabel,"Continue",((BLOCK_SECTION *)Section->ContinueSection)->SectionID);
+				sprintf(ContLabel,"Continue %d",((BLOCK_SECTION *)Section->ContinueSection)->SectionID);
 			} else {
 				strcpy(ContLabel,"ExitBlock");
 			}
 			if (Section->JumpSection != NULL) {
-				sprintf(JumpLabel,"Jump",((BLOCK_SECTION *)Section->JumpSection)->SectionID);
+				sprintf(JumpLabel,"Jump %d",((BLOCK_SECTION *)Section->JumpSection)->SectionID);
 			} else {
 				strcpy(JumpLabel,"ExitBlock");
 			}
@@ -223,10 +226,13 @@ void Compile_R4300i_Branch (BLOCK_SECTION * Section, void (*CompareFunc)(BLOCK_S
 void Compile_R4300i_BranchLikely (BLOCK_SECTION * Section, void (*CompareFunc)(BLOCK_SECTION * Section), BOOL Link) {
 	static char ContLabel[100], JumpLabel[100];
 	int count;
-	CPU_Message("  %X %s", Section->CompilePC, R4300iOpcodeName(Opcode.Hex, Section->CompilePC));
+	MIPS_DWORD CompilePC;
+	CompilePC.DW = (int)Section->CompilePC;
+
+	CPU_Message("  %X %s", Section->CompilePC, R4300iOpcodeName(Opcode.Hex, CompilePC));
 
 	if ( NextInstruction == NORMAL ) {		
-		CPU_Message("  %X %s",Section->CompilePC,R4300iOpcodeName(Opcode.Hex,Section->CompilePC));
+		CPU_Message("  %X %s",Section->CompilePC,R4300iOpcodeName(Opcode.Hex,CompilePC));
 		
 		if (Section->ContinueSection != NULL) {
 			sprintf(ContLabel,"Section_%d",((BLOCK_SECTION *)Section->ContinueSection)->SectionID);
@@ -1063,10 +1069,13 @@ void COP1_BCT_Compare (BLOCK_SECTION * Section) {
 /*************************  OpCode functions *************************/
 void Compile_R4300i_J (BLOCK_SECTION * Section) {
 	static char JumpLabel[100];
-	CPU_Message("  %X %s", Section->CompilePC, R4300iOpcodeName(Opcode.Hex, Section->CompilePC));
+	MIPS_DWORD CompilePC;
+	CompilePC.DW = (int)Section->CompilePC;
+
+	CPU_Message("  %X %s", Section->CompilePC, R4300iOpcodeName(Opcode.Hex, CompilePC));
 
 	if ( NextInstruction == NORMAL ) {
-		CPU_Message("  %X %s",Section->CompilePC,R4300iOpcodeName(Opcode.Hex,Section->CompilePC));
+		CPU_Message("  %X %s",Section->CompilePC,R4300iOpcodeName(Opcode.Hex,CompilePC));
 
 		if (Section->JumpSection != NULL) {
 			sprintf(JumpLabel,"Section_%d",((BLOCK_SECTION *)Section->JumpSection)->SectionID);
@@ -1096,10 +1105,13 @@ void Compile_R4300i_J (BLOCK_SECTION * Section) {
 
 void Compile_R4300i_JAL (BLOCK_SECTION * Section) {
 	static char JumpLabel[100];
-	CPU_Message("  %X %s", Section->CompilePC, R4300iOpcodeName(Opcode.Hex, Section->CompilePC));
+	MIPS_DWORD CompilePC;
+	CompilePC.DW = (int)Section->CompilePC;
+
+	CPU_Message("  %X %s", Section->CompilePC, R4300iOpcodeName(Opcode.Hex, CompilePC));
 
 	if ( NextInstruction == NORMAL ) {
-		CPU_Message("  %X %s",Section->CompilePC,R4300iOpcodeName(Opcode.Hex,Section->CompilePC));
+		CPU_Message("  %X %s",Section->CompilePC,R4300iOpcodeName(Opcode.Hex,CompilePC));
 		UnMap_GPR(Section, 31, FALSE);
 		MipsRegLo(31) = Section->CompilePC + 8;
 		MipsRegState(31) = STATE_CONST_32;
@@ -1162,7 +1174,10 @@ void Compile_R4300i_JAL (BLOCK_SECTION * Section) {
 }
 
 void Compile_R4300i_ADDI (BLOCK_SECTION * Section) {
-	CPU_Message("  %X %s",Section->CompilePC,R4300iOpcodeName(Opcode.Hex,Section->CompilePC));
+	MIPS_DWORD CompilePC;
+	CompilePC.DW = (int)Section->CompilePC;
+
+	CPU_Message("  %X %s",Section->CompilePC,R4300iOpcodeName(Opcode.Hex,CompilePC));
 
 	if (Opcode.BRANCH.rt == 0) { return; }
 
@@ -1195,7 +1210,10 @@ void Compile_R4300i_ADDI (BLOCK_SECTION * Section) {
 }
 
 void Compile_R4300i_ADDIU (BLOCK_SECTION * Section) {
-	CPU_Message("  %X %s",Section->CompilePC,R4300iOpcodeName(Opcode.Hex,Section->CompilePC));
+	MIPS_DWORD CompilePC;
+	CompilePC.DW = (int)Section->CompilePC;
+
+	CPU_Message("  %X %s",Section->CompilePC,R4300iOpcodeName(Opcode.Hex,CompilePC));
 
 	if (Opcode.BRANCH.rt == 0) { return; }
 
@@ -1227,7 +1245,10 @@ void Compile_R4300i_ADDIU (BLOCK_SECTION * Section) {
 }
 
 void Compile_R4300i_SLTIU (BLOCK_SECTION * Section) {
-	CPU_Message("  %X %s",Section->CompilePC,R4300iOpcodeName(Opcode.Hex,Section->CompilePC));
+	MIPS_DWORD CompilePC;
+	CompilePC.DW = (int)Section->CompilePC;
+
+	CPU_Message("  %X %s",Section->CompilePC,R4300iOpcodeName(Opcode.Hex,CompilePC));
 	if (Opcode.BRANCH.rt == 0) { return; }
 
 	if (IsConst(Opcode.BRANCH.rs)) { 
@@ -1300,7 +1321,10 @@ void Compile_R4300i_SLTIU (BLOCK_SECTION * Section) {
 }
 
 void Compile_R4300i_SLTI (BLOCK_SECTION * Section) {
-	CPU_Message("  %X %s",Section->CompilePC,R4300iOpcodeName(Opcode.Hex,Section->CompilePC));
+	MIPS_DWORD CompilePC;
+	CompilePC.DW = (int)Section->CompilePC;
+
+	CPU_Message("  %X %s",Section->CompilePC,R4300iOpcodeName(Opcode.Hex,CompilePC));
 	if (Opcode.BRANCH.rt == 0) { return; }
 
 	if (IsConst(Opcode.BRANCH.rs)) { 
@@ -1376,7 +1400,10 @@ void Compile_R4300i_SLTI (BLOCK_SECTION * Section) {
 }
 
 void Compile_R4300i_ANDI (BLOCK_SECTION * Section) {
-	CPU_Message("  %X %s",Section->CompilePC,R4300iOpcodeName(Opcode.Hex,Section->CompilePC));
+	MIPS_DWORD CompilePC;
+	CompilePC.DW = (int)Section->CompilePC;
+
+	CPU_Message("  %X %s",Section->CompilePC,R4300iOpcodeName(Opcode.Hex,CompilePC));
 
 	if (Opcode.BRANCH.rt == 0) { return;}
 
@@ -1393,7 +1420,10 @@ void Compile_R4300i_ANDI (BLOCK_SECTION * Section) {
 }
 
 void Compile_R4300i_ORI (BLOCK_SECTION * Section) {
-	CPU_Message("  %X %s",Section->CompilePC,R4300iOpcodeName(Opcode.Hex,Section->CompilePC));
+	MIPS_DWORD CompilePC;
+	CompilePC.DW = (int)Section->CompilePC;
+
+	CPU_Message("  %X %s",Section->CompilePC,R4300iOpcodeName(Opcode.Hex,CompilePC));
 	if (Opcode.BRANCH.rt == 0) { return;}
 
 	if (IsConst(Opcode.BRANCH.rs)) {
@@ -1415,7 +1445,10 @@ void Compile_R4300i_ORI (BLOCK_SECTION * Section) {
 }
 
 void Compile_R4300i_XORI (BLOCK_SECTION * Section) {
-	CPU_Message("  %X %s",Section->CompilePC,R4300iOpcodeName(Opcode.Hex,Section->CompilePC));
+	MIPS_DWORD CompilePC;
+	CompilePC.DW = (int)Section->CompilePC;
+
+	CPU_Message("  %X %s",Section->CompilePC,R4300iOpcodeName(Opcode.Hex,CompilePC));
 	if (Opcode.BRANCH.rt == 0) { return;}
 
 	if (IsConst(Opcode.BRANCH.rs)) {
@@ -1434,7 +1467,10 @@ void Compile_R4300i_XORI (BLOCK_SECTION * Section) {
 }
 
 void Compile_R4300i_LUI (BLOCK_SECTION * Section) {
-	CPU_Message("  %X %s",Section->CompilePC,R4300iOpcodeName(Opcode.Hex,Section->CompilePC));
+	MIPS_DWORD CompilePC;
+	CompilePC.DW = (int)Section->CompilePC;
+
+	CPU_Message("  %X %s",Section->CompilePC,R4300iOpcodeName(Opcode.Hex,CompilePC));
 	if (Opcode.BRANCH.rt == 0) { return;}
 
 	if (SPHack && Opcode.BRANCH.rt == 29) {
@@ -1453,7 +1489,10 @@ void Compile_R4300i_LUI (BLOCK_SECTION * Section) {
 }
 
 void Compile_R4300i_DADDI (BLOCK_SECTION * Section) {
-	CPU_Message("  %X %s",Section->CompilePC,R4300iOpcodeName(Opcode.Hex,Section->CompilePC));
+	MIPS_DWORD CompilePC;
+	CompilePC.DW = (int)Section->CompilePC;
+
+	CPU_Message("  %X %s",Section->CompilePC,R4300iOpcodeName(Opcode.Hex,CompilePC));
 
 	if (Opcode.BRANCH.rt == 0) { return; }
 	if (Opcode.BRANCH.rs != 0) { UnMap_GPR(Section,Opcode.BRANCH.rs,TRUE); }
@@ -1465,7 +1504,10 @@ void Compile_R4300i_DADDI (BLOCK_SECTION * Section) {
 }
 
 void Compile_R4300i_DADDIU (BLOCK_SECTION * Section) {
-	CPU_Message("  %X %s",Section->CompilePC,R4300iOpcodeName(Opcode.Hex,Section->CompilePC));
+	MIPS_DWORD CompilePC;
+	CompilePC.DW = (int)Section->CompilePC;
+
+	CPU_Message("  %X %s",Section->CompilePC,R4300iOpcodeName(Opcode.Hex,CompilePC));
 
 	if (Opcode.BRANCH.rt == 0) { return; }
 	if (Opcode.BRANCH.rs != 0) { UnMap_GPR(Section,Opcode.BRANCH.rs,TRUE); }
@@ -1477,7 +1519,10 @@ void Compile_R4300i_DADDIU (BLOCK_SECTION * Section) {
 }
 
 void Compile_R4300i_LDL (BLOCK_SECTION * Section) {
-	CPU_Message("  %X %s",Section->CompilePC,R4300iOpcodeName(Opcode.Hex,Section->CompilePC));
+	MIPS_DWORD CompilePC;
+	CompilePC.DW = (int)Section->CompilePC;
+
+	CPU_Message("  %X %s",Section->CompilePC,R4300iOpcodeName(Opcode.Hex,CompilePC));
 
 	if (Opcode.BRANCH.rt == 0) { return; }
 	if (Opcode.IMM.base != 0) { UnMap_GPR(Section,Opcode.IMM.base,TRUE); }
@@ -1490,7 +1535,10 @@ void Compile_R4300i_LDL (BLOCK_SECTION * Section) {
 }
 
 void Compile_R4300i_LDR (BLOCK_SECTION * Section) {
-	CPU_Message("  %X %s",Section->CompilePC,R4300iOpcodeName(Opcode.Hex,Section->CompilePC));
+	MIPS_DWORD CompilePC;
+	CompilePC.DW = (int)Section->CompilePC;
+
+	CPU_Message("  %X %s",Section->CompilePC,R4300iOpcodeName(Opcode.Hex,CompilePC));
 
 	if (Opcode.BRANCH.rt == 0) { return; }
 	if (Opcode.IMM.base != 0) { UnMap_GPR(Section,Opcode.IMM.base,TRUE); }
@@ -1504,8 +1552,10 @@ void Compile_R4300i_LDR (BLOCK_SECTION * Section) {
 
 void Compile_R4300i_LB (BLOCK_SECTION * Section) {
 	DWORD TempReg1, TempReg2;
+	MIPS_DWORD CompilePC;
+	CompilePC.DW = (int)Section->CompilePC;
 
-	CPU_Message("  %X %s",Section->CompilePC,R4300iOpcodeName(Opcode.Hex,Section->CompilePC));
+	CPU_Message("  %X %s",Section->CompilePC,R4300iOpcodeName(Opcode.Hex,CompilePC));
 
 	if (Opcode.BRANCH.rt == 0) return;
 
@@ -1559,8 +1609,10 @@ void Compile_R4300i_LB (BLOCK_SECTION * Section) {
 
 void Compile_R4300i_LH (BLOCK_SECTION * Section) {
 	DWORD TempReg1, TempReg2;
+	MIPS_DWORD CompilePC;
+	CompilePC.DW = (int)Section->CompilePC;
 
-	CPU_Message("  %X %s",Section->CompilePC,R4300iOpcodeName(Opcode.Hex,Section->CompilePC));
+	CPU_Message("  %X %s",Section->CompilePC,R4300iOpcodeName(Opcode.Hex,CompilePC));
 
 	if (Opcode.BRANCH.rt == 0) return;
 
@@ -1609,8 +1661,10 @@ void Compile_R4300i_LH (BLOCK_SECTION * Section) {
 
 void Compile_R4300i_LWL (BLOCK_SECTION * Section) {
 	DWORD TempReg1, TempReg2 = 0x0, Offset, shift;
+	MIPS_DWORD CompilePC;
+	CompilePC.DW = (int)Section->CompilePC;
 
-	CPU_Message("  %X %s",Section->CompilePC,R4300iOpcodeName(Opcode.Hex,Section->CompilePC));
+	CPU_Message("  %X %s",Section->CompilePC,R4300iOpcodeName(Opcode.Hex,CompilePC));
 
 	if (Opcode.BRANCH.rt == 0) return;
 
@@ -1684,8 +1738,10 @@ void Compile_R4300i_LWL (BLOCK_SECTION * Section) {
 
 void Compile_R4300i_LW (BLOCK_SECTION * Section) {
 	DWORD TempReg1, TempReg2;
+	MIPS_DWORD CompilePC;
+	CompilePC.DW = (int)Section->CompilePC;
 
-	CPU_Message("  %X %s",Section->CompilePC,R4300iOpcodeName(Opcode.Hex,Section->CompilePC));
+	CPU_Message("  %X %s",Section->CompilePC,R4300iOpcodeName(Opcode.Hex,CompilePC));
 
 	if (Opcode.BRANCH.rt == 0) return;
 
@@ -1769,8 +1825,10 @@ void Compile_R4300i_LW (BLOCK_SECTION * Section) {
 
 void Compile_R4300i_LBU (BLOCK_SECTION * Section) {
 	DWORD TempReg1, TempReg2;
+	MIPS_DWORD CompilePC;
+	CompilePC.DW = (int)Section->CompilePC;
 
-	CPU_Message("  %X %s",Section->CompilePC,R4300iOpcodeName(Opcode.Hex,Section->CompilePC));
+	CPU_Message("  %X %s",Section->CompilePC,R4300iOpcodeName(Opcode.Hex,CompilePC));
 
 	if (Opcode.BRANCH.rt == 0) return;
 
@@ -1824,8 +1882,10 @@ void Compile_R4300i_LBU (BLOCK_SECTION * Section) {
 
 void Compile_R4300i_LHU (BLOCK_SECTION * Section) {
 	DWORD TempReg1, TempReg2;
+	MIPS_DWORD CompilePC;
+	CompilePC.DW = (int)Section->CompilePC;
 
-	CPU_Message("  %X %s",Section->CompilePC,R4300iOpcodeName(Opcode.Hex,Section->CompilePC));
+	CPU_Message("  %X %s",Section->CompilePC,R4300iOpcodeName(Opcode.Hex,CompilePC));
 
 	if (Opcode.BRANCH.rt == 0) return;
 
@@ -1874,8 +1934,10 @@ void Compile_R4300i_LHU (BLOCK_SECTION * Section) {
 
 void Compile_R4300i_LWR (BLOCK_SECTION * Section) {
 	DWORD TempReg1, TempReg2 = 0x0, Offset, shift;
+	MIPS_DWORD CompilePC;
+	CompilePC.DW = (int)Section->CompilePC;
 
-	CPU_Message("  %X %s",Section->CompilePC,R4300iOpcodeName(Opcode.Hex,Section->CompilePC));
+	CPU_Message("  %X %s",Section->CompilePC,R4300iOpcodeName(Opcode.Hex,CompilePC));
 
 	if (Opcode.BRANCH.rt == 0) return;
 
@@ -1950,8 +2012,10 @@ void Compile_R4300i_LWR (BLOCK_SECTION * Section) {
 
 void Compile_R4300i_LWU (BLOCK_SECTION * Section) {
 	DWORD TempReg1, TempReg2;
+	MIPS_DWORD CompilePC;
+	CompilePC.DW = (int)Section->CompilePC;
 
-	CPU_Message("  %X %s",Section->CompilePC,R4300iOpcodeName(Opcode.Hex,Section->CompilePC));
+	CPU_Message("  %X %s",Section->CompilePC,R4300iOpcodeName(Opcode.Hex,CompilePC));
 
 	if (Opcode.BRANCH.rt == 0) return;
 
@@ -2026,8 +2090,10 @@ void Compile_R4300i_LWU (BLOCK_SECTION * Section) {
 
 void Compile_R4300i_SB (BLOCK_SECTION * Section){
 	DWORD TempReg1, TempReg2;
+	MIPS_DWORD CompilePC;
+	CompilePC.DW = (int)Section->CompilePC;
 
-	CPU_Message("  %X %s",Section->CompilePC,R4300iOpcodeName(Opcode.Hex,Section->CompilePC));
+	CPU_Message("  %X %s",Section->CompilePC,R4300iOpcodeName(Opcode.Hex,CompilePC));
 	
 	if (IsConst(Opcode.IMM.base)) { 
 		DWORD Address = (MipsRegLo(Opcode.IMM.base) + (short)Opcode.BRANCH.offset) ^ 3;
@@ -2106,8 +2172,10 @@ void Compile_R4300i_SB (BLOCK_SECTION * Section){
 
 void Compile_R4300i_SH (BLOCK_SECTION * Section){
 	DWORD TempReg1, TempReg2;
+	MIPS_DWORD CompilePC;
+	CompilePC.DW = (int)Section->CompilePC;
 
-	CPU_Message("  %X %s",Section->CompilePC,R4300iOpcodeName(Opcode.Hex,Section->CompilePC));
+	CPU_Message("  %X %s",Section->CompilePC,R4300iOpcodeName(Opcode.Hex,CompilePC));
 	
 	if (IsConst(Opcode.IMM.base)) { 
 		DWORD Address = (MipsRegLo(Opcode.IMM.base) + (short)Opcode.BRANCH.offset) ^ 2;
@@ -2183,8 +2251,10 @@ void Compile_R4300i_SH (BLOCK_SECTION * Section){
 
 void Compile_R4300i_SWL (BLOCK_SECTION * Section) {
 	DWORD TempReg1, TempReg2 = 0x0, Value, Offset, shift;
+	MIPS_DWORD CompilePC;
+	CompilePC.DW = (int)Section->CompilePC;
 
-	CPU_Message("  %X %s",Section->CompilePC,R4300iOpcodeName(Opcode.Hex,Section->CompilePC));
+	CPU_Message("  %X %s",Section->CompilePC,R4300iOpcodeName(Opcode.Hex,CompilePC));
 
 	if (IsConst(Opcode.IMM.base)) { 
 		DWORD Address;
@@ -2278,8 +2348,10 @@ void Compile_R4300i_SWL (BLOCK_SECTION * Section) {
 
 void Compile_R4300i_SW (BLOCK_SECTION * Section){
 	DWORD TempReg1, TempReg2;
+	MIPS_DWORD CompilePC;
+	CompilePC.DW = (int)Section->CompilePC;
 
-	CPU_Message("  %X %s",Section->CompilePC,R4300iOpcodeName(Opcode.Hex,Section->CompilePC));
+	CPU_Message("  %X %s",Section->CompilePC,R4300iOpcodeName(Opcode.Hex,CompilePC));
 	
 	if (Opcode.IMM.base == 29 && SPHack) {
 		if (IsMapped(Opcode.BRANCH.rt)) { ProtectGPR(Section,Opcode.BRANCH.rt); }
@@ -2358,8 +2430,10 @@ void Compile_R4300i_SW (BLOCK_SECTION * Section){
 
 void Compile_R4300i_SWR (BLOCK_SECTION * Section) {
 	DWORD TempReg1, TempReg2 = 0x0, Value, Offset, shift;
+	MIPS_DWORD CompilePC;
+	CompilePC.DW = (int)Section->CompilePC;
 
-	CPU_Message("  %X %s",Section->CompilePC,R4300iOpcodeName(Opcode.Hex,Section->CompilePC));
+	CPU_Message("  %X %s",Section->CompilePC,R4300iOpcodeName(Opcode.Hex,CompilePC));
 
 	if (IsConst(Opcode.IMM.base)) { 
 		DWORD Address;
@@ -2452,7 +2526,10 @@ void Compile_R4300i_SWR (BLOCK_SECTION * Section) {
 }
 
 void Compile_R4300i_SDL (BLOCK_SECTION * Section) {
-	CPU_Message("  %X %s",Section->CompilePC,R4300iOpcodeName(Opcode.Hex,Section->CompilePC));
+	MIPS_DWORD CompilePC;
+	CompilePC.DW = (int)Section->CompilePC;
+
+	CPU_Message("  %X %s",Section->CompilePC,R4300iOpcodeName(Opcode.Hex,CompilePC));
 	if (Opcode.IMM.base != 0) { UnMap_GPR(Section,Opcode.IMM.base,TRUE); }
 	if (Opcode.BRANCH.rt != 0) { UnMap_GPR(Section,Opcode.BRANCH.rt,TRUE); }
 	Pushad();
@@ -2463,7 +2540,10 @@ void Compile_R4300i_SDL (BLOCK_SECTION * Section) {
 }
 
 void Compile_R4300i_SDR (BLOCK_SECTION * Section) {
-	CPU_Message("  %X %s",Section->CompilePC,R4300iOpcodeName(Opcode.Hex,Section->CompilePC));
+	MIPS_DWORD CompilePC;
+	CompilePC.DW = (int)Section->CompilePC;
+
+	CPU_Message("  %X %s",Section->CompilePC,R4300iOpcodeName(Opcode.Hex,CompilePC));
 	if (Opcode.IMM.base != 0) { UnMap_GPR(Section,Opcode.IMM.base,TRUE); }
 	if (Opcode.BRANCH.rt != 0) { UnMap_GPR(Section,Opcode.BRANCH.rt,TRUE); }
 	Pushad();
@@ -2489,7 +2569,10 @@ void _fastcall ClearRecomplierCache (DWORD Address) {
 }
 
 void Compile_R4300i_CACHE (BLOCK_SECTION * Section){
-	CPU_Message("  %X %s",Section->CompilePC,R4300iOpcodeName(Opcode.Hex,Section->CompilePC));
+	MIPS_DWORD CompilePC;
+	CompilePC.DW = (int)Section->CompilePC;
+
+	CPU_Message("  %X %s",Section->CompilePC,R4300iOpcodeName(Opcode.Hex,CompilePC));
 	if (SelfModCheck != ModCode_Cache && 
 		SelfModCheck != ModCode_ChangeMemory && 
 		SelfModCheck != ModCode_CheckMemory2 && 
@@ -2536,8 +2619,10 @@ void Compile_R4300i_CACHE (BLOCK_SECTION * Section){
 
 void Compile_R4300i_LL (BLOCK_SECTION * Section) {
 	DWORD TempReg1, TempReg2;
+	MIPS_DWORD CompilePC;
+	CompilePC.DW = (int)Section->CompilePC;
 
-	CPU_Message("  %X %s",Section->CompilePC,R4300iOpcodeName(Opcode.Hex,Section->CompilePC));
+	CPU_Message("  %X %s",Section->CompilePC,R4300iOpcodeName(Opcode.Hex,CompilePC));
 
 	if (Opcode.BRANCH.rt == 0) return;
 
@@ -2622,8 +2707,10 @@ void Compile_R4300i_LL (BLOCK_SECTION * Section) {
 void Compile_R4300i_SC (BLOCK_SECTION * Section){
 	DWORD TempReg1, TempReg2;
 	BYTE * Jump;
+	MIPS_DWORD CompilePC;
+	CompilePC.DW = (int)Section->CompilePC;
 
-	CPU_Message("  %X %s",Section->CompilePC,R4300iOpcodeName(Opcode.Hex,Section->CompilePC));
+	CPU_Message("  %X %s",Section->CompilePC,R4300iOpcodeName(Opcode.Hex,CompilePC));
 	
 	CompConstToVariable(1,&LLBit,"LLBit");
 	JneLabel32("LLBitNotSet",0);
@@ -2700,8 +2787,10 @@ void Compile_R4300i_SC (BLOCK_SECTION * Section){
 
 void Compile_R4300i_LD (BLOCK_SECTION * Section) {
 	DWORD TempReg1, TempReg2;
+	MIPS_DWORD CompilePC;
+	CompilePC.DW = (int)Section->CompilePC;
 
-	CPU_Message("  %X %s",Section->CompilePC,R4300iOpcodeName(Opcode.Hex,Section->CompilePC));
+	CPU_Message("  %X %s",Section->CompilePC,R4300iOpcodeName(Opcode.Hex,CompilePC));
 
 	if (Opcode.BRANCH.rt == 0) return;
 
@@ -2774,8 +2863,10 @@ void Compile_R4300i_LD (BLOCK_SECTION * Section) {
 
 void Compile_R4300i_SD (BLOCK_SECTION * Section){
 	DWORD TempReg1, TempReg2;
+	MIPS_DWORD CompilePC;
+	CompilePC.DW = (int)Section->CompilePC;
 
-	CPU_Message("  %X %s",Section->CompilePC,R4300iOpcodeName(Opcode.Hex,Section->CompilePC));
+	CPU_Message("  %X %s",Section->CompilePC,R4300iOpcodeName(Opcode.Hex,CompilePC));
 	
 	if (IsConst(Opcode.IMM.base)) { 
 		DWORD Address = MipsRegLo(Opcode.IMM.base) + (short)Opcode.BRANCH.offset;
@@ -2881,7 +2972,10 @@ void Compile_R4300i_SD (BLOCK_SECTION * Section){
 
 /********************** R4300i OpCodes: Special **********************/
 void Compile_R4300i_SPECIAL_SLL (BLOCK_SECTION * Section) {
-	CPU_Message("  %X %s",Section->CompilePC,R4300iOpcodeName(Opcode.Hex,Section->CompilePC));
+	MIPS_DWORD CompilePC;
+	CompilePC.DW = (int)Section->CompilePC;
+
+	CPU_Message("  %X %s",Section->CompilePC,R4300iOpcodeName(Opcode.Hex,CompilePC));
 
 	if (Opcode.REG.rd == 0) { return; }
 	if (IsConst(Opcode.BRANCH.rt)) {
@@ -2921,7 +3015,10 @@ void Compile_R4300i_SPECIAL_SLL (BLOCK_SECTION * Section) {
 }
 
 void Compile_R4300i_SPECIAL_SRL (BLOCK_SECTION * Section) {
-	CPU_Message("  %X %s",Section->CompilePC,R4300iOpcodeName(Opcode.Hex,Section->CompilePC));
+	MIPS_DWORD CompilePC;
+	CompilePC.DW = (int)Section->CompilePC;
+
+	CPU_Message("  %X %s",Section->CompilePC,R4300iOpcodeName(Opcode.Hex,CompilePC));
 	if (Opcode.REG.rd == 0) { return; }
 	
 	if (IsConst(Opcode.BRANCH.rt)) {
@@ -2935,7 +3032,10 @@ void Compile_R4300i_SPECIAL_SRL (BLOCK_SECTION * Section) {
 }
 
 void Compile_R4300i_SPECIAL_SRA (BLOCK_SECTION * Section) {
-	CPU_Message("  %X %s",Section->CompilePC,R4300iOpcodeName(Opcode.Hex,Section->CompilePC));
+	MIPS_DWORD CompilePC;
+	CompilePC.DW = (int)Section->CompilePC;
+
+	CPU_Message("  %X %s",Section->CompilePC,R4300iOpcodeName(Opcode.Hex,CompilePC));
 	if (Opcode.REG.rd == 0) { return; }
 
 	if (IsConst(Opcode.BRANCH.rt)) {
@@ -2956,7 +3056,10 @@ void Compile_R4300i_SPECIAL_SRA (BLOCK_SECTION * Section) {
 }
 
 void Compile_R4300i_SPECIAL_SLLV (BLOCK_SECTION * Section) {
-	CPU_Message("  %X %s",Section->CompilePC,R4300iOpcodeName(Opcode.Hex,Section->CompilePC));
+	MIPS_DWORD CompilePC;
+	CompilePC.DW = (int)Section->CompilePC;
+
+	CPU_Message("  %X %s",Section->CompilePC,R4300iOpcodeName(Opcode.Hex,CompilePC));
 	if (Opcode.REG.rd == 0) { return; }
 	
 	if (IsConst(Opcode.BRANCH.rs)) {
@@ -2978,7 +3081,10 @@ void Compile_R4300i_SPECIAL_SLLV (BLOCK_SECTION * Section) {
 }
 
 void Compile_R4300i_SPECIAL_SRLV (BLOCK_SECTION * Section) {
-	CPU_Message("  %X %s",Section->CompilePC,R4300iOpcodeName(Opcode.Hex,Section->CompilePC));
+	MIPS_DWORD CompilePC;
+	CompilePC.DW = (int)Section->CompilePC;
+
+	CPU_Message("  %X %s",Section->CompilePC,R4300iOpcodeName(Opcode.Hex,CompilePC));
 	if (Opcode.REG.rd == 0) { return; }
 	
 	if (IsConst(Opcode.BRANCH.rs)) {
@@ -3000,7 +3106,10 @@ void Compile_R4300i_SPECIAL_SRLV (BLOCK_SECTION * Section) {
 }
 
 void Compile_R4300i_SPECIAL_SRAV (BLOCK_SECTION * Section) {
-	CPU_Message("  %X %s",Section->CompilePC,R4300iOpcodeName(Opcode.Hex,Section->CompilePC));
+	MIPS_DWORD CompilePC;
+	CompilePC.DW = (int)Section->CompilePC;
+
+	CPU_Message("  %X %s",Section->CompilePC,R4300iOpcodeName(Opcode.Hex,CompilePC));
 	if (Opcode.REG.rd == 0) { return; }
 
 	if (IsConst(Opcode.BRANCH.rs)) {
@@ -3037,9 +3146,11 @@ void Compile_R4300i_SPECIAL_SRAV (BLOCK_SECTION * Section) {
 
 void Compile_R4300i_SPECIAL_JR (BLOCK_SECTION * Section) {
 	static char JumpLabel[100];
+	MIPS_DWORD CompilePC;
+	CompilePC.DW = (int)Section->CompilePC;
 
 	if ( NextInstruction == NORMAL ) {
-		CPU_Message("  %X %s",Section->CompilePC,R4300iOpcodeName(Opcode.Hex,Section->CompilePC));
+		CPU_Message("  %X %s",Section->CompilePC,R4300iOpcodeName(Opcode.Hex,CompilePC));
 		if (IsConst(Opcode.BRANCH.rs)) { 
 			sprintf(JumpLabel,"0x%08X",MipsRegLo(Opcode.BRANCH.rs));
 			Section->Jump.BranchLabel   = JumpLabel;
@@ -3113,10 +3224,12 @@ void Compile_R4300i_SPECIAL_JR (BLOCK_SECTION * Section) {
 }
 
 void Compile_R4300i_SPECIAL_JALR (BLOCK_SECTION * Section) {
-	static char JumpLabel[100];	
+	static char JumpLabel[100];
+	MIPS_DWORD CompilePC;
+	CompilePC.DW = (int)Section->CompilePC;
 	
 	if ( NextInstruction == NORMAL ) {
-		CPU_Message("  %X %s",Section->CompilePC,R4300iOpcodeName(Opcode.Hex,Section->CompilePC));
+		CPU_Message("  %X %s",Section->CompilePC,R4300iOpcodeName(Opcode.Hex,CompilePC));
 		MIPS_DWORD CompilePC;
 		CompilePC.DW = (int)Section->CompilePC;
 		if (DelaySlotEffectsCompare(CompilePC,Opcode.BRANCH.rs,0)) {
@@ -3175,13 +3288,19 @@ void Compile_R4300i_SPECIAL_JALR (BLOCK_SECTION * Section) {
 }
 
 void Compile_R4300i_SPECIAL_SYSCALL(BLOCK_SECTION* Section) {
-	CPU_Message("  %X %s", Section->CompilePC, R4300iOpcodeName(Opcode.Hex, Section->CompilePC));
+	MIPS_DWORD CompilePC;
+	CompilePC.DW = (int)Section->CompilePC;
+
+	CPU_Message("  %X %s", Section->CompilePC, R4300iOpcodeName(Opcode.Hex, CompilePC));
 
 	CompileExit(Section->CompilePC, Section->RegWorking, DoSysCall, TRUE, NULL);
 }
 
 void Compile_R4300i_SPECIAL_BREAK(BLOCK_SECTION* Section) {
-	CPU_Message("  %X %s", Section->CompilePC, R4300iOpcodeName(Opcode.Hex, Section->CompilePC));
+	MIPS_DWORD CompilePC;
+	CompilePC.DW = (int)Section->CompilePC;
+
+	CPU_Message("  %X %s", Section->CompilePC, R4300iOpcodeName(Opcode.Hex, CompilePC));
 
 	CompileExit(Section->CompilePC, Section->RegWorking, DoBreak, TRUE, NULL);
 }
@@ -3190,7 +3309,10 @@ void Compile_R4300i_SPECIAL_BREAK(BLOCK_SECTION* Section) {
 #define DoTrapLength32 0x00000046
 
 void Compile_R4300i_SPECIAL_TEQ(BLOCK_SECTION* Section) {
-	CPU_Message("  %X %s", Section->CompilePC, R4300iOpcodeName(Opcode.Hex, Section->CompilePC));
+	MIPS_DWORD CompilePC;
+	CompilePC.DW = (int)Section->CompilePC;
+
+	CPU_Message("  %X %s", Section->CompilePC, R4300iOpcodeName(Opcode.Hex, CompilePC));
 	int b1 = 0;
 	int b2 = 0;
 	int b3 = 0;
@@ -3243,7 +3365,10 @@ void Compile_R4300i_SPECIAL_TEQ(BLOCK_SECTION* Section) {
 }
 
 void Compile_R4300i_SPECIAL_TGE(BLOCK_SECTION* Section) {
-	CPU_Message("  %X %s", Section->CompilePC, R4300iOpcodeName(Opcode.Hex, Section->CompilePC));
+	MIPS_DWORD CompilePC;
+	CompilePC.DW = (int)Section->CompilePC;
+
+	CPU_Message("  %X %s", Section->CompilePC, R4300iOpcodeName(Opcode.Hex, CompilePC));
 
 	for (int i = 0; i < 32; i++)
 	{
@@ -3279,7 +3404,10 @@ void Compile_R4300i_SPECIAL_TGE(BLOCK_SECTION* Section) {
 }
 
 void Compile_R4300i_SPECIAL_TGEU(BLOCK_SECTION* Section) {
-	CPU_Message("  %X %s", Section->CompilePC, R4300iOpcodeName(Opcode.Hex, Section->CompilePC));
+	MIPS_DWORD CompilePC;
+	CompilePC.DW = (int)Section->CompilePC;
+
+	CPU_Message("  %X %s", Section->CompilePC, R4300iOpcodeName(Opcode.Hex, CompilePC));
 
 	for (int i = 0; i < 32; i++)
 	{
@@ -3315,7 +3443,10 @@ void Compile_R4300i_SPECIAL_TGEU(BLOCK_SECTION* Section) {
 }
 
 void Compile_R4300i_SPECIAL_TLT(BLOCK_SECTION* Section) {
-	CPU_Message("  %X %s", Section->CompilePC, R4300iOpcodeName(Opcode.Hex, Section->CompilePC));
+	MIPS_DWORD CompilePC;
+	CompilePC.DW = (int)Section->CompilePC;
+
+	CPU_Message("  %X %s", Section->CompilePC, R4300iOpcodeName(Opcode.Hex, CompilePC));
 
 	for (int i = 0; i < 32; i++)
 	{
@@ -3351,7 +3482,10 @@ void Compile_R4300i_SPECIAL_TLT(BLOCK_SECTION* Section) {
 }
 
 void Compile_R4300i_SPECIAL_TLTU(BLOCK_SECTION* Section) {
-	CPU_Message("  %X %s", Section->CompilePC, R4300iOpcodeName(Opcode.Hex, Section->CompilePC));
+	MIPS_DWORD CompilePC;
+	CompilePC.DW = (int)Section->CompilePC;
+
+	CPU_Message("  %X %s", Section->CompilePC, R4300iOpcodeName(Opcode.Hex, CompilePC));
 
 	for (int i = 0; i < 32; i++)
 	{
@@ -3392,7 +3526,10 @@ void Compile_R4300i_SPECIAL_TNE(BLOCK_SECTION* Section) {
 
 
 void Compile_R4300i_SPECIAL_MFLO (BLOCK_SECTION * Section) {
-	CPU_Message("  %X %s",Section->CompilePC,R4300iOpcodeName(Opcode.Hex,Section->CompilePC));
+	MIPS_DWORD CompilePC;
+	CompilePC.DW = (int)Section->CompilePC;
+
+	CPU_Message("  %X %s",Section->CompilePC,R4300iOpcodeName(Opcode.Hex,CompilePC));
 	if (Opcode.REG.rd == 0) { return; }
 
 	Map_GPR_64bit(Section,Opcode.REG.rd,-1);
@@ -3401,7 +3538,10 @@ void Compile_R4300i_SPECIAL_MFLO (BLOCK_SECTION * Section) {
 }
 
 void Compile_R4300i_SPECIAL_MTLO (BLOCK_SECTION * Section) {
-	CPU_Message("  %X %s",Section->CompilePC,R4300iOpcodeName(Opcode.Hex,Section->CompilePC));
+	MIPS_DWORD CompilePC;
+	CompilePC.DW = (int)Section->CompilePC;
+
+	CPU_Message("  %X %s",Section->CompilePC,R4300iOpcodeName(Opcode.Hex,CompilePC));
 
 	if (IsKnown(Opcode.BRANCH.rs) && IsConst(Opcode.BRANCH.rs)) {
 		if (Is64Bit(Opcode.BRANCH.rs)) {
@@ -3429,7 +3569,10 @@ void Compile_R4300i_SPECIAL_MTLO (BLOCK_SECTION * Section) {
 }
 
 void Compile_R4300i_SPECIAL_MFHI (BLOCK_SECTION * Section) {
-	CPU_Message("  %X %s",Section->CompilePC,R4300iOpcodeName(Opcode.Hex,Section->CompilePC));
+	MIPS_DWORD CompilePC;
+	CompilePC.DW = (int)Section->CompilePC;
+
+	CPU_Message("  %X %s",Section->CompilePC,R4300iOpcodeName(Opcode.Hex,CompilePC));
 	if (Opcode.REG.rd == 0) { return; }
 
 	Map_GPR_64bit(Section,Opcode.REG.rd,-1);
@@ -3438,7 +3581,10 @@ void Compile_R4300i_SPECIAL_MFHI (BLOCK_SECTION * Section) {
 }
 
 void Compile_R4300i_SPECIAL_MTHI (BLOCK_SECTION * Section) {
-	CPU_Message("  %X %s",Section->CompilePC,R4300iOpcodeName(Opcode.Hex,Section->CompilePC));
+	MIPS_DWORD CompilePC;
+	CompilePC.DW = (int)Section->CompilePC;
+
+	CPU_Message("  %X %s",Section->CompilePC,R4300iOpcodeName(Opcode.Hex,CompilePC));
 	if (IsKnown(Opcode.BRANCH.rs) && IsConst(Opcode.BRANCH.rs)) {
 		if (Is64Bit(Opcode.BRANCH.rs)) {
 			MoveConstToVariable(MipsRegHi(Opcode.BRANCH.rs),&HI.UW[1],"HI.UW[1]");
@@ -3466,8 +3612,10 @@ void Compile_R4300i_SPECIAL_MTHI (BLOCK_SECTION * Section) {
 
 void Compile_R4300i_SPECIAL_DSLLV (BLOCK_SECTION * Section) {
 	BYTE * Jump[2];
+	MIPS_DWORD CompilePC;
+	CompilePC.DW = (int)Section->CompilePC;
 
-	CPU_Message("  %X %s",Section->CompilePC,R4300iOpcodeName(Opcode.Hex,Section->CompilePC));
+	CPU_Message("  %X %s",Section->CompilePC,R4300iOpcodeName(Opcode.Hex,CompilePC));
 	if (Opcode.REG.rd == 0) { return; }
 	
 	if (IsConst(Opcode.BRANCH.rs)) {
@@ -3503,8 +3651,10 @@ void Compile_R4300i_SPECIAL_DSLLV (BLOCK_SECTION * Section) {
 
 void Compile_R4300i_SPECIAL_DSRLV (BLOCK_SECTION * Section) {
 	BYTE * Jump[2];
+	MIPS_DWORD CompilePC;
+	CompilePC.DW = (int)Section->CompilePC;
 
-	CPU_Message("  %X %s",Section->CompilePC,R4300iOpcodeName(Opcode.Hex,Section->CompilePC));
+	CPU_Message("  %X %s",Section->CompilePC,R4300iOpcodeName(Opcode.Hex,CompilePC));
 	if (Opcode.REG.rd == 0) { return; }
 	
 	if (IsConst(Opcode.BRANCH.rs)) {
@@ -3556,8 +3706,10 @@ void Compile_R4300i_SPECIAL_DSRLV (BLOCK_SECTION * Section) {
 
 void Compile_R4300i_SPECIAL_DSRAV (BLOCK_SECTION * Section) {
 	BYTE * Jump[2];
+	MIPS_DWORD CompilePC;
+	CompilePC.DW = (int)Section->CompilePC;
 
-	CPU_Message("  %X %s",Section->CompilePC,R4300iOpcodeName(Opcode.Hex,Section->CompilePC));
+	CPU_Message("  %X %s",Section->CompilePC,R4300iOpcodeName(Opcode.Hex,CompilePC));
 	if (Opcode.REG.rd == 0) { return; }
 	
 	if (IsConst(Opcode.BRANCH.rs)) {
@@ -3592,7 +3744,10 @@ void Compile_R4300i_SPECIAL_DSRAV (BLOCK_SECTION * Section) {
 }
 
 void Compile_R4300i_SPECIAL_MULT ( BLOCK_SECTION * Section) {
-	CPU_Message("  %X %s",Section->CompilePC,R4300iOpcodeName(Opcode.Hex,Section->CompilePC));
+	MIPS_DWORD CompilePC;
+	CompilePC.DW = (int)Section->CompilePC;
+
+	CPU_Message("  %X %s",Section->CompilePC,R4300iOpcodeName(Opcode.Hex,CompilePC));
 
 	x86Protected(x86_EDX) = TRUE;
 	Map_TempReg(Section,x86_EAX,Opcode.BRANCH.rs,FALSE);
@@ -3610,7 +3765,10 @@ void Compile_R4300i_SPECIAL_MULT ( BLOCK_SECTION * Section) {
 }
 
 void Compile_R4300i_SPECIAL_MULTU (BLOCK_SECTION * Section) {
-	CPU_Message("  %X %s",Section->CompilePC,R4300iOpcodeName(Opcode.Hex,Section->CompilePC));
+	MIPS_DWORD CompilePC;
+	CompilePC.DW = (int)Section->CompilePC;
+
+	CPU_Message("  %X %s",Section->CompilePC,R4300iOpcodeName(Opcode.Hex,CompilePC));
 
 	x86Protected(x86_EDX) = TRUE;
 	Map_TempReg(Section,x86_EAX,Opcode.BRANCH.rs,FALSE);
@@ -3629,8 +3787,10 @@ void Compile_R4300i_SPECIAL_MULTU (BLOCK_SECTION * Section) {
 
 void Compile_R4300i_SPECIAL_DIV (BLOCK_SECTION * Section) {
 	BYTE *Jump[4] = { 0 };
+	MIPS_DWORD CompilePC;
+	CompilePC.DW = (int)Section->CompilePC;
 
-	CPU_Message("  %X %s",Section->CompilePC,R4300iOpcodeName(Opcode.Hex,Section->CompilePC));
+	CPU_Message("  %X %s",Section->CompilePC,R4300iOpcodeName(Opcode.Hex,CompilePC));
 	
 	if (IsConst(Opcode.BRANCH.rt)) {
 		if (MipsRegLo(Opcode.BRANCH.rs) == INT_MIN && MipsRegLo(Opcode.BRANCH.rt) == -1) {
@@ -3727,8 +3887,10 @@ void Compile_R4300i_SPECIAL_DIV (BLOCK_SECTION * Section) {
 void Compile_R4300i_SPECIAL_DIVU ( BLOCK_SECTION * Section) {
 	BYTE *Jump[2];
 	int x86reg;
+	MIPS_DWORD CompilePC;
+	CompilePC.DW = (int)Section->CompilePC;
 
-	CPU_Message("  %X %s",Section->CompilePC,R4300iOpcodeName(Opcode.Hex,Section->CompilePC));
+	CPU_Message("  %X %s",Section->CompilePC,R4300iOpcodeName(Opcode.Hex,CompilePC));
 
 	if (IsConst(Opcode.BRANCH.rt)) {
 		if (MipsRegLo(Opcode.BRANCH.rt) == 0) {
@@ -3792,7 +3954,10 @@ void Compile_R4300i_SPECIAL_DIVU ( BLOCK_SECTION * Section) {
 }
 
 void Compile_R4300i_SPECIAL_DMULT (BLOCK_SECTION * Section) {
-	CPU_Message("  %X %s",Section->CompilePC,R4300iOpcodeName(Opcode.Hex,Section->CompilePC));
+	MIPS_DWORD CompilePC;
+	CompilePC.DW = (int)Section->CompilePC;
+
+	CPU_Message("  %X %s",Section->CompilePC,R4300iOpcodeName(Opcode.Hex,CompilePC));
 
 	if (Opcode.BRANCH.rs != 0) { UnMap_GPR(Section,Opcode.BRANCH.rs,TRUE); }
 	if (Opcode.BRANCH.rt != 0) { UnMap_GPR(Section,Opcode.BRANCH.rt,TRUE); }
@@ -3803,7 +3968,10 @@ void Compile_R4300i_SPECIAL_DMULT (BLOCK_SECTION * Section) {
 }
 
 void Compile_R4300i_SPECIAL_DMULTU (BLOCK_SECTION * Section) {
-	CPU_Message("  %X %s",Section->CompilePC,R4300iOpcodeName(Opcode.Hex,Section->CompilePC));
+	MIPS_DWORD CompilePC;
+	CompilePC.DW = (int)Section->CompilePC;
+
+	CPU_Message("  %X %s",Section->CompilePC,R4300iOpcodeName(Opcode.Hex,CompilePC));
 
 	/* LO.UDW = (uint64)GPR[Opcode.BRANCH.rs].UW[0] * (uint64)GPR[Opcode.BRANCH.rt].UW[0]; */
 	x86Protected(x86_EDX) = TRUE;
@@ -3872,7 +4040,10 @@ void Compile_R4300i_SPECIAL_DMULTU (BLOCK_SECTION * Section) {
 }
 
 void Compile_R4300i_SPECIAL_DDIV (BLOCK_SECTION * Section) {
-	CPU_Message("  %X %s",Section->CompilePC,R4300iOpcodeName(Opcode.Hex,Section->CompilePC));
+	MIPS_DWORD CompilePC;
+	CompilePC.DW = (int)Section->CompilePC;
+
+	CPU_Message("  %X %s",Section->CompilePC,R4300iOpcodeName(Opcode.Hex,CompilePC));
 
 	if (Opcode.BRANCH.rt == 0) { return; }
 	if (Opcode.BRANCH.rs != 0) { UnMap_GPR(Section, Opcode.BRANCH.rs, TRUE); }
@@ -3884,7 +4055,10 @@ void Compile_R4300i_SPECIAL_DDIV (BLOCK_SECTION * Section) {
 }
 
 void Compile_R4300i_SPECIAL_DDIVU (BLOCK_SECTION * Section) {
-	CPU_Message("  %X %s",Section->CompilePC,R4300iOpcodeName(Opcode.Hex,Section->CompilePC));
+	MIPS_DWORD CompilePC;
+	CompilePC.DW = (int)Section->CompilePC;
+
+	CPU_Message("  %X %s",Section->CompilePC,R4300iOpcodeName(Opcode.Hex,CompilePC));
 
 	if (Opcode.BRANCH.rt == 0) { return; }
 	if (Opcode.BRANCH.rs != 0) { UnMap_GPR(Section, Opcode.BRANCH.rs, TRUE); }
@@ -3898,8 +4072,10 @@ void Compile_R4300i_SPECIAL_DDIVU (BLOCK_SECTION * Section) {
 void Compile_R4300i_SPECIAL_ADD (BLOCK_SECTION * Section) {
 	int source1 = Opcode.REG.rd == Opcode.BRANCH.rt?Opcode.BRANCH.rt:Opcode.BRANCH.rs;
 	int source2 = Opcode.REG.rd == Opcode.BRANCH.rt?Opcode.BRANCH.rs:Opcode.BRANCH.rt;
+	MIPS_DWORD CompilePC;
+	CompilePC.DW = (int)Section->CompilePC;
 
-	CPU_Message("  %X %s",Section->CompilePC,R4300iOpcodeName(Opcode.Hex,Section->CompilePC));
+	CPU_Message("  %X %s",Section->CompilePC,R4300iOpcodeName(Opcode.Hex,CompilePC));
 	if (Opcode.REG.rd == 0) { return; }
 
 	if (IsConst(source1) && IsConst(source2)) {
@@ -3925,8 +4101,10 @@ void Compile_R4300i_SPECIAL_ADD (BLOCK_SECTION * Section) {
 void Compile_R4300i_SPECIAL_ADDU (BLOCK_SECTION * Section) {
 	int source1 = Opcode.REG.rd == Opcode.BRANCH.rt?Opcode.BRANCH.rt:Opcode.BRANCH.rs;
 	int source2 = Opcode.REG.rd == Opcode.BRANCH.rt?Opcode.BRANCH.rs:Opcode.BRANCH.rt;
+	MIPS_DWORD CompilePC;
+	CompilePC.DW = (int)Section->CompilePC;
 
-	CPU_Message("  %X %s",Section->CompilePC,R4300iOpcodeName(Opcode.Hex,Section->CompilePC));
+	CPU_Message("  %X %s",Section->CompilePC,R4300iOpcodeName(Opcode.Hex,CompilePC));
 	if (Opcode.REG.rd == 0) { return; }
 
 	if (IsConst(source1) && IsConst(source2)) {
@@ -3950,7 +4128,10 @@ void Compile_R4300i_SPECIAL_ADDU (BLOCK_SECTION * Section) {
 }
 
 void Compile_R4300i_SPECIAL_SUB (BLOCK_SECTION * Section) {
-	CPU_Message("  %X %s",Section->CompilePC,R4300iOpcodeName(Opcode.Hex,Section->CompilePC));
+	MIPS_DWORD CompilePC;
+	CompilePC.DW = (int)Section->CompilePC;
+
+	CPU_Message("  %X %s",Section->CompilePC,R4300iOpcodeName(Opcode.Hex,CompilePC));
 	if (Opcode.REG.rd == 0) { return; }
 
 	if (IsConst(Opcode.BRANCH.rt)  && IsConst(Opcode.BRANCH.rs)) {
@@ -3977,7 +4158,10 @@ void Compile_R4300i_SPECIAL_SUB (BLOCK_SECTION * Section) {
 }
 
 void Compile_R4300i_SPECIAL_SUBU (BLOCK_SECTION * Section) {
-	CPU_Message("  %X %s",Section->CompilePC,R4300iOpcodeName(Opcode.Hex,Section->CompilePC));
+	MIPS_DWORD CompilePC;
+	CompilePC.DW = (int)Section->CompilePC;
+
+	CPU_Message("  %X %s",Section->CompilePC,R4300iOpcodeName(Opcode.Hex,CompilePC));
 	if (Opcode.REG.rd == 0) { return; }
 
 	if (IsConst(Opcode.BRANCH.rt)  && IsConst(Opcode.BRANCH.rs)) {
@@ -4004,7 +4188,10 @@ void Compile_R4300i_SPECIAL_SUBU (BLOCK_SECTION * Section) {
 }
 
 void Compile_R4300i_SPECIAL_AND (BLOCK_SECTION * Section) {
-	CPU_Message("  %X %s",Section->CompilePC,R4300iOpcodeName(Opcode.Hex,Section->CompilePC));
+	MIPS_DWORD CompilePC;
+	CompilePC.DW = (int)Section->CompilePC;
+
+	CPU_Message("  %X %s",Section->CompilePC,R4300iOpcodeName(Opcode.Hex,CompilePC));
 	if (Opcode.REG.rd == 0) { return; }
 	if (IsKnown(Opcode.BRANCH.rt) && IsKnown(Opcode.BRANCH.rs)) {
 		if (IsConst(Opcode.BRANCH.rt) && IsConst(Opcode.BRANCH.rs)) {
@@ -4136,7 +4323,10 @@ void Compile_R4300i_SPECIAL_AND (BLOCK_SECTION * Section) {
 }
 
 void Compile_R4300i_SPECIAL_OR (BLOCK_SECTION * Section) {
-	CPU_Message("  %X %s",Section->CompilePC,R4300iOpcodeName(Opcode.Hex,Section->CompilePC));
+	MIPS_DWORD CompilePC;
+	CompilePC.DW = (int)Section->CompilePC;
+
+	CPU_Message("  %X %s",Section->CompilePC,R4300iOpcodeName(Opcode.Hex,CompilePC));
 
 	if (Opcode.REG.rd == 0) { return; }
 	if (IsKnown(Opcode.BRANCH.rt) && IsKnown(Opcode.BRANCH.rs)) {
@@ -4235,7 +4425,10 @@ void Compile_R4300i_SPECIAL_OR (BLOCK_SECTION * Section) {
 }
 
 void Compile_R4300i_SPECIAL_XOR (BLOCK_SECTION * Section) {
-	CPU_Message("  %X %s",Section->CompilePC,R4300iOpcodeName(Opcode.Hex,Section->CompilePC));
+	MIPS_DWORD CompilePC;
+	CompilePC.DW = (int)Section->CompilePC;
+
+	CPU_Message("  %X %s",Section->CompilePC,R4300iOpcodeName(Opcode.Hex,CompilePC));
 	if (Opcode.REG.rd == 0) { return; }
 
 	if (Opcode.BRANCH.rt == Opcode.BRANCH.rs) {
@@ -4336,7 +4529,10 @@ void Compile_R4300i_SPECIAL_XOR (BLOCK_SECTION * Section) {
 }
 
 void Compile_R4300i_SPECIAL_NOR (BLOCK_SECTION * Section) {
-	CPU_Message("  %X %s",Section->CompilePC,R4300iOpcodeName(Opcode.Hex,Section->CompilePC));
+	MIPS_DWORD CompilePC;
+	CompilePC.DW = (int)Section->CompilePC;
+
+	CPU_Message("  %X %s",Section->CompilePC,R4300iOpcodeName(Opcode.Hex,CompilePC));
 
 	if (Opcode.REG.rd == 0) { return; }
 	if (IsKnown(Opcode.BRANCH.rt) && IsKnown(Opcode.BRANCH.rs)) {
@@ -4438,7 +4634,10 @@ void Compile_R4300i_SPECIAL_NOR (BLOCK_SECTION * Section) {
 }
 
 void Compile_R4300i_SPECIAL_SLT (BLOCK_SECTION * Section) {
-	CPU_Message("  %X %s",Section->CompilePC,R4300iOpcodeName(Opcode.Hex,Section->CompilePC));
+	MIPS_DWORD CompilePC;
+	CompilePC.DW = (int)Section->CompilePC;
+
+	CPU_Message("  %X %s",Section->CompilePC,R4300iOpcodeName(Opcode.Hex,CompilePC));
 
 	if (Opcode.REG.rd == 0) { return; }
 	if (IsKnown(Opcode.BRANCH.rt) && IsKnown(Opcode.BRANCH.rs)) {
@@ -4624,7 +4823,10 @@ void Compile_R4300i_SPECIAL_SLT (BLOCK_SECTION * Section) {
 }
 
 void Compile_R4300i_SPECIAL_SLTU (BLOCK_SECTION * Section) {
-	CPU_Message("  %X %s",Section->CompilePC,R4300iOpcodeName(Opcode.Hex,Section->CompilePC));
+	MIPS_DWORD CompilePC;
+	CompilePC.DW = (int)Section->CompilePC;
+
+	CPU_Message("  %X %s",Section->CompilePC,R4300iOpcodeName(Opcode.Hex,CompilePC));
 	if (Opcode.REG.rd == 0) { return; }
 
 	if (IsKnown(Opcode.BRANCH.rt) && IsKnown(Opcode.BRANCH.rs)) {
@@ -4808,7 +5010,10 @@ void Compile_R4300i_SPECIAL_SLTU (BLOCK_SECTION * Section) {
 }
 
 void Compile_R4300i_SPECIAL_DADD (BLOCK_SECTION * Section) {
-	CPU_Message("  %X %s",Section->CompilePC,R4300iOpcodeName(Opcode.Hex,Section->CompilePC));
+	MIPS_DWORD CompilePC;
+	CompilePC.DW = (int)Section->CompilePC;
+
+	CPU_Message("  %X %s",Section->CompilePC,R4300iOpcodeName(Opcode.Hex,CompilePC));
 	if (Opcode.REG.rd == 0) { return; }
 
 	if (IsConst(Opcode.BRANCH.rt)  && IsConst(Opcode.BRANCH.rs)) {
@@ -4842,7 +5047,10 @@ void Compile_R4300i_SPECIAL_DADD (BLOCK_SECTION * Section) {
 }
 
 void Compile_R4300i_SPECIAL_DADDU (BLOCK_SECTION * Section) {
-	CPU_Message("  %X %s",Section->CompilePC,R4300iOpcodeName(Opcode.Hex,Section->CompilePC));
+	MIPS_DWORD CompilePC;
+	CompilePC.DW = (int)Section->CompilePC;
+
+	CPU_Message("  %X %s",Section->CompilePC,R4300iOpcodeName(Opcode.Hex,CompilePC));
 	if (Opcode.REG.rd == 0) { return; }
 
 	if (IsConst(Opcode.BRANCH.rt)  && IsConst(Opcode.BRANCH.rs)) {
@@ -4876,7 +5084,10 @@ void Compile_R4300i_SPECIAL_DADDU (BLOCK_SECTION * Section) {
 }
 
 void Compile_R4300i_SPECIAL_DSUB (BLOCK_SECTION * Section) {
-	CPU_Message("  %X %s",Section->CompilePC,R4300iOpcodeName(Opcode.Hex,Section->CompilePC));
+	MIPS_DWORD CompilePC;
+	CompilePC.DW = (int)Section->CompilePC;
+
+	CPU_Message("  %X %s",Section->CompilePC,R4300iOpcodeName(Opcode.Hex,CompilePC));
 	if (Opcode.REG.rd == 0) { return; }
 
 	if (IsConst(Opcode.BRANCH.rt)  && IsConst(Opcode.BRANCH.rs)) {
@@ -4918,7 +5129,10 @@ void Compile_R4300i_SPECIAL_DSUB (BLOCK_SECTION * Section) {
 }
 
 void Compile_R4300i_SPECIAL_DSUBU (BLOCK_SECTION * Section) {
-	CPU_Message("  %X %s",Section->CompilePC,R4300iOpcodeName(Opcode.Hex,Section->CompilePC));
+	MIPS_DWORD CompilePC;
+	CompilePC.DW = (int)Section->CompilePC;
+
+	CPU_Message("  %X %s",Section->CompilePC,R4300iOpcodeName(Opcode.Hex,CompilePC));
 	if (Opcode.REG.rd == 0) { return; }
 
 	if (IsConst(Opcode.BRANCH.rt)  && IsConst(Opcode.BRANCH.rs)) {
@@ -4960,7 +5174,10 @@ void Compile_R4300i_SPECIAL_DSUBU (BLOCK_SECTION * Section) {
 }
 
 void Compile_R4300i_SPECIAL_DSLL (BLOCK_SECTION * Section) {
-	CPU_Message("  %X %s",Section->CompilePC,R4300iOpcodeName(Opcode.Hex,Section->CompilePC));
+	MIPS_DWORD CompilePC;
+	CompilePC.DW = (int)Section->CompilePC;
+
+	CPU_Message("  %X %s",Section->CompilePC,R4300iOpcodeName(Opcode.Hex,CompilePC));
 
 	if (Opcode.REG.rd == 0) { return; }
 	if (IsConst(Opcode.BRANCH.rt)) {
@@ -4983,7 +5200,10 @@ void Compile_R4300i_SPECIAL_DSLL (BLOCK_SECTION * Section) {
 }
 
 void Compile_R4300i_SPECIAL_DSRL (BLOCK_SECTION * Section) {
-	CPU_Message("  %X %s",Section->CompilePC,R4300iOpcodeName(Opcode.Hex,Section->CompilePC));
+	MIPS_DWORD CompilePC;
+	CompilePC.DW = (int)Section->CompilePC;
+
+	CPU_Message("  %X %s",Section->CompilePC,R4300iOpcodeName(Opcode.Hex,CompilePC));
 
 	if (Opcode.REG.rd == 0) { return; }
 	if (IsConst(Opcode.BRANCH.rt)) {
@@ -5005,7 +5225,10 @@ void Compile_R4300i_SPECIAL_DSRL (BLOCK_SECTION * Section) {
 }
 
 void Compile_R4300i_SPECIAL_DSRA (BLOCK_SECTION * Section) {
-	CPU_Message("  %X %s",Section->CompilePC,R4300iOpcodeName(Opcode.Hex,Section->CompilePC));
+	MIPS_DWORD CompilePC;
+	CompilePC.DW = (int)Section->CompilePC;
+
+	CPU_Message("  %X %s",Section->CompilePC,R4300iOpcodeName(Opcode.Hex,CompilePC));
 
 	if (Opcode.REG.rd == 0) { return; }
 	if (IsConst(Opcode.BRANCH.rt)) {
@@ -5027,7 +5250,10 @@ void Compile_R4300i_SPECIAL_DSRA (BLOCK_SECTION * Section) {
 }
 
 void Compile_R4300i_SPECIAL_DSLL32 (BLOCK_SECTION * Section) {
-	CPU_Message("  %X %s",Section->CompilePC,R4300iOpcodeName(Opcode.Hex,Section->CompilePC));
+	MIPS_DWORD CompilePC;
+	CompilePC.DW = (int)Section->CompilePC;
+
+	CPU_Message("  %X %s",Section->CompilePC,R4300iOpcodeName(Opcode.Hex,CompilePC));
 
 	if (Opcode.REG.rd == 0) { return; }
 	if (IsConst(Opcode.BRANCH.rt)) {
@@ -5068,7 +5294,10 @@ void Compile_R4300i_SPECIAL_DSLL32 (BLOCK_SECTION * Section) {
 }
 
 void Compile_R4300i_SPECIAL_DSRL32 (BLOCK_SECTION * Section) {
-	CPU_Message("  %X %s",Section->CompilePC,R4300iOpcodeName(Opcode.Hex,Section->CompilePC));
+	MIPS_DWORD CompilePC;
+	CompilePC.DW = (int)Section->CompilePC;
+
+	CPU_Message("  %X %s",Section->CompilePC,R4300iOpcodeName(Opcode.Hex,CompilePC));
 
 	if (Opcode.REG.rd == 0) { return; }
 	if (IsConst(Opcode.BRANCH.rt)) {
@@ -5104,7 +5333,10 @@ void Compile_R4300i_SPECIAL_DSRL32 (BLOCK_SECTION * Section) {
 }
 
 void Compile_R4300i_SPECIAL_DSRA32 (BLOCK_SECTION * Section) {
-	CPU_Message("  %X %s",Section->CompilePC,R4300iOpcodeName(Opcode.Hex,Section->CompilePC));
+	MIPS_DWORD CompilePC;
+	CompilePC.DW = (int)Section->CompilePC;
+
+	CPU_Message("  %X %s",Section->CompilePC,R4300iOpcodeName(Opcode.Hex,CompilePC));
 
 	if (Opcode.REG.rd == 0) { return; }
 	if (IsConst(Opcode.BRANCH.rt)) {
@@ -5141,7 +5373,10 @@ void Compile_R4300i_SPECIAL_DSRA32 (BLOCK_SECTION * Section) {
 
 /************************** COP0 functions **************************/
 void Compile_R4300i_COP0_MF(BLOCK_SECTION * Section) {
-	CPU_Message("  %X %s",Section->CompilePC,R4300iOpcodeName(Opcode.Hex,Section->CompilePC));
+	MIPS_DWORD CompilePC;
+	CompilePC.DW = (int)Section->CompilePC;
+
+	CPU_Message("  %X %s",Section->CompilePC,R4300iOpcodeName(Opcode.Hex,CompilePC));
 
 	if (Opcode.BRANCH.rt == 0) { return; }
 
@@ -5157,7 +5392,10 @@ void Compile_R4300i_COP0_MF(BLOCK_SECTION * Section) {
 }
 
 void Compile_R4300i_COP0_DMF(BLOCK_SECTION * Section) {
-	CPU_Message("  %X %s", Section->CompilePC, R4300iOpcodeName(Opcode.Hex, Section->CompilePC));
+	MIPS_DWORD CompilePC;
+	CompilePC.DW = (int)Section->CompilePC;
+
+	CPU_Message("  %X %s", Section->CompilePC, R4300iOpcodeName(Opcode.Hex, CompilePC));
 
 	if (Opcode.BRANCH.rt == 0) { return; }
 
@@ -5177,8 +5415,10 @@ void Compile_R4300i_COP0_DMF(BLOCK_SECTION * Section) {
 void Compile_R4300i_COP0_MT (BLOCK_SECTION * Section) {
 	int OldStatusReg;
 	BYTE *Jump;
+	MIPS_DWORD CompilePC;
+	CompilePC.DW = (int)Section->CompilePC;
 
-	CPU_Message("  %X %s",Section->CompilePC,R4300iOpcodeName(Opcode.Hex,Section->CompilePC));
+	CPU_Message("  %X %s",Section->CompilePC,R4300iOpcodeName(Opcode.Hex,CompilePC));
 
 	switch (Opcode.REG.rd) {
 	case 0: //Index
@@ -5285,8 +5525,10 @@ void Compile_R4300i_COP0_MT (BLOCK_SECTION * Section) {
 void Compile_R4300i_COP0_DMT(BLOCK_SECTION * Section) {
 	int OldStatusReg;
 	BYTE *Jump;
+	MIPS_DWORD CompilePC;
+	CompilePC.DW = (int)Section->CompilePC;
 
-	CPU_Message("  %X %s", Section->CompilePC, R4300iOpcodeName(Opcode.Hex, Section->CompilePC));
+	CPU_Message("  %X %s", Section->CompilePC, R4300iOpcodeName(Opcode.Hex, CompilePC));
 
 	switch (Opcode.REG.rd) {
 	case 0: //Index
@@ -5392,7 +5634,10 @@ void Compile_R4300i_COP0_DMT(BLOCK_SECTION * Section) {
 
 /************************** COP0 CO functions ***********************/
 void Compile_R4300i_COP0_CO_TLBR( BLOCK_SECTION * Section) {
-	CPU_Message("  %X %s",Section->CompilePC,R4300iOpcodeName(Opcode.Hex,Section->CompilePC));
+	MIPS_DWORD CompilePC;
+	CompilePC.DW = (int)Section->CompilePC;
+
+	CPU_Message("  %X %s",Section->CompilePC,R4300iOpcodeName(Opcode.Hex,CompilePC));
 	if (!UseTlb) {	return; }
 	Pushad();
 	Call_Direct(TLB_Read,"TLB_Read");
@@ -5400,7 +5645,10 @@ void Compile_R4300i_COP0_CO_TLBR( BLOCK_SECTION * Section) {
 }
 
 void Compile_R4300i_COP0_CO_TLBWI( BLOCK_SECTION * Section) {
-	CPU_Message("  %X %s",Section->CompilePC,R4300iOpcodeName(Opcode.Hex,Section->CompilePC));
+	MIPS_DWORD CompilePC;
+	CompilePC.DW = (int)Section->CompilePC;
+
+	CPU_Message("  %X %s",Section->CompilePC,R4300iOpcodeName(Opcode.Hex,CompilePC));
 	if (!UseTlb) {	return; }
 	Pushad();
 	MoveVariableToX86reg(&INDEX_REGISTER,"INDEX_REGISTER",x86_ECX);
@@ -5410,7 +5658,10 @@ void Compile_R4300i_COP0_CO_TLBWI( BLOCK_SECTION * Section) {
 }
 
 void Compile_R4300i_COP0_CO_TLBWR( BLOCK_SECTION * Section) {
-	CPU_Message("  %X %s",Section->CompilePC,R4300iOpcodeName(Opcode.Hex,Section->CompilePC));
+	MIPS_DWORD CompilePC;
+	CompilePC.DW = (int)Section->CompilePC;
+
+	CPU_Message("  %X %s",Section->CompilePC,R4300iOpcodeName(Opcode.Hex,CompilePC));
 	if (!UseTlb) {	return; }
 	if (BlockRandomModifier != 0) { SubConstFromVariable(BlockRandomModifier,&CP0[1],Cop0_Name[1]); }
 	BlockRandomModifier = 0;
@@ -5423,7 +5674,10 @@ void Compile_R4300i_COP0_CO_TLBWR( BLOCK_SECTION * Section) {
 }
 
 void Compile_R4300i_COP0_CO_TLBP( BLOCK_SECTION * Section) {
-	CPU_Message("  %X %s",Section->CompilePC,R4300iOpcodeName(Opcode.Hex,Section->CompilePC));
+	MIPS_DWORD CompilePC;
+	CompilePC.DW = (int)Section->CompilePC;
+
+	CPU_Message("  %X %s",Section->CompilePC,R4300iOpcodeName(Opcode.Hex,CompilePC));
 	
 	if (!UseTlb) {	return; }
 	Pushad();
@@ -5444,7 +5698,10 @@ void compiler_COP0_CO_ERET (void) {
 }
 
 void Compile_R4300i_COP0_CO_ERET( BLOCK_SECTION * Section) {
-	CPU_Message("  %X %s",Section->CompilePC,R4300iOpcodeName(Opcode.Hex,Section->CompilePC));
+	MIPS_DWORD CompilePC;
+	CompilePC.DW = (int)Section->CompilePC;
+
+	CPU_Message("  %X %s",Section->CompilePC,R4300iOpcodeName(Opcode.Hex,CompilePC));
 
 	WriteBackRegisters(Section);
 	Call_Direct(compiler_COP0_CO_ERET,"compiler_COP0_CO_ERET");

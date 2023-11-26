@@ -1743,13 +1743,7 @@ void _fastcall r4300i_COP0_MT (void) {
 			if (ShowDebugMessages)
 				DisplayError("Left kernel mode or user mode ??");
 		}
-		if (((CP0[Opcode.REG.rd].UW[0] & STATUS_KX) != 0 && (CP0[Opcode.REG.rd].UW[0] & STATUS_KSU) == STATUS_KERNEL) ||
-			((CP0[Opcode.REG.rd].UW[0] & STATUS_UX) != 0 && (CP0[Opcode.REG.rd].UW[0] & STATUS_KSU) == STATUS_USER)) {
-			Addressing64Bits = 1;
-		}
-		else {
-			Addressing64Bits = 0;
-		}
+		UpdateCPUMode();
 		CheckInterrupts();
 		break;		
 	case 13: //cause
@@ -1883,13 +1877,7 @@ void _fastcall r4300i_COP0_DMT(void) {
 			if (ShowDebugMessages)
 				DisplayError("Left kernel mode or user mode ??");
 		}
-		if (((CP0[Opcode.REG.rd].UW[0] & STATUS_KX) != 0 && (CP0[Opcode.REG.rd].UW[0] & STATUS_KSU) == STATUS_KERNEL) ||
-			((CP0[Opcode.REG.rd].UW[0] & STATUS_UX) != 0 && (CP0[Opcode.REG.rd].UW[0] & STATUS_KSU) == STATUS_USER)) {
-			Addressing64Bits = 1;
-		}
-		else {
-			Addressing64Bits = 0;
-		}
+		UpdateCPUMode();
 		CheckInterrupts();
 		break;
 	case 13: //cause
@@ -1976,6 +1964,7 @@ void _fastcall r4300i_COP0_CO_ERET (void) {
 		JumpToLocation.UDW = EPC_REGISTER;
 		STATUS_REGISTER &= ~STATUS_EXL;
 	}
+	UpdateCPUMode();
 	LLBit = 0;
 	CheckInterrupts();
 }
@@ -3409,7 +3398,7 @@ void _fastcall R4300i_UnknownOpcode (void) {
 	char Message[200];
 
 	sprintf(Message,"%s: %016llX\n%s\n\n", GS(MSG_UNHANDLED_OP), PROGRAM_COUNTER.UDW,
-	R4300iOpcodeName(Opcode.Hex,PROGRAM_COUNTER.UW[0]));
+	R4300iOpcodeName(Opcode.Hex,PROGRAM_COUNTER));
 	strcat(Message,"Stoping Emulation !");
 	
 	if (HaveDebugger && !inFullScreen) {
