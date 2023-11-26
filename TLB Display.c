@@ -96,7 +96,7 @@ void RefreshTLBWindow (void) {
 		}
 
 		if (tlb[count].EntryDefined) {
-			sprintf(Output,"0x%08X",tlb[count].EntryHi.Value);
+			sprintf(Output,"0x%016llX",tlb[count].EntryHi.Value);
 		} else {
 			strcpy(Output,"................");
 		}

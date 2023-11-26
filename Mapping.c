@@ -34,7 +34,7 @@
 #include "Compression/unzip.h"
 
 MAP_ENTRY * MapTable = NULL;
-DWORD NoOfMapEntries;
+DWORD NoOfMapEntries = 0;
 char strLabelName[100];
 
 void GetMapDirectory ( char * Directory );
@@ -57,9 +57,10 @@ void AddMapEntry ( MIPS_DWORD Address, char * Label) {
 
 void ChooseMapFile ( HWND hWnd ) {
 	OPENFILENAME OpenFileName;
-	char Directory[255], MapFileName[255];
+	char Directory[MAX_PATH];
+	char MapFileName[MAX_PATH];
 
-	memset(&MapFileName, 0, sizeof(MapFileName));
+	memset(MapFileName, 0, MAX_PATH);
 	memset(&OpenFileName, 0, sizeof(OpenFileName));
 
 	GetCurrentDirectory( 255, Directory );
@@ -67,11 +68,11 @@ void ChooseMapFile ( HWND hWnd ) {
 
 	OpenFileName.lStructSize  = sizeof( OpenFileName );
 	OpenFileName.hwndOwner    = hWnd;
-	OpenFileName.lpstrFilter  = "Map file(*.map;*.cod)\0*.map;*.cod\0All files (*.*)\0*.*\0";
+	OpenFileName.lpstrFilter  = "Map file(*.map;*.cod)\0*.map;*.cod\0All files (*.*)\0*.*\0\0";
 	OpenFileName.lpstrFile    = MapFileName;
 	OpenFileName.lpstrInitialDir = Directory;
 	OpenFileName.nMaxFile     = MAX_PATH;
-	OpenFileName.Flags        = OFN_FILEMUSTEXIST | OFN_HIDEREADONLY;
+	OpenFileName.Flags        = OFN_PATHMUSTEXIST | OFN_FILEMUSTEXIST;
 
 	if (GetOpenFileName (&OpenFileName)) {							
 		GetCurrentDirectory( 255, Directory );
@@ -81,7 +82,7 @@ void ChooseMapFile ( HWND hWnd ) {
 			DisplayError("Failed to process %s",MapFileName);
 			ResetMappings ();
 		}
-	}            
+	}
 }
 
 void GetMapDirectory ( char * Directory ) {

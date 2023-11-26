@@ -91,7 +91,8 @@ int Add_R4300iBPoint( MIPS_DWORD Location ) {
 }
 
 void BPoint_AddButtonPressed (void) {
-	DWORD Selected, Location;
+	DWORD Selected;
+	MIPS_DWORD Location;
 	char Address[18];
 	TC_ITEM item;
 
@@ -110,30 +111,28 @@ void BPoint_AddButtonPressed (void) {
 		}
 
 		GetWindowText(hR4300iLocation, Address, sizeof(Address));
-		MIPS_DWORD BPointAddress;
 		if (strlen(Address) == 8) {
-			BPointAddress.DW = (int)AsciiToHex(Address);
+			Location.DW = (int)AsciiToHex(Address);
 		}
 		else {
-			BPointAddress.UDW = AsciiToHex64(Address);
+			Location.UDW = AsciiToHex64(Address);
 		}
 		if (BreakType == 0) {
-			if (!Add_R4300iBPoint(BPointAddress)) {
+			if (!Add_R4300iBPoint(Location)) {
 				SendMessage(hR4300iLocation, EM_SETSEL, (WPARAM)0, (LPARAM)-1);
 				SetFocus(hR4300iLocation);
 			}
 		} else {
-			AddWatchPoint(BPointAddress, BreakType);
+			AddWatchPoint(Location, BreakType);
 			RefreshBreakPoints();
 		}
 		break;
 	}
 	case R4300i_FUNCTION:
 		Selected = SendMessage(hFunctionlist,CB_GETCURSEL,0,0);
-		Location = SendMessage(hFunctionlist,CB_GETITEMDATA,(WPARAM)Selected,0);
-		MIPS_DWORD BPointAddress;
-		BPointAddress.DW = (int)Location;
-		Add_R4300iBPoint(BPointAddress);
+		QWORD* FunctionAddress = (QWORD*)SendMessage(hFunctionlist,CB_GETITEMDATA,(WPARAM)Selected,0);
+		Location.UDW = *FunctionAddress;
+		Add_R4300iBPoint(Location);
 		SetFocus(hFunctionlist);
 		break;
 	case RSP_BP:
@@ -186,14 +185,14 @@ LRESULT CALLBACK BPoint_Proc (HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam
 		case IDC_REMOVE_BUTTON:
 			selected = SendMessage(hList,LB_GETCURSEL,0,0);
 			if (selected < NoOfBpoints) {
-				QWORD* location = SendMessage(hList,LB_GETITEMDATA,selected,0);
+				QWORD* location = (QWORD*)SendMessage(hList,LB_GETITEMDATA,selected,0);
 				MIPS_DWORD BPointAddress;
 				BPointAddress.UDW = *location;
 				RemoveR4300iBreakPoint(BPointAddress);
 				break;
 			}
 			if (selected - NoOfBpoints < CountWatchPoints()) {
-				QWORD* location = SendMessage(hList, LB_GETITEMDATA, selected, 0);
+				QWORD* location = (QWORD*)SendMessage(hList, LB_GETITEMDATA, selected, 0);
 				MIPS_DWORD BPointAddress;
 				BPointAddress.UDW = *location;
 				RemoveWatchPoint(BPointAddress);
@@ -220,7 +219,7 @@ LRESULT CALLBACK BPoint_Proc (HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam
 		case IDC_LIST:
 			if (HIWORD(wParam) == LBN_DBLCLK) {
 				selected = SendMessage(hList, LB_GETCURSEL, 0, 0);
-				QWORD* location = SendMessage(hList, LB_GETITEMDATA, selected, 0);
+				QWORD* location = (QWORD*)SendMessage(hList, LB_GETITEMDATA, selected, 0);
 				MIPS_DWORD BPointAddress;
 				BPointAddress.UDW = *location;
 				if (selected < NoOfBpoints) {
@@ -533,7 +532,7 @@ void Setup_BPoint_Win (HWND hDlg) {
 		SendMessage(hFunctionlist,WM_SETFONT,(WPARAM)GetStockObject(DEFAULT_GUI_FONT),0);
 		for (count = 0; count < NoOfMapEntries; count ++ ) {
 			pos = SendMessage(hFunctionlist,CB_ADDSTRING,(WPARAM)0,(LPARAM)MapTable[count].Label);
-			SendMessage(hFunctionlist,CB_SETITEMDATA,(WPARAM)pos,(LPARAM)MapTable[count].VAddr.W[0]);
+			SendMessage(hFunctionlist,CB_SETITEMDATA,(WPARAM)pos,(LPARAM)&MapTable[count].VAddr.UDW);
 		}
 		SendMessage(hFunctionlist,CB_SETCURSEL,(WPARAM)1,(LPARAM)0);
 	}
@@ -623,7 +622,7 @@ void UpdateBP_FunctionList (void) {
 	SendMessage(hFunctionlist,CB_RESETCONTENT,(WPARAM)0,(LPARAM)0);
 	for (count = 0; count < NoOfMapEntries; count ++ ) {
 		pos = SendMessage(hFunctionlist,CB_ADDSTRING,(WPARAM)0,(LPARAM)MapTable[count].Label);
-		SendMessage(hFunctionlist,CB_SETITEMDATA,(WPARAM)pos,(LPARAM)MapTable[count].VAddr.W[0]);
+		SendMessage(hFunctionlist,CB_SETITEMDATA,(WPARAM)pos,(LPARAM)&MapTable[count].VAddr.UDW);
 	}
 	SendMessage(hFunctionlist,CB_SETCURSEL,(WPARAM)1,(LPARAM)0);
 	UpdateBPointGUI();

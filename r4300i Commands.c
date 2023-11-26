@@ -530,13 +530,15 @@ LRESULT CALLBACK R4300i_Commands_Proc (HWND hDlg, UINT uMsg, WPARAM wParam, LPAR
 			switch (LOWORD(wParam)) {
 			case IDCfunctION_COMBO:
 				if (HIWORD(wParam) == CBN_SELENDOK) {
-					DWORD Selected, Location;
+					DWORD Selected;
+					MIPS_DWORD Location;
 					char Value[20];
 
 					Selected = SendMessage(hFunctionlist, CB_GETCURSEL, 0, 0);
 					if ((int)Selected >= 0) {
-						Location = SendMessage(hFunctionlist, CB_GETITEMDATA, (WPARAM)Selected, 0);
-						sprintf(Value, "%08X", Location);
+						QWORD* addr = SendMessage(hFunctionlist, CB_GETITEMDATA, (WPARAM)Selected, 0);
+						Location.UDW = *addr;
+						sprintf(Value, "%016llX", Location.UDW);
 						SetWindowText(hAddress, Value);
 					}
 				}
@@ -1651,7 +1653,7 @@ void Update_r4300iCommandList (void) {
 		SendMessage(hFunctionlist,CB_RESETCONTENT,(WPARAM)0,(LPARAM)0);		
 		for (count = 0; count < NoOfMapEntries; count ++ ) {
 			pos = SendMessage(hFunctionlist,CB_ADDSTRING,(WPARAM)0,(LPARAM)MapTable[count].Label);
-			SendMessage(hFunctionlist,CB_SETITEMDATA,(WPARAM)pos,(LPARAM)MapTable[count].VAddr.W[0]);
+			SendMessage(hFunctionlist,CB_SETITEMDATA,(WPARAM)pos,(LPARAM)&MapTable[count].VAddr.UDW);
 		}
 		SendMessage(hFunctionlist,CB_SETCURSEL,(WPARAM)-1,(LPARAM)0);
 		

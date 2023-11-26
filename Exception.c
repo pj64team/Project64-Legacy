@@ -257,7 +257,7 @@ void _fastcall DoTLBMiss ( BOOL DelaySlot, QWORD BadVaddr, BOOL FromRead ) {
 		STATUS_REGISTER |= STATUS_EXL;
 	} else {
 		if (ShowDebugMessages)
-			DisplayError("EXL Set\nAddress Defined: %s",AddressDefined(BadVaddr)?"TRUE":"FALSE");
+			DisplayError("EXL Set\nAddress Defined: %s, %llx",AddressDefined(BadVaddr)?"TRUE":"FALSE", BadVaddr);
 		PROGRAM_COUNTER.UDW = 0xFFFFFFFF80000180LL;
 	}
 	UpdateCPUMode();

@@ -122,12 +122,12 @@ void Compile_R4300i_Branch (BLOCK_SECTION * Section, void (*CompareFunc)(BLOCK_S
 		}
 		if (EffectDelaySlot) {
 			if (Section->ContinueSection != NULL) {
-				sprintf(ContLabel,"Continue",((BLOCK_SECTION *)Section->ContinueSection)->SectionID);
+				sprintf(ContLabel,"Continue %d",((BLOCK_SECTION *)Section->ContinueSection)->SectionID);
 			} else {
 				strcpy(ContLabel,"ExitBlock");
 			}
 			if (Section->JumpSection != NULL) {
-				sprintf(JumpLabel,"Jump",((BLOCK_SECTION *)Section->JumpSection)->SectionID);
+				sprintf(JumpLabel,"Jump %d",((BLOCK_SECTION *)Section->JumpSection)->SectionID);
 			} else {
 				strcpy(JumpLabel,"ExitBlock");
 			}

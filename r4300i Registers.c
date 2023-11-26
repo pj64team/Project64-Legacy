@@ -1536,7 +1536,7 @@ void __cdecl UpdateCurrentR4300iRegisterPanel ( void ) {
 			break;
 		case SpecialRegister:
 			GetWindowText(hSpecial[0],OldWinText,60);
-			sprintf( RegisterValue," 0x%08X",PROGRAM_COUNTER );
+			sprintf( RegisterValue," 0x%016llX",PROGRAM_COUNTER.UDW);
 			if ( strcmp( RegisterValue, OldWinText) != 0 ) {
 				SetWindowText(hSpecial[0],RegisterValue);
 			}			

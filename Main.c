@@ -1489,6 +1489,7 @@ LRESULT CALLBACK Main_Proc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
 					break;
 
 				case ID_OPTIONS_MAPPINGS_OPENMAPFILE:
+					ResetMappings();
 					ChooseMapFile(hWnd);
 					break;
 
