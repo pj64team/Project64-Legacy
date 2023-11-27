@@ -27,7 +27,7 @@
 #define __Mapping_h 
 
 typedef struct {
-	DWORD VAddr;
+	MIPS_DWORD VAddr;
 	char  Label[40];
 } MAP_ENTRY;
 
@@ -35,7 +35,7 @@ extern MAP_ENTRY * MapTable;
 extern DWORD NoOfMapEntries;
 
 void ChooseMapFile  ( HWND hWnd );
-char * LabelName    ( DWORD Address );
+char * LabelName    ( MIPS_DWORD Address );
 int  OpenMapFile    ( char * FileName );
 void OpenZipMapFile ( char * FileName );
 void ResetMappings  ( void );

@@ -34,14 +34,14 @@
 #include "Compression/unzip.h"
 
 MAP_ENTRY * MapTable = NULL;
-DWORD NoOfMapEntries;
+DWORD NoOfMapEntries = 0;
 char strLabelName[100];
 
 void GetMapDirectory ( char * Directory );
 int  ProcessMapFile ( BYTE * File, DWORD FileLen );
 void SetMapDirectory ( char * Directory );
 
-void AddMapEntry ( DWORD Address, char * Label) {
+void AddMapEntry ( MIPS_DWORD Address, char * Label) {
 	if (Label == NULL) { return; }
 	
 	if (NoOfMapEntries == 0) {
@@ -57,9 +57,10 @@ void AddMapEntry ( DWORD Address, char * Label) {
 
 void ChooseMapFile ( HWND hWnd ) {
 	OPENFILENAME OpenFileName;
-	char Directory[255], MapFileName[255];
+	char Directory[MAX_PATH];
+	char MapFileName[MAX_PATH];
 
-	memset(&MapFileName, 0, sizeof(MapFileName));
+	memset(MapFileName, 0, MAX_PATH);
 	memset(&OpenFileName, 0, sizeof(OpenFileName));
 
 	GetCurrentDirectory( 255, Directory );
@@ -67,11 +68,11 @@ void ChooseMapFile ( HWND hWnd ) {
 
 	OpenFileName.lStructSize  = sizeof( OpenFileName );
 	OpenFileName.hwndOwner    = hWnd;
-	OpenFileName.lpstrFilter  = "Map file(*.map;*.cod)\0*.map;*.cod\0All files (*.*)\0*.*\0";
+	OpenFileName.lpstrFilter  = "Map file(*.map;*.cod)\0*.map;*.cod\0All files (*.*)\0*.*\0\0";
 	OpenFileName.lpstrFile    = MapFileName;
 	OpenFileName.lpstrInitialDir = Directory;
 	OpenFileName.nMaxFile     = MAX_PATH;
-	OpenFileName.Flags        = OFN_FILEMUSTEXIST | OFN_HIDEREADONLY;
+	OpenFileName.Flags        = OFN_PATHMUSTEXIST | OFN_FILEMUSTEXIST;
 
 	if (GetOpenFileName (&OpenFileName)) {							
 		GetCurrentDirectory( 255, Directory );
@@ -81,7 +82,7 @@ void ChooseMapFile ( HWND hWnd ) {
 			DisplayError("Failed to process %s",MapFileName);
 			ResetMappings ();
 		}
-	}            
+	}
 }
 
 void GetMapDirectory ( char * Directory ) {
@@ -101,21 +102,21 @@ void GetMapDirectory ( char * Directory ) {
 	RegCloseKey(hKeyResults);	
 }
 
-char * LabelName (DWORD Address) {
+char * LabelName (MIPS_DWORD Address) {
 	DWORD count;
 
 	if (!HaveDebugger) {
-		sprintf(strLabelName, "0x%08X", Address);
+		sprintf(strLabelName, "0x%016llX", Address.UDW);
 		return strLabelName;
 	}
 	else {
 		for (count = 0; count < NoOfMapEntries; count++) {
-			if (MapTable[count].VAddr == Address) {
+			if (MapTable[count].VAddr.UDW == Address.UDW) {
 				sprintf(strLabelName, "%s", MapTable[count].Label);
 				return strLabelName;
 			}
 		}
-		sprintf(strLabelName, "0x%08X", Address);
+		sprintf(strLabelName, "0x%016llX", Address.UDW);
 		return strLabelName;
 	}
 }
@@ -238,19 +239,30 @@ int OpenMapFile(char * FileName) {
 int ProcessCODFile(BYTE * File, DWORD FileLen) {
 	BYTE * CurrentPos = File;
 	char Label[40];
-	DWORD Address;
+	MIPS_DWORD Address;
 	int Length;
 
 	while ( CurrentPos < File + FileLen ) {
-		if (*CurrentPos != '0') { return FALSE; }
-		CurrentPos += 1;
-		if (*CurrentPos != 'x') { return FALSE; }
-		CurrentPos += 1;
-	
-		if (strchr(CurrentPos,',') - CurrentPos != 8) { return FALSE; }
-		Address = AsciiToHex (CurrentPos);
-		CurrentPos += 9;
+		int FirstFieldLength = strchr(CurrentPos, ',') - CurrentPos;
 
+		if (FirstFieldLength == 10 || FirstFieldLength == 18) {
+			if (*CurrentPos != '0') { return FALSE; }
+			CurrentPos += 1;
+			if (*CurrentPos != 'x') { return FALSE; }
+			CurrentPos += 1;
+		}
+		
+		if (FirstFieldLength == 8 || FirstFieldLength == 10) {
+			Address.DW = (int)AsciiToHex(CurrentPos);
+			CurrentPos += 9;
+		}
+		else if (FirstFieldLength == 16 || FirstFieldLength == 18) {
+			Address.UDW = AsciiToHex64(CurrentPos);
+			CurrentPos += 17;
+		}
+		else {
+			return FALSE;
+		}
 
 		if (strchr(CurrentPos,'\r') == NULL) {
 			Length = strchr(CurrentPos,'\n') - CurrentPos;

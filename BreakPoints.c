@@ -62,7 +62,7 @@ static BOOL InBPWindow = FALSE;
 static FARPROC RefProc;
 int RSPBP_count;
 
-int Add_R4300iBPoint( DWORD Location ) {
+int Add_R4300iBPoint( MIPS_DWORD Location ) {
 	int count;
 
 	if (NoOfBpoints == MaxBPoints) {
@@ -71,7 +71,7 @@ int Add_R4300iBPoint( DWORD Location ) {
 	}
 
 	for (count = 0; count < NoOfBpoints; count ++) {
-		if (BPoint[count].Location == Location) {
+		if (BPoint[count].Location.UDW == Location.UDW) {
 			DisplayError("You already have this Break Point");
 			return FALSE;
 		}
@@ -91,8 +91,9 @@ int Add_R4300iBPoint( DWORD Location ) {
 }
 
 void BPoint_AddButtonPressed (void) {
-	DWORD Selected, Location;
-	char Address[10];
+	DWORD Selected;
+	MIPS_DWORD Location;
+	char Address[18];
 	TC_ITEM item;
 
 	item.mask = TCIF_PARAM;
@@ -110,20 +111,27 @@ void BPoint_AddButtonPressed (void) {
 		}
 
 		GetWindowText(hR4300iLocation, Address, sizeof(Address));
+		if (strlen(Address) == 8) {
+			Location.DW = (int)AsciiToHex(Address);
+		}
+		else {
+			Location.UDW = AsciiToHex64(Address);
+		}
 		if (BreakType == 0) {
-			if (!Add_R4300iBPoint(AsciiToHex(Address))) {
+			if (!Add_R4300iBPoint(Location)) {
 				SendMessage(hR4300iLocation, EM_SETSEL, (WPARAM)0, (LPARAM)-1);
 				SetFocus(hR4300iLocation);
 			}
 		} else {
-			AddWatchPoint(AsciiToHex(Address), BreakType);
+			AddWatchPoint(Location, BreakType);
 			RefreshBreakPoints();
 		}
 		break;
 	}
 	case R4300i_FUNCTION:
 		Selected = SendMessage(hFunctionlist,CB_GETCURSEL,0,0);
-		Location = SendMessage(hFunctionlist,CB_GETITEMDATA,(WPARAM)Selected,0);
+		QWORD* FunctionAddress = (QWORD*)SendMessage(hFunctionlist,CB_GETITEMDATA,(WPARAM)Selected,0);
+		Location.UDW = *FunctionAddress;
 		Add_R4300iBPoint(Location);
 		SetFocus(hFunctionlist);
 		break;
@@ -177,13 +185,17 @@ LRESULT CALLBACK BPoint_Proc (HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam
 		case IDC_REMOVE_BUTTON:
 			selected = SendMessage(hList,LB_GETCURSEL,0,0);
 			if (selected < NoOfBpoints) {
-				DWORD location = SendMessage(hList,LB_GETITEMDATA,selected,0);
-				RemoveR4300iBreakPoint(location);
+				QWORD* location = (QWORD*)SendMessage(hList,LB_GETITEMDATA,selected,0);
+				MIPS_DWORD BPointAddress;
+				BPointAddress.UDW = *location;
+				RemoveR4300iBreakPoint(BPointAddress);
 				break;
 			}
 			if (selected - NoOfBpoints < CountWatchPoints()) {
-				DWORD location = SendMessage(hList, LB_GETITEMDATA, selected, 0);
-				RemoveWatchPoint(location);
+				QWORD* location = (QWORD*)SendMessage(hList, LB_GETITEMDATA, selected, 0);
+				MIPS_DWORD BPointAddress;
+				BPointAddress.UDW = *location;
+				RemoveWatchPoint(BPointAddress);
 				RefreshBreakPoints();
 				break;
 			}
@@ -207,11 +219,13 @@ LRESULT CALLBACK BPoint_Proc (HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam
 		case IDC_LIST:
 			if (HIWORD(wParam) == LBN_DBLCLK) {
 				selected = SendMessage(hList, LB_GETCURSEL, 0, 0);
-				DWORD location = SendMessage(hList, LB_GETITEMDATA, selected, 0);
+				QWORD* location = (QWORD*)SendMessage(hList, LB_GETITEMDATA, selected, 0);
+				MIPS_DWORD BPointAddress;
+				BPointAddress.UDW = *location;
 				if (selected < NoOfBpoints) {
-					ToggleR4300iBPoint(location);
+					ToggleR4300iBPoint(BPointAddress);
 				} else if (selected - NoOfBpoints < CountWatchPoints()) {
-					ToggleWatchPoint(location);
+					ToggleWatchPoint(BPointAddress);
 				} else {
 					// TODO: Support toggling RSP breakpoints
 					DisplayError("what is this BP");
@@ -228,29 +242,29 @@ LRESULT CALLBACK BPoint_Proc (HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam
 	return TRUE;
 }
 
-int CheckForR4300iBPoint ( DWORD Location ) {
+int CheckForR4300iBPoint ( MIPS_DWORD Location ) {
 	int count;
 
 	for (count = 0; count < NoOfBpoints; count ++){
-		if (BPoint[count].enabled && BPoint[count].Location == Location) {
+		if (BPoint[count].enabled && BPoint[count].Location.UDW == Location.UDW) {
 			return TRUE;
 		}
 	}
 	return FALSE;
 }
 
-int HasR4300iBPoint(DWORD Location) {
+int HasR4300iBPoint(MIPS_DWORD Location) {
 	for (int count = 0; count < NoOfBpoints; count++) {
-		if (BPoint[count].Location == Location) {
+		if (BPoint[count].Location.UDW == Location.UDW) {
 			return TRUE;
 		}
 	}
 	return FALSE;
 }
 
-void ToggleR4300iBPoint(DWORD Location) {
+void ToggleR4300iBPoint(MIPS_DWORD Location) {
 	for (int count = 0; count < NoOfBpoints; count++) {
-		if (BPoint[count].Location == Location) {
+		if (BPoint[count].Location.UDW == Location.UDW) {
 			BPoint[count].enabled = !BPoint[count].enabled;
 			return;
 		}
@@ -280,9 +294,19 @@ void __cdecl Enter_BPoint_Window ( void ) {
 
 void HideBPointPanel ( int Panel) {
 	switch( Panel ) {
-	case R4300i_BP: ShowWindow(hR4300iLocation, FALSE); break;
-	case R4300i_FUNCTION: ShowWindow(hFunctionlist, FALSE); break;
-	case RSP_BP: if (RspDebug.UseBPoints) { RspDebug.HideBPPanel(); } break;
+	case R4300i_BP:
+		ShowWindow(hR4300iLocation, FALSE);
+		ShowWindow(hTypeExec, FALSE);
+		ShowWindow(hTypeRead, FALSE);
+		ShowWindow(hTypeWrite, FALSE);
+		ShowWindow(hTypeReadWrite, FALSE);
+		break;
+	case R4300i_FUNCTION:
+		ShowWindow(hFunctionlist, FALSE);
+		break;
+	case RSP_BP:
+		if (RspDebug.UseBPoints) { RspDebug.HideBPPanel(); }
+		break;
 	}
 }
 
@@ -328,9 +352,9 @@ void __cdecl RefreshBreakPoints (void) {
 			flags[0] = 'e';
 		}
 
-		sprintf(Message," at 0x%08X (r4300i %s)", BPoint[count].Location, flags);
+		sprintf(Message," at 0x%016llX (r4300i %s)", BPoint[count].Location.UDW, flags);
 		SendMessage(hList,LB_ADDSTRING,0,(LPARAM)Message);
-		SendMessage(hList,LB_SETITEMDATA,count,(LPARAM)BPoint[count].Location);
+		SendMessage(hList,LB_SETITEMDATA,count,(LPARAM)&BPoint[count].Location.UDW);
 	}
 	RefreshWatchPoints(hList);
 	count = SendMessage(hList,LB_GETCOUNT,0,0);
@@ -388,11 +412,11 @@ LRESULT CALLBACK RefreshBPProc( HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lPar
 	return( FALSE );
 }
 
-void RemoveR4300iBreakPoint (DWORD Location) {
+void RemoveR4300iBreakPoint (MIPS_DWORD Location) {
 	int count, location = -1;
 
 	for (count = 0; count < NoOfBpoints; count ++){
-		if (BPoint[count].Location == Location) {
+		if (BPoint[count].Location.UDW == Location.UDW) {
 			location = count;
 			count = NoOfBpoints;
 		}
@@ -473,12 +497,12 @@ void Setup_BPoint_Win (HWND hDlg) {
 	}
 
 	hR4300iLocation = CreateWindowEx(0,"EDIT","", WS_CHILD | WS_VISIBLE | WS_BORDER |
-		ES_UPPERCASE | WS_TABSTOP,115,65,100,17,hDlg,(HMENU)IDC_LOCATION_EDIT,hInst,NULL);
+		ES_UPPERCASE | WS_TABSTOP,115,65,120,17,hDlg,(HMENU)IDC_LOCATION_EDIT,hInst,NULL);
 	if (hR4300iLocation) {
 		char Address[20];
 		SendMessage(hR4300iLocation,WM_SETFONT,(WPARAM)GetStockObject(DEFAULT_GUI_FONT),0);
-		SendMessage(hR4300iLocation,EM_SETLIMITTEXT,(WPARAM)8,(LPARAM)0);
-		sprintf(Address,"%08X",PROGRAM_COUNTER);
+		SendMessage(hR4300iLocation,EM_SETLIMITTEXT,(WPARAM)16,(LPARAM)0);
+		sprintf(Address,"%016llX",PROGRAM_COUNTER.UDW);
 		SetWindowText(hR4300iLocation, Address);
 	}
 
@@ -508,7 +532,7 @@ void Setup_BPoint_Win (HWND hDlg) {
 		SendMessage(hFunctionlist,WM_SETFONT,(WPARAM)GetStockObject(DEFAULT_GUI_FONT),0);
 		for (count = 0; count < NoOfMapEntries; count ++ ) {
 			pos = SendMessage(hFunctionlist,CB_ADDSTRING,(WPARAM)0,(LPARAM)MapTable[count].Label);
-			SendMessage(hFunctionlist,CB_SETITEMDATA,(WPARAM)pos,(LPARAM)MapTable[count].VAddr);
+			SendMessage(hFunctionlist,CB_SETITEMDATA,(WPARAM)pos,(LPARAM)&MapTable[count].VAddr.UDW);
 		}
 		SendMessage(hFunctionlist,CB_SETCURSEL,(WPARAM)1,(LPARAM)0);
 	}
@@ -533,9 +557,19 @@ void Setup_BPoint_Win (HWND hDlg) {
 
 void ShowBPointPanel ( int Panel) {
 	switch( Panel ) {
-	case R4300i_BP: ShowWindow(hR4300iLocation, TRUE); break;
-	case R4300i_FUNCTION: ShowWindow(hFunctionlist, TRUE); break;
-	case RSP_BP: if (RspDebug.UseBPoints) { RspDebug.ShowBPPanel(); } break;
+	case R4300i_BP:
+		ShowWindow(hR4300iLocation, TRUE);
+		ShowWindow(hTypeExec, TRUE);
+		ShowWindow(hTypeRead, TRUE);
+		ShowWindow(hTypeWrite, TRUE);
+		ShowWindow(hTypeReadWrite, TRUE);
+		break;
+	case R4300i_FUNCTION:
+		ShowWindow(hFunctionlist, TRUE);
+		break;
+	case RSP_BP:
+		if (RspDebug.UseBPoints) { RspDebug.ShowBPPanel(); }
+		break;
 	}
 }
 
@@ -588,7 +622,7 @@ void UpdateBP_FunctionList (void) {
 	SendMessage(hFunctionlist,CB_RESETCONTENT,(WPARAM)0,(LPARAM)0);
 	for (count = 0; count < NoOfMapEntries; count ++ ) {
 		pos = SendMessage(hFunctionlist,CB_ADDSTRING,(WPARAM)0,(LPARAM)MapTable[count].Label);
-		SendMessage(hFunctionlist,CB_SETITEMDATA,(WPARAM)pos,(LPARAM)MapTable[count].VAddr);
+		SendMessage(hFunctionlist,CB_SETITEMDATA,(WPARAM)pos,(LPARAM)&MapTable[count].VAddr.UDW);
 	}
 	SendMessage(hFunctionlist,CB_SETCURSEL,(WPARAM)1,(LPARAM)0);
 	UpdateBPointGUI();

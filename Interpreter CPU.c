@@ -240,7 +240,7 @@ void BuildInterpreter (void ) {
 	R4300i_Regimm[15] = r4300i_RESERVED;
 	R4300i_Regimm[16] = r4300i_REGIMM_BLTZAL;
 	R4300i_Regimm[17] = r4300i_REGIMM_BGEZAL;
-	R4300i_Regimm[18] = R4300i_REGIMM_BLTZALL;
+	R4300i_Regimm[18] = r4300i_REGIMM_BLTZALL;
 	R4300i_Regimm[19] = r4300i_REGIMM_BGEZALL;
 	R4300i_Regimm[20] = r4300i_RESERVED;
 	R4300i_Regimm[21] = r4300i_RESERVED;
@@ -767,7 +767,7 @@ void ExecuteInterpreterOpCode (void) {
 			if (Profiling) {
 				if (IndividualBlock) {
 					char Label[100];
-					sprintf(Label,"PC: %X",PROGRAM_COUNTER);
+					sprintf(Label,"PC: %llX",PROGRAM_COUNTER.UDW);
 					StartTimer(Label);
 				} else {
 					StartTimer("r4300i Running");
@@ -782,11 +782,10 @@ void ExecuteInterpreterOpCode (void) {
 	if (CPU_Action.DoSomething) { DoSomething(); }
 }
 
-void __cdecl StartInterpreterCPU (void ) { 
+void __cdecl StartInterpreterCPU (void ) {
 	if (CoInitialize(NULL) != S_OK) {
 		return;
 	}
-
 	NextInstruction = NORMAL;
 
 	if (AiRomOpen != NULL) { AiRomOpen(); }
@@ -796,7 +795,7 @@ void __cdecl StartInterpreterCPU (void ) {
 	__try {
 		for (;;) {
 			if (HaveDebugger) {
-				if (NoOfBpoints != 0 && CheckForR4300iBPoint(PROGRAM_COUNTER.UW[0])) {
+				if (NoOfBpoints != 0 && CheckForR4300iBPoint(PROGRAM_COUNTER)) {
 					TriggerDebugger();
 				}
 
@@ -808,7 +807,7 @@ void __cdecl StartInterpreterCPU (void ) {
 							continue;
 						}
 
-						SetR4300iCommandViewto(PROGRAM_COUNTER.UW[0]);
+						SetR4300iCommandViewto(PROGRAM_COUNTER);
 						UpdateCurrentR4300iRegisterPanel();
 						Refresh_Memory();
 
@@ -843,7 +842,7 @@ void TriggerDebugger(void) {
 	Refresh_Memory();
 	if (InR4300iCommandsWindow) {
 		Enter_R4300i_Commands_Window();
-		SetR4300iCommandViewto(PROGRAM_COUNTER.UW[0]);
+		SetR4300iCommandViewto(PROGRAM_COUNTER);
 		if (!CPU_Action.Stepping) {
 			SetR4300iCommandToStepping();
 		}

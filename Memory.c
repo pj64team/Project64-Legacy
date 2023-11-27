@@ -48,6 +48,7 @@ BYTE ISViewerTempBuffer[0x1000+0x200+1];
 DWORD ISViewerTempBufferLength;
 
 int Addressing64Bits;
+BOOL KernelMode;
 
 int Allocate_ROM ( void ) {	
 	ROM = (BYTE *)malloc(RomFileSize);
@@ -2913,8 +2914,18 @@ void ResetRecompCode (void) {
 //	}
 }
 
+void UpdateCPUMode() {
+	if (((STATUS_REGISTER & STATUS_KX) != 0 && (STATUS_REGISTER & STATUS_KSU) == STATUS_KERNEL) ||
+		((STATUS_REGISTER & STATUS_UX) != 0 && (STATUS_REGISTER & STATUS_KSU) == STATUS_USER)) {
+		Addressing64Bits = 1;
+	}
+	else {
+		Addressing64Bits = 0;
+	}
+	KernelMode = (STATUS_REGISTER & STATUS_KSU) == STATUS_KERNEL || (STATUS_REGISTER & STATUS_EXL) || (STATUS_REGISTER & STATUS_ERL);
+}
+
 BOOL IsValidAddress(MIPS_DWORD address) {
-	BOOL kernelMode = (STATUS_REGISTER & STATUS_KSU) == STATUS_KERNEL || (STATUS_REGISTER & STATUS_EXL) || (STATUS_REGISTER & STATUS_ERL);
 	if (Addressing64Bits) {
 		switch ((address.UDW >> 60) & 0xF) {
 		case 0x0:
@@ -2923,12 +2934,12 @@ BOOL IsValidAddress(MIPS_DWORD address) {
 			}
 			return FALSE;
 		case 0x4:
-			if (kernelMode && address.UW[1] < 0x40000100) {
+			if (KernelMode && address.UW[1] < 0x40000100) {
 				return TRUE;
 			}
 			return FALSE;
 		case 0x9:
-			if (kernelMode) {
+			if (KernelMode) {
 				if (address.UW[1] == 0x90000000 ||
 					address.UW[1] == 0x98000000) {
 					return TRUE;
@@ -2936,12 +2947,12 @@ BOOL IsValidAddress(MIPS_DWORD address) {
 			}
 			return FALSE;
 		case 0xC:
-			if (kernelMode && address.UDW < 0xC00000FF80000000LL) {
+			if (KernelMode && address.UDW < 0xC00000FF80000000LL) {
 				return TRUE;
 			}
 			return FALSE;
 		case 0xF:
-			if (!kernelMode) {
+			if (!KernelMode) {
 				return FALSE;
 			}
 			if (address.UW[1] != 0xFFFFFFFF) {
@@ -2957,7 +2968,7 @@ BOOL IsValidAddress(MIPS_DWORD address) {
 		}
 	}
 	else {
-		if (!kernelMode && (address.UW[0] & 0x80000000) != 0) {
+		if (!KernelMode && (address.UW[0] & 0x80000000) != 0) {
 			return FALSE;
 		}
 		return IsSignExtended(address);

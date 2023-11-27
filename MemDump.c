@@ -353,7 +353,7 @@ void DumpPCAndDisassembled (HWND hDlg, DWORD startAddress, DWORD endAddress) {
 					}
 				}
 
-				fprintf(pFile, " 0x%08X\t%s\n", location, R4300iOpcodeName(OpCode, location));
+				fprintf(pFile, " 0x%08X\t%s\n", location, R4300iOpcodeName(OpCode, address));
 			}
 
 			location +=4;
