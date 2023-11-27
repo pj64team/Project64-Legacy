@@ -103,6 +103,8 @@ BOOL LoadAudioDll(char * AudioDll) {
 	if (AiReadLength == NULL) { return FALSE; }
 	InitiateAudio = (BOOL (__cdecl *)(AUDIO_INFO))GetProcAddress( hAudioDll, "InitiateAudio" );
 	if (InitiateAudio == NULL) { return FALSE; }
+	AiRomOpen = (void(__cdecl*)(void))GetProcAddress(hAudioDll, "RomOpen");
+	if (AiRomOpen == NULL) { return FALSE; }
 	AiRomClosed = (void (__cdecl *)(void))GetProcAddress( hAudioDll, "RomClosed" );
 	if (AiRomClosed == NULL) { return FALSE; }
 	ProcessAList = (void (__cdecl *)(void))GetProcAddress( hAudioDll, "ProcessAList" );	
@@ -188,7 +190,7 @@ BOOL LoadGFXDll(char * GfxDll) {
 	if (MoveScreen == NULL) { return FALSE; }
 	ProcessDList = (void (__cdecl *)(void))GetProcAddress( hGfxDll, "ProcessDList" );
 	if (ProcessDList == NULL) { return FALSE; }
-	GfxRomClosed = (void (__cdecl *)(void))GetProcAddress( hGfxDll, "RomClosed" );
+	GfxRomClosed = (void(__cdecl*)(void))GetProcAddress(hGfxDll, "RomClosed");
 	if (GfxRomClosed == NULL) { return FALSE; }
 	GfxRomOpen = (void (__cdecl *)(void))GetProcAddress( hGfxDll, "RomOpen" );
 	if (GfxRomOpen == NULL) { return FALSE; }

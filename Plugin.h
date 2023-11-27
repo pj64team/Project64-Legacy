@@ -394,6 +394,7 @@ void (__cdecl *AiDllAbout)       ( HWND hParent );
 void (__cdecl *AiDllConfig)      ( HWND hParent );
 void (__cdecl *AiDllTest)        ( HWND hParent );
 DWORD (__cdecl *AiReadLength)    ( void );
+void (__cdecl* AiRomOpen)        ( void );
 void (__cdecl *AiRomClosed)      ( void );
 void (__cdecl *AiUpdate)         ( BOOL Wait );
 BOOL (__cdecl *InitiateAudio)    ( AUDIO_INFO Audio_Info );

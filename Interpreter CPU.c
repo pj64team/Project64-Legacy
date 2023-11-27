@@ -739,6 +739,7 @@ void __cdecl StartInterpreterCPU (void ) {
 
 	NextInstruction = NORMAL;
 
+	if (AiRomOpen != NULL) { AiRomOpen(); }
 	if (GfxRomOpen != NULL) { GfxRomOpen(); }
 	if (ContRomOpen != NULL) { ContRomOpen(); }
 	if (RSPRomOpen != NULL) { RSPRomOpen(); }
