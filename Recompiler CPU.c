@@ -3005,6 +3005,7 @@ void __cdecl StartRecompilerCPU (void ) {
 		}
 	}
 
+	if (AiRomOpen != NULL) { AiRomOpen(); }
 	if (GfxRomOpen != NULL) { GfxRomOpen(); }
 	if (ContRomOpen != NULL) { ContRomOpen(); }
 	if (RSPRomOpen != NULL) { RSPRomOpen(); }
