@@ -113,11 +113,11 @@ size_t decode_mem_bookmark(InputIterator &pos, InputIterator &end, struct MEM_BO
 	uint64_t selection_range = 0;
 	len += decodeUnsigned(pos, end, selection_range, flags);
 	// Truncate 64-bit to 32-bit.
-	bookmark.selection_range[0] = (DWORD)selection_range;
+	bookmark.selection_range[0].UDW = selection_range;
 
 	len += decodeUnsigned(pos, end, selection_range, flags);
 	// Truncate 64-bit to 32-bit.
-	bookmark.selection_range[1] = (DWORD)selection_range;
+	bookmark.selection_range[1].UDW = selection_range;
 
 	bool is_virtual = true;
 	len += decodeBool(pos, end, is_virtual, flags);
@@ -134,8 +134,8 @@ size_t encode_mem_bookmark(Buffer &buffer, const struct MEM_BOOKMARK &bookmark) 
 	auto name = std::string(bookmark.name);
 	len += encodeText(buffer, name);
 	len += encodeUnsigned(buffer, bookmark.width_required);
-	len += encodeUnsigned(buffer, bookmark.selection_range[0]);
-	len += encodeUnsigned(buffer, bookmark.selection_range[1]);
+	len += encodeUnsigned(buffer, bookmark.selection_range[0].UDW);
+	len += encodeUnsigned(buffer, bookmark.selection_range[1].UDW);
 
 	bool is_virtual = bookmark.is_virtual;
 	len += encodeBool(buffer, is_virtual);
