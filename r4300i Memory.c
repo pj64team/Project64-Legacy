@@ -390,20 +390,20 @@ LRESULT CALLBACK Memory_Window_Proc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM 
 		SetBkMode(ps.hdc, TRANSPARENT);
 
 		SelectObject(ps.hdc, hDefaultFont);
-		TextOut(ps.hdc, 731, 15, "Bookmarks:", 10);
+		TextOut(ps.hdc, 811, 15, "Bookmarks:", 10);
 
 		SelectObject(ps.hdc, GetStockObject(ANSI_FIXED_FONT));
 		TextOut(ps.hdc, 25, 17, "Address:", 8);
 
 		rcBox.left   = 5;
 		rcBox.top    = 5;
-		rcBox.right  = 719;
+		rcBox.right  = 799;
 		rcBox.bottom = 348;
 		DrawEdge(ps.hdc, &rcBox, EDGE_ETCHED, BF_RECT);
 
-		rcBox.left   = 724;
+		rcBox.left   = 804;
 		rcBox.top    = 5;
-		rcBox.right  = 891;
+		rcBox.right  = 971;
 		rcBox.bottom = 348;
 		DrawEdge(ps.hdc, &rcBox, EDGE_ETCHED, BF_RECT);
 
@@ -1177,7 +1177,7 @@ void Start_Auto_Refresh_Thread(void) {
 }
 
 void Setup_Memory_Window (HWND hDlg) {
-#define WindowWidth  912
+#define WindowWidth  992
 #define WindowHeight 392
 	HWND hBookmarks, hBookmarkAdd, hBookmarkEdit, hBookmarkRemove;
 	DWORD X, Y;
@@ -1188,22 +1188,22 @@ void Setup_Memory_Window (HWND hDlg) {
 	}
 
 	hVAddr = CreateWindowEx(0,"BUTTON", "Virtual Addressing", WS_CHILD | WS_VISIBLE | 
-		BS_AUTORADIOBUTTON, 215,13,150,21,hDlg,(HMENU)IDC_VADDR,hInst,NULL );
+		BS_AUTORADIOBUTTON, 255,13,150,21,hDlg,(HMENU)IDC_VADDR,hInst,NULL );
 	SendMessage(hVAddr,BM_SETCHECK, BST_CHECKED,0);
 	SendMessage(hVAddr, WM_SETFONT, (WPARAM)hDefaultFont, 0);
 
 	hPAddr = CreateWindowEx(0, "BUTTON", "Physical Addressing", WS_CHILD | WS_VISIBLE |
-		BS_AUTORADIOBUTTON, 375, 13, 155, 21, hDlg, (HMENU)IDC_PADDR, hInst, NULL);
+		BS_AUTORADIOBUTTON, 455, 13, 155, 21, hDlg, (HMENU)IDC_PADDR, hInst, NULL);
 	SendMessage(hPAddr, WM_SETFONT, (WPARAM)hDefaultFont, 0);
 
 	hRefresh = CreateWindowEx(0, "BUTTON", "Auto Refresh", WS_CHILD | WS_VISIBLE |
-		BS_AUTOCHECKBOX, 595, 13, 100, 21, hDlg, (HMENU)IDC_REFRESH, hInst, NULL);
+		BS_AUTOCHECKBOX, 675, 13, 100, 21, hDlg, (HMENU)IDC_REFRESH, hInst, NULL);
 	SendMessage(hRefresh, BM_SETCHECK, BST_CHECKED, 0);
 	Start_Auto_Refresh_Thread();
 	SendMessage(hRefresh, WM_SETFONT, (WPARAM)hDefaultFont, 0);
 
 	hList = CreateWindowEx(WS_EX_CLIENTEDGE, WC_LISTVIEW, "", WS_CHILD | WS_VISIBLE |
-		LVS_OWNERDATA | LVS_REPORT | LVS_NOSORTHEADER | LVS_SINGLESEL, 12, 39, 682, 300, hDlg,
+		LVS_OWNERDATA | LVS_REPORT | LVS_NOSORTHEADER | LVS_SINGLESEL, 12, 39, 762, 300, hDlg,
 		(HMENU)IDC_LIST_VIEW, hInst, NULL);
 	if (hList) {
 		SendMessage(hList, WM_SETFONT, (WPARAM)hDefaultFont, 0);
@@ -1216,7 +1216,7 @@ void Setup_Memory_Window (HWND hDlg) {
 		col.fmt = LVCFMT_LEFT;
 
 		col.pszText = "Address";
-		col.cx = 90;
+		col.cx = 160;
 		col.iSubItem = 0;
 		ListView_InsertColumn(hList, 0, &col);
 
@@ -1250,16 +1250,16 @@ void Setup_Memory_Window (HWND hDlg) {
 
 	DWORD wait_result = WaitForSingleObject(hRefreshMutex, 0);
 	if (wait_result == WAIT_OBJECT_0) {
-		SetWindowText(hAddrEdit, "80000000");
+		SetWindowText(hAddrEdit, "FFFFFFFF80000000");
 	}
 	ReleaseMutex(hRefreshMutex);
 
-	SendMessage(hAddrEdit, EM_SETLIMITTEXT, (WPARAM)8, (LPARAM)0);
-	SetWindowPos(hAddrEdit, NULL, 100, 13, 100, 21, SWP_NOZORDER | SWP_SHOWWINDOW);
+	SendMessage(hAddrEdit, EM_SETLIMITTEXT, (WPARAM)16, (LPARAM)0);
+	SetWindowPos(hAddrEdit, NULL, 100, 13, 140, 21, SWP_NOZORDER | SWP_SHOWWINDOW);
 	SendMessage(hAddrEdit, WM_SETFONT, (WPARAM)GetStockObject(ANSI_FIXED_FONT), 0);
 
 	hScrlBar = CreateWindowEx(0, "SCROLLBAR", "", WS_CHILD | WS_VISIBLE |
-		WS_TABSTOP | SBS_VERT, 694, 39, 20, 300, hDlg, (HMENU)IDC_SCRL_BAR, hInst, NULL);
+		WS_TABSTOP | SBS_VERT, 774, 39, 20, 300, hDlg, (HMENU)IDC_SCRL_BAR, hInst, NULL);
 	if (hScrlBar) {
 		SCROLLINFO si;
 
@@ -1274,7 +1274,7 @@ void Setup_Memory_Window (HWND hDlg) {
 	}
 
 	hBookmarks = CreateWindowEx(WS_EX_CLIENTEDGE, WC_LISTBOX, "", WS_CHILD | WS_VISIBLE | WS_VSCROLL | WS_HSCROLL | LBS_NOTIFY,
-		731, 39, 152, 280, hDlg, (HMENU)IDC_BOOKMARKS, hInst, NULL);
+		811, 39, 152, 280, hDlg, (HMENU)IDC_BOOKMARKS, hInst, NULL);
 	SendMessage(hBookmarks, WM_SETFONT, (WPARAM)hDefaultFont, 0);
 	SetWindowSubclass(hBookmarks, Bookmarks_ListBox_Proc, 0, 0);
 
@@ -1284,17 +1284,17 @@ void Setup_Memory_Window (HWND hDlg) {
 	Update_Bookmark_Width();
 
 	hBookmarkAdd = CreateWindowEx(WS_EX_WINDOWEDGE, WC_BUTTON, "Add", WS_CHILD | WS_VISIBLE,
-		731, 318, 36, 22, hDlg, (HMENU)IDC_BOOKMARK_ADD, hInst, NULL);
+		811, 318, 36, 22, hDlg, (HMENU)IDC_BOOKMARK_ADD, hInst, NULL);
 	SendMessage(hBookmarkAdd, WM_SETFONT, (WPARAM)hDefaultFont, 0);
 	EnableWindow(hBookmarkAdd, FALSE);
 
 	hBookmarkEdit = CreateWindowEx(WS_EX_WINDOWEDGE, WC_BUTTON, "Update", WS_CHILD | WS_VISIBLE,
-		769, 318, 56, 22, hDlg, (HMENU)IDC_BOOKMARK_UPDATE, hInst, NULL);
+		849, 318, 56, 22, hDlg, (HMENU)IDC_BOOKMARK_UPDATE, hInst, NULL);
 	SendMessage(hBookmarkEdit, WM_SETFONT, (WPARAM)hDefaultFont, 0);
 	EnableWindow(hBookmarkEdit, FALSE);
 
 	hBookmarkRemove = CreateWindowEx(WS_EX_WINDOWEDGE, WC_BUTTON, "Remove", WS_CHILD | WS_VISIBLE,
-		827, 318, 56, 22, hDlg, (HMENU)IDC_BOOKMARK_REMOVE, hInst, NULL);
+		907, 318, 56, 22, hDlg, (HMENU)IDC_BOOKMARK_REMOVE, hInst, NULL);
 	SendMessage(hBookmarkRemove, WM_SETFONT, (WPARAM)hDefaultFont, 0);
 	EnableWindow(hBookmarkRemove, FALSE);
 
