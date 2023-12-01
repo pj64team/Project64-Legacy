@@ -417,13 +417,30 @@ LRESULT CALLBACK Memory_Window_Proc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM 
 			}
 			break;
 		case IDC_VADDR:
+			char Value[20];
+			GetWindowText(hAddrEdit, Value, sizeof(Value));
+			QWORD address = 0;
+			if (strlen(Value) == 8) {
+				address = (int)AsciiToHex(Value);
+			}
+			else {
+				address = AsciiToHex64(Value);
+			}
+			
+			if (address < 0x80000000 || address >= 0x80800000) {
+				SetWindowText(hAddrEdit, "FFFFFFFF80000000");
+			}
+
+			Clear_Selection();
+			ListBox_SetCurSel(GetDlgItem(hDlg, IDC_BOOKMARKS), -1);
+			Refresh_Memory_With_Diff(FALSE);
+			break;
+
 		case IDC_PADDR: {
 			char Value[20];
 			GetWindowText(hAddrEdit, Value, sizeof(Value));
 			DWORD address = AsciiToHex(Value);
-			if (LOWORD(wParam) == IDC_VADDR && address < 0x80000000 || address >= 0x80800000) {
-				SetWindowText(hAddrEdit, "80000000");
-			} else if (LOWORD(wParam) == IDC_PADDR && address >= 0x20000000) {
+			if (address >= 0x20000000) {
 				SetWindowText(hAddrEdit, "00000000");
 			}
 
