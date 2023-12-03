@@ -416,7 +416,7 @@ LRESULT CALLBACK Memory_Window_Proc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM 
 				Refresh_Memory_With_Diff(FALSE);
 			}
 			break;
-		case IDC_VADDR:
+		case IDC_VADDR: {
 			char Value[20];
 			GetWindowText(hAddrEdit, Value, sizeof(Value));
 			QWORD address = 0;
@@ -426,7 +426,7 @@ LRESULT CALLBACK Memory_Window_Proc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM 
 			else {
 				address = AsciiToHex64(Value);
 			}
-			
+
 			if (address < 0x80000000 || address >= 0x80800000) {
 				SetWindowText(hAddrEdit, "FFFFFFFF80000000");
 			}
@@ -435,6 +435,7 @@ LRESULT CALLBACK Memory_Window_Proc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM 
 			ListBox_SetCurSel(GetDlgItem(hDlg, IDC_BOOKMARKS), -1);
 			Refresh_Memory_With_Diff(FALSE);
 			break;
+		}
 
 		case IDC_PADDR: {
 			char Value[20];
@@ -1162,7 +1163,12 @@ void Refresh_Memory_With_Diff(BOOL ShowDiff) {
 	}
 
 	GetWindowText(hAddrEdit, Value, sizeof(Value));
-	location.UDW = (AsciiToHex(Value) >> 4);
+	if (strlen(Value) == 8) {
+		location.UDW = ((int)AsciiToHex(Value) >> 4);
+	}
+	else {
+		location.DW = AsciiToHex64(Value) >> 4;
+	}
 	if (location.UDW > 0x0FFFFFFFFFFFFFF0LL) { location.UDW = 0x0FFFFFFFFFFFFFF0LL; }
 
 	for (count = 0; count < 16; count ++) {
