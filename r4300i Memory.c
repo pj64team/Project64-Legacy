@@ -1105,23 +1105,29 @@ void Scroll_Memory_View(int lines) {
 	}
 
 	GetWindowText(hAddrEdit, value, sizeof(value));
-	unsigned int location = AsciiToHex(value);
+	MIPS_DWORD location;
+	if (strlen(value) == 8) {
+		location.DW = (int)AsciiToHex(value);
+	}
+	else {
+		location.UDW = AsciiToHex64(value);
+	}
 
 	if (lines > 0) {
-		if (UINT_MAX - location >= 256) {
-			location += lines * 16;
+		if (ULLONG_MAX - location.UDW >= 256LL) {
+			location.UDW += lines * 16;
 		} else {
-			location = UINT_MAX - 256 + 1;
+			location.UDW = ULLONG_MAX - 256 + 1;
 		}
 	} else {
-		if (location >= (unsigned int)(-lines * 16)) {
-			location += lines * 16;
+		if (location.UDW >= (unsigned long long)(-lines * 16)) {
+			location.UDW += lines * 16;
 		} else {
-			location = 0;
+			location.UDW = 0;
 		}
 	}
 
-	sprintf(value, "%08X", location);
+	sprintf(value, "%016llX", location.UDW);
 	SetWindowText(hAddrEdit, value);
 
 	ReleaseMutex(hRefreshMutex);
