@@ -427,7 +427,7 @@ LRESULT CALLBACK Memory_Window_Proc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM 
 				address = AsciiToHex64(Value);
 			}
 
-			if (address < 0x80000000 || address >= 0x80800000) {
+			if (address < 0xFFFFFFFF80000000 || address >= 0xFFFFFFFF80800000) {
 				SetWindowText(hAddrEdit, "FFFFFFFF80000000");
 			}
 
@@ -566,7 +566,7 @@ LRESULT CALLBACK Memory_Window_Proc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM 
 							DrawText(lplvcd->nmcd.hdc, row->AsciiStr, strlen(row->AsciiStr), &lplvcd->nmcd.rc, DT_SINGLELINE | DT_CENTER | DT_VCENTER);
 						} else if (location_start.UDW >= selection.range[0].UDW) {
 							// Only the beginning selected
-							int unselected_count = location_end.UDW - selection.range[1].UDW;
+							int unselected_count = (int)(location_end.UDW - selection.range[1].UDW);
 							int selected_count = 16 - unselected_count;
 
 							// Draw right side (unselected)
@@ -582,7 +582,7 @@ LRESULT CALLBACK Memory_Window_Proc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM 
 							DrawText(lplvcd->nmcd.hdc, row->AsciiStr, selected_count, &left_rc, DT_SINGLELINE | DT_CENTER | DT_VCENTER);
 						} else if (location_end.UDW <= selection.range[1].UDW) {
 							// Only the end selected
-							int selected_count = location_end.UDW - selection.range[0].UDW + 1;
+							int selected_count = (int)(location_end.UDW - selection.range[0].UDW + 1);
 							int unselected_count = 16 - selected_count;
 
 							// Draw left side (unselected)
@@ -598,8 +598,8 @@ LRESULT CALLBACK Memory_Window_Proc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM 
 							DrawText(lplvcd->nmcd.hdc, &row->AsciiStr[unselected_count], selected_count, &right_rc, DT_SINGLELINE | DT_CENTER | DT_VCENTER);
 						} else {
 							// Only the middle selected
-							int left_count = selection.range[0].UDW - location_start.UDW;
-							int right_count = location_end.UDW - selection.range[1].UDW;
+							int left_count = (int)(selection.range[0].UDW - location_start.UDW);
+							int right_count = (int)(location_end.UDW - selection.range[1].UDW);
 							int selected_count = 16 - (left_count + right_count);
 
 							// Draw left side (unselected)
@@ -950,7 +950,7 @@ INT_PTR CALLBACK Edit_Bookmark_Proc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM 
 
 	switch (uMsg) {
 	case WM_INITDIALOG: {
-		char address[9] = { 0 };
+		char address[17] = { 0 };
 
 		// TODO: Support language translations
 		HWND hName = GetDlgItem(hDlg, IDC_NAME);
@@ -958,12 +958,12 @@ INT_PTR CALLBACK Edit_Bookmark_Proc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM 
 		Edit_LimitText(hName, sizeof(bookmarks->name) - 1);
 
 		HWND hStart = GetDlgItem(hDlg, IDC_START);
-		sprintf(address, "%08X", bookmarks[item].selection_range[0]);
+		sprintf(address, "%016llX", bookmarks[item].selection_range[0].UDW);
 		Edit_SetText(hStart, address);
 		Edit_LimitText(hStart, 8);
 
 		HWND hEnd = GetDlgItem(hDlg, IDC_END);
-		sprintf(address, "%08X", bookmarks[item].selection_range[1]);
+		sprintf(address, "%016llX", bookmarks[item].selection_range[1].UDW);
 		Edit_SetText(hEnd, address);
 		Edit_LimitText(hEnd, 8);
 
@@ -1170,10 +1170,11 @@ void Refresh_Memory_With_Diff(BOOL ShowDiff) {
 
 	GetWindowText(hAddrEdit, Value, sizeof(Value));
 	if (strlen(Value) == 8) {
-		location.UDW = ((int)AsciiToHex(Value) >> 4);
+		location.DW = (int)AsciiToHex(Value);
+		location.UDW >>= 4;
 	}
 	else {
-		location.DW = AsciiToHex64(Value) >> 4;
+		location.UDW = AsciiToHex64(Value) >> 4;
 	}
 	if (location.UDW > 0x0FFFFFFFFFFFFFF0LL) { location.UDW = 0x0FFFFFFFFFFFFFF0LL; }
 
@@ -1454,8 +1455,8 @@ void Load_Bookmark(unsigned int item) {
 	selection.range_cmp[0] = bookmarks[item].selection_range[0];
 	selection.range_cmp[1] = bookmarks[item].selection_range[1];
 
-	char address[10] = { 0 };
-	sprintf(address, "%08X", bookmarks[item].selection_range[0]);
+	char address[18] = { 0 };
+	sprintf(address, "%016llX", bookmarks[item].selection_range[0].UDW);
 	SetWindowText(hAddrEdit, address);
 
 	EnableWindow(GetDlgItem(Memory_Win_hDlg, IDC_BOOKMARK_ADD), TRUE);

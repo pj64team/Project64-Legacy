@@ -112,11 +112,9 @@ size_t decode_mem_bookmark(InputIterator &pos, InputIterator &end, struct MEM_BO
 
 	uint64_t selection_range = 0;
 	len += decodeUnsigned(pos, end, selection_range, flags);
-	// Truncate 64-bit to 32-bit.
 	bookmark.selection_range[0].UDW = selection_range;
 
 	len += decodeUnsigned(pos, end, selection_range, flags);
-	// Truncate 64-bit to 32-bit.
 	bookmark.selection_range[1].UDW = selection_range;
 
 	bool is_virtual = true;
