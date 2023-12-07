@@ -246,7 +246,7 @@ void Insert_MemoryLineDump (MIPS_DWORD location, int InsertPos, BOOL ShowDiff) {
 	if (SendMessage(hVAddr, BM_GETSTATE, 0, 0) & BST_CHECKED) {
 		sprintf(row->LocationStr, "0x%016llX", location.UDW);
 		for (int count = 0; count < 4; count++) {
-			if (r4300i_LW_VAddr_NonCPU(location, &word.UW)) {
+			if (IsValidAddress(location) && r4300i_LW_VAddr_NonCPU(location, &word.UW)) {
 				for (int i = 0; i < 4; i++) {
 					Update_Data_Column_With_WatchPoint(row, location, word, count * 4 + i, i, ShowDiff);
 				}
@@ -308,7 +308,7 @@ void Write_MemoryLineDump(char *output, MIPS_DWORD location) {
 		sprintf(output, "0x%016llX  ", location.UDW);
 		output += 12;
 		for (int count = 0; count < 4; count++) {
-			if (r4300i_LW_VAddr_NonCPU(location, &word.UW)) {
+			if (IsValidAddress(location) && r4300i_LW_VAddr_NonCPU(location, &word.UW)) {
 				for (int i = 0; i < 4; i++) {
 					if (selection.enabled && (selection.range[0].UDW > location.UDW + i || selection.range[1].UDW < location.UDW + i)) {
 						strcpy(b, "   ");
@@ -1374,7 +1374,7 @@ void Create_Bookmark_Name(char *name, BOOL is_virtual) {
 		while (i < len) {
 			MIPS_DWORD add;
 			add.UDW = address.UDW + i;
-			if (r4300i_LB_VAddr_NonCPU(add, &value) && isprint(value)) {
+			if (IsValidAddress(add) && r4300i_LB_VAddr_NonCPU(add, &value) && isprint(value)) {
 				name[i] = value;
 			} else {
 				sprintf(name, "[0x%016llX]", address.UDW);
