@@ -19,7 +19,7 @@
 // Note that Project64 automatically prefixes "http://"
 
 Author=PJ64LegacyTeam
-Date=29th August 2023 Version: 1
+Date=9th December 2023 Version: 1
 Homepage=www.project64-legacy.com
 Version=Project64 1.6.2 (Legacy)
 
@@ -134,6 +134,11 @@ Bad ROM?.Sel=77777
 Bad ROM?.Seltext=FFFFFF
 Bad ROM?.AutoFullScreen=False
 
+//Added by Gent to show shared CRC
+Shared CRC=800080
+Shared CRC.Sel=800080
+Shared CRC.Seltext=FFFFFF
+
 //Added by Gent to show that it is a Bad Rom and not a question
 Bad ROM!=00000
 Bad ROM!.Sel=00000
@@ -237,6 +242,7 @@ Status=Compatible
 Name=007 - The World is Not Enough (U)
 CPU Type=Recompiler
 Counter Factor=2
+Disable Reg Cache
 Emulate AI
 ExpansionPak
 Linking=Off
@@ -510,9 +516,11 @@ Status=Compatible
 [AEBE463E-CC71464B-C:45]
 Name=AeroGauge (U)
 CPU Type=Recompiler
+Core Note=Gent's Fav
 Counter Factor=2
 Disable TLB
 Linking=Global
+Plugin Note=Ice lools great
 Save Type=First Save Type
 Self-modifying code Method=Cache
 Status=Compatible
@@ -908,6 +916,7 @@ Name=Banjo-Kazooie (U) (V1.0)
 CPU Type=Recompiler
 Core Note=(see GameFAQ)
 Counter Factor=2
+Disable Reg Cache
 Disable TLB
 Linking=Global
 Plugin Note=[video] framebuffer  (Use 3rd party plugin for perfection) (See Gamefaq)
@@ -1797,9 +1806,10 @@ Use Large Buffer
 
 [30C7AC50-7704072D-C:45]
 Name=Conker's Bad Fur Day (U)
-CPU Type=Recompiler
+CPU Type=Interpreter
 Counter Factor=2
-Linking=Off
+Disable Reg Cache
+Linking=On
 Save Type=16kbit Eeprom
 Self-modifying code Method=Protected Memory
 Status=Compatible
@@ -2322,7 +2332,7 @@ Name=Animal Forest - Doubutsu no Mori (U) [T-Eng]
 CPU Type=Recompiler
 Counter Factor=2
 Linking=Global
-Save Type=First Save Type
+Save Type=FlashRam
 Self-modifying code Method=Check Memory Advance
 Status=Compatible
 //Cheat1=80026084 0024  // Hang Fix
@@ -3161,6 +3171,7 @@ Name=Gauntlet Legends (U)
 CPU Type=Recompiler
 Core Note=high system requirement
 Counter Factor=1
+Disable Reg Cache
 ExpansionPak
 Linking=Off
 Plugin Note=[video] missing:status bar. flicker [audio] (See Gamefaq)
@@ -3173,10 +3184,18 @@ Name=Getter Love!! - Cho Ren-ai Party Game (J)
 CPU Type=Recompiler
 Counter Factor=2
 Linking=Global
-Plugin Note=[video] missing faces
 Save Type=First Save Type
 Self-modifying code Method=Protected Memory
-Status=Issues (plugin)
+Status=Compatible
+
+[CDDB4BDF-84E5EFAC-C:45]
+Name=Getter Love!! - Panda Love Unit (U)
+CPU Type=Recompiler
+Counter Factor=2
+Linking=Global
+Save Type=First Save Type
+Self-modifying code Method=Protected Memory
+Status=Compatible
 
 [99179359-2FE7EBC3-C:50]
 Name=Gex 3 - Deep Cover Gecko (E) (M3) (Eng-Spa-Ita)
@@ -3570,7 +3589,7 @@ CPU Type=Recompiler
 Counter Factor=2
 Disable Reg Cache
 Emulate AI
-Linking=Global
+Linking=On
 Plugin Note=[video] errors:various (see GameFAQ)
 Save Type=First Save Type
 Self-modifying code Method=Check Memory Advance
@@ -3717,8 +3736,9 @@ Status=Compatible
 
 [AF9DCC15-1A723D88-C:45]
 Name=Indiana Jones and the Infernal Machine (U)
-CPU Type=Recompiler
+CPU Type=Interpreter
 Counter Factor=2
+Disable Reg Cache
 ExpansionPak
 Linking=Off
 Plugin Note=[video] Use GlideN64
@@ -4292,7 +4312,7 @@ Status=Compatible
 
 [E3D6A795-2A1C5D3C-C:50]
 Name=Knockout Kings 2000 (E)
-CPU Type=Recompiler
+CPU Type=Interpreter
 Core Note=Unstable (see GameFAQ)
 Counter Factor=2
 Linking=On
@@ -6053,9 +6073,10 @@ Use Large Buffer
 
 [DDF460CC-3CA634C0-C:45]
 Name=Perfect Dark (U) (V1.0)
-CPU Type=Recompiler
+CPU Type=Interpreter
 Core Note=high system requirement
 Counter Factor=2
+Disable Reg Cache
 ExpansionPak
 Linking=Off
 Plugin Note=[video] errors:various (see GameFAQ)
@@ -7651,8 +7672,9 @@ Status=Use GLideN64 Video
 
 [66A24BEC-2EADD94F-C:45]
 Name=Star Wars - Rogue Squadron (U) (V1.0)
-CPU Type=Recompiler
+CPU Type=Interpreter
 Counter Factor=2
+Disable Reg Cache
 ExpansionPak
 Linking=Global
 Plugin Note=[video] unsupported
@@ -7826,9 +7848,9 @@ Status=Compatible
 
 [9510D8D7-35100DD2-C:45]
 Name=Stunt Racer 64 (U)
-Audio Signal
 CPU Type=Recompiler
 Counter Factor=2
+ExpansionPak
 Linking=On
 Save Type=First Save Type
 Self-modifying code Method=Check Memory Advance
@@ -7891,7 +7913,6 @@ Status=Compatible
 Name=Super Mario 64 (U)
 CPU Type=Recompiler
 Counter Factor=2
-ExpansionPak
 Linking=Global
 Plugin Note=[video] missing:dissolve effect (see GameFAQ)
 Save Type=First Save Type
@@ -13789,12 +13810,13 @@ Status=Use 3rd party video
 Name=Super Mario 64 (U) [T-Bra]
 CPU Type=Recompiler
 Counter Factor=2
+Disable Reg Cache
 ExpansionPak
-Linking=Global
+Linking=On
 Plugin Note=[video] missing:dissolve effect (see GameFAQ)
 Save Type=First Save Type
 Self-modifying code Method=Cache
-Status=Compatible
+Status=Shared CRC
 
 [997D29AE-C13FF636-C:4A]
 Name=Super Real Mahjong VS [Aleck 64]
@@ -14670,6 +14692,7 @@ Name=Super Mario 64 - Kirby Edition (v1.1) (U)
 CPU Type=Recompiler
 Core Note=Hangs on Press Start
 Counter Factor=1
+Disable Reg Cache
 ExpansionPak
 Linking=Global
 Save Type=First Save Type
@@ -15104,8 +15127,8 @@ Self-modifying code Method=Check Memory Advance
 Status=Use GLideN64 Video
 
 [79D25B51-2350B06E-C:00]
-Name=Starfox 64 (CHN)
-CPU Type=Interpreter
+Name=Starfox 64 (CHN) [SaveFix]
+CPU Type=Recompiler
 Counter Factor=2
 Disable Reg Cache
 Disable TLB
@@ -15113,7 +15136,7 @@ Disable TLB
 Linking=Off
 Save Type=First Save Type
 Self-modifying code Method=Check Memory & cache
-Status=Issues (core)
+Status=Shared CRC
 Core Note=Use savefix version, Check rom information for file name.
 //WaitMult=3000
 
@@ -15508,7 +15531,7 @@ Status=Compatible
 //
 
 [993CC642-CE8A9D63-C:50]
-Name=All-Star Baseball 2001 (E) [NTSC-Convert]
+Name=All-Star Baseball 2001 (E) [NTSC-PAL]
 Audio Signal
 CPU Type=Recompiler
 Core Note=(see GameFAQ)
@@ -15521,8 +15544,18 @@ Self-modifying code Method=Check Memory Advance
 Status=Use GLideN64 Video
 Use Large Buffer
 
+[6C77A104-B47FCA52-C:43]
+Name=Animal Crossing (CHN) (iQue) (GameFix) (NTSC-PAL)[6103]
+CPU Type=Recompiler
+Counter Factor=1
+Disable Reg Cache
+Linking=Off
+Save Type=First Save Type
+Self-modifying code Method=Default
+Status=GlideN64 & RSP Emulation
+
 [B5D4E47A-FFAB5DB0-C:50]
-Name=Army Men - Air Combat (E) [NTSC-Convert]
+Name=Army Men - Air Combat (E) [NTSC-PAL]
 CPU Type=Recompiler
 Counter Factor=2
 Disable TLB
@@ -15534,7 +15567,7 @@ Self-modifying code Method=Check Memory Advance
 Status=Issues (plugin)
 
 [B2433D36-53D482A7-C:50]
-Name=Army Men - Sarge's Heroes 2 (E) [NTSC-Convert]
+Name=Army Men - Sarge's Heroes 2 (E) [NTSC-PAL]
 CPU Type=Default
 Counter Factor=Default
 ExpansionPak
@@ -15544,7 +15577,7 @@ Self-modifying code Method=Default
 Status=Compatible
 
 [3638CFAB-831D3178-C:50]
-Name=Asteroids Hyper 64 (E) [NTSC-Convert]
+Name=Asteroids Hyper 64 (E) [NTSC-PAL]
 CPU Type=Recompiler
 Core Note=high system requirement
 Counter Factor=2
@@ -15555,7 +15588,7 @@ Self-modifying code Method=Change Memory
 Status=Use GLideN64 Video
 
 [3638CFAB-831D3178-C:55]
-Name=Asteroids Hyper 64 (A) [NTSC-Convert]
+Name=Asteroids Hyper 64 (A) [NTSC-PAL]
 CPU Type=Recompiler
 Core Note=high system requirement
 Counter Factor=2
@@ -15566,7 +15599,7 @@ Self-modifying code Method=Change Memory
 Status=Use GLideN64 Video
 
 [E858EDD1-A2E6F8DC-C:50]
-Name=Banjo-Tooie (E) [NTSC-Convert] [f1] (Flashcart)
+Name=Banjo-Tooie (E) [NTSC-PAL] [f1] (Flashcart)
 CPU Type=Recompiler
 Core Note=Unhandled 4300i OpCode
 Counter Factor=1
@@ -15577,7 +15610,7 @@ Self-modifying code Method=Protected Memory
 Status=Unsupported
 
 [DB3FD224-1FA81930-C:50]
-Name=Bassmasters 2000 (E) [NTSC-Convert]
+Name=Bassmasters 2000 (E) [NTSC-PAL]
 CPU Type=Recompiler
 Counter Factor=1
 Disable TLB
@@ -15588,7 +15621,7 @@ Self-modifying code Method=Cache
 Status=Use GLideN64 Video
 
 [3D62A533-61DDC111-C:50]
-Name=BattleTanx (E) [NTSC-Convert]
+Name=BattleTanx (E) [NTSC-PAL]
 CPU Type=Recompiler
 Counter Factor=3
 Disable TLB
@@ -15598,7 +15631,7 @@ Self-modifying code Method=Check Memory & cache
 Status=Compatible
 
 [325EC6C6-1D515123-C:50]
-Name=Battlezone - Rise of the Black Dogs (E) [NTSC-Convert]
+Name=Battlezone - Rise of the Black Dogs (E) [NTSC-PAL]
 CPU Type=Recompiler
 Core Note=high system requirement
 Counter Factor=2
@@ -15608,7 +15641,7 @@ Self-modifying code Method=Check Memory Advance
 Status=Compatible
 
 [AFF06F9D-4ED48311-C:50]
-Name=Bottom of the 9th (E) [NTSC-Convert]
+Name=Bottom of the 9th (E) [NTSC-PAL]
 CPU Type=Recompiler
 Counter Factor=2
 Linking=Global
@@ -15618,7 +15651,7 @@ Self-modifying code Method=Check Memory & cache
 Status=Compatible
 
 [A1A7CF45-6226DCAC-C:50]
-Name=Brunswick Circuit Pro Bowling (E) [NTSC-Convert]
+Name=Brunswick Circuit Pro Bowling (E) [NTSC-PAL]
 CPU Type=Recompiler
 Counter Factor=2
 ExpansionPak
@@ -15629,7 +15662,7 @@ Self-modifying code Method=Change Memory
 Status=Compatible
 
 [74E421F1-D15C4C05-C:50]
-Name=California Speed (E) [NTSC-Convert]
+Name=California Speed (E) [NTSC-PAL]
 CPU Type=Recompiler
 Counter Factor=1
 Disable TLB
@@ -15639,7 +15672,7 @@ Self-modifying code Method=Change Memory
 Status=Compatible
 
 [CC09E3FC-B4A5F2FE-C:50]
-Name=Conker's Bad Fur Day (E) [NTSC-Convert]
+Name=Conker's Bad Fur Day (E) [NTSC-PAL]
 CPU Type=Recompiler
 Core Note=(see GameFAQ)
 Counter Factor=2
@@ -15651,7 +15684,7 @@ Status=Use GLideN64 Video
 Use Large Buffer
 
 [CC09E3FC-B4A5F2FE-C:55]
-Name=Conker's Bad Fur Day (A) (Uncensored) [NTSC-Convert]
+Name=Conker's Bad Fur Day (A) (Uncensored) [NTSC-PAL]
 CPU Type=Recompiler
 Core Note=(see GameFAQ)
 Counter Factor=2
@@ -15663,7 +15696,7 @@ Status=Use GLideN64 Video
 Use Large Buffer
 
 [CE8C9522-19FEEB14-C:50]
-Name=Dr. Mario 64 (E) [NTSC-Convert]
+Name=Dr. Mario 64 (E) [NTSC-PAL]
 CPU Type=Recompiler
 Counter Factor=2
 Disable TLB
@@ -15673,7 +15706,7 @@ Self-modifying code Method=Change Memory
 Status=Compatible
 
 [CE8C9522-19FEEB14-C:55]
-Name=Dr. Mario 64 (A) [NTSC-Convert]
+Name=Dr. Mario 64 (A) [NTSC-PAL]
 CPU Type=Recompiler
 Counter Factor=2
 Disable TLB
@@ -15683,7 +15716,7 @@ Self-modifying code Method=Change Memory
 Status=Compatible
 
 [4AC852D7-9BA09D1C-C:50]
-Name=Elmo's Letter Adventure (E) [NTSC-Convert]
+Name=Elmo's Letter Adventure (E) [NTSC-PAL]
 CPU Type=Recompiler
 Counter Factor=1
 Disable TLB
@@ -15694,7 +15727,7 @@ Self-modifying code Method=Change Memory
 Status=Compatible
 
 [DAA7536E-24B01084-C:50]
-Name=Elmo's Number Journey (E) [NTSC-Convert]
+Name=Elmo's Number Journey (E) [NTSC-PAL]
 CPU Type=Default
 Counter Factor=Default
 ExpansionPak
@@ -15704,7 +15737,7 @@ Self-modifying code Method=Change Memory
 Status=Compatible
 
 [CA73BD87-707C0D8C-C:50]
-Name=Fox Sports College Hoops '99 (E) [NTSC-Convert] 
+Name=Fox Sports College Hoops '99 (E) [NTSC-PAL] 
 CPU Type=Recompiler
 Counter Factor=2
 Linking=Global
@@ -15712,8 +15745,17 @@ Save Type=First Save Type
 Self-modifying code Method=Change Memory
 Status=Compatible
 
+[BCCEEFDD-B3654EB0-C:50]
+Name=Getter Love!! - Panda Love Unit (E) [NTSC-PAL]
+CPU Type=Recompiler
+Counter Factor=2
+Linking=Global
+Save Type=First Save Type
+Self-modifying code Method=Protected Memory
+Status=Compatible
+
 [FEE6361C-C0563F84-C:50]
-Name=Golden Nugget 64 (E) [NTSC-Convert] 
+Name=Golden Nugget 64 (E) [NTSC-PAL] 
 CPU Type=Recompiler
 Counter Factor=2
 Linking=Global
@@ -15722,7 +15764,7 @@ Self-modifying code Method=Check Memory & cache
 Status=Compatible
 
 [6BCF21E8-CAB5AF4F-C:50]
-Name=Harvest Moon 64 (E) [NTSC-Convert]
+Name=Harvest Moon 64 (E) [NTSC-PAL]
 CPU Type=Recompiler
 Counter Factor=1
 Disable TLB
@@ -15732,7 +15774,7 @@ Self-modifying code Method=Check Memory Advance
 Status=Compatible
 
 [6BCF21E8-CAB5AF4F-C:55]
-Name=Harvest Moon 64 (A) (PAL) [NTSC-Convert]
+Name=Harvest Moon 64 (A) (PAL) [NTSC-PAL]
 CPU Type=Recompiler
 Counter Factor=1
 Disable TLB
@@ -15742,7 +15784,7 @@ Self-modifying code Method=Check Memory Advance
 Status=Compatible
 
 [22E3CE16-C1814985-C:50]
-Name=Indiana Jones and the Infernal Machine (E) [NTSC-Convert] 
+Name=Indiana Jones and the Infernal Machine (E) [NTSC-PAL] 
 CPU Type=Interpreter
 Counter Factor=2
 ExpansionPak
@@ -15754,7 +15796,7 @@ Status=Interpreter only
 Use Large Buffer
 
 [9C45A68A-9015BC11-C:50]
-Name=Indy Racing 2000 (E) [NTSC-Convert] 
+Name=Indy Racing 2000 (E) [NTSC-PAL] 
 CPU Type=Recompiler
 Counter Factor=2
 Disable Reg Cache
@@ -15765,7 +15807,7 @@ Self-modifying code Method=Check Memory Advance
 Status=Compatible
 
 [D1637870-096E38F0-C:50]
-Name=Jeopardy! (E) [NTSC-Convert] 
+Name=Jeopardy! (E) [NTSC-PAL] 
 CPU Type=Recompiler
 Counter Factor=2
 Linking=Global
@@ -15774,7 +15816,7 @@ Self-modifying code Method=Check Memory & cache
 Status=Compatible
 
 [CDB94A50-69AAC650-C:50]
-Name=Jet Force Gemini (E) [NTSC-Convert] [f1] SRAM Patched
+Name=Jet Force Gemini (E) [NTSC-PAL] [f1] SRAM Patched
 CPU Type=Recompiler
 Core Note=Unhandled 4300i OpCode
 Counter Factor=1
@@ -15785,7 +15827,7 @@ Status=Unsupported
 VI=1800
 
 [76A03A14-95107017-C:50]
-Name=Ken Griffey Jr.'s Slugfest (E) [NTSC-Convert]
+Name=Ken Griffey Jr.'s Slugfest (E) [NTSC-PAL]
 CPU Type=Recompiler
 Counter Factor=2
 Linking=Global
@@ -15794,7 +15836,7 @@ Self-modifying code Method=Check Memory & cache
 Status=Compatible
 
 [F0E21579-941D66B2-C:50]
-Name=Madden NFL 2000 (E) [NTSC-Convert]
+Name=Madden NFL 2000 (E) [NTSC-PAL]
 CPU Type=Recompiler
 Counter Factor=1
 Linking=Global
@@ -15804,7 +15846,7 @@ Self-modifying code Method=Check Memory & cache
 Status=Compatible
 
 [F77E116C-E143753B-C:50]
-Name=Madden NFL 2001 (E) [NTSC-Convert]
+Name=Madden NFL 2001 (E) [NTSC-PAL]
 CPU Type=Recompiler
 Counter Factor=1
 Linking=Global
@@ -15814,7 +15856,7 @@ Self-modifying code Method=Check Memory & cache
 Status=Compatible
 
 [AAED498D-E94F8B0F-C:50]
-Name=Madden NFL 2002 (E) [NTSC-Convert]
+Name=Madden NFL 2002 (E) [NTSC-PAL]
 CPU Type=Recompiler
 Counter Factor=1
 Linking=Global
@@ -15824,7 +15866,7 @@ Self-modifying code Method=Check Memory & cache
 Status=Compatible
 
 [B633F834-B7AC55EB-C:50]
-Name=Mega Man 64 (E) [NTSC-Convert]
+Name=Mega Man 64 (E) [NTSC-PAL]
 CPU Type=Recompiler
 Counter Factor=2
 Linking=Global
@@ -15834,7 +15876,7 @@ Self-modifying code Method=Check Memory Advance
 Status=Compatible
 
 [B633F834-B7AC55EB-C:55]
-Name=Mega Man 64 (A) [NTSC-Convert]
+Name=Mega Man 64 (A) [NTSC-PAL]
 CPU Type=Recompiler
 Counter Factor=2
 Linking=Global
@@ -15844,7 +15886,7 @@ Self-modifying code Method=Check Memory Advance
 Status=Compatible
 
 [3F45D300-F3498A91-C:50]
-Name=Midway's Greatest Arcade Hits Volume 1 (E) [NTSC-Convert]
+Name=Midway's Greatest Arcade Hits Volume 1 (E) [NTSC-PAL]
 CPU Type=Recompiler
 Counter Factor=2
 Linking=Global
@@ -15854,7 +15896,7 @@ Self-modifying code Method=Check Memory & cache
 Status=Issues (plugin)
 
 [B1C07812-0D06ACA0-C:50]
-Name=Mike Piazza's Strike Zone (E) [NTSC-Convert]
+Name=Mike Piazza's Strike Zone (E) [NTSC-PAL]
 CPU Type=Recompiler
 Counter Factor=2
 Linking=Global
@@ -15864,7 +15906,7 @@ Self-modifying code Method=Default
 Status=Compatible
 
 [A2D0CE14-82EB24BC-C:50]
-Name=Monopoly (E) (M2) [NTSC-Convert]
+Name=Monopoly (E) (M2) [NTSC-PAL]
 CPU Type=Recompiler
 Counter Factor=1
 Linking=On
@@ -15874,7 +15916,7 @@ Self-modifying code Method=Check Memory Advance
 Status=Compatible
 
 [A2D0CE14-82EB24BC-C:55]
-Name=Monopoly (A) (M2) [NTSC-Convert]
+Name=Monopoly (A) (M2) [NTSC-PAL]
 CPU Type=Recompiler
 Counter Factor=1
 Linking=On
@@ -15883,7 +15925,7 @@ Save Type=First Save Type
 Self-modifying code Method=Check Memory Advance
 Status=Compatible
 [E6F5525F-2E929679-C:50]
-Name=Ms. Pac-Man Maze Madness (E) [NTSC-Convert]
+Name=Ms. Pac-Man Maze Madness (E) [NTSC-PAL]
 CPU Type=Recompiler
 Core Note=timing/stability issues
 Counter Factor=2
@@ -15894,7 +15936,7 @@ Self-modifying code Method=Check Memory Advance
 Status=Uncertain
 
 [A896AB1D-27BCEAE3-C:50]
-Name=Namco Museum 64 (E) [NTSC-Convert]
+Name=Namco Museum 64 (E) [NTSC-PAL]
 CPU Type=Recompiler
 Counter Factor=2
 Linking=Global
@@ -15904,7 +15946,7 @@ Self-modifying code Method=Protected Memory
 Status=Use GLideN64 Video
 
 [6722BAC8-E9CE5981-C:50]
-Name=NASCAR 2000 (E) [NTSC-Convert]
+Name=NASCAR 2000 (E) [NTSC-PAL]
 CPU Type=Recompiler
 Counter Factor=2
 Linking=Global
@@ -15914,7 +15956,7 @@ Self-modifying code Method=Check Memory & cache
 Status=Compatible
 
 [24F712A7-93F8C3F7-C:50]
-Name=NBA Courtside 2 - Featuring Kobe Bryant (E) [NTSC-Convert]
+Name=NBA Courtside 2 - Featuring Kobe Bryant (E) [NTSC-PAL]
 CPU Type=Recompiler
 Counter Factor=2
 Linking=Global
@@ -15924,7 +15966,7 @@ Self-modifying code Method=Check Memory Advance
 Status=Compatible
 
 [E78F66E6-754ABDF5-C:50]
-Name=NBA Showtime - NBA on NBC (E) [NTSC-Convert]
+Name=NBA Showtime - NBA on NBC (E) [NTSC-PAL]
 Audio Signal
 CPU Type=Recompiler
 Counter Factor=1
@@ -15935,7 +15977,7 @@ Self-modifying code Method=Check Memory & cache
 Status=Compatible
 
 [8D60D5D6-FA2C3730-C:50]
-Name=NFL Blitz - Special Edition (E) [NTSC-Convert]
+Name=NFL Blitz - Special Edition (E) [NTSC-PAL]
 CPU Type=Recompiler
 Counter Factor=2
 Linking=Global
@@ -15944,7 +15986,7 @@ Self-modifying code Method=Check Memory & cache
 Status=Compatible
 
 [08C78080-DDF12E19-C:50]
-Name=NFL Blitz (E) [NTSC-Convert]
+Name=NFL Blitz (E) [NTSC-PAL]
 CPU Type=Recompiler
 Counter Factor=2
 Linking=Global
@@ -15953,7 +15995,7 @@ Self-modifying code Method=Check Memory & cache
 Status=Compatible
 
 [CDB58A91-888EC090-C:50]
-Name=NFL Blitz 2000 (E) (V1.0) [NTSC-Convert]
+Name=NFL Blitz 2000 (E) (V1.0) [NTSC-PAL]
 CPU Type=Recompiler
 Counter Factor=2
 Linking=Global
@@ -15962,7 +16004,7 @@ Self-modifying code Method=Check Memory & cache
 Status=Compatible
 
 [EB70F502-2726143A-C:50]
-Name=NFL Blitz 2001 (E) [NTSC-Convert]
+Name=NFL Blitz 2001 (E) [NTSC-PAL]
 CPU Type=Recompiler
 Counter Factor=2
 Linking=Global
@@ -15971,7 +16013,7 @@ Self-modifying code Method=Check Memory & cache
 Status=Compatible
 
 [543E87C2-D4645AE6-C:50]
-Name=NFL Quarterback Club 2001 (E) [NTSC-Convert]
+Name=NFL Quarterback Club 2001 (E) [NTSC-PAL]
 CPU Type=Recompiler
 Counter Factor=2
 ExpansionPak
@@ -15983,7 +16025,7 @@ Status=Compatible
 Use Large Buffer
 
 [AFDD00B0-ACB8E17E-C:50]
-Name=Nightmare Creatures (E) [NTSC-Convert]
+Name=Nightmare Creatures (E) [NTSC-PAL]
 CPU Type=Recompiler
 Counter Factor=1
 Delay SI
@@ -15994,7 +16036,7 @@ Self-modifying code Method=Protected Memory
 Status=Compatible
 
 [AFDD00B0-ACB8E17E-C:55]
-Name=Nightmare Creatures (A) [NTSC-Convert]
+Name=Nightmare Creatures (A) [NTSC-PAL]
 CPU Type=Recompiler
 Counter Factor=1
 Delay SI
@@ -16005,7 +16047,7 @@ Self-modifying code Method=Protected Memory
 Status=Compatible
 
 [B8B6CD8F-6A01802A-C:50]
-Name=Polaris SnoCross (E) [NTSC-Convert]
+Name=Polaris SnoCross (E) [NTSC-PAL]
 CPU Type=Recompiler
 Counter Factor=2
 Disable Reg Cache
@@ -16016,7 +16058,7 @@ Self-modifying code Method=Check Memory Advance
 Status=Compatible
 
 [B8B6CD8F-6A01802A-C:55]
-Name=Polaris SnoCross (A) [NTSC-Convert]
+Name=Polaris SnoCross (A) [NTSC-PAL]
 CPU Type=Recompiler
 Counter Factor=2
 Disable Reg Cache
@@ -16027,7 +16069,7 @@ Self-modifying code Method=Check Memory Advance
 Status=Compatible
 
 [5E639C4A-C822EC6A-C:50]
-Name=Razor Freestyle Scooter (E) [NTSC-Convert]
+Name=Razor Freestyle Scooter (E) [NTSC-PAL]
 CPU Type=Recompiler
 Counter Factor=1
 ExpansionPak
@@ -16037,7 +16079,7 @@ Self-modifying code Method=Check Memory & cache
 Status=Compatible
 
 [6CEC9F32-2630EF82-C:50]
-Name=Ready 2 Rumble Boxing - Round 2 (E) [NTSC-Convert]
+Name=Ready 2 Rumble Boxing - Round 2 (E) [NTSC-PAL]
 CPU Type=Recompiler
 Counter Factor=1
 Linking=Global
@@ -16046,7 +16088,7 @@ Self-modifying code Method=Cache
 Status=Compatible
 
 [33837AD6-29DB6CF9-C:50]
-Name=Space Invaders (E) [NTSC-Convert]
+Name=Space Invaders (E) [NTSC-PAL]
 CPU Type=Recompiler
 Counter Factor=2
 Disable TLB
@@ -16057,7 +16099,7 @@ Self-modifying code Method=Check Memory & cache
 Status=Compatible
 
 [33837AD6-29DB6CF9-C:55]
-Name=Space Invaders (A) [NTSC-Convert]
+Name=Space Invaders (A) [NTSC-PAL]
 CPU Type=Recompiler
 Counter Factor=2
 Disable TLB
@@ -16068,7 +16110,7 @@ Self-modifying code Method=Check Memory & cache
 Status=Compatible
 
 [1983D132-915CD7C6-C:50]
-Name=Spider-Man (E) [NTSC-Convert]
+Name=Spider-Man (E) [NTSC-PAL]
 CPU Type=Recompiler
 Counter Factor=2
 ExpansionPak
@@ -16079,7 +16121,7 @@ Self-modifying code Method=Check Memory & cache
 Status=Compatible
 
 [1983D132-915CD7C6-C:55]
-Name=Spider-Man (A) [NTSC-Convert]
+Name=Spider-Man (A) [NTSC-PAL]
 CPU Type=Recompiler
 Counter Factor=2
 ExpansionPak
@@ -16090,10 +16132,11 @@ Self-modifying code Method=Check Memory & cache
 Status=Compatible
 
 [2DE258DF-5A419597-C:50]
-Name=Stunt Racer 64 (E) [NTSC-Convert]
+Name=Stunt Racer 64 (E) [NTSC-PAL]
 Audio Signal
 CPU Type=Recompiler
 Counter Factor=2
+Disable Reg Cache
 ExpansionPak
 Linking=On
 Save Type=First Save Type
@@ -16103,7 +16146,7 @@ VI=1800
 //Cheat0=81036274 0000,81036276 0000//jal 800970F0 osRecvMesg #14
 
 [2DE258DF-5A419597-C:55]
-Name=Stunt Racer 64 (A) [NTSC-Convert]
+Name=Stunt Racer 64 (A) [NTSC-PAL]
 Audio Signal
 CPU Type=Interpreter
 Counter Factor=2
@@ -16116,7 +16159,7 @@ VI=1800
 //Cheat0=81036274 0000,81036276 0000//jal 800970F0 osRecvMesg #14
 
 [520BE1A1-6698E373-C:50]
-Name=Super Bowling 64 (E) [NTSC-Convert]
+Name=Super Bowling 64 (E) [NTSC-PAL]
 CPU Type=Recompiler
 Counter Factor=2
 Linking=Global
@@ -16126,7 +16169,7 @@ Self-modifying code Method=Check Memory & cache
 Status=Compatible
 
 [A41A3887-6111E53A-C:50]
-Name=The Powerpuff Girls - Chemical X-traction (E) [NTSC-Convert]
+Name=The Powerpuff Girls - Chemical X-traction (E) [NTSC-PAL]
 CPU Type=Recompiler
 Counter Factor=2
 Linking=Global
@@ -16135,7 +16178,7 @@ Self-modifying code Method=Check Memory & cache
 Status=Compatible
 
 [6D1A2C2E-F7928F7E-C:50]
-Name=The Legend Of Banjo Kazooie - The Jiggies Of Time (E) [NTSC-Convert] (Hack)
+Name=The Legend Of Banjo Kazooie - The Jiggies Of Time (E) [NTSC-PAL] (Hack)
 CPU Type=Recompiler
 Core Note=(see GameFAQ)
 Counter Factor=2
@@ -16174,7 +16217,7 @@ Self-modifying code Method=Default
 Status=Compatible
 
 [A5F56EF5-E779DCDC-C:50]
-Name=Tony Hawk's Pro Skater 3 (E) [NTSC-Convert]
+Name=Tony Hawk's Pro Skater 3 (E) [NTSC-PAL]
 CPU Type=Recompiler
 Counter Factor=2
 ExpansionPak
@@ -16184,7 +16227,7 @@ Self-modifying code Method=Check Memory Advance
 Status=Compatible
 
 [26960FDE-C133D96E-C:50]
-Name=Triple Play 2000 (E) [NTSC-Convert]
+Name=Triple Play 2000 (E) [NTSC-PAL]
 CPU Type=Recompiler
 Counter Factor=1
 Disable Reg Cache
@@ -16195,7 +16238,7 @@ Self-modifying code Method=Check Memory Advance
 Status=Compatible
 
 [28B52AAB-5615806D-C:50]
-Name=WCW Backstage Assault (E) [NTSC-Convert]
+Name=WCW Backstage Assault (E) [NTSC-PAL]
 CPU Type=Recompiler
 Core Note=high system requirement
 Counter Factor=2
@@ -16206,7 +16249,7 @@ Self-modifying code Method=Check Memory Advance
 Status=Compatible
 
 [6C96FA79-9B667D4E-C:50]
-Name=WCW Nitro (E) [NTSC-Convert]
+Name=WCW Nitro (E) [NTSC-PAL]
 CPU Type=Recompiler
 Counter Factor=3
 Linking=Global
@@ -16215,7 +16258,7 @@ Self-modifying code Method=Check Memory & cache
 Status=Compatible
 
 [571348DA-F4A2D782-C:50]
-Name=Wheel of Fortune (E) [NTSC-Convert]
+Name=Wheel of Fortune (E) [NTSC-PAL]
 CPU Type=Recompiler
 Counter Factor=2
 Linking=Global
@@ -16248,6 +16291,442 @@ Linking=Global
 Save Type=First Save Type
 Self-modifying code Method=Check Memory & cache
 Status=Prototype
+
+//------ Homebrew --------
+
+[7AABCF07-73F39DA2-C:20]
+Name=Dead Ritual (Home Brew)
+CPU Type=Recompiler
+Counter Factor=1
+Linking=Global
+Save Type=First Save Type
+Self-modifying code Method=Check Memory Advance
+
+[2FCDBA91-1140401F-C:00]
+Name=Fanger's Lightmare! (PD)
+CPU Type=Recompiler
+Counter Factor=Default
+Linking=On
+Save Type=First Save Type
+Self-modifying code Method=Check Memory Advance
+Status=Compatible
+
+[462D612A-4862147B-C:00]
+Name=Flappy Bird for N64 (PD)
+CPU Type=Recompiler
+Counter Factor=2
+Linking=On
+Plugin Note=Use HLE Legacy Plugin 1.4
+Save Type=First Save Type
+Self-modifying code Method=Check Memory Advance
+Status=Issues (plugin)
+
+[2A21BB77-9D240CED-C:00]
+Name=Krom's Lossless Bad Apple for Nintendo 64
+CPU Type=Interpreter
+Counter Factor=1
+Disable Reg Cache
+Disable TLB
+Linking=On
+Save Type=First Save Type
+Self-modifying code Method=Check Memory Advance
+Status=Compatible
+
+[2A21BB77-9D240CED-C:50]
+Name=Krom's Lossless Bad Apple for Nintendo 64 (EUR)
+CPU Type=Interpreter
+Counter Factor=1
+Disable Reg Cache
+Disable TLB
+Linking=On
+Save Type=First Save Type
+Self-modifying code Method=Check Memory Advance
+Status=Compatible
+
+[176EFEA7-A704929E-C:20]
+Name=Mission Lost Control (PD by NAN)
+CPU Type=Interpreter
+Cheat0=80032648 0024 //Game Fix (Interpreter)
+Counter Factor=2
+Linking=Global
+Save Type=First Save Type
+Self-modifying code Method=Check Memory Advance
+Status=Compatible
+
+[01DF51BC-EBA4E907-C:00]
+Name=SuperSnooperSpookers (PD)
+CPU Type=Recompiler
+Counter Factor=1
+Disable TLB
+Linking=On
+Save Type=First Save Type
+Self-modifying code Method=Check Memory Advance
+Status=Compatible
+
+[71643B6C-ED18290A-C:00]
+Name=The Ultimate Doom (HomeBrew)
+CPU Type=Interpreter
+Counter Factor=2
+ExpansionPak
+Linking=Global
+Plugin Note=[video] (see GameFAQ)
+Save Type=First Save Type
+Self-modifying code Method=Cache
+Status=Compatible
+
+[470112E9-53C66CB4-C:41]
+Name=XENO CRISIS 64 (JU)
+CPU Type=Recompiler
+Counter Factor=2
+Disable Reg Cache
+Linking=Global
+Save Type=First Save Type
+Self-modifying code Method=Check Memory Advance
+Status=Use GLideN64 HLE Video
+
+[470112E9-53C66CB4-C:50]
+Name=XENO CRISIS 64 (E)
+CPU Type=Recompiler
+Counter Factor=2
+Disable Reg Cache
+Linking=Global
+Save Type=First Save Type
+Self-modifying code Method=Check Memory Advance
+Status=Use GLideN64 HLE Video
+
+//------ Nintendo LodgeNet 64 (Gateway System) --------
+
+[6BF4B693-AF915B5B-C:47]
+Name=1080 Snowboarding (Gateway)
+CPU Type=Recompiler
+Counter Factor=2
+ExpansionPak
+Linking=Off
+Plugin Note=[audio] (see GameFAQ)
+Save Type=First Save Type
+Self-modifying code Method=Protected Memory
+Status=Compatible
+
+[6176AA15-CB5DFAF4-C:47]
+Name=Donkey Kong 64 (Gateway)
+CPU Type=Recompiler
+Core Note=(see GameFAQ)
+Counter Factor=1
+Delay RDP
+Emulate AI
+ExpansionPak
+Linking=Off
+Plugin Note=[video] Jabo errors (See Gamefaq)
+Save Type=16kbit Eeprom
+Self-modifying code Method=Check Memory & cache
+Status=Use GLideN64 Video
+Use Large Buffer
+
+[5A2C0815-A82363D0-C:47]
+Name=Dr. Mario 64 (Gateway)
+CPU Type=Default
+Counter Factor=Default
+ExpansionPak
+Linking=Global
+Save Type=First Save Type
+Self-modifying code Method=Default
+Status=Compatible
+
+[EC0214A9-D430D27F-C:47]
+Name=Excitebike 64 (Gateway)
+CPU Type=Recompiler
+Counter Factor=1
+ExpansionPak
+Linking=Global
+Plugin Note=[video] slow in places.
+Save Type=16kbit Eeprom
+Self-modifying code Method=Check Memory Advance
+Status=Compatible
+
+[482A696F-D6F934E5-C:47]
+Name=F-Zero X (Gateway)
+CPU Type=Recompiler
+Counter Factor=2
+Linking=Off
+Plugin Note=Use RSP Emulation Plugin
+Save Type=First Save Type
+Self-modifying code Method=Change Memory
+Status=Compatible
+
+[81300A19-FFA52CB7-C:47]
+Name=Super Mario 64 (Gateway)
+CPU Type=Recompiler
+Counter Factor=2
+Linking=Global
+Plugin Note=[video] missing:dissolve effect (see GameFAQ)
+Save Type=First Save Type
+Self-modifying code Method=Default
+Status=Compatible
+
+[67C8B137-1CDE6113-C:47] 
+Name=The Legend of Zelda - Ocarina of Time (Gateway)
+CPU Type=Recompiler
+Core Note=(see GameFAQ)
+Counter Factor=2
+Disable TLB
+Emulate AI
+Linking=Off
+Save Type=First Save Type
+Self-modifying code Method=Check Memory Advance
+Status=Compatible
+
+[9A9961EA-FB3B8A7E-C:47]
+Name=Gauntlet Legends (Gateway)
+CPU Type=Recompiler
+Core Note=high system requirement
+Counter Factor=1
+ExpansionPak
+Linking=Off
+Plugin Note=[video] missing:status bar. flicker [audio] (See Gamefaq)
+Save Type=First Save Type
+Self-modifying code Method=Check Memory Advance
+Status=Issues (plugin)
+
+[33BB9900-84E15BF5-C:47]
+Name=Hydro Thunder (Gateway)
+Audio Signal
+CPU Type=Recompiler
+Counter Factor=2
+Emulate AI
+ExpansionPak
+Linking=Global
+Plugin Note=[video] boat select [audio] (See Gamefaq)
+Save Type=First Save Type
+Self-modifying code Method=Check Memory & cache
+Status=Compatible
+
+[E628AABE-AB1B7AAB-C:47]
+Name=Kirby 64 - The Crystal Shards (Gateway)
+CPU Type=Recompiler
+Counter Factor=2
+Delay RDP
+Linking=Global
+Save Type=First Save Type
+Self-modifying code Method=Check Memory Advance
+Status=Compatible
+
+[83A5163D-A110704D-C:47]
+Name=The Legend of Zelda - Majora's Mask (Gateway)
+CPU Type=Recompiler
+Counter Factor=2
+Disable TLB
+ExpansionPak
+Linking=Off
+Plugin Note=[video] errors:day_transistion (see GameFAQ)
+Save Type=First Save Type
+Self-modifying code Method=Change Memory
+Status=Compatible
+
+[D563C370-F3589C74-C:47]
+Name=Mario Golf (Gateway)
+CPU Type=Recompiler
+Core Note=high system requirement
+Counter Factor=2
+Linking=Global
+Plugin Note=[video] errors:framebuffer (Use 3rd party plugin (See Gamefaq)
+Save Type=First Save Type
+Self-modifying code Method=Check Memory & cache
+Status=Use 3rd party video
+
+[D5A9AADC-BCD6EB3C-C:47]
+Name=Mario Kart 64 (Gateway)
+CPU Type=Recompiler
+Counter Factor=2
+Linking=Global
+Save Type=First Save Type
+Self-modifying code Method=Cache
+Status=Compatible
+
+[FFC2283D-7B2D0E78-C:47]
+Name=Mario Party 3 (Gateway)
+CPU Type=Recompiler
+Counter Factor=1
+Linking=Global
+Plugin Note=[video] (see GameFAQ)
+Save Type=16kbit Eeprom
+Self-modifying code Method=Protected Memory
+Status=Compatible
+
+[A6171F86-71D83FAB-C:47]
+Name=Mario Tennis (Gateway)
+CPU Type=Recompiler
+Counter Factor=2
+ExpansionPak
+Linking=Off
+Plugin Note=[video] (see GameFAQ)
+Save Type=16kbit Eeprom
+Self-modifying code Method=Change Memory
+Status=Issues (plugin)
+
+[57A7E245-A24922F9-C:47]
+Name=Midway's Greatest Arcade Hits (Gateway)
+CPU Type=Recompiler
+Counter Factor=2
+Linking=Global
+Plugin Note=[video] (see GameFAQ)
+Save Type=First Save Type
+Self-modifying code Method=Check Memory & cache
+Status=Issues (plugin)
+
+[EB9C669D-5400AACB-C:47]
+Name=Mortal Kombat 4 (Gateway)
+CPU Type=Recompiler
+Counter Factor=2
+Disable TLB
+Linking=Global
+Save Type=First Save Type
+Self-modifying code Method=Cache
+Status=Compatible
+
+[2FF13B12-FBF45935-C:47]
+Name=Paper Mario (Gateway)
+CPU Type=Recompiler
+Counter Factor=1
+ExpansionPak
+Linking=Global
+Plugin Note=[video] (see GameFAQ)
+Save Type=First Save Type
+Self-modifying code Method=Check Memory Advance
+Status=Compatible
+
+[2E2D82D6-84DB8358-C:47]
+Name=Pilotwings 64 (Gateway)
+CPU Type=Recompiler
+//Cheat0=D02643C1 0012,802643C1 00FF,D0264C41 0012,80264C41 00FF,D0264E01 0012,80264E01 00FF,D0264841 0012,80264841 00FF,D0264701 0012,80264701 00FF,D02646C1 0012,802646C1 00FF,D0264A01 0012,80264A01 00FF,D0264C01 0012,80264C01 00FF,D0264B01 0012,80264B01 00FF,D0264241 0020,80264241 00FF,D0264941 0020,80264941 00FF,D0264DC1 0020,80264DC1 00FF,D0264A81 0020,80264A81 00FF,D0264601 0020,80264601 00FF,D0264801 0020,80264801 00FF,D0264301 0029,80264301 00FF,D0264981 0029,80264981 00FF,D0264681 0029,80264681 00FF,D0264A81 0029,80264A81 00FF,D0264CC1 0029,80264CC1 00FF,D0264801 0029,80264801 00FF,D0265041 0029,80265041 00FF,D02651C1 0029,802651C1 00FF,D0264B01 0029,80264B01 00FF,D0264241 003D,80264241 00FF,D0264A41 003D,80264A41 00FF,D02645C1 003D,802645C1 00FF,D0264741 003D,80264741 00FF,D0264781 003D,80264781 00FF  //Land Shadow Fix
+Counter Factor=3
+Disable TLB
+Linking=Global
+Plugin Note=[video] (see GameFAQ)
+Save Type=First Save Type
+Self-modifying code Method=Cache
+Status=Compatible
+
+[94A62675-7763A6E6-C:47]
+Name=Pokemon Snap (Gateway)
+CPU Type=Recompiler
+Cheat0=D1382D1C 802C,80382D0F 0000 //Pass 1st Level and Controller Fix
+Cheat1=D11E3184 2881,811E3184 2001,D11E3186 0098,811E3186 0001 //Make Picture selectable
+Counter Factor=2
+Linking=Global
+Save Type=First Save Type
+Self-modifying code Method=Check Memory & cache
+Status=Compatible
+
+[0D58E4C0-EEAF9534-C:47]
+Name=Rampage 2 - Universal Tour  (Gateway)
+CPU Type=Recompiler
+Counter Factor=2
+Disable TLB
+Linking=Off
+Save Type=First Save Type
+Self-modifying code Method=Check Memory & cache
+Status=Compatible
+
+[7B5FE8D0-26D14433-C:47]
+Name=Ready 2 Rumble Boxing (Gateway)
+CPU Type=Recompiler
+Counter Factor=2
+Disable TLB
+Linking=Global
+Save Type=First Save Type
+Self-modifying code Method=Cache
+Status=Compatible
+
+[B1C889CC-E8AED4C1-C:47]
+Name=Rush 2 - Extreme Racing USA (Gateway)
+CPU Type=Recompiler
+Counter Factor=1
+Linking=Global
+Save Type=First Save Type
+Self-modifying code Method=Check Memory & cache
+Status=Compatible
+
+[955CE1F8-166B4F4C-C:47]
+Name=Star Fox 64 (Gateway)
+CPU Type=Recompiler
+Counter Factor=2
+Disable TLB
+Linking=Global
+Save Type=First Save Type
+Self-modifying code Method=Protected Memory
+Status=Compatible
+
+[CA6CBF1E-89EF2FC0-C:47]
+Name=Star Wars - Rogue Squadron (Gateway)
+CPU Type=Recompiler
+Counter Factor=2
+ExpansionPak
+Linking=Global
+Plugin Note=[video] unsupported
+Save Type=First Save Type
+Self-modifying code Method=Protected Memory
+Status=Use GLideN64 Video
+
+[8EE30438-6DAE1C7D-C:47]
+Name=Super Smash Brothers (Gateway)
+CPU Type=Recompiler
+Counter Factor=2
+Disable TLB
+Linking=Off
+Plugin Note=[video] (see GameFAQ)
+Save Type=First Save Type
+Self-modifying code Method=Change Memory
+Status=Compatible
+
+[960DDFA4-A38A1C08-C:47]
+Name=The New Tetris (Gateway)
+CPU Type=Recompiler
+Counter Factor=2
+Linking=Global
+Plugin Note=[video] errors:?
+Save Type=First Save Type
+Self-modifying code Method=Check Memory & cache
+Status=Compatible
+
+[7468EACE-ED32A09F-C:47]
+Name=Virtual Chess 64 (Gateway)
+CPU Type=Recompiler
+Counter Factor=2
+Disable TLB
+Linking=Global
+Save Type=First Save Type
+Self-modifying code Method=Cache
+Status=Compatible
+
+[D8A44F27-73408E53-C:47]
+Name=Virtual Pool 64 (Gateway)
+CPU Type=Recompiler
+Counter Factor=2
+Disable TLB
+Linking=On
+Save Type=First Save Type
+Self-modifying code Method=Cache
+Status=Compatible
+
+[9318DAEF-F1732347-C:47]
+Name=Wave Race 64 (Gateway)
+CPU Type=Recompiler
+Counter Factor=2
+Disable TLB
+Linking=On
+Save Type=First Save Type
+Self-modifying code Method=Check Memory & cache
+Status=Compatible
+
+[712E0CB5-3608A9C1-C:47]
+Name=Yoshi's Story (Gateway)
+CPU Type=Recompiler
+Counter Factor=2
+Linking=Global
+Plugin Note=[video] (see GameFAQ)
+Save Type=16kbit Eeprom
+Self-modifying code Method=Check Memory Advance
+Status=Compatible
 
 //------ New Additions --------
 
@@ -16353,6 +16832,19 @@ Status=Unsupported
 
 [49552381-CD856CE8-C:43]
 Name=Wave Race 64 - Shindou (iQue) [4ksavefix]
+CPU Type=Recompiler
+Counter Factor=2
+Disable Reg Cache
+Disable TLB
+DlistWait=1
+Linking=Global
+Save Type=4kbit Eeprom
+Self-modifying code Method=Check Memory & cache
+Status=Compatible
+//WaitMult=500
+
+[8F5AA717-E4CA0FD9-C:43]
+Name=Wave Race 64 (CHN) (iQue) [4ksavefix]
 CPU Type=Recompiler
 Counter Factor=2
 Disable Reg Cache
@@ -16590,6 +17082,19 @@ ExpansionPak
 Linking=Global
 Save Type=First Save Type
 Self-modifying code Method=Default
+Status=Compatible
+
+[6778CB96-DF58BDE4-C:45]
+Name=ZELDA COSMIC GODDESS (U)
+CPU Type=Recompiler
+Core Note=(see GameFAQ)
+Counter Factor=2
+Disable TLB
+Emulate AI
+ExpansionPak
+Linking=Off
+Save Type=First Save Type
+Self-modifying code Method=Check Memory Advance
 Status=Compatible
 
 [DEB2A160-DC3C2796-C:00]
@@ -17277,12 +17782,14 @@ Status=Prototype
 
 [D0E29F11-E029063F-C:50]
 Name=Aidyn Chronicles - The First Mage (Europe) (Prototype) (1)
-CPU Type=Default
-Counter Factor=Default
+CPU Type=Recompiler
+Counter Factor=2
+Disable TLB
 ExpansionPak
 Linking=Global
 Save Type=First Save Type
-Self-modifying code Method=Default
+Self-modifying code Method=Change Memory
+Status=Prototype
 
 [7F94B320-124CABF3-C:00]
 Name=Mortal Kombat Trilogy (Prototype) (1996-05-13)
@@ -17668,12 +18175,12 @@ Status=Compatible
 [44806EB2-31B15E21-C:45]
 Name=n64-systemtest (U)
 CPU Type=Interpreter
-Counter Factor=2
+Counter Factor=Default
 Disable Reg Cache
 ExpansionPak
 Linking=Global
 Save Type=First Save Type
-Self-modifying code Method=Check Memory Advance
+Self-modifying code Method=Default
 Status=Unsupported
 Use Large Buffer
 
@@ -17796,7 +18303,6 @@ Linking=Global
 Save Type=First Save Type
 Self-modifying code Method=Check Memory & cache
 
-
 [6F4DF892-D3FFBD5B-C:43]
 Name=The Legend of Zelda - Majora's Mask (CHN) (iQue)
 CPU Type=Recompiler
@@ -17820,393 +18326,93 @@ Save Type=First Save Type
 Self-modifying code Method=Cache
 Status=Issues (plugin)
 
-//------ Homebrew --------
+[2F722ABF-B4288B66-C:00]
+Name=QUAKE (PD)
+CPU Type=Recompiler
+Counter Factor=2
+Disable Reg Cache
+Disable TLB
+ExpansionPak
+Linking=On
+Save Type=First Save Type
+Self-modifying code Method=Check Memory Advance
 
-[71643B6C-ED18290A-C:00]
-Name=The Ultimate Doom (HomeBrew)
+[C7C1E826-2297B78F-C:37]
+Name=n64-systemtest (Beta)
 CPU Type=Interpreter
-Counter Factor=2
-ExpansionPak
-Linking=Global
-Plugin Note=[video] (see GameFAQ)
-Save Type=First Save Type
-Self-modifying code Method=Cache
-Status=Compatible
-
-[7AABCF07-73F39DA2-C:20]
-Name=Dead Ritual (Home Brew)
-CPU Type=Recompiler
-Counter Factor=1
-Linking=Global
-Save Type=First Save Type
-Self-modifying code Method=Check Memory Advance
-
-[176EFEA7-A704929E-C:20]
-Name=Mission Lost Control (PD by NAN)
-CPU Type=Interpreter
-Counter Factor=2
+Counter Factor=Default
+Disable Reg Cache
 ExpansionPak
 Linking=Global
 Save Type=First Save Type
-Self-modifying code Method=Check Memory Advance
-Status=Compatible
-
-[470112E9-53C66CB4-C:41]
-Name=XENO CRISIS 64 (JU)
-CPU Type=Recompiler
-Counter Factor=2
-Linking=Global
-Save Type=First Save Type
-Self-modifying code Method=Check Memory Advance
-Status=Use GLideN64 HLE Video
-
-[470112E9-53C66CB4-C:50]
-Name=XENO CRISIS 64 (E)
-CPU Type=Recompiler
-Counter Factor=2
-Linking=Global
-Save Type=First Save Type
-Self-modifying code Method=Check Memory Advance
-Status=Use GLideN64 HLE Video
-
-//------ Nintendo LodgeNet 64 (Gateway System) --------
-
-[6BF4B693-AF915B5B-C:47]
-Name=1080 Snowboarding (Gateway)
-CPU Type=Recompiler
-Counter Factor=2
-ExpansionPak
-Linking=Off
-Plugin Note=[audio] (see GameFAQ)
-Save Type=First Save Type
-Self-modifying code Method=Protected Memory
-Status=Compatible
-
-[6176AA15-CB5DFAF4-C:47]
-Name=Donkey Kong 64 (Gateway)
-CPU Type=Recompiler
-Core Note=(see GameFAQ)
-Counter Factor=1
-Delay RDP
-Emulate AI
-ExpansionPak
-Linking=Off
-Plugin Note=[video] Jabo errors (See Gamefaq)
-Save Type=16kbit Eeprom
-Self-modifying code Method=Check Memory & cache
-Status=Use GLideN64 Video
+Self-modifying code Method=Default
+Status=Unsupported
 Use Large Buffer
 
-[5A2C0815-A82363D0-C:47]
-Name=Dr. Mario 64 (Gateway)
-CPU Type=Default
-Counter Factor=Default
-ExpansionPak
-Linking=Global
-Save Type=First Save Type
-Self-modifying code Method=Default
-Status=Compatible
-
-[EC0214A9-D430D27F-C:47]
-Name=Excitebike 64 (Gateway)
-CPU Type=Recompiler
-Counter Factor=1
-ExpansionPak
-Linking=Global
-Plugin Note=[video] slow in places.
-Save Type=16kbit Eeprom
-Self-modifying code Method=Check Memory Advance
-Status=Compatible
-
-[482A696F-D6F934E5-C:47]
-Name=F-Zero X (Gateway)
+[D3C08E78-57C7BB7E-C:45]
+Name=Shotgun Mario 64 (U) (Rom Hack)
 CPU Type=Recompiler
 Counter Factor=2
-Linking=Off
-Plugin Note=Use RSP Emulation Plugin
+ExpansionPak
+Linking=On
 Save Type=First Save Type
-Self-modifying code Method=Change Memory
-Status=Compatible
+Self-modifying code Method=Cache
 
-[81300A19-FFA52CB7-C:47]
-Name=Super Mario 64 (Gateway)
-CPU Type=Recompiler
-Counter Factor=2
-Linking=Global
-Plugin Note=[video] missing:dissolve effect (see GameFAQ)
-Save Type=First Save Type
-Self-modifying code Method=Default
-Status=Compatible
-
-[67C8B137-1CDE6113-C:47] 
-Name=The Legend of Zelda - Ocarina of Time (Gateway)
+[A79C11AB-15DD4324-C:45]
+Name=ZELDA COSMIC GODDESS (U) (64bit build)
 CPU Type=Recompiler
 Core Note=(see GameFAQ)
 Counter Factor=2
 Disable TLB
 Emulate AI
+ExpansionPak
 Linking=Off
 Save Type=First Save Type
 Self-modifying code Method=Check Memory Advance
 Status=Compatible
 
-[9A9961EA-FB3B8A7E-C:47]
-Name=Gauntlet Legends (Gateway)
-CPU Type=Recompiler
-Core Note=high system requirement
-Counter Factor=1
-ExpansionPak
-Linking=Off
-Plugin Note=[video] missing:status bar. flicker [audio] (See Gamefaq)
-Save Type=First Save Type
-Self-modifying code Method=Check Memory Advance
-Status=Issues (plugin)
-
-[33BB9900-84E15BF5-C:47]
-Name=Hydro Thunder (Gateway)
-Audio Signal
-CPU Type=Recompiler
-Counter Factor=2
-Emulate AI
-ExpansionPak
-Linking=Global
-Plugin Note=[video] boat select [audio] (See Gamefaq)
-Save Type=First Save Type
-Self-modifying code Method=Check Memory & cache
-Status=Compatible
-
-[E628AABE-AB1B7AAB-C:47]
-Name=Kirby 64 - The Crystal Shards (Gateway)
-CPU Type=Recompiler
-Counter Factor=2
-Delay RDP
-Linking=Global
-Save Type=First Save Type
-Self-modifying code Method=Check Memory Advance
-Status=Compatible
-
-[83A5163D-A110704D-C:47]
-Name=The Legend of Zelda - Majora's Mask (Gateway)
-CPU Type=Recompiler
-Counter Factor=2
-Disable TLB
-ExpansionPak
-Linking=Off
-Plugin Note=[video] errors:day_transistion (see GameFAQ)
-Save Type=First Save Type
-Self-modifying code Method=Change Memory
-Status=Compatible
-
-[D563C370-F3589C74-C:47]
-Name=Mario Golf (Gateway)
-CPU Type=Recompiler
-Core Note=high system requirement
-Counter Factor=2
-Linking=Global
-Plugin Note=[video] errors:framebuffer (Use 3rd party plugin (See Gamefaq)
-Save Type=First Save Type
-Self-modifying code Method=Check Memory & cache
-Status=Use 3rd party video
-
-[D5A9AADC-BCD6EB3C-C:47]
-Name=Mario Kart 64 (Gateway)
-CPU Type=Recompiler
-Counter Factor=2
-Linking=Global
-Save Type=First Save Type
-Self-modifying code Method=Cache
-Status=Compatible
-
-[FFC2283D-7B2D0E78-C:47]
-Name=Mario Party 3 (Gateway)
-CPU Type=Recompiler
-Counter Factor=1
-Linking=Global
-Plugin Note=[video] (see GameFAQ)
-Save Type=16kbit Eeprom
-Self-modifying code Method=Protected Memory
-Status=Compatible
-
-[A6171F86-71D83FAB-C:47]
-Name=Mario Tennis (Gateway)
+[463BC019-E0F88477-C:45]
+Name=ZELDA COSMIC GODDESS (U) (f3dex3)
 CPU Type=Recompiler
 Counter Factor=2
 ExpansionPak
-Linking=Off
-Plugin Note=[video] (see GameFAQ)
-Save Type=16kbit Eeprom
-Self-modifying code Method=Change Memory
-Status=Issues (plugin)
-
-[57A7E245-A24922F9-C:47]
-Name=Midway's Greatest Arcade Hits (Gateway)
-CPU Type=Recompiler
-Counter Factor=2
-Linking=Global
-Plugin Note=[video] (see GameFAQ)
-Save Type=First Save Type
-Self-modifying code Method=Check Memory & cache
-Status=Issues (plugin)
-
-[EB9C669D-5400AACB-C:47]
-Name=Mortal Kombat 4 (Gateway)
-CPU Type=Recompiler
-Counter Factor=2
-Disable TLB
-Linking=Global
-Save Type=First Save Type
-Self-modifying code Method=Cache
-Status=Compatible
-
-[2FF13B12-FBF45935-C:47]
-Name=Paper Mario (Gateway)
-CPU Type=Recompiler
-Counter Factor=1
-ExpansionPak
-Linking=Global
-Plugin Note=[video] (see GameFAQ)
-Save Type=First Save Type
-Self-modifying code Method=Check Memory Advance
-Status=Compatible
-
-[2E2D82D6-84DB8358-C:47]
-Name=Pilotwings 64 (Gateway)
-CPU Type=Recompiler
-//Cheat0=D02643C1 0012,802643C1 00FF,D0264C41 0012,80264C41 00FF,D0264E01 0012,80264E01 00FF,D0264841 0012,80264841 00FF,D0264701 0012,80264701 00FF,D02646C1 0012,802646C1 00FF,D0264A01 0012,80264A01 00FF,D0264C01 0012,80264C01 00FF,D0264B01 0012,80264B01 00FF,D0264241 0020,80264241 00FF,D0264941 0020,80264941 00FF,D0264DC1 0020,80264DC1 00FF,D0264A81 0020,80264A81 00FF,D0264601 0020,80264601 00FF,D0264801 0020,80264801 00FF,D0264301 0029,80264301 00FF,D0264981 0029,80264981 00FF,D0264681 0029,80264681 00FF,D0264A81 0029,80264A81 00FF,D0264CC1 0029,80264CC1 00FF,D0264801 0029,80264801 00FF,D0265041 0029,80265041 00FF,D02651C1 0029,802651C1 00FF,D0264B01 0029,80264B01 00FF,D0264241 003D,80264241 00FF,D0264A41 003D,80264A41 00FF,D02645C1 003D,802645C1 00FF,D0264741 003D,80264741 00FF,D0264781 003D,80264781 00FF  //Land Shadow Fix
-Counter Factor=3
-Disable TLB
-Linking=Global
-Plugin Note=[video] (see GameFAQ)
-Save Type=First Save Type
-Self-modifying code Method=Cache
-Status=Compatible
-
-[94A62675-7763A6E6-C:47]
-Name=Pokemon Snap (Gateway)
-CPU Type=Recompiler
-Cheat0=D1382D1C 802C,80382D0F 0000 //Pass 1st Level and Controller Fix
-Cheat1=D11E3184 2881,811E3184 2001,D11E3186 0098,811E3186 0001 //Make Picture selectable
-Counter Factor=2
-Linking=Global
-Save Type=First Save Type
-Self-modifying code Method=Check Memory & cache
-Status=Compatible
-
-[0D58E4C0-EEAF9534-C:47]
-Name=Rampage 2 - Universal Tour  (Gateway)
-CPU Type=Recompiler
-Counter Factor=2
-Disable TLB
-Linking=Off
-Save Type=First Save Type
-Self-modifying code Method=Check Memory & cache
-Status=Compatible
-
-[7B5FE8D0-26D14433-C:47]
-Name=Ready 2 Rumble Boxing (Gateway)
-CPU Type=Recompiler
-Counter Factor=2
-Disable TLB
-Linking=Global
-Save Type=First Save Type
-Self-modifying code Method=Cache
-Status=Compatible
-
-[B1C889CC-E8AED4C1-C:47]
-Name=Rush 2 - Extreme Racing USA (Gateway)
-CPU Type=Recompiler
-Counter Factor=1
-Linking=Global
-Save Type=First Save Type
-Self-modifying code Method=Check Memory & cache
-Status=Compatible
-
-[955CE1F8-166B4F4C-C:47]
-Name=Star Fox 64 (Gateway)
-CPU Type=Recompiler
-Counter Factor=2
-Disable TLB
-Linking=Global
-Save Type=First Save Type
-Self-modifying code Method=Protected Memory
-Status=Compatible
-
-[CA6CBF1E-89EF2FC0-C:47]
-Name=Star Wars - Rogue Squadron (Gateway)
-CPU Type=Recompiler
-Counter Factor=2
-ExpansionPak
-Linking=Global
-Plugin Note=[video] unsupported
-Save Type=First Save Type
-Self-modifying code Method=Protected Memory
-Status=Use GLideN64 Video
-
-[8EE30438-6DAE1C7D-C:47]
-Name=Super Smash Brothers (Gateway)
-CPU Type=Recompiler
-Counter Factor=2
-Disable TLB
-Linking=Off
-Plugin Note=[video] (see GameFAQ)
-Save Type=First Save Type
-Self-modifying code Method=Change Memory
-Status=Compatible
-
-[960DDFA4-A38A1C08-C:47]
-Name=The New Tetris (Gateway)
-CPU Type=Recompiler
-Counter Factor=2
-Linking=Global
-Plugin Note=[video] errors:?
-Save Type=First Save Type
-Self-modifying code Method=Check Memory & cache
-Status=Compatible
-
-[7468EACE-ED32A09F-C:47]
-Name=Virtual Chess 64 (Gateway)
-CPU Type=Recompiler
-Counter Factor=2
-Disable TLB
-Linking=Global
-Save Type=First Save Type
-Self-modifying code Method=Cache
-Status=Compatible
-
-[D8A44F27-73408E53-C:47]
-Name=Virtual Pool 64 (Gateway)
-CPU Type=Recompiler
-Counter Factor=2
-Disable TLB
 Linking=On
+Plugin Note=Issue;rsp
 Save Type=First Save Type
 Self-modifying code Method=Cache
-Status=Compatible
+Status=Issues (plugin)
 
-[9318DAEF-F1732347-C:47]
-Name=Wave Race 64 (Gateway)
+[BC58A74A-9F855497-C:00]
+Name=Libdragon Test ROM (PD)
 CPU Type=Recompiler
-Counter Factor=2
-Disable TLB
-Linking=On
+Counter Factor=Default
+Disable Reg Cache
+ExpansionPak
+Linking=Global
 Save Type=First Save Type
-Self-modifying code Method=Check Memory & cache
-Status=Compatible
+Self-modifying code Method=Cache
+Use Large Buffer
 
-[712E0CB5-3608A9C1-C:47]
-Name=Yoshi's Story (Gateway)
+[AD6A5E18-36320263-C:43]
+Name=Animal Crossing (CHN) (iQue) (GameFix) [6103]
+CPU Type=Recompiler
+Counter Factor=1
+Disable Reg Cache
+Linking=Off
+Save Type=First Save Type
+Self-modifying code Method=Default
+Status=GlideN64 & RSP Emulation
+
+[3062A444-258B275D-C:45]
+Name=Animal Forest (U) [6103]
 CPU Type=Recompiler
 Counter Factor=2
 Linking=Global
-Plugin Note=[video] (see GameFAQ)
-Save Type=16kbit Eeprom
+Save Type=FlashRam
 Self-modifying code Method=Check Memory Advance
 Status=Compatible
-
 
 //
 //-------- Any entries below this point are for ROMs you have added yourself via the GUI [EOF] --------
 //
-
-
 

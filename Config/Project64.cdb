@@ -17,7 +17,7 @@
 // Note that Project64 automatically prefixes "http://"
 
 Author=PJ64LegacyTeam
-Date=29th August 2023 Version: 1
+Date=9th December 2023 Version: 1
 Homepage=www.project64-legacy.com
 Version=Project64 1.6.2 (Legacy)
 
@@ -758,6 +758,47 @@ OldYoung Note=To Activate this Cheat Hold The R Button when walking through a Do
 Other Timers Note=This cheat works on all Race Timers not the final Boss and Under Water with iron Boots etc.
 Rupees Note=This cheat allows you to have the max Rupees to the Wallet you currently Hold
 TunicBoot=$11 Kokiri Tunic & Kokiri Boots,$12 Goron Tunic & Kokiri Boots,$13 Zora Tunic & Kokiri Boots,$14 Black Tunic & Kokiri Boots,$15 White Tunic & Kokiri Boots,$16 Yellow Tunic & Kokiri Boots,$21 Kokiri Tunic & Iron Boots,$22 Goron Tunic & Iron Boots,$23 Zora Tunic & Iron Boots,$24 Black Tunic & Iron Boots,$25 White Tunic & Iron Boots,$26 Yellow Tunic & Iron Boots,$31 Kokiri Tunic & Hover Boots,$32 Goron Tunic & Hover Boots,$33 Zora Tunic & Hover Boots,$34 Black Tunic & Hover Boots,$35 White Tunic & Hover Boots,$36 Yellow Tunic & Hover Boots
+TunicBoot Note=This changes what you are wearing,once you have enabled the code press Start & then start again.
+Warp Note=For this cheat to work,You have to have the Ocarina & Songs. make your choice & Play the song of the cheat name to get where you chose.
+WarpSong1=$00 Sacred Forest Meadow,$04 Lake Hylia,$15 Inside Jabu Jabu's Belly,$18 Dodongo's Cavern,$68 Inside The Deku Tree
+WarpSong2=$03 Kakariko Windmill,$07 Bombchu Bowling Alley,$0F Zelda & Impa Flee,$14 Kakariko Village,$17 Ganon Final Battle,$1D Top of Ganon's Tower,$28 Bombchu Shop,$2C Bazaar,$30 Happy Mask Shop,$34 Ganon's Tower,$38 Ganon's Castle,$4C Inside Spirit Door,$6C Burning Castle,$50 House of Skulltula,$64 Death Mountain Trail,$68 Graveyard,$70 Thieves' Hideout,$74 Royal Family's Tomb,$78 Great Fairy Fountain 1,$84 Forest Temple,$88 Great Fairy Fountain 2,$99 Grotto 01,$9D Grotto 02,$A4 Grotto 04,$A8 Grotto 05,$B3 Grotto 06,$B0 Grotto 07,$B4 Grotto 08,$B8 Grotto 09,$C3 Grotto 10,$C0 Grotto 11,$C4 Grotto 12,$FC Grotto 13,$D3 Bottom of the Well,$D0 Lon Lon Ranch Shed,$D3 Lon Lon Ranch Outside Shed,$D8 Ice Cavern,$E3 Outside Cow Pen,$E0 Lost Woods Bridge,$E4 Lon Lon Ranch Chicken Room,$E8 In Front of Deku Tree,$EB Spirit Temple Boss,$F1 Castle Courtyard,$F4 Temple of Time,$F8 Gerudo Fortress Jail
+WarpSong3=$03 Castle Courtyard,$0B Dodongo's Cavern Boss,$10 Inside The Deku Tree Boss,$14 Shadow Temple Boss,$17 Water Temple Boss,$1C Ganon's Castle Tower,$1F Ganon First Battle,$28 Ganon's Castle Room Before Ganon,$2B Inside Ganon's Castle Room With Pillar,$2F Lon Lon Ranch,$33 Mido's House,$37 Saria's House,$4B Bearded Man's House,$40 Top of Ganon's Castle,$47 Outside Saria's House,$4F Dampe's Race,$57 Kokiri Forest,$5B Top of Death Mountain,$5F Fishing Pond,$68 Inside Ganon's Castle,$7F Hyrule Castle Gate,$BA Top of Ganon's Tower,$C2 Great Fairy Fountain,$D6 Lost Woods Goron Entrance,$DA Lost Woods River Entrance,$DE Lost Woods Bridge Field Entrance,$E3 Goron City Lost Woods Entrance,$F6 Death Mountain Crater,$FD Ganon's Castle
+WarpSong4=$05 Lake Hylia,$08 Zora's Domain,$18 Gerudo Valley,$1E Lost Woods,$28 Gerudo Fortress,$30 Haunted Wasteland,$34 Ganon's Castle Inside Burning Castle,$38 Hyrule Castle,$3A Ganon's Castle,$3D Death Mountain Trail,$4D Goron City,$65 Fire Temple,$69 Forest Temple,$6E Shooting Gallery,$79 Ganon's Castle Inside Burning Castle,$7E Kakariko Village Entrance,$7B Zora's River Entrance,$85 Kokiri Forest Entrance,$8A Lake Hyrule Entrance,$8E Gerudo Valley Entrance,$92 Death Mountain Trail Entrance,$95 Graveyard Entrance,$9E Zora's Domain Entrance,$A2 Zora's Fountain Entrance,$BA Goron City Entrance,$BE Death Mountain Trail,$C1 Goron City,$C5 Lakeside Laboratory,$C9 Top of Ganon's Castle,$CD Hyrule Market (Child Link's),$CF Hyrule Market (Adult Link's),$F1 Desert Colossus,$FA Lon Lon Ranch Entrance,$FD Hyrule Field
+YoungItem=$21 Weird Egg,$22 Chicken,$23 Zelda's Letter,$24 Keaton Mask,$25 Skull Mask,$26 Spooky Mask,$27 Bunny Hood,$28 Goron Mask,$29 Zora Mask,$2A Gerudo Mask,$2B Mask of Truth,$2C SOLD OUT
+
+[ZeldaCosmic]
+AdultItem=$2D Pocket Egg,$2E Pocket Cucco,$2F Cojiro,$30 Odd Mushroom,$31 Odd Potion,$32 Poacher's Saw,$33 Goron's Sword (Broken),$34 Prescription,$35 Eyeball Frog,$36 Eye Drops,$37 Claim Check
+Appear Note=If you go to an area where Link is immobile or invisible, using the "appear in strange places" code will almost always fix it, but you'll start somewhere outside of the Arena and in air. I recommend using the infinite step Hover boots code already supplied with PJ64 so you can float back into the arena in the event that this happens.
+Beta Interface Note=If you go to an area where the interface is accessible, this signigfies that you're not in 'beta' mode anymore. Using the "interface always off/on" code, you can stay in 'beta' mode regardless of what happens. This may cause more crashes in SOME areas, but it's rare and is not too severe. If you need to explore a beta area with the interface, "use the interface always on" portion of the code. Don't use the codes as you start the game. If you need the interface on/off at a specific time, start the game, go to the area, activate the code, keep it on until next reset.
+BetaQuest=$00 World 01,$01 World 02,$02 World 03,$03 World 04,$04 World 05,$07 World 06,$08 World 07,$16 World 08
+BetaQuest Note=Put on the code on load up,After the Nintendo logo you will be in Beta Mode,There are no icons, energy bar etc. on the screen.When you press a C-Buttton you can use an object.Here the objects for the C-Buttons:C-left: arrows, C-down: bombs, C-right: Ocarina of Time. There is also no Navi and start menu.When you go to some places the game will freeze or you can't move.
+Bottle Mod=$14 Empty Bottle,$15 Red Potion,$16 Green Potion,$17 Blue Potion,$18 Bottled Fairy,$19 Fish,$1A Lon Lon Milk,$1B Letter,$1C Blue Fire,$1D Bug,$1E Big Poe,$1F Lon Lon Milk (Half),$20 Poe
+Carrots Note=This is For Practicing,Racing.Warning take this off before jumping the exit fence after winning Epona
+DDP Note=This gives you White Border Hearts
+Day Mod=$4000 At Sunrise,$5800 Daylight Out,$7000 Very Bright Out,$C000 At Sunset,$D000 Fairly Dark
+Eng Lang=$00 English,$01 German,$02 French
+Equipt1=$02 Silver Scale,$04 Golden Scale,$06 Giants Knife (Broken),$40 Bullet Bag (Holds 30),$80 Bullet Bag (Holds 40),$C0 Bullet Bag (Holds 50),$47 Kid Wallet (Holds 99),$57 Adult Wallet (Holds 200),$67 Giant Wallet (Holds 500)
+Equipt1 Note=This modifies the equipment you are carrying.If you Use Black Gauntlets,They are as strong as the Golden Gauntlets. This code also gives you the Silver Scale and the Golden Scale and unlimited rupees.
+Equipt2=$08 Bomb Bag (Holds 20),$10 Bomb Bag (Holds 30),$18 Bomb Bag (Holds 40),$20 Goron's Bracelet,$28 Silver Gauntlets,$30 Golden Gauntlets,$35 Black Gauntlets,
+FMV=$FFF0 Triforce FMV,$FFF1 fire FMV,$FFF2 Triforce FMV,$FFF3 Ganondorf FMV,$FFF4 Planet Making FMV,$FFF5 Fire FMV,$FFF6 Ganondorf FMV,$FFF7 More Triforce FMV,$FFF8 Ending
+FMV Note=Hold down `L+R' after the Nintendo logo is spinning to see your favourite FMV
+Gannons Timer Note=This cheat works only on The Final Boss.
+Have All=This cheat causes the Goron Temple door not to open, but if you go to the very top of the mountain where the fairy is, next to her entrance is another one in to the fire temple.once inside put on the hover boots & infinite hover cheat to hover over to the ledge on the left hand side.From here you can carry on the game as normal
+Hookshot=$0A Hookshot,$0B Longshot
+Hover Note=Press L For Infinite Hover Boots & Let go to land,This Only works when you have the Boots on
+InstantStep=$31 Kokiri Tunic & Hover Boots,$32 Goron Tunic & Hover Boots,$33 Zora Tunic & Hover Boots,$34 Black Tunic & Hover Boots,$35 White Tunic & Hover Boots,$36 Yellow Tunic & Hover Boots
+InstantStep Note=Take off from Anywhere & to go higher just press L Once, this will lift you higher while walking.to come back Down Keep R pressed.Once you have enabled the code press Start & then start again.
+Lean Note=This code will cause all items on a specific plane to lean. This is helpful for areas in which the plane causes the crash (Ex. Weird Zora's Fountain Beta Quest 01).
+Level=$0000 Inside the Deku Tree,$0004 Dodongo's Cavern,$0008 Gerudo Training Ground,$000C Below The Phantom Gannon Boss,$0010 Water Temple,$0027 Inside Jabu-Jabu's Belly,$002C Royal Family's Tomb,$0036 Shoadow Temple,$0042 Lakeside Laboratory,$0052 Temple Of Time,$006C ?
+Levitate Note=Press L To Levitate & Let go to land
+NayrusLove Note=For this to work On Or off, you have to walk through a Doorway to activate the Change
+No use=Do not use under or in water
+Ocarina=$07 Fairy Ocarina,$08 Ocarina Of Time
+OldYoung=$01 Link Young,$00 Link Old
+OldYoung Note=To Activate this Cheat Hold The R Button when walking through a Doorway this will change you to the option on the other side, Disable this Cheat straight away after getting to the other side, in some places you might even get Access Violations. Just press ok untill you can carry on.
+Other Timers Note=This cheat works on all Race Timers not the final Boss and Under Water with iron Boots etc.
+Rupees Note=This cheat allows you to have the max Rupees to the Wallet you currently Hold
+TunicBoot=$11 Normal Tunic & Leather Boots,$12 Goron Tunic & Leather Boots,$13 Bikini Tunic & Leather Boots,$14 Eve Tunic & Leather Boots,$21 Normal Tunic & Iron Boots,$22 Goron Tunic & Iron Boots,$23 Bikini Tunic & Iron Boots,$24 Eve Tunic & Iron Boots,$31 Normal Tunic & Pegasus Boots,$32 Goron Tunic & Pegasus Boots,$33 Bikini Tunic & Pegasus Boots,$34 Eve Tunic & Pegasus Boots
 TunicBoot Note=This changes what you are wearing,once you have enabled the code press Start & then start again.
 Warp Note=For this cheat to work,You have to have the Ocarina & Songs. make your choice & Play the song of the cheat name to get where you chose.
 WarpSong1=$00 Sacred Forest Meadow,$04 Lake Hylia,$15 Inside Jabu Jabu's Belly,$18 Dodongo's Cavern,$68 Inside The Deku Tree
@@ -11588,6 +11629,118 @@ Cheat9="Tunic & Boot Options",8011A640 00??
 Cheat9_N=[ZeldaOOT]TunicBoot Note
 Cheat9_O=[ZeldaOOT]TunicBoot
 Cheat10="Infinite\Deku Sticks",8011A65C 0009
+Cheat11="Infinite\Deku Nuts",8011A65D 0009 8011EDCD
+Cheat12="Infinite\Bombs",8011A65E 0009
+Cheat13="Infinite\Arrows",8011A65F 0009
+Cheat14="Infinite\Deku Seeds",8011A662 0009
+Cheat15="Infinite\Bombchu's",8011A664 0009
+Cheat16="Infinite\Magic Beans",8011A66A 0009
+Cheat17="Infinite\Big Key,Small Keys,Compass,& Map",8011A678 0007,8011A679 0007,8011A67A 0007,8011A67B 0007,8011A67C 0007,8011A67D 0007,8011A67E 0007,8011A67F 0007,8011A680 0007,8011A681 0007,8011A682 0007,8011A68F 0009,8011A690 0009,8011A691 0009,8011A692 0009,8011A693 0009,8011A699 0009,8011A69C 0009,8011A697 0009
+Cheat18="Have\Ocarina",8011A64B 00??
+Cheat18_O=[ZeldaOOT]Ocarina
+Cheat19="Have\Boomerang",8011A650 000E
+Cheat20="Have\Lens of Truth",8011A651 000F
+Cheat21="Have\Megaton Hammer",8011A653 0011
+Cheat22="Have\Deku Stick",8011A644 0000
+Cheat23="Have\Deku Nut",8011A645 0001
+Cheat24="Have\Bombs",8011A646 0002
+Cheat25="Have\Fairy Bow",8011A647 0003
+Cheat26="Have\Fairy Slingshot",8011A64A 0006
+Cheat27="Have\Bombchu",8011A64C 0009
+Cheat28="Have\Arrows\Fire Arrow",8011A648 0004
+Cheat29="Have\Arrows\Ice Arrow",8011A64E 000C
+Cheat30="Have\Arrows\Light Arrow",8011A654 0012
+Cheat31="Have\Hookshot",8011A64D 00??
+Cheat31_O=[ZeldaOOT]Hookshot
+Cheat32="Have\Magic Beans",8011A652 0010
+Cheat33="Have\Magic\Fairie's Wind",8011A64F 000D
+Cheat34="Have\Magic\Nayru's Love",8011A655 0013
+Cheat35="Have\Magic\Din's Fire",8011A649 0005
+Cheat36="Bottles\Bottle 1 Modifier",8011A656 00??
+Cheat36_O=[ZeldaOOT]Bottle Mod
+Cheat37="Bottles\Bottle 2 Modifier",8011A657 00??
+Cheat37_O=[ZeldaOOT]Bottle Mod
+Cheat38="Bottles\Bottle 3 Modifier",8011A658 00??
+Cheat38_O=[ZeldaOOT]Bottle Mod
+Cheat39="Bottles\Bottle 4 Modifier",8011A659 00??
+Cheat39_O=[ZeldaOOT]Bottle Mod
+Cheat40="Trading\Adult Link Item",8011A65A 00??
+Cheat40_O=[ZeldaOOT]AdultItem
+Cheat41="Trading\Young Link Item",8011A65B 00??
+Cheat41_O=[ZeldaOOT]YoungItem
+Cheat42="Turn Giant's Knife Into Biggoron's Sword",8011A60E 0001
+Cheat43="Equipment Modifier 1",8011A672 00??
+Cheat43_N=[ZeldaOOT]Equipt1 Note
+Cheat43_O=[ZeldaOOT]Equipt1
+Cheat44="Equipment Modifier 2",8011A673 00??
+Cheat44_N=[ZeldaOOT]Equipt1 Note
+Cheat44_O=[ZeldaOOT]Equipt2
+Cheat45="Press L\To Levitate",D01C84B5 0020,811DAA90 40CB
+Cheat45_N=[ZeldaOOT]Levitate Note
+Cheat46="Press L\For infinite Hover Boots",D01C84B5 0020,811DB2B2 000D
+Cheat46_N=[ZeldaOOT]Hover Note
+Cheat47="Press L\For Instant Step Hoover Boots",D01C84B5 0020,811DAA90 40CB,D01C84B5 0000,811DB2B2 000D,8011A640 00??
+Cheat47_N=[ZeldaOOT]InstantStep Note
+Cheat47_O=[ZeldaOOT]InstantStep
+Cheat48="Beta\Play Beta Quest Worlds",D01C84B5 0000,8011B9E3 00??
+Cheat48_N=[ZeldaOOT]BetaQuest Note
+Cheat48_O=[ZeldaOOT]BetaQuest
+Cheat49="Warp Song Location\Minuet of Forest & Serenade of Water",8011B965 00??
+Cheat49_N=[ZeldaOOT]Warp Note
+Cheat49_O=[ZeldaOOT]WarpSong1
+Cheat50="Warp Song Location\Prelude of Light & Nocturne of Shadow",8011B965 00??
+Cheat50_N=[ZeldaOOT]Warp Note
+Cheat50_O=[ZeldaOOT]WarpSong2
+Cheat51="Warp Song Location\Bolero of Fire",8011B965 00??
+Cheat51_N=[ZeldaOOT]Warp Note
+Cheat51_O=[ZeldaOOT]WarpSong3
+Cheat52="Warp Song Location\Requiem of Spirit",8011B965 00??
+Cheat52_N=[ZeldaOOT]Warp Note
+Cheat52_O=[ZeldaOOT]WarpSong4
+Cheat53="Max\Double Defense Power",8011A69F 0014
+Cheat53_N=[ZeldaOOT]DDP Note
+Cheat54="Nayru's Love is Always",8111B998 ????
+Cheat54_N=[ZeldaOOT]NayrusLove Note
+Cheat54_O=@Off and On 3
+Cheat55="Infinite\Timers\All Other Timers",8011B9A1 0032
+Cheat55_N=[ZeldaOOT]Other Timers Note
+Cheat56="Epona\Max Carrots\Lon Lon Raunch",801F2208 0005,801EEC88 0005
+Cheat56_N=[ZeldaOOT]Carrots Note
+Cheat57="Infinite\Timers\Escape From Gannons Tower",8011B9A5 00B4
+Cheat57_N=[ZeldaOOT]Gannons Timer Note
+Cheat58="Beta\Specific things lean",80025614 0001
+Cheat58_N=[ZeldaOOT]Lean Note
+Cheat59="Beta\Appear in Strange Places (Hold R)",D01C84B5 0010,8111B936 0001
+Cheat59_N=[ZeldaOOT]Appear Note
+Cheat60="Beta\Interface always off/on",8011B4B9 00FF,8011B92F 00??
+Cheat60_N=[ZeldaOOT]Beta Interface Note
+Cheat60_O=@Off and On 1
+Cheat61="Press R For Old Or Young Link",D01C84B5 0010,8011A5D7 00??
+Cheat61_N=To Activate this Cheat Hold The R Button when walking through a Doorway this will change you to the option on the other side, Disable this Cheat straight away after getting to the other side, in some places you might even get Access Violations. Just press ok untill you can carry on.
+Cheat61_O=$01 Link Young,$00 Link Old
+
+//----
+
+[C7C3086D-93826E6E-C:45]
+Name=The Legend of Zelda - Ocarina of Time (U) (V1.0) [6102]
+Cheat0="Infinite\Rupees",8111B99C 0001
+Cheat0_N=[ZeldaOOT]Rupees Note
+Cheat1="Use Any Item In Any House",8111B7F2 0000,8111B7F4 0000
+Cheat1_N=[ZeldaOOT]No use
+Cheat2="Have\All Equipment",8111A66C 7777
+Cheat2_N=[ZeldaOOT]Have All
+Cheat3="Have\All Quest Status Items",8111A674 30FF,8111A676 FFFF
+Cheat3_N=[ZeldaOOT]Have All
+Cheat4="Max\Heart Containers",8111A5FE 0140
+Cheat5="Max\Gold Skulltulas Killed",8011A6A1 0064
+Cheat6="Time of Day Modifier",8111A5DC ????
+Cheat6_O=[ZeldaOOT]Day Mod
+Cheat7="Infinite\Energy",8111A600 0140
+Cheat8="Infinite\Magic",D011A609 0008,8011A60A 0001,8011A60C 0001,8011A603 0060
+Cheat9="Tunic & Boot Options",8011A640 00??
+Cheat9_N=[ZeldaOOT]TunicBoot Note
+Cheat9_O=[ZeldaOOT]TunicBoot
+Cheat10="Infinite\Deku Sticks",8011A65C 0009
 Cheat11="Infinite\Deku Nuts",8011A65D 0009
 Cheat12="Infinite\Bombs",8011A65E 0009
 Cheat13="Infinite\Arrows",8011A65F 0009
@@ -11677,6 +11830,78 @@ Cheat60_O=@Off and On 1
 Cheat61="Press R For Old Or Young Link",D01C84B5 0010,8011A5D7 00??
 Cheat61_N=To Activate this Cheat Hold The R Button when walking through a Doorway this will change you to the option on the other side, Disable this Cheat straight away after getting to the other side, in some places you might even get Access Violations. Just press ok untill you can carry on.
 Cheat61_O=$01 Link Young,$00 Link Old
+
+//----
+
+[6778CB96-DF58BDE4-C:45]
+Name=ZELDA COSMIC GODDESS (U)
+Cheat0="Infinite\Rupees",80120134 0001
+Cheat0_N=[ZeldaCosmic]Rupees Note
+Cheat1="Have\All Equipment",8111EDDC 7777
+Cheat1_N=[ZeldaCosmic]Have All
+Cheat2="Have\All Quest Status Items",8111EDE4 30FF,8111EDE6 FFFF
+Cheat2_N=[ZeldaCosmic]Have All
+Cheat3="Max\Heart Containers",8111ED6E 0140
+Cheat4="Max\Gold Skulltulas Killed",8011EE11 0064
+Cheat5="Time of Day Modifier",8111ED4C ????
+Cheat5_O=[ZeldaCosmic]Day Mod
+Cheat6="Infinite\Energy",8111ED70 0140
+Cheat7="Infinite\Magic",D011ED79 0008,8011ED7A 0001,8011ED7C 0001,8011ED73 0060
+Cheat8="Tunic & Boot Options",8011EDB0 00??
+Cheat8_N=[ZeldaCosmic]TunicBoot Note
+Cheat8_O=[ZeldaCosmic]TunicBoot
+Cheat9="Infinite\Deku Sticks",8011EDCC 0063
+Cheat10="Infinite\Deku Nuts",8011EDCD 0063
+Cheat11="Infinite\Bombs",8011EDCE 0063
+Cheat12="Infinite\Shotgun Ammo",8011EDCF 0063
+Cheat13="Infinite\Beretta Ammo",8011EDD2 0063
+Cheat14="Infinite\Bombchu's",8011EDD4 0063
+Cheat15="Infinite\Magic Beans",8011EDDA 0063
+Cheat16="Infinite\Big Key,Small Keys,Compass,& Map",50000B01 0000,8011EDE8 0007,50000501 0000,8011EDFF 0009,50000202 0000,8011EDA7 0009,8011EDAC 0009
+Cheat17="Have\Ocarina",8011EDBB 00??
+Cheat17_O=[ZeldaCosmic]Ocarina
+Cheat18="Have\Boomerang",8011EDC0 000E
+Cheat19="Have\Lens of Truth",8011EDC1 000F
+Cheat20="Have\Megaton Hammer",8011EDC3 0011
+Cheat21="Have\Deku Stick",8011EDB4 0000
+Cheat22="Have\Deku Nut",8011EDB5 0001
+Cheat23="Have\Bombs",8011EDB6 0002
+Cheat24="Have\Shotgun",8011EDB7 0003
+Cheat25="Have\Beretta",8011EDBA 0006
+Cheat26="Have\Bombchu",8011EDBC 0009
+Cheat27="Have\Arrows\Fire Arrow",8011EDB8 0004
+Cheat28="Have\Arrows\Ice Arrow",8011EDBE 000C
+Cheat29="Have\Arrows\Light Arrow",8011EDC4 0012
+Cheat30="Have\Hookshot",8011EDBD 00??
+Cheat30_O=[ZeldaCosmic]Hookshot
+Cheat31="Have\Magic Beans",8011EDC2 0010
+Cheat32="Have\Magic\Fairie's Wind",8011EDBF 000D
+Cheat33="Have\Magic\Nayru's Love",8011EDC5 0013
+Cheat34="Have\Magic\Din's Fire",8011EDB9 0005
+Cheat35="Bottles\Bottle 1 Modifier",8011EDC6 00??
+Cheat35_O=[ZeldaCosmic]Bottle Mod
+Cheat36="Bottles\Bottle 2 Modifier",8011EDC7 00??
+Cheat36_O=[ZeldaCosmic]Bottle Mod
+Cheat37="Bottles\Bottle 3 Modifier",8011EDC8 00??
+Cheat37_O=[ZeldaCosmic]Bottle Mod
+Cheat38="Bottles\Bottle 4 Modifier",8011EDC9 00??
+Cheat38_O=[ZeldaCosmic]Bottle Mod
+Cheat39="Trading\Adult Link Item",8011EDCA 00??
+Cheat39_O=[ZeldaCosmic]AdultItem
+Cheat40="Trading\Young Link Item",8011EDCB 00??
+Cheat40_O=[ZeldaCosmic]YoungItem
+Cheat41="Equipment Modifier 1",8011EDE2 00??
+Cheat41_N=[ZeldaCosmic]Equipt1 Note
+Cheat41_O=[ZeldaCosmic]Equipt1
+Cheat42="Equipment Modifier 2",8011EDE3 00??
+Cheat42_N=[ZeldaCosmic]Equipt1 Note
+Cheat42_O=[ZeldaCosmic]Equipt2
+Cheat43="Press L\To Levitate Main Character",D01E2055 0020,811F4630 40CB
+Cheat43_N=[ZeldaCosmic]Levitate Note
+Cheat44="Max\Double Defense Power",8011EE0F 0014
+Cheat44_N=[ZeldaCosmic]DDP Note
+Cheat45="Press L\To Levitate 2nd Character",D01E2055 0020,811F6940 40CB
+Cheat45_N=[ZeldaCosmic]Levitate Note
 
 //----
 
@@ -19848,6 +20073,120 @@ Cheat62_N=Press L To Levitate & Let go to land
 
 //----
 
+[96961E83-B5DE0894-C:50]
+Name=The Legend of Zelda - Ocarina of Time (E) (M3) (V1.0) [7101]
+Cheat0="Infinite\Rupees",8111979C 0001
+Cheat0_N=[ZeldaOOT]Rupees Note
+Cheat1="Use Any Item In Any House",811195F2 0000,811195F4 0000
+Cheat1_N=[ZeldaOOT]No use
+Cheat2="Have\All Equipment",8111846C 7777
+Cheat2_N=[ZeldaOOT]Have All
+Cheat3="Have\All Quest Status Items",81118474 30FF,81118476 FFFF
+Cheat3_N=[ZeldaOOT]Have All
+Cheat4="Max\Heart Containers",811183FE 0140
+Cheat5="Max\Gold Skulltulas Killed",801184A1 0064
+Cheat6="Time of Day Modifier",811183DC ????
+Cheat6_O=[ZeldaOOT]Day Mod
+Cheat7="Infinite\Energy",81118400 0140
+Cheat8="Infinite\Magic",D0118409 0008,8011840A 0001,8011840C 0001,80118403 0060
+Cheat9="Tunic & Boot Options",80118440 00??
+Cheat9_N=[ZeldaOOT]TunicBoot Note
+Cheat9_O=[ZeldaOOT]TunicBoot
+Cheat10="Infinite\Deku Sticks",8011845C 0009
+Cheat11="Infinite\Deku Nuts",8011845D 0009
+Cheat12="Infinite\Bombs",8011845E 0009
+Cheat13="Infinite\Arrows",8011845F 0009
+Cheat14="Infinite\Deku Seeds",80118462 0009
+Cheat15="Infinite\Bombchu's",80118464 0009
+Cheat16="Infinite\Magic Beans",8011846A 0009
+Cheat17="Infinite\Big Key,Small Keys,Compass,& Map",50000B01 0000,80118478 0007,50000501 0000,8011848F 0009,80118497 0009,80118499 0009,8011849C 0009
+Cheat18="Have\Ocarina",8011844B 00??
+Cheat18_O=[ZeldaOOT]Ocarina
+Cheat19="Have\Boomerang",80118450 000E
+Cheat20="Have\Lens of Truth",80118451 000F
+Cheat21="Have\Megaton Hammer",80118453 0011
+Cheat22="Have\Deku Stick",80118444 0000
+Cheat23="Have\Deku Nut",80118445 0001
+Cheat24="Have\Bombs",80118446 0002
+Cheat25="Have\Fairy Bow",80118447 0003
+Cheat26="Have\Fairy Slingshot",8011844A 0006
+Cheat27="Have\Bombchu",8011844C 0009
+Cheat28="Have\Arrows\Fire Arrow",80118448 0004
+Cheat29="Have\Arrows\Ice Arrow",8011844E 000C
+Cheat30="Have\Arrows\Light Arrow",80118454 0012
+Cheat31="Have\Hookshot",8011844D 00??
+Cheat31_O=[ZeldaOOT]Hookshot
+Cheat32="Have\Magic Beans",80118452 0010
+Cheat33="Have\Magic\Fairie's Wind",8011844F 000D
+Cheat34="Have\Magic\Nayru's Love",80118455 0013
+Cheat35="Have\Magic\Din's Fire",80118449 0005
+Cheat36="Bottles\Bottle 1 Modifier",80118456 00??
+Cheat36_O=[ZeldaOOT]Bottle Mod
+Cheat37="Bottles\Bottle 2 Modifier",80118457 00??
+Cheat37_O=[ZeldaOOT]Bottle Mod
+Cheat38="Bottles\Bottle 3 Modifier",80118458 00??
+Cheat38_O=[ZeldaOOT]Bottle Mod
+Cheat39="Bottles\Bottle 4 Modifier",80118459 00??
+Cheat39_O=[ZeldaOOT]Bottle Mod
+Cheat40="Trading\Adult Link Item",8011845A 00??
+Cheat40_O=[ZeldaOOT]AdultItem
+Cheat41="Trading\Young Link Item",8011845B 00??
+Cheat41_O=[ZeldaOOT]YoungItem
+Cheat42="Turn Giant's Knife Into Biggoron's Sword",8011840E 0001
+Cheat43="Equipment Modifier 1",80118472 00??
+Cheat43_N=[ZeldaOOT]Equipt1 Note
+Cheat43_O=[ZeldaOOT]Equipt1
+Cheat44="Equipment Modifier 2",80118473 00??
+Cheat44_N=[ZeldaOOT]Equipt2
+Cheat44_O=[ZeldaOOT]Equipt1 Note
+Cheat45="Press L\For Instant Step Hoover Boots",D01C64F5 0020,811D8AE0 40CB,D01C64F5 0000,811D92F2 000D,80118440 00??
+Cheat45_N=[ZeldaOOT]InstantStep Note
+Cheat45_O=[ZeldaOOT]InstantStep
+Cheat46="Beta\Play Beta Quest Worlds",D01C64F5 0000,801197E3 00??
+Cheat46_N=[ZeldaOOT]BetaQuest Note
+Cheat46_O=[ZeldaOOT]BetaQuest
+Cheat47="Warp Song Location\Minuet of Forest & Serenade of Water",80119765 00??
+Cheat47_N=[ZeldaOOT]Warp Note
+Cheat47_O=[ZeldaOOT]WarpSong1
+Cheat48="Warp Song Location\Prelude of Light & Nocturne of Shadow",80119765 00??
+Cheat48_N=[ZeldaOOT]Warp Note
+Cheat48_O=[ZeldaOOT]WarpSong2
+Cheat49="Warp Song Location\Bolero of Fire",80119765 00??
+Cheat49_N=[ZeldaOOT]Warp Note
+Cheat49_O=[ZeldaOOT]WarpSong3
+Cheat50="Warp Song Location\Requiem of Spirit",80119765 00??
+Cheat50_N=[ZeldaOOT]Warp Note
+Cheat50_O=[ZeldaOOT]WarpSong4
+Cheat51="Max\Double Defense Power",8011849F 0014
+Cheat51_N=[ZeldaOOT]DDP Note
+Cheat52="Nayru's Love is Always",801D851B ????
+Cheat52_N=[ZeldaOOT]NayrusLove Note
+Cheat52_O=@Off and On 3
+Cheat53="Infinite\Timers\All Other Timers",801197A1 0032
+Cheat53_N=[ZeldaOOT]Other Timers Note
+Cheat54="Epona\Max Carrots\Lon Lon Raunch",801F12C8 0005,801EDD08 0005
+Cheat54_N=[ZeldaOOT]Carrots Note
+Cheat55="Infinite\Timers\Escape From Gannons Tower",801197A5 00B4
+Cheat55_N=[ZeldaOOT]Gannons Timer Note
+Cheat56="Beta\Specific things lean",80023414 0001
+Cheat56_N=[ZeldaOOT]Lean Note
+Cheat57="Beta\Appear in Strange Places (Hold R)",D01C64F5 0010,81119736 0001
+Cheat57_N=[ZeldaOOT]Appear Note
+Cheat58="Beta\Interface always off/on",801192B9 00FF,8011972F 00??
+Cheat58_N=[ZeldaOOT]Beta Interface Note
+Cheat58_O=@Off and On 1
+Cheat59="Language Select",801197D9 00??
+Cheat59_O=[ZeldaOOT]E Lang
+Cheat60="Press R For Old Or Young Link",D01C64F5 0010,801183D7 00??
+Cheat60_N=[ZeldaOOT]OldYoung Note
+Cheat60_O=[ZeldaOOT]OldYoung
+Cheat61="Press L\For infinite Hover Boots",D01C64F5 0020,811D92F2 000D
+Cheat61_N=Press L For Infinite Hover Boots & Let go to land,This Only works when you have the Boots on
+Cheat62="Press L\To Levitate",D01C64F5 0020,811D8AE0 40CB
+Cheat62_N=Press L To Levitate & Let go to land
+
+//----
+
 [B2055FBD-0BAB4E0C-C:50]
 Name=The Legend of Zelda - Ocarina of Time (E) (M3) (V1.1)
 Cheat0="Infinite\Rupees",811197DC 0001
@@ -25594,1139 +25933,6 @@ Cheat2_N=[YoshisStory]All Yoshis
 Cheat3="Press F9 To Have All Fruit",8812F93B 001E
 Cheat4="Enable All Levels (Trial Mode)",8112FDC4 FFFF,8112FDC6 FFFF
 
-//-------------------- W.I.P Cheats ---------------
-
-[906C3F77-CE495EA1-C:45]
-Name=Dinosaur Planet (Prototype)
-Cheat0="Krystal\Infinite Health",805C3971 000C
-Cheat1="Krystal\Infinite Gem Magic",805C3975 001F
-Cheat2="Fox\Infinite Health",805C3965 000C
-Cheat3="Fox\Infinite Gem Magic",805C3969 001F
-Cheat4="(C-Left) Full Magic Spells",815C4DBE D71F
-Cheat5="WIP Have All Items (C-Right)",805C4DC0 008F,805C4DC1 008F,805C4DCA 000F,805C4DCB 000F,805C4DCC 000F,805C4DCD 000F,805C4DCE 000F,805C4DCF 000F
-Cheat6="Have Magical Gem",8008C8D3 0001
-Cheat7="Display Scarab Counter",805C4D66 0008
-Cheat8="Krystal\Infinite Max Scarabs",815C3978 00FF
-Cheat8_N=The shop keeper will say you do not have enough on entering. But once inside you can look around and buy infinite.
-Cheat9="Fox\Infinite Max Scarabs",815C396C 00FF
-Cheat9_N=The shop keeper will say you do not have enough on entering. But once inside you can look around and buy infinite.
-Cheat10="Krystal\Freeze Mini Game Timer",810A7D70 4525
-Cheat11="Retrobens  Levitation Code.",81012144 081F,81012146 C400,81012148 0000,8101214A 0000,817F1000 3C18,817F1002 805C,817F1004 8F18,817F1006 1568,817F1008 1300,817F100A 001E,817F100C 0000,817F100E 0000,817F1010 3C02,817F1012 800D,817F1014 8042,817F1016 D3F5,817F1018 2408,817F101A 0020,817F101C 1448,817F101E 0019,817F1020 0000,817F1022 0000,817F1024 3C08,817F1026 807F,817F1028 8102,817F102A 10F0,817F102C 1040,817F102E 0003,817F1030 0000,817F1032 0000,817F1034 2402,817F1036 00A4,817F1038 A302,817F103A 00FB,817F103C 3C08,817F103E 807F,817F1040 8102,817F1042 10F1,817F1044 5440,817F1046 0003,817F1048 A100,817F104A 10F1,817F104C 1000,817F104E 0005,817F1050 0000,817F1052 0000,817F1054 2402,817F1056 00AF,817F1058 A302,817F105A 00FB,817F105C 1000,817F105E 0009,817F1060 0000,817F1062 0000,817F1064 3C08,817F1066 807F,817F1068 8102,817F106A 10F0,817F106C 1040,817F106E 0005,817F1070 0000,817F1072 0000,817F1074 3C18,817F1076 805C,817F1078 8F18,817F107A 1568,817F107C 3C02,817F107E 4000,817F1080 AF02,817F1082 0028,817F1084 8E78,817F1086 0000,817F1088 0800,817F108A 4853,817F108C 8E02,817F108E 0000,D00CD3F4 0008,817F10F0 0100,D00CD3F4 0004,817F10F0 0001
-Cheat11_N=Press D-Pad Up to activate the ability to levitate, pressing L after will allow you to levitate freely. Press D-Pad Down to deactivate.
-Cheat12="Tricky\Infinite Energy",805C397C 0004
-Cheat13="Tricky\Have All Skills",815C4C80 FFFF
-Cheat14="Tricky\Learn Distract",D05C4C80 0001,805C4C80 0009,D05C4C80 0003,805C4C80 000B,D05C4C80 0011,805C4C80 0019,D05C4C80 0013,805C4C80 001B
-Cheat15="One Hit Kill Enemies",815CC20C 240D,815CC20E 0000
-Cheat16="Food Bag Option",805C4DBF 00??
-Cheat16_O=$00 Nothing,$20 Small Food Bag,$40 Medium Food Bag,$80 Large Food Bag
-Cheat17="Krystal\Have Shiny Nugget",805C4C4F 0002
-Cheat18="Krystal\Have Firefly Lantern (10)",805C4DCF 0040,805C4DD0 0001
-Cheat19="Krystal\Prevent Being Gassed More Than Once",D05C4C4F 0076,D05C4C50 0007,805C4C50 0006,D05C4C4F 0076,D05C4C50 0006,805C4C4F 007E,D05C4C4F 0076,D05C4C50 00FE,805C4C4F 007F
-Cheat19_N=do not use with the Shiny Nugget cheat left on. Either do the glitch to get it or cheat it in, do a hard save, turn off the cheat and reload to keep the Shiney Nugget. You need to shoot BOTH doors with the cannon, otherwise the code won't trigger.
-Cheat20="Krystal\Swap with Spirit/Spellstone",805C4D6C 0000
-Cheat21="Fox\Have Lantern",805C4DCF 000A
-Cheat22="Fox\Have Horn",805C4D6C 0020
-Cheat23="Have Spellstone (DarkIce Mines)",805C4D6C 0008
-Cheat24="Have Spellstone (Cloudrunner Fortress)",805C4D41 0002
-Cheat25="Have Max Moon Seeds (7)",805C4C4B 00D0,805C4C4C 0001
-Cheat26="Have Bay Diamond (Diamond Bay)",805C4DBB 0020
-Cheat27="Have Pointback Egg (Diamond Bay)",805C4DBB 0040
-Cheat28="Have Sun & Moon Stone (Walled City)",805C4D80 00C0
-Cheat29="Have Cell Door Key (Cape Claw)",805C4C51 0001
-Cheat30="Have 3 Fire Crystals (Cape Claw)",805C4C52 0018
-Cheat31="Have 3 Krazoa Tablets (Cape Claw)",805C4C53 00E0
-Cheat32="Teleport Tricky to Player (Press D-Pad Down)",814FD888 0802,814FD88A 6C37,8109B0DC 3C02,8109B0DE 800A,8109B0E0 8442,8109B0E2 7DC0,8109B0E4 2403,8109B0E6 0400,8109B0E8 1443,8109B0EA 0007,8109B0EC 8E5C,8109B0EE 00E4,8109B0F0 8F82,8109B0F2 000C,8109B0F4 8F83,8109B0F6 0010,8109B0F8 8F9C,8109B0FA 0014,8109B0FC AE42,8109B0FE 0000,8109B100 AE43,8109B102 0004,8109B104 AE5C,8109B106 0008,8109B108 8E45,8109B10A 0000,8109B10C 0813,8109B10E F624,8109B110 8E46,8109B112 0008
-Cheat33="Press L to Levitate (Noclip)",814EA390 0802,814EA392 6C2D,814EA394 8FBC,814EA396 0030,8109B0B4 8FBF,8109B0B6 0034,8109B0B8 3C04,8109B0BA 800D,8109B0BC 8084,8109B0BE D3F5,8109B0C0 2405,8109B0C2 0020,8109B0C4 50A4,8109B0C6 0003,8109B0C8 0000,8109B0CA 0000,8109B0CC 0813,8109B0CE A8E6,8109B0D0 0000,8109B0D2 0000,8109B0D4 3C05,8109B0D6 800A,8109B0D8 80A4,8109B0DA B160,8109B0DC 1080,8109B0DE 0003,8109B0E0 0000,8109B0E2 0000,8109B0E4 2404,8109B0E6 00A4,8109B0E8 A204,8109B0EA 00FB,8109B0EC 80A4,8109B0EE B161,8109B0F0 5480,8109B0F2 0003,8109B0F4 A0A0,8109B0F6 B161,8109B0F8 1000,8109B0FA 0005,8109B0FC 0000,8109B0FE 0000,8109B100 2404,8109B102 00AF,8109B104 A204,8109B106 00FB,8109B108 1000,8109B10A 0013,8109B10C 0000,8109B10E 0000,8109B110 80A4,8109B112 B160,8109B114 1080,8109B116 0010,8109B118 0000,8109B11A 0000,8109B11C 3C06,8109B11E 4000,8109B120 AE06,8109B122 0028,8109B124 8606,8109B126 0360,8109B128 2404,8109B12A 001C,8109B12C 1486,8109B12E 0002,8109B130 2404,8109B132 001D,8109B134 A604,8109B136 0360,8109B138 2404,8109B13A 0014,8109B13C 1486,8109B13E 0002,8109B140 2404,8109B142 0001,8109B144 A604,8109B146 0360,8109B148 2404,8109B14A 000D,8109B14C 1486,8109B14E 0002,8109B150 2404,8109B152 0001,8109B154 A604,8109B156 0360,8109B158 0813,8109B15A A8E6,8109B15C 0000,8109B15E 0000,D109B160 7276,8109B160 0000,D00CD3F4 0008,8109B160 0100,D00CD3F4 0004,8109B160 0001
-Cheat34="Diamond Bay River Crash Fix",805C4F51 0002
-Cheat34_N=Turn the cheat on only when you're swimming in the river, as turning on the code sooner will make the game crash.
-Cheat35="Galadon Boss Fix",815C522E 0001
-Cheat35_N=Activate code to start the bossfight deactivate right after starting it.
-Cheat36="Trigger Blue Monster in Golden Plains",805C5129 0040
-Cheat36_N=Activate code to start the bossfight deactivate right after starting it.
-Cheat37="CloudRunner Fortress Power Crystal",805C4D?? 00??
-Cheat37_O=$4B:80 Red Power Crystal,$4C:01 Green Power Crystal,$4C:20 Blue Power Crystal
-
-//----
-
-[EB85EBC9-596682AF-C:00]
-Name=DOUBUTSU BANCHOU (PD)
-Cheat0="Infinite 999 Hearts",80320AD5 0063,80320AD7 0009
-Cheat1="Bite Stregnth",80320AE4 00FF
-
-//----
-
-[EFDF9140-A4168D6B-C:00]
-Name=Top Gear Rally 2 (Beta)
-Cheat0="Infinite Time & Always Place 1st",800302A3 0001,80030297 0001
-Cheat0_N=Championship Mode Only.
-
-//----
-
-[F8009DB0-6B291823-C:4A]
-Name=City Tour Grandprix - Zennihon GT Senshuken (J)
-Cheat0="Always First with 99 Points",8015CDB9 0063
-Cheat1="Only race one lap",8015CCE5 0001
-
-//----
-
-[4690FB1C-4CD56D44-C:45]
-Name=Golden Nugget 64 (U)
-Cheat0="Infinite Mega $$$$$$$",88339A19 00FF
-Cheat0_N=Press F9 to enable & then refresh
-
-//----
-
-[FEE6361C-C0563F84-C:50]
-Name=Golden Nugget 64 (E)
-Cheat0="Infinite Mega $$$$$$$",88339A19 00FF
-Cheat0_N=Press F9 to enable & then refresh
-
-//----
-
-[AC062778-DFADFCB8-C:50]
-Name=World Driver Championship (E) (M5)
-Cheat0="Have\20 Events & Trophies",80099A3B 0014,80099A3F 0014,80099A43 0014,80099A4B 0014
-Cheat0_N=Overall Track Stats.
-Cheat1="Have\Max Career points & Driver Rank 1",80099A31 00C1,81099A32 4490
-Cheat1_N=Enable this cheat and then save and then disable the cheat. When you load from the save, it wil also have most cars in Quick Race and Championship Unlocked
-Cheat2="Have\Max race Points (Player 1)",8109AAA2 029A
-Cheat3="Quick Race\Have all Cars",50002214 0000,8009A56D 0001,50000A28 0000,80099B24 0001
-Cheat4="Quick Race\Have all Levels",50003A08 0000,8009A82D 0001
-Cheat5="Championship\ Have all Events, Tracks &  Levels",50001470 0000,80099CF4 0001
-Cheat6="Championship\ Have all Gold Cups",50001470 0000,80099D17 0000
-Cheat7="Championship\Have All Cars (All Classes)",50002314 0000,8009A56C 0001,80099C43 0003,8009A814 0001
-Cheat7_N=This gives you all Cars for All Classes A,B & C
-Cheat8="1 Lap to Race (Player 1)",8007F7B7 0001
-
-//----
-
-[308DFEC8-CE2EB5F6-C:45]
-Name=World Driver Championship (U)
-Cheat0="Have\20 Events & Trophies",80097D1B 0014,80097D1F 0014,80097D23 0014,80097D2B 0014
-Cheat0_N=Overall Track Stats.
-Cheat1="Have\Max Career points & Driver Rank 1",80097D11 00C1,10097D12 4490
-Cheat1_N=Enable this cheat and then save and then disable the cheat. When you load from the save, it wil also have most cars in Quick Race and Championship Unlocked
-Cheat2="Have\Max race Points (Player 1)",81098D82 029A
-Cheat3="Quick Race\Have all Cars",50002214 0000,8009884D 0001,50000A28 0000,80097E04 0001
-Cheat4="Quick Race\Have all Levels",50003A08 0000,80098B0D 0001
-Cheat5="Championship\ Have all Events, Tracks &  Levels",50001470 0000,80097FD4 0001
-Cheat6="Championship\ Have all Gold Cups",50001470 0000,80097FF7 0000
-Cheat7="Championship\Have All Cars (All Classes)",50002314 0000,8009884C 0001,80097F23 0003,80098AF4 0001
-Cheat7_N=This gives you all Cars for All Classes A,B & C
-Cheat8="1 Lap to Race (Player 1)",8007DDF7 0001
-
-//----
-
-[EBF5F6B7-C956D739-C:4A]
-Name=SD Hiryuu no Ken Densetsu (J)
-Cheat0="All Medals, Tournaments, Characters and Clones Open",81218C18 FFFF,81218C1A FFFF,812190EE FFFF
-Cheat1="Max Money (Player 1)",81218D9C 0000,81218D9E FFFF
-Cheat2="Have All Super Attack (Player 1)",80210938 0005
-Cheat3="Invincible (Player 1)",812107C4 00CE,8120FEC2 00CE
-Cheat4="Max Power (Player 1)",81211660 003E
-
-//----
-
-[AF9DCC15-1A723D88-C:45]
-Name=Indiana Jones and the Infernal Machine (U)
-Cheat0="All Weapons and Infinite Ammo",50004702 0000,810C2D7A 0199,50002502 0000,810C2E0A 0199
-Cheat0_N=Ammo, Money Many Items Many Tools and always powered to max -Does not include treasure count and IQ status.
-Cheat1="Always Have $9,99",810C2E08 270F
-Cheat2="Infinite Health (All Levels)",40000000 0000,80000330 0023,3c024008 8c42,da6c8c42 0000,56020001 e600,01083c03 4104,34632efc 0060,00080240 2821,40000000 0000,41042e00 000f,3c038000 3463,03300060 f809,02002021 0000
-Cheat3="Level Select",D004D0A9 0020,80080C37 00??
-Cheat3_N=Enable after selecting your desired level and then press and hold the L-Button at the level select screen and when the ???? is highlighted, Let got of the L-Button and press the A Button to goto that Level.
-Cheat3_O=$00 Canyon Location,$01 Babylon,$02 Tian Shian River,$03 Shambla Sanctuary,$04 Palawan Lagoon,$05 Palawan Volcano,$06 Palawan Temple,$07 Jeep Trek,$08 Teotithuacan,$09 Olmec Valley,$0A V.I.Pudovkin Ship,$0B Meroe,$0C King Sol's Mines(Hi rez only),$0D Nub's Tomb,$0E The Machine,$0F Altherium,$10 Return to Peru. (Activate then press joystick down one click then press A)
-
-//----
-
-[22E3CE16-C1814985-C:50]
-Name=Indiana Jones and the Infernal Machine (E) [NTSC-Convert]
-Cheat0="All Weapons and Infinite Ammo",50004702 0000,810C2D7A 0199,50002502 0000,810C2E0A 0199
-Cheat0_N=Ammo, Money Many Items Many Tools and always powered to max -Does not include treasure count and IQ status.
-Cheat1="Always Have $9,99",810C2E08 270F
-Cheat2="Infinite Health (All Levels)",40000000 0000,80000330 0023,3c024008 8c42,da6c8c42 0000,56020001 e600,01083c03 4104,34632efc 0060,00080240 2821,40000000 0000,41042e00 000f,3c038000 3463,03300060 f809,02002021 0000
-Cheat3="Level Select",D004D0A9 0020,80080C37 00??
-Cheat3_N=Enable after selecting your desired level and then press and hold the L-Button at the level select screen and when the ???? is highlighted, Let got of the L-Button and press the A Button to goto that Level.
-Cheat3_O=$00 Canyon Location,$01 Babylon,$02 Tian Shian River,$03 Shambla Sanctuary,$04 Palawan Lagoon,$05 Palawan Volcano,$06 Palawan Temple,$07 Jeep Trek,$08 Teotithuacan,$09 Olmec Valley,$0A V.I.Pudovkin Ship,$0B Meroe,$0C King Sol's Mines(Hi rez only),$0D Nub's Tomb,$0E The Machine,$0F Altherium,$10 Return to Peru. (Activate then press joystick down one click then press A)
-
-//----
-
-[0FE684A9-8BB77AC4-C:50]
-Name=Tetrisphere (E)
-Cheat0="Single & VS Mode\Infinite Misses\Player 1",8011582F 0003
-Cheat1="Single & VS Mode\Infinite Misses\Player 2",80118A97 0003
-Cheat2="Single & VS Mode\Secret Cheat Menu",80114EEF 00AD
-Cheat3="Single Player Stage Select",810E3D44 0001
-
-//----
-
-[D1BEDE6E-EFF7F9C4-C:45]
-Name=The Legend of Zelda - Voyager of Time (v.1.0)
-Cheat0="Infinite\Rupees",8115FA2C 0001
-Cheat0_N=[ZeldaOOT]Rupees Note
-Cheat1="Have\All Equipment",8115E6FC 7777
-Cheat1_N=[ZeldaOOT]Have All
-Cheat2="Have\All Quest Status Items",8115E704 30FF,8115E706 FFFF
-Cheat2_N=[ZeldaOOT]Have All
-Cheat3="Max\Heart Containers",8115E68E 0140
-Cheat4="Max\Gold Skulltulas Killed",8015E731 0064
-Cheat5="Time of Day Modifier",8115E66C ????
-Cheat5_O=[ZeldaOOT]Day Mod
-Cheat6="Infinite\Energy",8115E690 0140
-Cheat7="Infinite\Magic",D015E699 0008,8015E69A 0001,8015E69C 0001,8015E693 0060
-Cheat8="Tunic & Boot Options",8015E6D0 00??
-Cheat8_N=[ZeldaOOT]TunicBoot Note
-Cheat8_O=[ZeldaOOT]TunicBoot
-Cheat9="Infinite\Deku Sticks",8015E6EC 0009
-Cheat10="Infinite\Deku Nuts",8015E6ED 0009
-Cheat11="Infinite\Bombs",8015E6EE 0009
-Cheat12="Infinite\Arrows",8015E6EF 0009
-Cheat13="Infinite\Deku Seeds",8015E6F2 0009
-Cheat14="Infinite\Bombchu's",8015E6F4 0009
-Cheat15="Infinite\Magic Beans",8015E6FA 0009
-Cheat16="Infinite\Big Key,Small Keys,Compass,& Map",8015E708 0007,8015E709 0007,8015E70A 0007,8015E70B 0007,8015E70C 0007,8015E70D 0007,8015E70E 0007,8015E70F 0007,8015E710 0007,8015E711 0007,8015E712 0007,8015E71F 0009,8015E720 0009,8015E721 0009,8015E722 0009,8015E723 0009,8015E729 0009,8015E72C 0009,8015E727 0009
-Cheat17="Have\Ocarina",8015E6DB 00??
-Cheat17_O=[ZeldaOOT]Ocarina
-Cheat18="Have\Boomerang",8015E6E0 000E
-Cheat19="Have\Lens of Truth",8015E6E1 000F
-Cheat20="Have\Megaton Hammer",8015E6E3 0011
-Cheat21="Have\Deku Stick",8015E6D4 0000
-Cheat22="Have\Deku Nut",8015E6D5 0001
-Cheat23="Have\Bombs",8015E6D6 0002
-Cheat24="Have\Fairy Bow",8015E6D7 0003
-Cheat25="Have\Fairy Slingshot",8015E6DA 0006
-Cheat26="Have\Bombchu",8015E6DC 0009
-Cheat27="Have\Arrows\Fire Arrow",8015E6D8 0004
-Cheat28="Have\Arrows\Ice Arrow",8015E6DE 000C
-Cheat29="Have\Arrows\Light Arrow",8015E6E4 0012
-Cheat30="Have\Hookshot",8015E6DD 00??
-Cheat30_O=[ZeldaOOT]Hookshot
-Cheat31="Have\Magic Beans",8015E6E2 0010
-Cheat32="Have\Magic\Fairie's Wind",8015E6DF 000D
-Cheat33="Have\Magic\Nayru's Love",8015E6E5 0013
-Cheat34="Have\Magic\Din's Fire",8015E6D9 0005
-Cheat35="Bottles\Bottle 1 Modifier",8015E6E6 00??
-Cheat35_O=[ZeldaOOT]Bottle Mod
-Cheat36="Bottles\Bottle 2 Modifier",8015E6E7 00??
-Cheat36_O=[ZeldaOOT]Bottle Mod
-Cheat37="Bottles\Bottle 3 Modifier",8015E6E8 00??
-Cheat37_O=[ZeldaOOT]Bottle Mod
-Cheat38="Bottles\Bottle 4 Modifier",8015E6E9 00??
-Cheat38_O=[ZeldaOOT]Bottle Mod
-Cheat39="Trading\Adult Link Item",8015E6EA 00??
-Cheat39_O=[ZeldaOOT]AdultItem
-Cheat40="Trading\Young Link Item",8015E6EB 00??
-Cheat40_O=[ZeldaOOT]YoungItem
-Cheat41="Turn Giant's Knife Into Biggoron's Sword",8015E69E 0001
-Cheat42="Equipment Modifier 1",8015E702 00??
-Cheat42_N=[ZeldaOOT]Equipt1 Note
-Cheat42_O=[ZeldaOOT]Equipt1
-Cheat43="Equipment Modifier 2",8015E703 00??
-Cheat43_N=[ZeldaOOT]Equipt1 Note
-Cheat43_O=[ZeldaOOT]Equipt2
-Cheat44="Press L\To Levitate",D0166AF7 0020,81224610 40CB
-Cheat44_N=[ZeldaOOT]Levitate Note
-Cheat45="Press L\For infinite Hover Boots",D0166AF7 0020,81224E42 000D
-Cheat45_N=[ZeldaOOT]Hover Note
-Cheat46="Press L\For Instant Step Hoover Boots",D0166AF7 0020,81224610 40CB,D0166AF7 0000,81224E42 000D,8015E6D0 00??
-Cheat46_N=[ZeldaOOT]InstantStep Note
-Cheat46_O=[ZeldaOOT]InstantStep
-Cheat47="Warp Song Location\Minuet of Forest & Serenade of Water",8015F9F5 00??
-Cheat47_N=[ZeldaOOT]Warp Note
-Cheat47_O=[ZeldaOOT]WarpSong1
-Cheat48="Warp Song Location\Prelude of Light & Nocturne of Shadow",8015F9F5 00??
-Cheat48_N=[ZeldaOOT]Warp Note
-Cheat48_O=[ZeldaOOT]WarpSong2
-Cheat49="Warp Song Location\Bolero of Fire",8015F9F5 00??
-Cheat49_N=[ZeldaOOT]Warp Note
-Cheat49_O=[ZeldaOOT]WarpSong3
-Cheat50="Warp Song Location\Requiem of Spirit",8015F9F5 00??
-Cheat50_N=[ZeldaOOT]Warp Note
-Cheat50_O=[ZeldaOOT]WarpSong4
-Cheat51="Max\Double Defense Power",8015E72F 0014
-Cheat51_N=[ZeldaOOT]DDP Note
-Cheat52="Nayru's Love is Always",8115FA28 ????
-Cheat52_N=[ZeldaOOT]NayrusLove Note
-Cheat52_O=@Off and On 3
-Cheat53="Infinite\Timers\All Other Timers",8015FA31 0032
-Cheat53_N=[ZeldaOOT]Other Timers Note
-Cheat54="Epona\Max Carrots\Lon Lon Raunch",80236298 0005,80232D18 0005
-Cheat54_N=[ZeldaOOT]Carrots Note
-Cheat55="Infinite\Timers\Escape From Gannons Tower",8015FA35 00B4
-Cheat55_N=[ZeldaOOT]Gannons Timer Note
-Cheat56="Press R For Old Or Young Link",D0166AF7 0010,8015E667 00??
-Cheat56_N=To Activate this Cheat Hold The R Button when walking through a Doorway this will change you to the option on the other side, Disable this Cheat straight away after getting to the other side, in some places you might even get Access Violations. Just press ok untill you can carry on.
-Cheat56_O=$01 Link Young,$00 Link Old
-
-//----
-
-[824C5A80-43245C7E-C:45]
-Name=Super Mario 64 - Sonic Edition (v4.1) (U)
-Cheat0="Press GS For 255 Coins",891DB480 00FF
-Cheat0_N=[SuperSonic]Coins Note
-Cheat1="Have\Level Select",A01CD22C 00??
-Cheat1_O=@Off and On 1
-Cheat2="Monsters Don't Hurt Sonic",A01DB3F7 0001
-Cheat3="Infinite\Lives",801DB485 0064
-Cheat4="Infinite\Energy & Breath",801DB494 0008
-Cheat5="Have\Debug Mode",A01CD238 00??
-Cheat5_O=@Off and On 1
-Cheat6="Sonic's Modes Options",801DB3D7 00??
-Cheat6_N=[SuperSonic]Modes Note
-Cheat6_O=[SuperSonic]Sonics Modes
-Cheat7="Press L To Levitate",D01DB201 0020,811DB41C 4220,D01DB41D 0020,811DB3DC 0300,D01DB41D 0020,811DB3DE 0880
-Cheat7_N=[SuperSonic]Levitate Note
-Cheat8="[Slot A Codes]\Have All\120 Stars",800A1623 0001,800A160B 00C7,50001101 0000,800A160C 00FF
-Cheat8_N=[SuperSonic]Slot Note
-Cheat9="[Slot A Codes]\Have All\Key doors unlocked (and mote empty)",800A160A 007E
-Cheat10="[Slot A Codes]\Have All\Max 100 Coin Records For All Levels",50000F01 0000,800A1625 0064
-Cheat11="[Slot B Codes]\Have All\120 Stars",800A1693 0001,800A167B 00C7,50001101 0000,800A167C 00FF
-Cheat11_N=[SuperSonic]Slot Note
-Cheat12="[Slot B Codes]\Have All\Key doors unlocked (and mote empty)",800A167A 007E
-Cheat13="[Slot B Codes]\Have All\Max 100 Coin Records For All Levels",50000F01 0000,800A1695 0064
-Cheat14="[Slot C Codes]\Have All\120 Stars",800A1703 0001,800A16EB 00C7,50001101 0000,800A16EC 00FF
-Cheat14_N=[SuperSonic]Slot Note
-Cheat15="[Slot C Codes]\Have All\Key doors unlocked (and mote empty)",800A16EA 007E
-Cheat16="[Slot C Codes]\Have All\Max 100 Coin Records For All Levels",50000F01 0000,800A1705 0064
-Cheat17="[Slot D Codes]\Have All\120 Stars",800A1773 0001,800A175B 00C7,50001101 0000,800A175C 00FF
-Cheat17_N=[SuperSonic]Slot Note
-Cheat18="[Slot D Codes]\Have All\Key doors unlocked (and mote empty)",800A175A 007E
-Cheat19="[Slot D Codes]\Have All\Max 100 Coin Records For All Levels",50000F01 0000,800A1775 0064
-Cheat20="Level Select",D01DB201 0020,801CDA99 00??
-Cheat20_N=[SuperSonic]Level Note
-Cheat20_O=[SuperSonic]Level Select
-
-//----
-
-[FF95988A-548A491D-C:45]
-Name=Super Mario 64 - Kirby Edition (v1.1) (U)
-Cheat0="Press GS For 255 Coins",8933B218 00FF
-Cheat0_N=[SuperMario]Coins Note
-Cheat1="Have\Level Select",A032D58C 00??
-Cheat11="[Slot B Codes]\Have All\120 Stars",80207793 0001,8020777B 00C7,50001101 0000,8020777C 00FF
-Cheat1_O=@Off and On 1
-Cheat2="Don't Hurt Mario\Monsters",A033B197 0001
-Cheat3="Infinite\Lives",8033B21D 0064
-Cheat4="Infinite\Energy & Breath",8033B21E 0008
-Cheat5="Have\Debug Mode",A032D598 00??
-Cheat5_O=@Off and On 1
-Cheat6="Mario's Cap On Options",8033B177 00??
-Cheat6_N=[SuperMario]Cap Note
-Cheat6_O=[SuperMario]Marios Cap
-Cheat7="Press L To Levitate",D033AFA1 0020,8133B1BC 4220,D033B1BD 0020,8133B17C 0300,D033B1BD 0020,8133B17E 0880
-Cheat7_N=[SuperMario]Levitate Note
-Cheat8="[Slot A Codes]\Have All\120 Stars",80207723 0001,8020770B 00C7,50001101 0000,8020770C 00FF
-Cheat8_N=[SuperMario]Slot Note
-Cheat9="[Slot A Codes]\Have All\Key doors unlocked (and mote empty)",8020770A 007E
-Cheat10="[Slot A Codes]\Have All\Max 100 Coin Records For All Levels",50000F01 0000,80207725 0064
-Cheat11_N=[SuperMario]Slot Note
-Cheat12="[Slot B Codes]\Have All\Key doors unlocked (and mote empty)",8020777A 007E
-Cheat13="[Slot B Codes]\Have All\Max 100 Coin Records For All Levels",50000F01 0000,80207795 0064
-Cheat14="[Slot C Codes]\Have All\120 Stars",80207803 0001,802077EB 00C7,50001101 0000,802077EC 00FF
-Cheat14_N=[SuperMario]Slot Note
-Cheat15="[Slot C Codes]\Have All\Key doors unlocked (and mote empty)",802077EA 007E
-Cheat16="[Slot C Codes]\Have All\Max 100 Coin Records For All Levels",50000F01 0000,80207805 0064
-Cheat17="[Slot D Codes]\Have All\120 Stars",80207873 0001,8020785B 00C7,50001101 0000,8020785C 00FF
-Cheat17_N=[SuperMario]Slot Note
-Cheat18="[Slot D Codes]\Have All\Key doors unlocked (and mote empty)",8020785A 007E
-Cheat19="[Slot D Codes]\Have All\Max 100 Coin Records For All Levels",50000F01 0000,80207875 0064
-Cheat20="Level Select",D033AFA1 0020,A032DDF9 00??
-Cheat20_N=[SuperMario]Level Note
-Cheat20_O=[SuperMario]Level Select
- 
-//----
-
-[BB315072-27EBD8AA-C:45]
-Name=SUPER ICE 64 (U)
-Cheat0="Press GS For 255 Coins",8933B218 00FF
-Cheat0_N=[SuperIce]Coins Note
-Cheat1="Have\Level Select",A032D58C 00??
-Cheat1_O=@Off and On 1
-Cheat2="Monsters Don't Hurt Icepir8",A033B197 0001
-Cheat3="Infinite\Lives",8033B21D 0064
-Cheat4="Infinite\Energy & Breath",8033B21E 0008
-Cheat5="Have\Debug Mode",A032D598 00??
-Cheat5_O=@Off and On 1
-Cheat6="Icepir8's Cap On Options",8033B177 00??
-Cheat6_N=[SuperIce]Cap Note
-Cheat6_O=[SuperIce]Marios Cap
-Cheat7="Press L To Levitate",D033AFA1 0020,8133B1BC 4220,D033B1BD 0020,8133B17C 0300,D033B1BD 0020,8133B17E 0880
-Cheat7_N=[SuperIce]Levitate Note
-Cheat8="[Slot A Codes]\Have All\120 Stars",80207723 0001,8020770B 00C7,50001101 0000,8020770C 00FF
-Cheat8_N=[SuperIce]Slot Note
-Cheat9="[Slot A Codes]\Have All\Key doors unlocked (and mote empty)",8020770A 007E
-Cheat10="[Slot A Codes]\Have All\Max 100 Coin Records For All Levels",50000F01 0000,80207725 0064
-Cheat11="[Slot B Codes]\Have All\120 Stars",80207793 0001,8020777B 00C7,50001101 0000,8020777C 00FF
-Cheat11_N=Select a Level. Jump Into a Painting. Press A at the Stars Collected Screen. As Stats are fading hold L, and you'll jump to the level you've selected.
-Cheat12="[Slot B Codes]\Have All\Key doors unlocked (and mote empty)",8020777A 007E
-Cheat13="[Slot B Codes]\Have All\Max 100 Coin Records For All Levels",50000F01 0000,80207795 0064
-Cheat14="[Slot C Codes]\Have All\120 Stars",80207803 0001,802077EB 00C7,50001101 0000,802077EC 00FF
-Cheat14_N=[SuperIce]Slot Note
-Cheat15="[Slot C Codes]\Have All\Key doors unlocked (and mote empty)",802077EA 007E
-Cheat16="[Slot C Codes]\Have All\Max 100 Coin Records For All Levels",50000F01 0000,80207805 0064
-Cheat17="[Slot D Codes]\Have All\120 Stars",80207873 0001,8020785B 00C7,50001101 0000,8020785C 00FF
-Cheat17_N=[SuperIce]Slot Note
-Cheat18="[Slot D Codes]\Have All\Key doors unlocked (and mote empty)",8020785A 007E
-Cheat19="[Slot D Codes]\Have All\Max 100 Coin Records For All Levels",50000F01 0000,80207875 0064
-Cheat20="Level Select",D033AFA1 0020,8132DDF8 00??
-Cheat20_N=[SuperIce]Level Note
-Cheat20_O=Level Select
-Level Select=$01 Intro,$04 Big Amimers Haunt,$05 Cool Cool Mountain,$06 Mushroom Castle,$07 Hazy Maze Cave,$08 Shifting Sand Land,$09 Da-Bomb Battlefield,$0A Snowmans Land,$0B Wet Dry World,$0C Jolly Jabo Bay,$0D Tiny Huge World,$0E Tick tock Clock,$0F Rainbow Ride,$10 Mushroom Castle Field,$11 Boozer In The Dark World,$12 Vanish Cap Under The Moat,$13 Boozer In The Fire Sea,$14 The Secret Aquarium,$15 Boozer In The Sky,$16 Lethal Lava Land,$17 Dire Dire Docks,$18 Slougis Fortress,$19 The End,$1A Castle Courtyard,$1B The Princess Secret Slide,$1C Cavern Of The Metal Cap,$1D Tower Of The Wing Cap,$1E Boozer In The Dark World Boss,$1F Wing Mario Over The Rainbow,$21 Boozer In The Fire Sea Boss,$22 Boozer In The Sky Boss,$24 Tall Tall Mountain
-
-
-//----
-
-[AB8232F1-701C5F44-C:45]
-Name=The Legend of Zelda - Ocarina of Time (U) (DD)
-Cheat0="Infinite\Rupees",8111B99C 0001
-Cheat0_N=[ZeldaOOT]Rupees Note
-Cheat1="Use Any Item In Any House",8111B7F2 0000,8111B7F4 0000
-Cheat1_N=[ZeldaOOT]No use
-Cheat2="Have\All Equipment",8111A66C 7777
-Cheat2_N=[ZeldaOOT]Have All
-Cheat3="Have\All Quest Status Items",8111A674 30FF,8111A676 FFFF
-Cheat3_N=[ZeldaOOT]Have All
-Cheat4="Max\Heart Containers",8111A5FE 0140
-Cheat5="Max\Gold Skulltulas Killed",8011A6A1 0064
-Cheat6="Time of Day Modifier",8111A5DC ????
-Cheat6_O=[ZeldaOOT]Day Mod
-Cheat7="Infinite\Energy",8111A600 0140
-Cheat8="Infinite\Magic",D011A609 0008,8011A60A 0001,8011A60C 0001,8011A603 0060
-Cheat9="Tunic & Boot Options",8011A640 00??
-Cheat9_N=[ZeldaOOT]TunicBoot Note
-Cheat9_O=[ZeldaOOT]TunicBoot
-Cheat10="Infinite\Deku Sticks",8011A65C 0009
-Cheat11="Infinite\Deku Nuts",8011A65D 0009
-Cheat12="Infinite\Bombs",8011A65E 0009
-Cheat13="Infinite\Arrows",8011A65F 0009
-Cheat14="Infinite\Deku Seeds",8011A662 0009
-Cheat15="Infinite\Bombchu's",8011A664 0009
-Cheat16="Infinite\Magic Beans",8011A66A 0009
-Cheat17="Infinite\Big Key,Small Keys,Compass,& Map",8011A678 0007,8011A679 0007,8011A67A 0007,8011A67B 0007,8011A67C 0007,8011A67D 0007,8011A67E 0007,8011A67F 0007,8011A680 0007,8011A681 0007,8011A682 0007,8011A68F 0009,8011A690 0009,8011A691 0009,8011A692 0009,8011A693 0009,8011A699 0009,8011A69C 0009,8011A697 0009
-Cheat18="Have\Ocarina",8011A64B 00??
-Cheat18_O=[ZeldaOOT]Ocarina
-Cheat19="Have\Boomerang",8011A650 000E
-Cheat20="Have\Lens of Truth",8011A651 000F
-Cheat21="Have\Megaton Hammer",8011A653 0011
-Cheat22="Have\Deku Stick",8011A644 0000
-Cheat23="Have\Deku Nut",8011A645 0001
-Cheat24="Have\Bombs",8011A646 0002
-Cheat25="Have\Fairy Bow",8011A647 0003
-Cheat26="Have\Fairy Slingshot",8011A64A 0006
-Cheat27="Have\Bombchu",8011A64C 0009
-Cheat28="Have\Arrows\Fire Arrow",8011A648 0004
-Cheat29="Have\Arrows\Ice Arrow",8011A64E 000C
-Cheat30="Have\Arrows\Light Arrow",8011A654 0012
-Cheat31="Have\Hookshot",8011A64D 00??
-Cheat31_O=[ZeldaOOT]Hookshot
-Cheat32="Have\Magic Beans",8011A652 0010
-Cheat33="Have\Magic\Fairie's Wind",8011A64F 000D
-Cheat34="Have\Magic\Nayru's Love",8011A655 0013
-Cheat35="Have\Magic\Din's Fire",8011A649 0005
-Cheat36="Bottles\Bottle 1 Modifier",8011A656 00??
-Cheat36_O=[ZeldaOOT]Bottle Mod
-Cheat37="Bottles\Bottle 2 Modifier",8011A657 00??
-Cheat37_O=[ZeldaOOT]Bottle Mod
-Cheat38="Bottles\Bottle 3 Modifier",8011A658 00??
-Cheat38_O=[ZeldaOOT]Bottle Mod
-Cheat39="Bottles\Bottle 4 Modifier",8011A659 00??
-Cheat39_O=[ZeldaOOT]Bottle Mod
-Cheat40="Trading\Adult Link Item",8011A65A 00??
-Cheat40_O=[ZeldaOOT]AdultItem
-Cheat41="Trading\Young Link Item",8011A65B 00??
-Cheat41_O=[ZeldaOOT]YoungItem
-Cheat42="Turn Giant's Knife Into Biggoron's Sword",8011A60E 0001
-Cheat43="Equipment Modifier 1",8011A672 00??
-Cheat43_N=[ZeldaOOT]Equipt1 Note
-Cheat43_O=[ZeldaOOT]Equipt1
-Cheat44="Equipment Modifier 2",8011A673 00??
-Cheat44_N=[ZeldaOOT]Equipt1 Note
-Cheat44_O=[ZeldaOOT]Equipt2
-Cheat45="Press L\To Levitate",D01E8E65 0020,811FB440 40CB
-Cheat45_N=[ZeldaOOT]Levitate Note
-Cheat46="Press L\For infinite Hover Boots",D01E8E65 0020,811FBC62 000D
-Cheat46_N=[ZeldaOOT]Hover Note
-Cheat47="Press L\For Instant Step Hoover Boots",D01E8E65 0020,811FB440 40CB,D01E8E65 0000,811FBC62 000D,8011A640 00??
-Cheat47_N=[ZeldaOOT]InstantStep Note
-Cheat47_O=[ZeldaOOT]InstantStep
-Cheat48="Beta\Play Beta Quest Worlds",D01E8E65 0000,8011B9E3 00??
-Cheat48_N=[ZeldaOOT]BetaQuest Note
-Cheat48_O=[ZeldaOOT]BetaQuest
-Cheat49="Warp Song Location\Minuet of Forest & Serenade of Water",8011B965 00??
-Cheat49_N=[ZeldaOOT]Warp Note
-Cheat49_O=[ZeldaOOT]WarpSong1
-Cheat50="Warp Song Location\Prelude of Light & Nocturne of Shadow",8011B965 00??
-Cheat50_N=[ZeldaOOT]Warp Note
-Cheat50_O=[ZeldaOOT]WarpSong2
-Cheat51="Warp Song Location\Bolero of Fire",8011B965 00??
-Cheat51_N=[ZeldaOOT]Warp Note
-Cheat51_O=[ZeldaOOT]WarpSong3
-Cheat52="Warp Song Location\Requiem of Spirit",8011B965 00??
-Cheat52_N=[ZeldaOOT]Warp Note
-Cheat52_O=[ZeldaOOT]WarpSong4
-Cheat53="Max\Double Defense Power",8011A69F 0014
-Cheat53_N=[ZeldaOOT]DDP Note
-Cheat54="Nayru's Love is Always",8111B998 ????
-Cheat54_N=[ZeldaOOT]NayrusLove Note
-Cheat54_O=@Off and On 3
-Cheat55="Infinite\Timers\All Other Timers",8011B9A1 0032
-Cheat55_N=[ZeldaOOT]Other Timers Note
-Cheat56="Epona\Max Carrots\Lon Lon Raunch",8020F638 0005,8020F038 0005
-Cheat56_N=[ZeldaOOT]Carrots Note
-Cheat57="Infinite\Timers\Escape From Gannons Tower",8011B9A5 00B4
-Cheat57_N=[ZeldaOOT]Gannons Timer Note
-Cheat58="Press R For Old Or Young Link",D01E8E65 0010,8011A5D7 00??
-Cheat58_N=To Activate this Cheat Hold The R Button when walking through a Doorway this will change you to the option on the other side, Disable this Cheat straight away after getting to the other side, in some places you might even get Access Violations. Just press ok untill you can carry on.
-Cheat58_O=$01 Link Young,$00 Link Old
-
-//----
-
-[8C47CE8B-06019FEF-C:4A]
-Name=Kyojin no Doshin - Kaihou Sensen Chibikko Chikko Daishuugou (J) (64DD)
-Cheat0="Heart Level Always Low",801F2B13 0001
-
-//----
-
-[1001F10C-3D51D8C1-C:45]
-Name=Mia Hamm Soccer 64 (U) (M2)
-Cheat0="Score\Away Team Scores",81063468 00??,810690FA 00??
-Cheat0_O=$00 0 Goals,$63 99 Goals
-Cheat1="Score\Home Team Scores",81063454 00??,810690F6 00?? 
-Cheat1_O=$00 0 Goals,$63 99 Goals
-Cheat2="Freeze timer at 00:00 (Infinite Time)",81063BE6 0000,81063BF2 0000
-
-//----
-
-[E36166C2-8613A2E5-C:58]
-Name=Michael Owens WLS 2000 (E)
-Cheat0="Score\Away Team Scores",8105FFA8 00??,81065C3A 00??
-Cheat0_O=$00 0 Goals,$63 99 Goals
-Cheat1="Score\Home Team Scores",8105FF94 00??,81065C36 00??
-Cheat1_O=$00 0 Goals,$63 99 Goals
-Cheat2="Freeze timer at 00:00 (Infinite Time)",81060A16 0000,81060A22 0000,810D9EF6 0000,810D9F02 0000
-
-//----
-
-[9ABC592A-2AA5DEE2-C:58]
-Name=Michael Owens WLS 2000 (E) [f1] (NTSC)
-Cheat0="Score\Away Team Scores",8105FFA8 00??,81065C3A 00??
-Cheat0_O=$00 0 Goals,$63 99 Goals
-Cheat1="Score\Home Team Scores",8105FF94 00??,81065C36 00??
-Cheat1_O=$00 0 Goals,$63 99 Goals
-Cheat2="Freeze timer at 00:00 (Infinite Time)",81060A16 0000,81060A22 0000,810D9EF6 0000,810D9F02 0000
-
-//----
-
-[D9042FBB-FCFF997C-C:46]
-Name=Telefoot Soccer 2000 (F)
-Cheat0="Score\Away Team Scores",8105FFA8 00??,81065C3A 00??
-Cheat0_O=$00 0 Goals,$63 99 Goals
-Cheat1="Score\Home Team Scores",8105FF94 00??,81065C36 00??
-Cheat1_O=$00 0 Goals,$63 99 Goals
-Cheat2="Freeze timer at 00:00 (Infinite Time)",81060A16 0000,81060A22 0000,810D9EF6 0000,810D9F02 0000
-
-//----
-
-[6440D7CE-F6597A03-C:46]
-Name=Telefoot Soccer 2000 (F) [f1] (NTSC)
-Cheat0="Score\Away Team Scores",8105FFA8 00??,81065C3A 00??
-Cheat0_O=$00 0 Goals,$63 99 Goals
-Cheat1="Score\Home Team Scores",8105FF94 00??,81065C36 00??
-Cheat1_O=$00 0 Goals,$63 99 Goals
-Cheat2="Freeze timer at 00:00 (Infinite Time)",81060A16 0000,81060A22 0000,810D9EF6 0000,810D9F02 0000
-
-//----
-
-[658F8F37-1813D28D-C:44]
-Name=RTL World League Soccer 2000 (G)
-Cheat0="Score\Away Team Scores",8105FFA8 00??,81065C3A 00??
-Cheat0_O=$00 0 Goals,$63 99 Goals
-Cheat1="Score\Home Team Scores",8105FF94 00??,81065C36 00??
-Cheat1_O=$00 0 Goals,$63 99 Goals
-Cheat2="Freeze timer at 00:00 (Infinite Time)",81060A16 0000,81060A22 0000,810D9EF6 0000,810D9F02 0000
-
-//----
-
-[4D0224A5-1BEB5794-C:4A]
-Name=V-Rally Edition 99 (J)
-Cheat0="Access\All Cars",80140E27 003F
-Cheat1="Access\All Arcade Tracks",80140E22 0070
-Cheat2="Access\Championship,World,Expert",80140E30 0001
-Cheat3="Access\All Expert Times",80140E24 0031
-Cheat5="Unlock Cheat Menu",D0140E24 0000,80140E24 0020
-Cheat5_N=Press Z Button and L Button togther to enable & disable..
-
-//----
-
-[D3D806FC-B43AA2A8-C:50]
-Name=Monster Truck Madness 64 (E) (M5)
-Cheat0="Unlock all Circuit Tracks",50000920 0000,801286EB 0001
-Cheat1="Unlock all Exhibition Tracks",50000320 0000,801287AF 0001
-Cheat2="Infinite Homing Missiles (On Pickup)",801959E4 0009
-Cheat3="Always have Weapon Select (On Pickup)",801959EB 00??
-Cheat3_O=$00 Nitro,$01 Hover Weapon,$02 Lightning,$03 Blimp Missile,$04 Spring,$05 Diamond,$06 Homing Missiles,$07 Oil Slick
-Cheat4="Laps to race",D11958BE 00FF,801958BF 00??
-Cheat4_O=$00 2 Laps,$01 1 Lap,$02 0 Laps (Instant Win)
-
-//----
-
-[AE5E467C-D7194A71-C:50]
-Name=Monster Truck Madness 64 (E) (M5) [f1] (NTSC)
-Cheat0="Unlock all Circuit Tracks",50000920 0000,801286EB 0001
-Cheat1="Unlock all Exhibition Tracks",50000320 0000,801287AF 0001
-Cheat2="Infinite Homing Missiles (On Pickup)",801959E4 0009
-Cheat3="Always have Weapon Select (On Pickup)",801959EB 00??
-Cheat3_O=$00 Nitro,$01 Hover Weapon,$02 Lightning,$03 Blimp Missile,$04 Spring,$05 Diamond,$06 Homing Missiles,$07 Oil Slick
-Cheat4="Laps to race",D11958BE 00FF,801958BF 00??
-Cheat4_O=$00 2 Laps,$01 1 Lap,$02 0 Laps (Instant Win)
-
-//----
-
-[EE08C602-6BC2D5A6-C:50]
-Name=PGA European Tour (E) (M5)
-Cheat0="Hole In One (Player 1)",50001202 0000,801005C3 0000
-Cheat0_N=Player 1 is always on 1st Shot for all holes and all courses
-Cheat1="Weather Select",802A4D1D 00??
-Cheat1_O=$00 Sunny,$01 Cloudy,$02 Overcast,$03 Wet,$04 Misty
-
-//----
-
-[5243B915-BE7743B1-C:50]
-Name=PGA European Tour (E) (M5) [f1] (NTSC)
-Cheat0="Hole In One (Player 1)",50001202 0000,801005C3 0000
-Cheat0_N=Player 1 is always on 1st Shot for all holes and all courses 
-Cheat1="Weather Select",802A4D1D 00??
-Cheat1_O=$00 Sunny,$01 Cloudy,$02 Overcast,$03 Wet,$04 Misty
-
-//----
-
-[C908CFAD-42EE5547-C:50]
-Name=PGA European Tour Golf (E) (Prototype)
-Cheat0="Hole In One (Player 1)",50001202 0000,800F83F3 0000
-Cheat0_N=Player 1 is always on 1st Shot for all holes and all courses 
-Cheat1="Weather Select",802A13DD 00??
-Cheat1_O=$00 Sunny,$01 Cloudy,$02 Overcast,$03 Wet,$04 Misty
-
-//----
-
-[39F60C11-AB2EBA7D-C:50]
-Name=Power Rangers - Lightspeed Rescue (E)
-Cheat0="Unlock All\Characters",50000C01 0000,800624ED 0001
-Cheat1="Infinite\Health",81064DB0 42C8
-Cheat1_N=For Overhead & Driving Levels
-Cheat2="Unlock All\Levels",50000301 0000,800624C8 0001,50000901 0000,800624CC 0001,50000801 0000,800624D6 0001,50000A01 0000,800624DF 0001
-
-//----
-
-[8CD06379-62319493-C:50]
-Name=Power Rangers - Lightspeed Rescue (E) [f1] (NTSC)
-Cheat0="Unlock All\Characters",50000C01 0000,800624ED 0001
-Cheat1="Infinite\Health",81064DB0 42C8
-Cheat1_N=For Overhead & Driving Levels
-Cheat2="Unlock All\Levels",50000301 0000,800624C8 0001,50000901 0000,800624CC 0001,50000801 0000,800624D6 0001,50000A01 0000,800624DF 0001
-
-//----
-
-[E9675D3A-84A5F92E-C:00]
-Name=Kumi-Daiko Beatoff 64
-Cheat0="Infinite 9 Lives",800F4FDB 0005
-Cheat1="Press F9 to Start with 65535 Score",890F4FE2 FFFF
-
-//----
-
-[28768D6D-B379976C-C:45]
-Name=Monaco Grand Prix (U)
-Cheat0="Laps to Race",801C5913 00??,D01C5927 0000,801C5927 00??
-Cheat0_N=1 Lap to go will result in you coming in 1st.
-Cheat0_O=$03:00 3 Laps to Race,$03:02 1 Lap to Race of 3,$05:00 5 Laps to Race,$05:04 1 Lap to Race of 5,$09:00 9 Laps to Race,$09:08 1 Lap to Race of 9
-Cheat1="Car Position view is always from behind",801C5487 0020
-Cheat1_N=This will lock the view in that position until disabled. The upside to this is you cannot hit the C-Right by mistake and change the view. If at the start of the race,  the car seems the wqrong way. Just press the A Button, followed by C-Right.
-Cheat2="Damage:",D00B0094 0000,800B0094 00??,D00B0094 0001,800B0094 00??,D00B0094 0002,800B0094 00??
-Cheat2_N=From Immune to any Damage to very realistic.
-Cheat2_O=$00 No Damage,$01 Average,$02 Realistic
-Cheat3="Weather:",D00B0098 0000,800B0098 00??,D00B0098 0001,D00B0098 0002,800B0098 00??,800B0098 00??,D00B0098 0003,800B0098 00??
-Cheat3_O=$00 Random,$01 Always Sunny,$03 Always Rainy
-Cheat4="Start with  254L Fuel",800B04B3 00FF
-
-//----
-
-[28705FA5-B509690E-C:50]
-Name=Monaco Grand Prix - Racing Simulation 2 (E) (M4)
-Cheat0="Laps to Race",801C5913 00??,D01C5927 0000,801C5927 00??
-Cheat0_N=1 Lap to go will result in you coming in 1st.
-Cheat0_O=$03:00 3 Laps to Race,$03:02 1 Lap to Race of 3,$05:00 5 Laps to Race,$05:04 1 Lap to Race of 5,$09:00 9 Laps to Race,$09:08 1 Lap to Race of 9
-Cheat1="Car Position view is always from behind",801C5487 0020
-Cheat1_N=This will lock the view in that position until disabled. The upside to this is you cannot hit the C-Right by mistake and change the view. If at the start of the race,  the car seems the wqrong way. Just press the A Button, followed by C-Right.
-Cheat2="Damage:",D00B0094 0000,800B0094 00??,D00B0094 0001,800B0094 00??,D00B0094 0002,800B0094 00??
-Cheat2_N=From Immune to any Damage to very realistic.
-Cheat2_O=$00 No Damage,$01 Average,$02 Realistic
-Cheat3="Weather:",D00B0098 0000,800B0098 00??,D00B0098 0001,800B0098 00??,D00B0098 0002,800B0098 00??,D00B0098 0003,800B0098 00??
-Cheat3_O=$00 Random,$01 Always Sunny,$03 Always Rainy
-Cheat4="Start with  254L Fuel",800B04B3 00FF
-
-//----
-
-[1EEEA2FF-3AF0FBEA-C:43]
-Name=Paper Mario (CHN) [f1]
-Cheat0="Infinite\Max Coins",8110D67C 03E7
-Cheat1="Infinite\Max HP + FP",50000601 0000,8010D671 0063
-Cheat1_N=[PaperMario]HPFP Note
-Cheat2="Have\All Star Spirits",8010D8FE 0007
-Cheat2_N=[PaperMario]AllStar Note
-Cheat3="Max\Level",8010D679 00??
-Cheat3_O=[PaperMario]Level
-Cheat4="Max\Star Points",8010D680 0063
-Cheat4_N=[PaperMario]StarPoints Note
-Cheat5="Max\Badge Points",8010D678 00??
-Cheat5_O=[PaperMario]Badge
-Cheat6="Max\Star Pieces",8010D67F 00A0,8010D99D 00A0
-Cheat7="Have\All Members in your party",50000C08 0000,8010D68C 0001
-Cheat8="Upgrade Member\Goomario",8010D68D 00??
-Cheat8_O=[PaperMario]Level 1-2
-Cheat9="Upgrade Member\Kooper",8010D695 00??
-Cheat9_O=[PaperMario]Level 1-2
-Cheat10="Upgrade Member\Bombette",8010D69D 00??
-Cheat10_O=[PaperMario]Level 1-2
-Cheat11="Upgrade Member\Parrakary",8010D6A5 00??
-Cheat11_O=[PaperMario]Level 1-2
-Cheat12="Upgrade Member\Watt",8010D6B5 00??
-Cheat12_O=[PaperMario]Level 1-2
-Cheat13="Upgrade Member\Sushie",8010D6BD 00??
-Cheat13_O=[PaperMario]Level 1-2
-Cheat14="Upgrade Member\Lakilester",8010D6C5 00??
-Cheat14_O=[PaperMario]Level 1-2
-Cheat15="Upgrade Member\Bow",8010D6CD 00??
-Cheat15_O=[PaperMario]Level 1-2
-Cheat16="Have\Hammer",8010D671 00??
-Cheat16_O=[PaperMario]Level 1-3
-Cheat17="Have\Jump Boots",8010D670 00??
-Cheat17_O=[PaperMario]Level 1-3
-Cheat18="No Star Points (0)",8010D680 0000
-Cheat18_N=[PaperMario]NoStar Note
-Cheat19="Have\Attack item",8110D824 ????
-Cheat19_N=[PaperMario]Only Use
-Cheat19_O=[PaperMario]Attack
-Cheat20="Have\Defense item",8110D824 ????
-Cheat20_N=[PaperMario]Only Use
-Cheat20_O=[PaperMario]Defense
-Cheat21="Have\Enemy Stats item",8110D824 ????
-Cheat21_N=[PaperMario]Only Use
-Cheat21_O=[PaperMario]Enemy Stats
-Cheat22="Have\Recovery Items Option 1",8110D824 ????
-Cheat22_N=[PaperMario]Only Use
-Cheat22_O=[PaperMario]Recovery
-Cheat23="Have\Key Items Options 1",8110D6E4 ????
-Cheat23_N=[PaperMario]Only Use
-Cheat23_O=[PaperMario]Key
-Cheat24="Infinite\Star Power",8110D900 0707
-//Cheat25="WideScreen GFX Fix",8102CC74 0802,8102CC76 5AA8,8102CC78 3C08,8102CC7A 3FAA,81096AA0 4488,81096AA2 0000,81096AA4 8E06,81096AA6 0018,81096AA8 4600,81096AAA 1082,81096AAC 0800,81096AAE B31F,81096AB0 4407,81096AB2 1000
-
-//----
-
-[E81D3F66-B4190056-C:45]
-Name=TOTSUGEKI 64 (U) (SM64 Hack)
-Cap Note=Here you can Choose Options for May with Her Cap on
-Cheat0="Press GS For 255 Coins",891D1F34 00FF
-Cheat0_N=Coins Note
-Cheat1="Monsters Don't Hurt May",A01D1EB3 0001
-Cheat2="Infinite Energy & Breath",801D1F3A 0008
-Cheat3="May's Cap Options",801D1E93 00??
-Cheat3_N=Cap Note
-Cheat3_O=Mays Cap
-Cheat4="[Slot A Codes]\Have All\120 Stars",8004CDC3 0001,8004CDAB 00C7,50001101 0000,8004CDAC 00FF
-Cheat4_N=Slot Note
-Cheat5="[Slot A Codes]\Have All\Key doors unlocked (and mote empty)",8004CDAA 007E
-Cheat6="[Slot A Codes]\Have All\Max 100 Coin Records For All Levels",50000F01 0000,8004CDC5 0064
-Cheat7="[Slot B Codes]\Have All\120 Stars",8004CE33 0001,8004CE1B 00C7,50001101 0000,8004CE1C 00FF
-Cheat7_N=Slot Note
-Cheat8="[Slot B Codes]\Have All\Key doors unlocked (and mote empty)",8004CE1A 007E
-Cheat9="[Slot B Codes]\Have All\Max 100 Coin Records For All Levels",50000F01 0000,8004CE35 0064
-Cheat10="[Slot C Codes]\Have All\120 Stars",8004CEA3 0001,8004CE8B 00C7,50001101 0000,8004CE8C 00FF
-Cheat10_N=Slot Note
-Cheat11="[Slot C Codes]\Have All\Key doors unlocked (and mote empty)",8004CE8A 007E
-Cheat12="[Slot C Codes]\Have All\Max 100 Coin Records For All Levels",50000F01 0000,8004CEA5 0064
-Cheat13="[Slot D Codes]\Have All\120 Stars",8004CF13 0001,8004CEFB 00C7,50001101 0000,8004CEFC 00FF
-Cheat13_N=Slot Note
-Cheat14="[Slot D Codes]\Have All\Key doors unlocked (and mote empty)",8004CEFA 007E
-Cheat15="[Slot D Codes]\Have All\Max 100 Coin Records For All Levels",50000F01 0000,8004CF85 0064
-Cheat16="Level Select",D01D0B51 0010,A019F86D 00??
-Cheat16_N=[Level Note
-Cheat16_O=Level Select
-Cheat17="Press L To Levitate",D01D0B51 0020,811D1ED8 4220,D01D0B51 0020,811D1E98 0300,D01D0B51 0020,811D1E9A 0880
-Cheat17_N=[SuperMario]Levitate Note
-Coins Note=Press GS Once on a Level To Get that amount of Coins
-Level Note=Select a Level. Jump Into a Painting. Press A at the Stars Collected Screen. As Stats are fading hold R, and you'll jump to the level you've selected.
-Level Select=$01 Intro,$04 Big Boo's Haunt,$05 Cool Cool Mountain,$06 Mushroom Castle,$07 Hazy Maze Cave,$08 Shifting Sand Land,$09 Bob omb Battlefield,$0A Snowman's Land,$0B Wet Dry World,$0C Jolly Roger Bay,$0D Tiny Huge World,$0E Tick tock Clock,$0F Rainbow Ride,$10 Mushroom Castle Field,$11 Bowser In The Dark World,$12 Vanish Cap Under The Moat,$13 Bowser In The Fire Sea,$14 The Secret Aquarium,$15 Bowser In The Sky,$16 Lethal Lava Land,$17 Dire Dire Docks,$18 Whomp's Fortress,$19 The End,$1A Castle Courtyard,$1B The Princess's Secret Slide,$1C Cavern Of The Metal Cap,$1D Tower Of The Wing Cap,$1E Bowser In The Dark World Boss,$1F Wing Mario Over The Rainbow,$21 Bowser In The Fire Sea Boss,$22 Bowser In The Sky Boss,$24 Tall Tall Mountain
-Levitate Note=Press L to levitate & Let go to land
-Mays Cap=$10 Normal,$12 Invisible May,$15 Metal May,$16 Invisible Metal May,$19 Flying May
-Slot Note=Once the Code is activated, you will see it as a new option in the chosen Save Slot.This will have the Cannon open already to get upto Yoshi on the Roof. but make sure to save the game after collecting Red Coins and turn this code off before saving. you will now have it all saved to mempak
-
-//----
-
-[52BDEE64-E3A1D4C4-C:45]
-Name=Marios Mafia Misadventure (U)
-Cap Note=Here you can Choose Options for Mario with his Cap on
-Cheat0="Press GS For 255 Coins",891FE878 00FF
-Cheat0_N=Coins Note
-Cheat1="Press L To Levitate",D01FCAD5 0020,811FE81C 4220,D01FCAD5 0020,811FE7DC 0300,D01FCAD5 0020,811FE7DE 0880
-Cheat1_N=Levitate Note
-Cheat2="Infinite Energy & Breath",801FE87E 0008
-Cheat3="Marios Cap Options",801FE7D7 00??
-Cheat3_N=Cap Note
-Cheat3_O=Marios Cap
-Cheat4="[Slot A Codes]\Have All\120 Stars",8004CDC3 0001,8004CDAB 00C7,50001101 0000,8004CDAC 00FF
-Cheat4_N=Slot Note
-Cheat5="[Slot A Codes]\Have All\Key doors unlocked (and mote empty)",8004CDAA 007E
-Cheat6="[Slot A Codes]\Have All\Max 100 Coin Records For All Levels",50000F01 0000,8004CDC5 0064
-Cheat7="[Slot B Codes]\Have All\120 Stars",8004CE33 0001,8004CE1B 00C7,50001101 0000,8004CE1C 00FF
-Cheat7_N=Slot Note
-Cheat8="[Slot B Codes]\Have All\Key doors unlocked (and mote empty)",8004CE1A 007E
-Cheat9="[Slot B Codes]\Have All\Max 100 Coin Records For All Levels",50000F01 0000,8004CE35 0064
-Cheat10="[Slot C Codes]\Have All\120 Stars",8004CEA3 0001,8004CE8B 00C7,50001101 0000,8004CE8C 00FF
-Cheat10_N=Slot Note
-Cheat11="[Slot C Codes]\Have All\Key doors unlocked (and mote empty)",8004CE8A 007E
-Cheat12="[Slot C Codes]\Have All\Max 100 Coin Records For All Levels",50000F01 0000,8004CEA5 0064
-Cheat13="[Slot D Codes]\Have All\120 Stars",8004CF13 0001,8004CEFB 00C7,50001101 0000,8004CEFC 00FF
-Cheat13_N=Slot Note
-Cheat14="[Slot D Codes]\Have All\Key doors unlocked (and mote empty)",8004CEFA 007E
-Cheat15="[Slot D Codes]\Have All\Max 100 Coin Records For All Levels",50000F01 0000,8004CF85 0064
-Coins Note=Press GS Once on a Level To Get that amount of Coins
-Levitate Note=Press L to levitate & Let go to land
-Marios Cap=$10 Normal,$12 Invisible Mario,$15 Metal Mario,$16 Invisible Metal Mario,$19 Flying Mario
-Slot Note=Once the Code is activated, you will see it as a new option in the chosen Save Slot.This will have the Cannon open already to get upto Yoshi on the Roof. but make sure to save the game after collecting Red Coins and turn this code off before saving. you will now have it all saved to mempak
-
-[904626B3-4A2E48D5-C:45]
-Name=Return To Yoshi's Island 64 (U) Demo (Hack)
-Cheat0="Press GS For 255 Coins",8921F9E8 00FF
-Cheat0_N=[SuperMario]Coins Note
-Cheat1="Infinite Energy & Breath",8021F9EE 0008
-Cheat2="Mario's Cap On Options",8021F947 00??
-Cheat2_N=[SuperMario]Cap Note
-Cheat2_O=[SuperMario]Marios Cap
-Cheat3="Press L To Levitate",D021F771 0020,8121F98C 4220,D021F98D 0020,8121F94C 0300,D021F98D 0020,8121F94E 0880
-Cheat3_N=[SuperMario]Levitate Note
-Cheat4="Monsters Don't Hurt Mario",A021F967 0001
-
-//----
-
-[D6824921-8779FEEF-C:00]
-Name=The Legend of Zelda - Majora's Mask (CHN)
-Cheat0="Infinite\Health",811F7346 0140
-Cheat1="Infinite\Hearts Options",811F7344 ????
-Cheat1_N=[ZeldaMM]Hearts Note
-Cheat1_O=[ZeldaMM]Hearts Mod
-Cheat2="Have\All Quest Status Items",801F73CD 0005,811F73CE F7CF 
-Cheat3="Infinite\Rupees",811F734A 03E7
-Cheat4="Infinite\Max & Double Magic Meter",801F7349 0060,811F7350 0101
-Cheat5="Infinite\Items",801F73B1 0063,801F73B6 0063,801F73B7 0063,801F73B8 0063,801F73B9 0063,801F73BA 0063,801F73BC 0063,801F73BD 0063
-Cheat6="Have\Ocarina of Time",801F7380 0000
-Cheat7="Have\Hero's Bow",801F7381 0001
-Cheat8="Have\Arrows\Fire Arrow",801F7382 0002
-Cheat9="Have\Arrows\Ice Arrow",801F7383 0003
-Cheat10="Have\Arrows\Light Arrow",801F7384 0004
-Cheat11="Have\Bombs",801F7386 0006
-Cheat12="Have\Bombchu",801F7387 0007
-Cheat13="Have\Deku Sticks",801F7388 0008
-Cheat14="Have\Deku Nuts",801F7389 0009
-Cheat15="Have\Magic Beans",801F738A 000A
-Cheat16="Have\Powder Kegs",801F738C 000C
-Cheat17="Have\Pictograph",801F738D 000D
-Cheat18="Have\Lens of Truth",801F738E 000E
-Cheat19="Have\Hookshot",801F738F 000F
-Cheat20="Have\Great Fairy's Sword",801F7390 0010
-Cheat21="Maximum Visibility",8016DDB8 0020
-Cheat22="Fog\Blue",8016F688 0020
-Cheat23="Fog\Pink",8016F68C 0020
-Cheat24="Fog\Yellow",8016F690 0020
-Cheat25="Press L To Levitate",D03EE6DB 0020,814079B8 40CB
-Cheat25_N=[ZeldaMM]Levitate
-Cheat26="Have\All Masks",801F7398 003E,801F7399 0038,801F739A 0047,801F739B 0045,801F739C 0040,801F739D 0032,801F739E 003A,801F739F 0046,801F73A0 0039,801F73A1 0042,801F73A2 0048,801F73A3 0033,801F73A4 003C,801F73A5 003D,801F73A6 0037,801F73A7 003F,801F73A8 0036,801F73A9 0034,801F73AA 0043,801F73AB 0041,801F73AC 003B,801F73AD 0044,801F73AE 0049,801F73AF 0035
-Cheat27="Beta World 1",D03EE6DB 0000,801F7312 00??
-Cheat27_N=[ZeldaMM]BetaWorld Note
-Cheat27_O=[ZeldaMM]BetaWorld
-Cheat28="Event Item\Modifier 1",801F7385 00??
-Cheat28_O=[ZeldaMM]Event Item
-Cheat29="Event Item\Modifier 2",801F738B 00??
-Cheat29_O=[ZeldaMM]Event Item
-Cheat30="Event Item\Modifier 3",801F7391 00??
-Cheat30_O=[ZeldaMM]Event Item
-Cheat31="Have\Item Modifier",801F7390 00??
-Cheat31_O=[ZeldaMM]Item Mod
-Cheat32="Bottles\Bottle 1 Modifier",801F7392 00??
-Cheat32_O=[ZeldaMM]Bottle Mod
-Cheat33="Bottles\Bottle 2 Modifier",801F7393 00??
-Cheat33_O=[ZeldaMM]Bottle Mod
-Cheat34="Bottles\Bottle 3 Modifier",801F7394 00??
-Cheat34_O=[ZeldaMM]Bottle Mod
-Cheat35="Bottles\Bottle 4 Modifier",801F7395 00??
-Cheat35_O=[ZeldaMM]Bottle Mod
-Cheat36="Bottles\Bottle 5 Modifier",801F7396 00??
-Cheat36_O=[ZeldaMM]Bottle Mod
-Cheat37="Bottles\Bottle 6 Modifier",801F7397 00??
-Cheat37_O=[ZeldaMM]Bottle Mod
-Cheat38="Use C-Buttons Anywhere",811FB228 0000,811FB22A 0000
-Cheat38_N=[ZeldaMM]C-Button Note
-Cheat39="All Equipment Upgrades",801F737D 0023,811F73CA 201B,801F735C 004F
-Cheat40="Replace Sword With",801F735C 00??
-Cheat40_N=[ZeldaMM]ReplaceSword Note
-Cheat40_O=[ZeldaMM]ReplaceSword
-Cheat41="Play As",801F7330 00??
-Cheat41_O=[ZeldaMM]Play As
-Cheat42="Warp Modifier",D03EE70A 0000,80406F35 0001,81406F3A ????
-Cheat42_N=[ZeldaMM]Warp Note
-Cheat42_O=[ZeldaMM]Warp Mod
-
-//----
-
-[6F4DF892-D3FFBD5B-C:43]
-Name=The Legend of Zelda - Majora's Mask (CHN) (iQue)
-Cheat0="Infinite\Health",811F3A06 0140
-Cheat1="Infinite\Hearts Options",811F3A04 ????
-Cheat1_N=[ZeldaMM]Hearts Note
-Cheat1_O=[ZeldaMM]Hearts Mod
-Cheat2="Have\All Quest Status Items",801F3A8D 0005,811F3A8E F7CF
-Cheat3="Infinite\Rupees",811F3A0A 03E7
-Cheat4="Infinite\Max & Double Magic Meter",801F3A09 0060,811F3A10 0101
-Cheat5="Infinite\Items",801F3A71 0063,801F3A76 0063,801F3A77 0063,801F3A78 0063,801F3A79 0063,801F3A7A 0063,801F3A7C 0063,801F3A7D 0063
-Cheat6="Have\Ocarina of Time",801F3A40 0000
-Cheat7="Have\Hero's Bow",801F3A41 0001
-Cheat8="Have\Arrows\Fire Arrow",801F3A42 0002
-Cheat9="Have\Arrows\Ice Arrow",801F3A43 0003
-Cheat10="Have\Arrows\Light Arrow",801F3A44 0004
-Cheat11="Have\Bombs",801F3A46 0006
-Cheat12="Have\Bombchu",801F3A47 0007
-Cheat13="Have\Deku Sticks",801F3A48 0008
-Cheat14="Have\Deku Nuts",801F3A49 0009
-Cheat15="Have\Magic Beans",801F3A4A 000A
-Cheat16="Have\Powder Kegs",801F3A4C 000C
-Cheat17="Have\Pictograph",801F3A4D 000D
-Cheat18="Have\Lens of Truth",801F3A4E 000E
-Cheat19="Have\Hookshot",801F3A4F 000F
-Cheat20="Have\Great Fairy's Sword",801F3A50 0010
-Cheat21="Maximum Visibility",8016BD58 0020
-Cheat22="Fog\Blue",8016BD48 0020
-Cheat23="Fog\Pink",8016BD4C 0020
-Cheat24="Fog\Yellow",8016BD50 0020
-Cheat25="Press L To Levitate",D03EAD9B 0020,81404078 40CB
-Cheat25_N=[ZeldaMM]Levitate
-Cheat26="Have\All Masks",801F3A58 003E,801F3A59 0038,801F3A5A 0047,801F3A5B 0045,801F3A5C 0040,801F3A5D 0032,801F3A5E 003A,801F3A5F 0046,801F3A60 0039,801F3A61 0042,801F3A62 0048,801F3A63 0033,801F3A64 003C,801F3A65 003D,801F3A66 0037,801F3A67 003F,801F3A68 0036,801F3A69 0034,801F3A6A 0043,801F3A6B 0041,801F3A6C 003B,801F3A6D 0044,801F3A6E 0049,801F3A6F 0035
-Cheat27="Beta World 1",D03EAD9B 0000,801F39D2 00??
-Cheat27_N=[ZeldaMM]BetaWorld Note
-Cheat27_O=[ZeldaMM]BetaWorld
-Cheat28="Event Item\Modifier 1",801F3A45 00??
-Cheat28_O=[ZeldaMM]Event Item
-Cheat29="Event Item\Modifier 2",801F3A4B 00??
-Cheat29_O=[ZeldaMM]Event Item
-Cheat30="Event Item\Modifier 3",801F3A51 00??
-Cheat30_O=[ZeldaMM]Event Item
-Cheat31="Have\Item Modifier",801F3A50 00??
-Cheat31_O=[ZeldaMM]Item Mod
-Cheat32="Bottles\Bottle 1 Modifier",801F3A52 00??
-Cheat32_O=[ZeldaMM]Bottle Mod
-Cheat33="Bottles\Bottle 2 Modifier",801F3A53 00??
-Cheat33_O=[ZeldaMM]Bottle Mod
-Cheat34="Bottles\Bottle 3 Modifier",801F3A54 00??
-Cheat34_O=[ZeldaMM]Bottle Mod
-Cheat35="Bottles\Bottle 4 Modifier",801F3A55 00??
-Cheat35_O=[ZeldaMM]Bottle Mod
-Cheat36="Bottles\Bottle 5 Modifier",801F3A56 00??
-Cheat36_O=[ZeldaMM]Bottle Mod
-Cheat37="Bottles\Bottle 6 Modifier",801F3A57 00??
-Cheat37_O=[ZeldaMM]Bottle Mod
-Cheat38="Use C-Buttons Anywhere",811F78E8 0000,811F78EA 0000
-Cheat38_N=[ZeldaMM]C-Button Note
-Cheat39="All Equipment Upgrades",801F3A3D 0023,811F3A8A 201B,801F3A1C 004F
-Cheat40="Replace Sword With",801F3A1C 00??
-Cheat40_N=[ZeldaMM]ReplaceSword Note
-Cheat40_O=[ZeldaMM]ReplaceSword
-Cheat41="Play As",801F39F0 00??
-Cheat41_O=[ZeldaMM]Play As
-Cheat42="Warp Modifier",D03EAD9A 0000,804035F5 0001,804035FA ????
-Cheat42_N=[ZeldaMM]Warp Note
-Cheat42_O=[ZeldaMM]Warp Mod
-Cheat43="Inventory Editor",D03EAD9B 0020,D0401C9F 0000,80401C9F 0002
-Cheat43_N=Enable this code, Press Start to open the Pause Menu, then L to open the Inventory Editor. Warning this freezes like it does on the Real Hardware. 
-
-[F6136DC4-2ECEDCA1-C:45]
-Name=Captain Falcon 64 1.3 (U) (Hack)
-Cheat0="Press GS For 255 Coins",8933B218 00FF
-Cheat0_N=[SuperMario]Coins Note
-Cheat1="Have\Level Select",A032D58C 00??
-Cheat1_O=@Off and On 1
-Cheat2="Monsters Don't Hurt Falcon",A033B197 0001
-Cheat3="Infinite\Lives",8033B21D 0064
-Cheat4="Infinite\Energy & Breath",8033B21E 0008
-Cheat5="Have\Debug Mode",A032D598 00??
-Cheat5_O=@Off and On 1
-Cheat6="Falcon's Cap On Options",8033B177 00??
-Cheat6_N=[[CaptainFalcon]Cap Note
-Cheat6_O=[CaptainFalcon]Falcons Cap
-Cheat7="Press L To Levitate",D033AFA1 0020,8133B1BC 4220,D033B1BD 0020,8133B17C 0300,D033B1BD 0020,8133B17E 0880
-Cheat7_N=[SuperMario]Levitate Note
-Cheat8="[Slot A Codes]\Have All\120 Stars",80207723 0001,8020770B 00C7,50001101 0000,8020770C 00FF
-Cheat8_N=[SuperMario]Slot Note
-Cheat9="[Slot A Codes]\Have All\Key doors unlocked (and mote empty)",8020770A 007E
-Cheat10="[Slot A Codes]\Have All\Max 100 Coin Records For All Levels",50000F01 0000,80207725 0064
-Cheat11="[Slot B Codes]\Have All\120 Stars",80207793 0001,8020777B 00C7,50001101 0000,8020777C 00FF
-Cheat11_N=[SuperMario]Slot Note
-Cheat12="[Slot B Codes]\Have All\Key doors unlocked (and mote empty)",8020777A 007E
-Cheat13="[Slot B Codes]\Have All\Max 100 Coin Records For All Levels",50000F01 0000,80207795 0064
-Cheat14="[Slot C Codes]\Have All\120 Stars",80207803 0001,802077EB 00C7,50001101 0000,802077EC 00FF
-Cheat14_N=[SuperMario]Slot Note
-Cheat15="[Slot C Codes]\Have All\Key doors unlocked (and mote empty)",802077EA 007E
-Cheat16="[Slot C Codes]\Have All\Max 100 Coin Records For All Levels",50000F01 0000,80207805 0064
-Cheat17="[Slot D Codes]\Have All\120 Stars",80207873 0001,8020785B 00C7,50001101 0000,8020785C 00FF
-Cheat17_N=[SuperMario]Slot Note
-Cheat18="[Slot D Codes]\Have All\Key doors unlocked (and mote empty)",8020785A 007E
-Cheat19="[Slot D Codes]\Have All\Max 100 Coin Records For All Levels",50000F01 0000,80207875 0064
-Cheat20="Level Select",D033AFA1 0020,A032DDF9 00??
-Cheat20_N=[SuperMario]Level Note
-Cheat20_O=[SuperMario]Level Select
-
-//----
-
-[9EFA01FB-F06E8E90-C:45]
-Name=Smash Remix (U)
-Cheat0="Give Kirby A Wierd Blow-Up",8025E158 000A
-Cheat1="Story Mode\Skip Straight To Master Hand",800A4AE7 000D
-Cheat2="Story Mode\Infinite Time",810A4B2E 43CB
-Cheat3="Story Mode\Player 1\Infinite Lives",800A4B43 0004
-Cheat4="Story Mode\Player 2\Infinite Lives",800A4BB7 0004
-Cheat5="Story Mode\Player 3\Infinite Lives",800A4C2B 0004
-Cheat6="Story Mode\Player 4\Infinite Lives",800A4C9F 0004
-Cheat7="Story Mode\Player 1\Low % Health",810A4B86 0000
-Cheat8="Story Mode\Player 2\Low % Health",810A4BFA 0000
-Cheat9="Story Mode\Player 3\Low % Health",810A4C6E 0000
-Cheat10="Story Mode\Player 4\Low % Health",810A4CE2 0000
-Cheat11="Story Mode\Player 1\Character Modifier",800A4B3B 00??
-Cheat11_N=[SuperSmashBrothers]Character Note
-Cheat11_O=[SuperSmashBrothers]Character Mod
-Cheat12="Story Mode\Player 2\Character Modifier",800A4BAF 00??
-Cheat12_N=[SuperSmashBrothers]Character Note
-Cheat12_O=[SuperSmashBrothers]Character Mod
-Cheat13="Story Mode\Player 3\Character Modifier",800A4C23 00?? 
-Cheat13_N=[SuperSmashBrothers]Character Note
-Cheat13_O=[SuperSmashBrothers]Character Mod
-Cheat14="Story Mode\Player 4\Character Modifier",800A4C97 00??
-Cheat14_N=[SuperSmashBrothers]Character Note
-Cheat14_O=[SuperSmashBrothers]Character Mod
-Cheat15="Story Mode\Player 1\Kirby B Button Move\Hyrule Castle",80268B0F 00??
-Cheat15_O=[SuperSmashBrothers]Kirby B Button Move
-Cheat16="Story Mode\Player 1\Kirby B Button Move\Yoshi's Island",80268E4F 00??
-Cheat16_O=[SuperSmashBrothers]Kirby B Button Move
-Cheat17="Story Mode\Player 1\Kirby B Button Move\Sector Z",802710F7 00??
-Cheat17_O=[SuperSmashBrothers]Kirby B Button Move
-Cheat18="Story Mode\Player 1\Kirby B Button Move\Peach's Castle",80263D9F 00??
-Cheat18_O=[SuperSmashBrothers]Kirby B Button Move
-Cheat19="Story Mode\Player 1\Kirby B Button Move\Saffron City",80273A97 00??
-Cheat19_O=[SuperSmashBrothers]Kirby B Button Move
-Cheat20="Story Mode\Player 1\Kirby B Button Move\Congo Jungle",80270ACF 00??
-Cheat20_O=[SuperSmashBrothers]Kirby B Button Move
-Cheat21="Story Mode\Player 1\Kirby B Button Move\Kirby's Dreamland",8026DB3F 00??
-Cheat21_O=[SuperSmashBrothers]Kirby B Button Move
-Cheat22="Story Mode\Player 1\Kirby B Button Move\Planet Zebes",8026FFA7 00??
-Cheat22_O=[SuperSmashBrothers]Kirby B Button Move
-Cheat23="Story Mode\Player 1\Kirby B Button Move\Metal Mario Stage",80263597 00??
-Cheat23_O=[SuperSmashBrothers]Kirby B Button Move
-Cheat24="Story Mode\Player 1\Kirby B Button Move\Fighting Polygon Team",8026271F 00??
-Cheat24_O=[SuperSmashBrothers]Kirby B Button Move
-Cheat25="Story Mode\Player 1\Kirby B Button Move\Master Hand Stage",80271C4F 00??
-Cheat25_O=[SuperSmashBrothers]Kirby B Button Move
-Cheat26="VS. Mode\Infinite Time",810A4D1E 43CB
-Cheat27="VS. Mode\Player 1\Low % Health",810A4D76 0000
-Cheat28="VS. Mode\Player 2\Low % Health",810A4DEA 0000
-Cheat29="VS. Mode\Player 3\Low % Health",810A4E5E 0000
-Cheat30="VS. Mode\Player 4\Low % Health",810A4ED2 0000
-Cheat31="VS. Mode\Player 1\Character Modifier",800A4D2B 00??
-Cheat31_N=[SuperSmashBrothers]=Character Note
-Cheat31_O=[SuperSmashBrothers]Character Mod
-Cheat32="VS. Mode\Player 2\Character Modifier",800A4D9F 00??
-Cheat32_N=[SuperSmashBrothers]Character Note
-Cheat32_O=[SuperSmashBrothers]Character Mod
-Cheat33="VS. Mode\Player 3\Character Modifier",800A4E13 00??
-Cheat33_N=[SuperSmashBrothers]Character Note
-Cheat33_O=[SuperSmashBrothers]Character Mod
-Cheat34="VS. Mode\Player 4\Character Modifier",800A4E87 00??
-Cheat34_N=[SuperSmashBrothers]Character Note
-Cheat34_O=[SuperSmashBrothers]Character Mod
-Cheat35="VS. Mode\Player 1\Kirby B Button Move\Hyrule Castle",802639EF 00??
-Cheat35_O=[SuperSmashBrothers]Kirby B Button Move
-Cheat36="VS. Mode\Player 1\Kirby B Button Move\Yoshi's Island",8026E2B7 00??
-Cheat36_O=[SuperSmashBrothers]Kirby B Button Move
-Cheat37="VS. Mode\Player 1\Kirby B Button Move\Sector Z",8026BF87 00??
-Cheat37_O=[SuperSmashBrothers]Kirby B Button Move
-Cheat38="P1 Press Down On D-Pad To Make Items Appear In Random Spots",D109EFA4 0400,8118D0A2 0001
-Cheat39="Have All Characters",810A4938 0FF0
-Cheat40="VS. Mode\Have\Mushroom Kindom",800A4937 00FF
-Cheat41="Story Mode\Always Get Pacifist (60,000 Points)",810A4B6E 0000
-Cheat42="Bonus Stage Character Modifier (Training Mode)",8018F1D3 00??
-Cheat42_N=[SuperSmashBrothers]Character Note
-Cheat42_O=[SuperSmashBrothers]Character Mod
-Cheat43="Enable Item Switch Menu (All Modes)",811348E2 0004
-Cheat43_N=[SuperSmashBrothers]Switch Menu Note
-Cheat44="Story Mode\Player 1\Stage Select",D1045188 0010,800A4AE7 00??
-Cheat44_O=[SuperSmashBrothers]Stage Select
-
-//----
-
-[2877AC2D-C3DC139A-C:44]
-Name=Racing Simulation 2 (G)
-Cheat0="Laps to Race",801C5913 00??,D01C5927 0000,801C5927 00??
-Cheat0_N=1 Lap to go will result in you coming in 1st.
-Cheat0_O=$03:00 3 Laps to Race,$03:02 1 Lap to Race of 3,$05:00 5 Laps to Race,$05:04 1 Lap to Race of 5,$09:00 9 Laps to Race,$09:08 1 Lap to Race of 9
-Cheat1="Car Position view is always from behind",801C5487 0020
-Cheat1_N=This will lock the view in that position until disabled. The upside to this is you cannot hit the C-Right by mistake and change the view. If at the start of the race,  the car seems the wqrong way. Just press the A Button, followed by C-Right.
-Cheat2="Damage:",D00B0094 0000,800B0094 00??,D00B0094 0001,800B0094 00??,D00B0094 0002,800B0094 00??
-Cheat2_N=From Immune to any Damage to very realistic.
-Cheat2_O=$00 No Damage,$01 Average,$02 Realistic
-Cheat3="Weather:",D00B0098 0000,800B0098 00??,D00B0098 0001,800B0098 00??,D00B0098 0002,800B0098 00??,D00B0098 0003,800B0098 00??
-Cheat3_O=$00 Random,$01 Always Sunny,$03 Always Rainy
-Cheat4="Start with  254L Fuel",800B04B3 00FF
-
-//----
-
-[1DF0128A-2D6126CF-C:45]
-Name=Banjo-Kazooie - Stay At Home v1.9 (U)
-Cheat0="Infinite\Eggs",80385F67 00FF
-Cheat1="Infinite\Lives",80385F8B 0009
-Cheat2="Infinite\Jiggies",80385FCB 00FF
-Cheat3="Press L To Levitate",D0281251 0020,8137C4BC 43E0
-Cheat3_N=Press L To Levitate & Let go to land
-Cheat4="Infinite\Notes",80385FF2 00FF,80385F62 0001
-Cheat4_N=Just collect one Note to Have\255 Notes in all Worlds.
-Cheat5="Infinite\Health",80385F83 0008,80385F87 0008
-Cheat6="Infinite\Air",81385F8E 0E10
-Cheat7="Infinite\Gold Feathers",80385F73 00FF
-Cheat8="Infinite\Red Feathers",80385F6F 00FF
-Cheat9="Always Have All Jinjos",80385F7B 00FF
-Cheat10="Have Zero Time all Levels",50000B04 0000,81386004 3000
-Cheat11="Character Select",D0281251 0008,8037C2D3 0002,D0281251 0001,8037C2D3 0003,D0281251 0004,8037C2D3 0004,D0281251 0002,8037C2D3 0005,D0281251 0010,8037C2D3 0006,D0281251 0020,8037C2D3 0007
-Cheat11_N=When Mumbo transforms you hold:C-Up for the Termite,C-Right for the Pumpkin,C-Down for the Walrus,C-Left for the Crocc,R for the Bumble Bee,L for the Washing Machine,Press nothing to turn into Banjo
-Cheat12="Infinite\Mumbo Tokens",80385FC7 0077,80385FA3 0077
-Cheat13="Do Anywhere Option",803????? 0002
-Cheat13_N=Press A Button. For Fly From Anywhere, use with Infinte Feathers Cheat. For Shock Spring Jump, use with Access All Moves Cheat.
-Cheat13_O=$7C1D1 Take Off And Fly From Anywhere,$7C1D2 Do Shock Spring Jump From Anywhere,$7C1D3 Normal
-Cheat14="Access All Moves",8037C3A0 0001,8037C3A1 007F,8037C3A2 00FF,8037C3A3 00FF
-Cheat15="Secret Items ",81283400 ????
-Cheat15_O=$FFFF Have All Collected,$0000 Have None
-Cheat16="Have Everything Unlocked",803831AD 00FF,813831AE FFFF,803831B0 00FF,813831B2 FFFF,803831B7 00FF,803831C4 8005,803831BF 00A2
-
-//----
-
-[C006E3C0-A67B4BBB-C:50]
-Name=F-1 World Grand Prix (E)
-Cheat0="Lap Mod",8031AB19 00??
-Cheat0_N=when you select 1 Lap to go of 4, you will be in position 1 but you will still retain your original position in results.
-Cheat0_O=$01 4  Laps to go of 4,$01 3  Laps to go of 4,$02 2  Laps to go of 4,$04 1 Lap to go of 4,$05 Instant end of race
-Cheat1="Always the Winner (Video Only)",801373F3 0000
-Cheat1_N=You still retain your original position in results.
-Cheat2="Always 1st Position",8103A57E 0001,8113737A 0001,8113F376 0001,812F7D78 0001
-Cheat3="No Damage (Player 1)",811670A6 0000
-Cheat4="Always Sunny",811670B2 0000
-Cheat5="Only 4 Lap Race",811670BA 0001
-Cheat6="Grid Position (Player 1)",8116709E 0001
-Cheat7="No Pit Stops (Player 1)",811670AA 0000
-
 //--------------- NTSC Nintendo LodgeNet 64 (Gateway System) ---------------
 
 [6BF4B693-AF915B5B-C:47]
@@ -27497,6 +26703,14 @@ Cheat4="Enable All Levels (Trial Mode)",810F919C FFFF,810F919E FFFF
 
 //------ Homebrew --------
 
+[176EFEA7-A704929E-C:20]
+Name=Mission Lost Control (PD by NAN)
+Cheat0="Game Fix For Interpreter",80032648 0024
+[01DF51BC-EBA4E907-C:00]
+Name=SuperSnooperSpookers (PD)
+Cheat0="Instant 99  Scares",8004E24D 0031
+Cheat1="Infinite Lives",8004E24F 0000
+
 [71643B6C-ED18290A-C:00]
 Name=The Ultimate Doom (HomeBrew)
 Ammo Note=Press A Button on End Of Level Exit screen to display results.
@@ -27671,10 +26885,1272 @@ Cheat40_O=$00 Off (Default),$01 On
 Cheat41="Enable Cheat Menu and Backer Menu:",810342F2 0004,81034540 0C05,81034542 19EC,81034ACC 0C05,81034ACE 19EC,811467B0 03E0,811467B2 F025,811467B4 9382,811467B6 8322,811467B8 0002,811467BA 1080,811467BC 3C01,811467BE 8012,811467C0 0041,811467C2 1021,811467C4 8C55,811467C6 DEE8,811467C8 8EA4,811467CA 00E0,811467CC 3405,811467CE 000F,811467D0 0C00,811467D2 86F0,811467D4 3406,811467D6 0016,811467D8 8EA4,811467DA 0010,811467DC 3405,811467DE 000F,811467E0 0C00,811467E2 86F0,811467E4 3406,811467E6 0018,811467E8 9382,811467EA 8322,811467EC 03C0,811467EE 0008,811467F0 2406,811467F2 001A
 Cheat41_N=This Enables and Displays the Developer Cheat and Backer Menus
 
+//-------------------- W.I.P Cheats ---------------
+
+[906C3F77-CE495EA1-C:45]
+Name=Dinosaur Planet (Prototype)
+Cheat0="Krystal\Infinite Health",805C3971 000C
+Cheat1="Krystal\Infinite Gem Magic",805C3975 001F
+Cheat2="Fox\Infinite Health",805C3965 000C
+Cheat3="Fox\Infinite Gem Magic",805C3969 001F
+Cheat4="(C-Left) Full Magic Spells",815C4DBE D71F
+Cheat5="WIP Have All Items (C-Right)",805C4DC0 008F,805C4DC1 008F,805C4DCA 000F,805C4DCB 000F,805C4DCC 000F,805C4DCD 000F,805C4DCE 000F,805C4DCF 000F
+Cheat6="Have Magical Gem",8008C8D3 0001
+Cheat7="Display Scarab Counter",805C4D66 0008
+Cheat8="Krystal\Infinite Max Scarabs",815C3978 00FF
+Cheat8_N=The shop keeper will say you do not have enough on entering. But once inside you can look around and buy infinite.
+Cheat9="Fox\Infinite Max Scarabs",815C396C 00FF
+Cheat9_N=The shop keeper will say you do not have enough on entering. But once inside you can look around and buy infinite.
+Cheat10="Krystal\Freeze Mini Game Timer",810A7D70 4525
+Cheat11="Retrobens  Levitation Code.",81012144 081F,81012146 C400,81012148 0000,8101214A 0000,817F1000 3C18,817F1002 805C,817F1004 8F18,817F1006 1568,817F1008 1300,817F100A 001E,817F100C 0000,817F100E 0000,817F1010 3C02,817F1012 800D,817F1014 8042,817F1016 D3F5,817F1018 2408,817F101A 0020,817F101C 1448,817F101E 0019,817F1020 0000,817F1022 0000,817F1024 3C08,817F1026 807F,817F1028 8102,817F102A 10F0,817F102C 1040,817F102E 0003,817F1030 0000,817F1032 0000,817F1034 2402,817F1036 00A4,817F1038 A302,817F103A 00FB,817F103C 3C08,817F103E 807F,817F1040 8102,817F1042 10F1,817F1044 5440,817F1046 0003,817F1048 A100,817F104A 10F1,817F104C 1000,817F104E 0005,817F1050 0000,817F1052 0000,817F1054 2402,817F1056 00AF,817F1058 A302,817F105A 00FB,817F105C 1000,817F105E 0009,817F1060 0000,817F1062 0000,817F1064 3C08,817F1066 807F,817F1068 8102,817F106A 10F0,817F106C 1040,817F106E 0005,817F1070 0000,817F1072 0000,817F1074 3C18,817F1076 805C,817F1078 8F18,817F107A 1568,817F107C 3C02,817F107E 4000,817F1080 AF02,817F1082 0028,817F1084 8E78,817F1086 0000,817F1088 0800,817F108A 4853,817F108C 8E02,817F108E 0000,D00CD3F4 0008,817F10F0 0100,D00CD3F4 0004,817F10F0 0001
+Cheat11_N=Press D-Pad Up to activate the ability to levitate, pressing L after will allow you to levitate freely. Press D-Pad Down to deactivate.
+Cheat12="Tricky\Infinite Energy",805C397C 0004
+Cheat13="Tricky\Have All Skills",815C4C80 FFFF
+Cheat14="Tricky\Learn Distract",D05C4C80 0001,805C4C80 0009,D05C4C80 0003,805C4C80 000B,D05C4C80 0011,805C4C80 0019,D05C4C80 0013,805C4C80 001B
+Cheat15="One Hit Kill Enemies",815CC20C 240D,815CC20E 0000
+Cheat16="Food Bag Option",805C4DBF 00??
+Cheat16_O=$00 Nothing,$20 Small Food Bag,$40 Medium Food Bag,$80 Large Food Bag
+Cheat17="Krystal\Have Shiny Nugget",805C4C4F 0002
+Cheat18="Krystal\Have Firefly Lantern (10)",805C4DCF 0040,805C4DD0 0001
+Cheat19="Krystal\Prevent Being Gassed More Than Once",D05C4C4F 0076,D05C4C50 0007,805C4C50 0006,D05C4C4F 0076,D05C4C50 0006,805C4C4F 007E,D05C4C4F 0076,D05C4C50 00FE,805C4C4F 007F
+Cheat19_N=do not use with the Shiny Nugget cheat left on. Either do the glitch to get it or cheat it in, do a hard save, turn off the cheat and reload to keep the Shiney Nugget. You need to shoot BOTH doors with the cannon, otherwise the code won't trigger.
+Cheat20="Krystal\Swap with Spirit/Spellstone",805C4D6C 0000
+Cheat21="Fox\Have Lantern",805C4DCF 000A
+Cheat22="Fox\Have Horn",805C4D6C 0020
+Cheat23="Have Spellstone (DarkIce Mines)",805C4D6C 0008
+Cheat24="Have Spellstone (Cloudrunner Fortress)",805C4D41 0002
+Cheat25="Have Max Moon Seeds (7)",805C4C4B 00D0,805C4C4C 0001
+Cheat26="Have Bay Diamond (Diamond Bay)",805C4DBB 0020
+Cheat27="Have Pointback Egg (Diamond Bay)",805C4DBB 0040
+Cheat28="Have Sun & Moon Stone (Walled City)",805C4D80 00C0
+Cheat29="Have Cell Door Key (Cape Claw)",805C4C51 0001
+Cheat30="Have 3 Fire Crystals (Cape Claw)",805C4C52 0018
+Cheat31="Have 3 Krazoa Tablets (Cape Claw)",805C4C53 00E0
+Cheat32="Teleport Tricky to Player (Press D-Pad Down)",814FD888 0802,814FD88A 6C37,8109B0DC 3C02,8109B0DE 800A,8109B0E0 8442,8109B0E2 7DC0,8109B0E4 2403,8109B0E6 0400,8109B0E8 1443,8109B0EA 0007,8109B0EC 8E5C,8109B0EE 00E4,8109B0F0 8F82,8109B0F2 000C,8109B0F4 8F83,8109B0F6 0010,8109B0F8 8F9C,8109B0FA 0014,8109B0FC AE42,8109B0FE 0000,8109B100 AE43,8109B102 0004,8109B104 AE5C,8109B106 0008,8109B108 8E45,8109B10A 0000,8109B10C 0813,8109B10E F624,8109B110 8E46,8109B112 0008
+Cheat33="Press L to Levitate (Noclip)",814EA390 0802,814EA392 6C2D,814EA394 8FBC,814EA396 0030,8109B0B4 8FBF,8109B0B6 0034,8109B0B8 3C04,8109B0BA 800D,8109B0BC 8084,8109B0BE D3F5,8109B0C0 2405,8109B0C2 0020,8109B0C4 50A4,8109B0C6 0003,8109B0C8 0000,8109B0CA 0000,8109B0CC 0813,8109B0CE A8E6,8109B0D0 0000,8109B0D2 0000,8109B0D4 3C05,8109B0D6 800A,8109B0D8 80A4,8109B0DA B160,8109B0DC 1080,8109B0DE 0003,8109B0E0 0000,8109B0E2 0000,8109B0E4 2404,8109B0E6 00A4,8109B0E8 A204,8109B0EA 00FB,8109B0EC 80A4,8109B0EE B161,8109B0F0 5480,8109B0F2 0003,8109B0F4 A0A0,8109B0F6 B161,8109B0F8 1000,8109B0FA 0005,8109B0FC 0000,8109B0FE 0000,8109B100 2404,8109B102 00AF,8109B104 A204,8109B106 00FB,8109B108 1000,8109B10A 0013,8109B10C 0000,8109B10E 0000,8109B110 80A4,8109B112 B160,8109B114 1080,8109B116 0010,8109B118 0000,8109B11A 0000,8109B11C 3C06,8109B11E 4000,8109B120 AE06,8109B122 0028,8109B124 8606,8109B126 0360,8109B128 2404,8109B12A 001C,8109B12C 1486,8109B12E 0002,8109B130 2404,8109B132 001D,8109B134 A604,8109B136 0360,8109B138 2404,8109B13A 0014,8109B13C 1486,8109B13E 0002,8109B140 2404,8109B142 0001,8109B144 A604,8109B146 0360,8109B148 2404,8109B14A 000D,8109B14C 1486,8109B14E 0002,8109B150 2404,8109B152 0001,8109B154 A604,8109B156 0360,8109B158 0813,8109B15A A8E6,8109B15C 0000,8109B15E 0000,D109B160 7276,8109B160 0000,D00CD3F4 0008,8109B160 0100,D00CD3F4 0004,8109B160 0001
+Cheat34="Diamond Bay River Crash Fix",805C4F51 0002
+Cheat34_N=Turn the cheat on only when you're swimming in the river, as turning on the code sooner will make the game crash.
+Cheat35="Galadon Boss Fix",815C522E 0001
+Cheat35_N=Activate code to start the bossfight deactivate right after starting it.
+Cheat36="Trigger Blue Monster in Golden Plains",805C5129 0040
+Cheat36_N=Activate code to start the bossfight deactivate right after starting it.
+Cheat37="CloudRunner Fortress Power Crystal",805C4D?? 00??
+Cheat37_O=$4B:80 Red Power Crystal,$4C:01 Green Power Crystal,$4C:20 Blue Power Crystal
+
+//----
+
+[EB85EBC9-596682AF-C:00]
+Name=DOUBUTSU BANCHOU (PD)
+Cheat0="Infinite 999 Hearts",80320AD5 0063,80320AD7 0009
+Cheat1="Bite Stregnth",80320AE4 00FF
+
+//----
+
+[EFDF9140-A4168D6B-C:00]
+Name=Top Gear Rally 2 (Beta)
+Cheat0="Infinite Time & Always Place 1st",800302A3 0001,80030297 0001
+Cheat0_N=Championship Mode Only.
+
+//----
+
+[F8009DB0-6B291823-C:4A]
+Name=City Tour Grandprix - Zennihon GT Senshuken (J)
+Cheat0="Always First with 99 Points",8015CDB9 0063
+Cheat1="Only race one lap",8015CCE5 0001
+
+//----
+
+[4690FB1C-4CD56D44-C:45]
+Name=Golden Nugget 64 (U)
+Cheat0="Infinite Mega $$$$$$$",88339A19 00FF
+Cheat0_N=Press F9 to enable & then refresh
+
+//----
+
+[FEE6361C-C0563F84-C:50]
+Name=Golden Nugget 64 (E)
+Cheat0="Infinite Mega $$$$$$$",88339A19 00FF
+Cheat0_N=Press F9 to enable & then refresh
+
+//----
+
+[AC062778-DFADFCB8-C:50]
+Name=World Driver Championship (E) (M5)
+Cheat0="Have\20 Events & Trophies",80099A3B 0014,80099A3F 0014,80099A43 0014,80099A4B 0014
+Cheat0_N=Overall Track Stats.
+Cheat1="Have\Max Career points & Driver Rank 1",80099A31 00C1,81099A32 4490
+Cheat1_N=Enable this cheat and then save and then disable the cheat. When you load from the save, it wil also have most cars in Quick Race and Championship Unlocked
+Cheat2="Have\Max race Points (Player 1)",8109AAA2 029A
+Cheat3="Quick Race\Have all Cars",50002214 0000,8009A56D 0001,50000A28 0000,80099B24 0001
+Cheat4="Quick Race\Have all Levels",50003A08 0000,8009A82D 0001
+Cheat5="Championship\ Have all Events, Tracks &  Levels",50001470 0000,80099CF4 0001
+Cheat6="Championship\ Have all Gold Cups",50001470 0000,80099D17 0000
+Cheat7="Championship\Have All Cars (All Classes)",50002314 0000,8009A56C 0001,80099C43 0003,8009A814 0001
+Cheat7_N=This gives you all Cars for All Classes A,B & C
+Cheat8="1 Lap to Race (Player 1)",8007F7B7 0001
+
+//----
+
+[308DFEC8-CE2EB5F6-C:45]
+Name=World Driver Championship (U)
+Cheat0="Have\20 Events & Trophies",80097D1B 0014,80097D1F 0014,80097D23 0014,80097D2B 0014
+Cheat0_N=Overall Track Stats.
+Cheat1="Have\Max Career points & Driver Rank 1",80097D11 00C1,10097D12 4490
+Cheat1_N=Enable this cheat and then save and then disable the cheat. When you load from the save, it wil also have most cars in Quick Race and Championship Unlocked
+Cheat2="Have\Max race Points (Player 1)",81098D82 029A
+Cheat3="Quick Race\Have all Cars",50002214 0000,8009884D 0001,50000A28 0000,80097E04 0001
+Cheat4="Quick Race\Have all Levels",50003A08 0000,80098B0D 0001
+Cheat5="Championship\ Have all Events, Tracks &  Levels",50001470 0000,80097FD4 0001
+Cheat6="Championship\ Have all Gold Cups",50001470 0000,80097FF7 0000
+Cheat7="Championship\Have All Cars (All Classes)",50002314 0000,8009884C 0001,80097F23 0003,80098AF4 0001
+Cheat7_N=This gives you all Cars for All Classes A,B & C
+Cheat8="1 Lap to Race (Player 1)",8007DDF7 0001
+
+//----
+
+[EBF5F6B7-C956D739-C:4A]
+Name=SD Hiryuu no Ken Densetsu (J)
+Cheat0="All Medals, Tournaments, Characters and Clones Open",81218C18 FFFF,81218C1A FFFF,812190EE FFFF
+Cheat1="Max Money (Player 1)",81218D9C 0000,81218D9E FFFF
+Cheat2="Have All Super Attack (Player 1)",80210938 0005
+Cheat3="Invincible (Player 1)",812107C4 00CE,8120FEC2 00CE
+Cheat4="Max Power (Player 1)",81211660 003E
+
+//----
+
+[AF9DCC15-1A723D88-C:45]
+Name=Indiana Jones and the Infernal Machine (U)
+Cheat0="All Weapons and Infinite Ammo",50004702 0000,810C2D7A 0199,50002502 0000,810C2E0A 0199
+Cheat0_N=Ammo, Money Many Items Many Tools and always powered to max -Does not include treasure count and IQ status.
+Cheat1="Always Have $9,99",810C2E08 270F
+Cheat2="Infinite Health (All Levels)",40000000 0000,80000330 0023,3c024008 8c42,da6c8c42 0000,56020001 e600,01083c03 4104,34632efc 0060,00080240 2821,40000000 0000,41042e00 000f,3c038000 3463,03300060 f809,02002021 0000
+Cheat3="Level Select",D004D0A9 0020,80080C37 00??
+Cheat3_N=Enable after selecting your desired level and then press and hold the L-Button at the level select screen and when the ???? is highlighted, Let got of the L-Button and press the A Button to goto that Level.
+Cheat3_O=$00 Canyon Location,$01 Babylon,$02 Tian Shian River,$03 Shambla Sanctuary,$04 Palawan Lagoon,$05 Palawan Volcano,$06 Palawan Temple,$07 Jeep Trek,$08 Teotithuacan,$09 Olmec Valley,$0A V.I.Pudovkin Ship,$0B Meroe,$0C King Sol's Mines(Hi rez only),$0D Nub's Tomb,$0E The Machine,$0F Altherium,$10 Return to Peru. (Activate then press joystick down one click then press A)
+
+//----
+
+[22E3CE16-C1814985-C:50]
+Name=Indiana Jones and the Infernal Machine (E) [NTSC-Convert]
+Cheat0="All Weapons and Infinite Ammo",50004702 0000,810C2D7A 0199,50002502 0000,810C2E0A 0199
+Cheat0_N=Ammo, Money Many Items Many Tools and always powered to max -Does not include treasure count and IQ status.
+Cheat1="Always Have $9,99",810C2E08 270F
+Cheat2="Infinite Health (All Levels)",40000000 0000,80000330 0023,3c024008 8c42,da6c8c42 0000,56020001 e600,01083c03 4104,34632efc 0060,00080240 2821,40000000 0000,41042e00 000f,3c038000 3463,03300060 f809,02002021 0000
+Cheat3="Level Select",D004D0A9 0020,80080C37 00??
+Cheat3_N=Enable after selecting your desired level and then press and hold the L-Button at the level select screen and when the ???? is highlighted, Let got of the L-Button and press the A Button to goto that Level.
+Cheat3_O=$00 Canyon Location,$01 Babylon,$02 Tian Shian River,$03 Shambla Sanctuary,$04 Palawan Lagoon,$05 Palawan Volcano,$06 Palawan Temple,$07 Jeep Trek,$08 Teotithuacan,$09 Olmec Valley,$0A V.I.Pudovkin Ship,$0B Meroe,$0C King Sol's Mines(Hi rez only),$0D Nub's Tomb,$0E The Machine,$0F Altherium,$10 Return to Peru. (Activate then press joystick down one click then press A)
+
+//----
+
+[0FE684A9-8BB77AC4-C:50]
+Name=Tetrisphere (E)
+Cheat0="Single & VS Mode\Infinite Misses\Player 1",8011582F 0003
+Cheat1="Single & VS Mode\Infinite Misses\Player 2",80118A97 0003
+Cheat2="Single & VS Mode\Secret Cheat Menu",80114EEF 00AD
+Cheat3="Single Player Stage Select",810E3D44 0001
+
+//----
+
+[D1BEDE6E-EFF7F9C4-C:45]
+Name=The Legend of Zelda - Voyager of Time (v.1.0)
+Cheat0="Infinite\Rupees",8115FA2C 0001
+Cheat0_N=[ZeldaOOT]Rupees Note
+Cheat1="Have\All Equipment",8115E6FC 7777
+Cheat1_N=[ZeldaOOT]Have All
+Cheat2="Have\All Quest Status Items",8115E704 30FF,8115E706 FFFF
+Cheat2_N=[ZeldaOOT]Have All
+Cheat3="Max\Heart Containers",8115E68E 0140
+Cheat4="Max\Gold Skulltulas Killed",8015E731 0064
+Cheat5="Time of Day Modifier",8115E66C ????
+Cheat5_O=[ZeldaOOT]Day Mod
+Cheat6="Infinite\Energy",8115E690 0140
+Cheat7="Infinite\Magic",D015E699 0008,8015E69A 0001,8015E69C 0001,8015E693 0060
+Cheat8="Tunic & Boot Options",8015E6D0 00??
+Cheat8_N=[ZeldaOOT]TunicBoot Note
+Cheat8_O=[ZeldaOOT]TunicBoot
+Cheat9="Infinite\Deku Sticks",8015E6EC 0009
+Cheat10="Infinite\Deku Nuts",8015E6ED 0009
+Cheat11="Infinite\Bombs",8015E6EE 0009
+Cheat12="Infinite\Arrows",8015E6EF 0009
+Cheat13="Infinite\Deku Seeds",8015E6F2 0009
+Cheat14="Infinite\Bombchu's",8015E6F4 0009
+Cheat15="Infinite\Magic Beans",8015E6FA 0009
+Cheat16="Infinite\Big Key,Small Keys,Compass,& Map",8015E708 0007,8015E709 0007,8015E70A 0007,8015E70B 0007,8015E70C 0007,8015E70D 0007,8015E70E 0007,8015E70F 0007,8015E710 0007,8015E711 0007,8015E712 0007,8015E71F 0009,8015E720 0009,8015E721 0009,8015E722 0009,8015E723 0009,8015E729 0009,8015E72C 0009,8015E727 0009
+Cheat17="Have\Ocarina",8015E6DB 00??
+Cheat17_O=[ZeldaOOT]Ocarina
+Cheat18="Have\Boomerang",8015E6E0 000E
+Cheat19="Have\Lens of Truth",8015E6E1 000F
+Cheat20="Have\Megaton Hammer",8015E6E3 0011
+Cheat21="Have\Deku Stick",8015E6D4 0000
+Cheat22="Have\Deku Nut",8015E6D5 0001
+Cheat23="Have\Bombs",8015E6D6 0002
+Cheat24="Have\Fairy Bow",8015E6D7 0003
+Cheat25="Have\Fairy Slingshot",8015E6DA 0006
+Cheat26="Have\Bombchu",8015E6DC 0009
+Cheat27="Have\Arrows\Fire Arrow",8015E6D8 0004
+Cheat28="Have\Arrows\Ice Arrow",8015E6DE 000C
+Cheat29="Have\Arrows\Light Arrow",8015E6E4 0012
+Cheat30="Have\Hookshot",8015E6DD 00??
+Cheat30_O=[ZeldaOOT]Hookshot
+Cheat31="Have\Magic Beans",8015E6E2 0010
+Cheat32="Have\Magic\Fairie's Wind",8015E6DF 000D
+Cheat33="Have\Magic\Nayru's Love",8015E6E5 0013
+Cheat34="Have\Magic\Din's Fire",8015E6D9 0005
+Cheat35="Bottles\Bottle 1 Modifier",8015E6E6 00??
+Cheat35_O=[ZeldaOOT]Bottle Mod
+Cheat36="Bottles\Bottle 2 Modifier",8015E6E7 00??
+Cheat36_O=[ZeldaOOT]Bottle Mod
+Cheat37="Bottles\Bottle 3 Modifier",8015E6E8 00??
+Cheat37_O=[ZeldaOOT]Bottle Mod
+Cheat38="Bottles\Bottle 4 Modifier",8015E6E9 00??
+Cheat38_O=[ZeldaOOT]Bottle Mod
+Cheat39="Trading\Adult Link Item",8015E6EA 00??
+Cheat39_O=[ZeldaOOT]AdultItem
+Cheat40="Trading\Young Link Item",8015E6EB 00??
+Cheat40_O=[ZeldaOOT]YoungItem
+Cheat41="Turn Giant's Knife Into Biggoron's Sword",8015E69E 0001
+Cheat42="Equipment Modifier 1",8015E702 00??
+Cheat42_N=[ZeldaOOT]Equipt1 Note
+Cheat42_O=[ZeldaOOT]Equipt1
+Cheat43="Equipment Modifier 2",8015E703 00??
+Cheat43_N=[ZeldaOOT]Equipt1 Note
+Cheat43_O=[ZeldaOOT]Equipt2
+Cheat44="Press L\To Levitate",D0166AF7 0020,81224610 40CB
+Cheat44_N=[ZeldaOOT]Levitate Note
+Cheat45="Press L\For infinite Hover Boots",D0166AF7 0020,81224E42 000D
+Cheat45_N=[ZeldaOOT]Hover Note
+Cheat46="Press L\For Instant Step Hoover Boots",D0166AF7 0020,81224610 40CB,D0166AF7 0000,81224E42 000D,8015E6D0 00??
+Cheat46_N=[ZeldaOOT]InstantStep Note
+Cheat46_O=[ZeldaOOT]InstantStep
+Cheat47="Warp Song Location\Minuet of Forest & Serenade of Water",8015F9F5 00??
+Cheat47_N=[ZeldaOOT]Warp Note
+Cheat47_O=[ZeldaOOT]WarpSong1
+Cheat48="Warp Song Location\Prelude of Light & Nocturne of Shadow",8015F9F5 00??
+Cheat48_N=[ZeldaOOT]Warp Note
+Cheat48_O=[ZeldaOOT]WarpSong2
+Cheat49="Warp Song Location\Bolero of Fire",8015F9F5 00??
+Cheat49_N=[ZeldaOOT]Warp Note
+Cheat49_O=[ZeldaOOT]WarpSong3
+Cheat50="Warp Song Location\Requiem of Spirit",8015F9F5 00??
+Cheat50_N=[ZeldaOOT]Warp Note
+Cheat50_O=[ZeldaOOT]WarpSong4
+Cheat51="Max\Double Defense Power",8015E72F 0014
+Cheat51_N=[ZeldaOOT]DDP Note
+Cheat52="Nayru's Love is Always",8115FA28 ????
+Cheat52_N=[ZeldaOOT]NayrusLove Note
+Cheat52_O=@Off and On 3
+Cheat53="Infinite\Timers\All Other Timers",8015FA31 0032
+Cheat53_N=[ZeldaOOT]Other Timers Note
+Cheat54="Epona\Max Carrots\Lon Lon Raunch",80236298 0005,80232D18 0005
+Cheat54_N=[ZeldaOOT]Carrots Note
+Cheat55="Infinite\Timers\Escape From Gannons Tower",8015FA35 00B4
+Cheat55_N=[ZeldaOOT]Gannons Timer Note
+Cheat56="Press R For Old Or Young Link",D0166AF7 0010,8015E667 00??
+Cheat56_N=To Activate this Cheat Hold The R Button when walking through a Doorway this will change you to the option on the other side, Disable this Cheat straight away after getting to the other side, in some places you might even get Access Violations. Just press ok untill you can carry on.
+Cheat56_O=$01 Link Young,$00 Link Old
+
+//----
+
+[824C5A80-43245C7E-C:45]
+Name=Super Mario 64 - Sonic Edition (v4.1) (U)
+Cheat0="Press GS For 255 Coins",891DB480 00FF
+Cheat0_N=[SuperSonic]Coins Note
+Cheat1="Have\Level Select",A01CD22C 00??
+Cheat1_O=@Off and On 1
+Cheat2="Monsters Don't Hurt Sonic",A01DB3F7 0001
+Cheat3="Infinite\Lives",801DB485 0064
+Cheat4="Infinite\Energy & Breath",801DB494 0008
+Cheat5="Have\Debug Mode",A01CD238 00??
+Cheat5_O=@Off and On 1
+Cheat6="Sonic's Modes Options",801DB3D7 00??
+Cheat6_N=[SuperSonic]Modes Note
+Cheat6_O=[SuperSonic]Sonics Modes
+Cheat7="Press L To Levitate",D01DB201 0020,811DB41C 4220,D01DB41D 0020,811DB3DC 0300,D01DB41D 0020,811DB3DE 0880
+Cheat7_N=[SuperSonic]Levitate Note
+Cheat8="[Slot A Codes]\Have All\120 Stars",800A1623 0001,800A160B 00C7,50001101 0000,800A160C 00FF
+Cheat8_N=[SuperSonic]Slot Note
+Cheat9="[Slot A Codes]\Have All\Key doors unlocked (and mote empty)",800A160A 007E
+Cheat10="[Slot A Codes]\Have All\Max 100 Coin Records For All Levels",50000F01 0000,800A1625 0064
+Cheat11="[Slot B Codes]\Have All\120 Stars",800A1693 0001,800A167B 00C7,50001101 0000,800A167C 00FF
+Cheat11_N=[SuperSonic]Slot Note
+Cheat12="[Slot B Codes]\Have All\Key doors unlocked (and mote empty)",800A167A 007E
+Cheat13="[Slot B Codes]\Have All\Max 100 Coin Records For All Levels",50000F01 0000,800A1695 0064
+Cheat14="[Slot C Codes]\Have All\120 Stars",800A1703 0001,800A16EB 00C7,50001101 0000,800A16EC 00FF
+Cheat14_N=[SuperSonic]Slot Note
+Cheat15="[Slot C Codes]\Have All\Key doors unlocked (and mote empty)",800A16EA 007E
+Cheat16="[Slot C Codes]\Have All\Max 100 Coin Records For All Levels",50000F01 0000,800A1705 0064
+Cheat17="[Slot D Codes]\Have All\120 Stars",800A1773 0001,800A175B 00C7,50001101 0000,800A175C 00FF
+Cheat17_N=[SuperSonic]Slot Note
+Cheat18="[Slot D Codes]\Have All\Key doors unlocked (and mote empty)",800A175A 007E
+Cheat19="[Slot D Codes]\Have All\Max 100 Coin Records For All Levels",50000F01 0000,800A1775 0064
+Cheat20="Level Select",D01DB201 0020,801CDA99 00??
+Cheat20_N=[SuperSonic]Level Note
+Cheat20_O=[SuperSonic]Level Select
+
+//----
+
+[FF95988A-548A491D-C:45]
+Name=Super Mario 64 - Kirby Edition (v1.1) (U)
+Cheat0="Press GS For 255 Coins",8933B218 00FF
+Cheat0_N=[SuperMario]Coins Note
+Cheat1="Have\Level Select",A032D58C 00??
+Cheat11="[Slot B Codes]\Have All\120 Stars",80207793 0001,8020777B 00C7,50001101 0000,8020777C 00FF
+Cheat1_O=@Off and On 1
+Cheat2="Don't Hurt Mario\Monsters",A033B197 0001
+Cheat3="Infinite\Lives",8033B21D 0064
+Cheat4="Infinite\Energy & Breath",8033B21E 0008
+Cheat5="Have\Debug Mode",A032D598 00??
+Cheat5_O=@Off and On 1
+Cheat6="Mario's Cap On Options",8033B177 00??
+Cheat6_N=[SuperMario]Cap Note
+Cheat6_O=[SuperMario]Marios Cap
+Cheat7="Press L To Levitate",D033AFA1 0020,8133B1BC 4220,D033B1BD 0020,8133B17C 0300,D033B1BD 0020,8133B17E 0880
+Cheat7_N=[SuperMario]Levitate Note
+Cheat8="[Slot A Codes]\Have All\120 Stars",80207723 0001,8020770B 00C7,50001101 0000,8020770C 00FF
+Cheat8_N=[SuperMario]Slot Note
+Cheat9="[Slot A Codes]\Have All\Key doors unlocked (and mote empty)",8020770A 007E
+Cheat10="[Slot A Codes]\Have All\Max 100 Coin Records For All Levels",50000F01 0000,80207725 0064
+Cheat11_N=[SuperMario]Slot Note
+Cheat12="[Slot B Codes]\Have All\Key doors unlocked (and mote empty)",8020777A 007E
+Cheat13="[Slot B Codes]\Have All\Max 100 Coin Records For All Levels",50000F01 0000,80207795 0064
+Cheat14="[Slot C Codes]\Have All\120 Stars",80207803 0001,802077EB 00C7,50001101 0000,802077EC 00FF
+Cheat14_N=[SuperMario]Slot Note
+Cheat15="[Slot C Codes]\Have All\Key doors unlocked (and mote empty)",802077EA 007E
+Cheat16="[Slot C Codes]\Have All\Max 100 Coin Records For All Levels",50000F01 0000,80207805 0064
+Cheat17="[Slot D Codes]\Have All\120 Stars",80207873 0001,8020785B 00C7,50001101 0000,8020785C 00FF
+Cheat17_N=[SuperMario]Slot Note
+Cheat18="[Slot D Codes]\Have All\Key doors unlocked (and mote empty)",8020785A 007E
+Cheat19="[Slot D Codes]\Have All\Max 100 Coin Records For All Levels",50000F01 0000,80207875 0064
+Cheat20="Level Select",D033AFA1 0020,A032DDF9 00??
+Cheat20_N=[SuperMario]Level Note
+Cheat20_O=[SuperMario]Level Select
+ 
+//----
+
+[BB315072-27EBD8AA-C:45]
+Name=SUPER ICE 64 (U)
+Cheat0="Press GS For 255 Coins",8933B218 00FF
+Cheat0_N=[SuperIce]Coins Note
+Cheat1="Have\Level Select",A032D58C 00??
+Cheat1_O=@Off and On 1
+Cheat2="Monsters Don't Hurt Icepir8",A033B197 0001
+Cheat3="Infinite\Lives",8033B21D 0064
+Cheat4="Infinite\Energy & Breath",8033B21E 0008
+Cheat5="Have\Debug Mode",A032D598 00??
+Cheat5_O=@Off and On 1
+Cheat6="Icepir8's Cap On Options",8033B177 00??
+Cheat6_N=[SuperIce]Cap Note
+Cheat6_O=[SuperIce]Marios Cap
+Cheat7="Press L To Levitate",D033AFA1 0020,8133B1BC 4220,D033B1BD 0020,8133B17C 0300,D033B1BD 0020,8133B17E 0880
+Cheat7_N=[SuperIce]Levitate Note
+Cheat8="[Slot A Codes]\Have All\120 Stars",80207723 0001,8020770B 00C7,50001101 0000,8020770C 00FF
+Cheat8_N=[SuperIce]Slot Note
+Cheat9="[Slot A Codes]\Have All\Key doors unlocked (and mote empty)",8020770A 007E
+Cheat10="[Slot A Codes]\Have All\Max 100 Coin Records For All Levels",50000F01 0000,80207725 0064
+Cheat11="[Slot B Codes]\Have All\120 Stars",80207793 0001,8020777B 00C7,50001101 0000,8020777C 00FF
+Cheat11_N=Select a Level. Jump Into a Painting. Press A at the Stars Collected Screen. As Stats are fading hold L, and you'll jump to the level you've selected.
+Cheat12="[Slot B Codes]\Have All\Key doors unlocked (and mote empty)",8020777A 007E
+Cheat13="[Slot B Codes]\Have All\Max 100 Coin Records For All Levels",50000F01 0000,80207795 0064
+Cheat14="[Slot C Codes]\Have All\120 Stars",80207803 0001,802077EB 00C7,50001101 0000,802077EC 00FF
+Cheat14_N=[SuperIce]Slot Note
+Cheat15="[Slot C Codes]\Have All\Key doors unlocked (and mote empty)",802077EA 007E
+Cheat16="[Slot C Codes]\Have All\Max 100 Coin Records For All Levels",50000F01 0000,80207805 0064
+Cheat17="[Slot D Codes]\Have All\120 Stars",80207873 0001,8020785B 00C7,50001101 0000,8020785C 00FF
+Cheat17_N=[SuperIce]Slot Note
+Cheat18="[Slot D Codes]\Have All\Key doors unlocked (and mote empty)",8020785A 007E
+Cheat19="[Slot D Codes]\Have All\Max 100 Coin Records For All Levels",50000F01 0000,80207875 0064
+Cheat20="Level Select",D033AFA1 0020,8132DDF8 00??
+Cheat20_N=[SuperIce]Level Note
+Cheat20_O=Level Select
+Level Select=$01 Intro,$04 Big Amimers Haunt,$05 Cool Cool Mountain,$06 Mushroom Castle,$07 Hazy Maze Cave,$08 Shifting Sand Land,$09 Da-Bomb Battlefield,$0A Snowmans Land,$0B Wet Dry World,$0C Jolly Jabo Bay,$0D Tiny Huge World,$0E Tick tock Clock,$0F Rainbow Ride,$10 Mushroom Castle Field,$11 Boozer In The Dark World,$12 Vanish Cap Under The Moat,$13 Boozer In The Fire Sea,$14 The Secret Aquarium,$15 Boozer In The Sky,$16 Lethal Lava Land,$17 Dire Dire Docks,$18 Slougis Fortress,$19 The End,$1A Castle Courtyard,$1B The Princess Secret Slide,$1C Cavern Of The Metal Cap,$1D Tower Of The Wing Cap,$1E Boozer In The Dark World Boss,$1F Wing Mario Over The Rainbow,$21 Boozer In The Fire Sea Boss,$22 Boozer In The Sky Boss,$24 Tall Tall Mountain
+
+//----
+
+[AB8232F1-701C5F44-C:45]
+Name=The Legend of Zelda - Ocarina of Time (U) (DD)
+Cheat0="Infinite\Rupees",8111B99C 0001
+Cheat0_N=[ZeldaOOT]Rupees Note
+Cheat1="Use Any Item In Any House",8111B7F2 0000,8111B7F4 0000
+Cheat1_N=[ZeldaOOT]No use
+Cheat2="Have\All Equipment",8111A66C 7777
+Cheat2_N=[ZeldaOOT]Have All
+Cheat3="Have\All Quest Status Items",8111A674 30FF,8111A676 FFFF
+Cheat3_N=[ZeldaOOT]Have All
+Cheat4="Max\Heart Containers",8111A5FE 0140
+Cheat5="Max\Gold Skulltulas Killed",8011A6A1 0064
+Cheat6="Time of Day Modifier",8111A5DC ????
+Cheat6_O=[ZeldaOOT]Day Mod
+Cheat7="Infinite\Energy",8111A600 0140
+Cheat8="Infinite\Magic",D011A609 0008,8011A60A 0001,8011A60C 0001,8011A603 0060
+Cheat9="Tunic & Boot Options",8011A640 00??
+Cheat9_N=[ZeldaOOT]TunicBoot Note
+Cheat9_O=[ZeldaOOT]TunicBoot
+Cheat10="Infinite\Deku Sticks",8011A65C 0009
+Cheat11="Infinite\Deku Nuts",8011A65D 0009
+Cheat12="Infinite\Bombs",8011A65E 0009
+Cheat13="Infinite\Arrows",8011A65F 0009
+Cheat14="Infinite\Deku Seeds",8011A662 0009
+Cheat15="Infinite\Bombchu's",8011A664 0009
+Cheat16="Infinite\Magic Beans",8011A66A 0009
+Cheat17="Infinite\Big Key,Small Keys,Compass,& Map",8011A678 0007,8011A679 0007,8011A67A 0007,8011A67B 0007,8011A67C 0007,8011A67D 0007,8011A67E 0007,8011A67F 0007,8011A680 0007,8011A681 0007,8011A682 0007,8011A68F 0009,8011A690 0009,8011A691 0009,8011A692 0009,8011A693 0009,8011A699 0009,8011A69C 0009,8011A697 0009
+Cheat18="Have\Ocarina",8011A64B 00??
+Cheat18_O=[ZeldaOOT]Ocarina
+Cheat19="Have\Boomerang",8011A650 000E
+Cheat20="Have\Lens of Truth",8011A651 000F
+Cheat21="Have\Megaton Hammer",8011A653 0011
+Cheat22="Have\Deku Stick",8011A644 0000
+Cheat23="Have\Deku Nut",8011A645 0001
+Cheat24="Have\Bombs",8011A646 0002
+Cheat25="Have\Fairy Bow",8011A647 0003
+Cheat26="Have\Fairy Slingshot",8011A64A 0006
+Cheat27="Have\Bombchu",8011A64C 0009
+Cheat28="Have\Arrows\Fire Arrow",8011A648 0004
+Cheat29="Have\Arrows\Ice Arrow",8011A64E 000C
+Cheat30="Have\Arrows\Light Arrow",8011A654 0012
+Cheat31="Have\Hookshot",8011A64D 00??
+Cheat31_O=[ZeldaOOT]Hookshot
+Cheat32="Have\Magic Beans",8011A652 0010
+Cheat33="Have\Magic\Fairie's Wind",8011A64F 000D
+Cheat34="Have\Magic\Nayru's Love",8011A655 0013
+Cheat35="Have\Magic\Din's Fire",8011A649 0005
+Cheat36="Bottles\Bottle 1 Modifier",8011A656 00??
+Cheat36_O=[ZeldaOOT]Bottle Mod
+Cheat37="Bottles\Bottle 2 Modifier",8011A657 00??
+Cheat37_O=[ZeldaOOT]Bottle Mod
+Cheat38="Bottles\Bottle 3 Modifier",8011A658 00??
+Cheat38_O=[ZeldaOOT]Bottle Mod
+Cheat39="Bottles\Bottle 4 Modifier",8011A659 00??
+Cheat39_O=[ZeldaOOT]Bottle Mod
+Cheat40="Trading\Adult Link Item",8011A65A 00??
+Cheat40_O=[ZeldaOOT]AdultItem
+Cheat41="Trading\Young Link Item",8011A65B 00??
+Cheat41_O=[ZeldaOOT]YoungItem
+Cheat42="Turn Giant's Knife Into Biggoron's Sword",8011A60E 0001
+Cheat43="Equipment Modifier 1",8011A672 00??
+Cheat43_N=[ZeldaOOT]Equipt1 Note
+Cheat43_O=[ZeldaOOT]Equipt1
+Cheat44="Equipment Modifier 2",8011A673 00??
+Cheat44_N=[ZeldaOOT]Equipt1 Note
+Cheat44_O=[ZeldaOOT]Equipt2
+Cheat45="Press L\To Levitate",D01E8E65 0020,811FB440 40CB
+Cheat45_N=[ZeldaOOT]Levitate Note
+Cheat46="Press L\For infinite Hover Boots",D01E8E65 0020,811FBC62 000D
+Cheat46_N=[ZeldaOOT]Hover Note
+Cheat47="Press L\For Instant Step Hoover Boots",D01E8E65 0020,811FB440 40CB,D01E8E65 0000,811FBC62 000D,8011A640 00??
+Cheat47_N=[ZeldaOOT]InstantStep Note
+Cheat47_O=[ZeldaOOT]InstantStep
+Cheat48="Beta\Play Beta Quest Worlds",D01E8E65 0000,8011B9E3 00??
+Cheat48_N=[ZeldaOOT]BetaQuest Note
+Cheat48_O=[ZeldaOOT]BetaQuest
+Cheat49="Warp Song Location\Minuet of Forest & Serenade of Water",8011B965 00??
+Cheat49_N=[ZeldaOOT]Warp Note
+Cheat49_O=[ZeldaOOT]WarpSong1
+Cheat50="Warp Song Location\Prelude of Light & Nocturne of Shadow",8011B965 00??
+Cheat50_N=[ZeldaOOT]Warp Note
+Cheat50_O=[ZeldaOOT]WarpSong2
+Cheat51="Warp Song Location\Bolero of Fire",8011B965 00??
+Cheat51_N=[ZeldaOOT]Warp Note
+Cheat51_O=[ZeldaOOT]WarpSong3
+Cheat52="Warp Song Location\Requiem of Spirit",8011B965 00??
+Cheat52_N=[ZeldaOOT]Warp Note
+Cheat52_O=[ZeldaOOT]WarpSong4
+Cheat53="Max\Double Defense Power",8011A69F 0014
+Cheat53_N=[ZeldaOOT]DDP Note
+Cheat54="Nayru's Love is Always",8111B998 ????
+Cheat54_N=[ZeldaOOT]NayrusLove Note
+Cheat54_O=@Off and On 3
+Cheat55="Infinite\Timers\All Other Timers",8011B9A1 0032
+Cheat55_N=[ZeldaOOT]Other Timers Note
+Cheat56="Epona\Max Carrots\Lon Lon Raunch",8020F638 0005,8020F038 0005
+Cheat56_N=[ZeldaOOT]Carrots Note
+Cheat57="Infinite\Timers\Escape From Gannons Tower",8011B9A5 00B4
+Cheat57_N=[ZeldaOOT]Gannons Timer Note
+Cheat58="Press R For Old Or Young Link",D01E8E65 0010,8011A5D7 00??
+Cheat58_N=To Activate this Cheat Hold The R Button when walking through a Doorway this will change you to the option on the other side, Disable this Cheat straight away after getting to the other side, in some places you might even get Access Violations. Just press ok untill you can carry on.
+Cheat58_O=$01 Link Young,$00 Link Old
+
+//----
+
+[8C47CE8B-06019FEF-C:4A]
+Name=Kyojin no Doshin - Kaihou Sensen Chibikko Chikko Daishuugou (J) (64DD)
+Cheat0="Heart Level Always Low",801F2B13 0001
+
+//----
+
+[1001F10C-3D51D8C1-C:45]
+Name=Mia Hamm Soccer 64 (U) (M2)
+Cheat0="Score\Away Team Scores",81063468 00??,810690FA 00??
+Cheat0_O=$00 0 Goals,$63 99 Goals
+Cheat1="Score\Home Team Scores",81063454 00??,810690F6 00?? 
+Cheat1_O=$00 0 Goals,$63 99 Goals
+Cheat2="Freeze timer at 00:00 (Infinite Time)",81063BE6 0000,81063BF2 0000
+
+//----
+
+[E36166C2-8613A2E5-C:58]
+Name=Michael Owens WLS 2000 (E)
+Cheat0="Score\Away Team Scores",8105FFA8 00??,81065C3A 00??
+Cheat0_O=$00 0 Goals,$63 99 Goals
+Cheat1="Score\Home Team Scores",8105FF94 00??,81065C36 00??
+Cheat1_O=$00 0 Goals,$63 99 Goals
+Cheat2="Freeze timer at 00:00 (Infinite Time)",81060A16 0000,81060A22 0000,810D9EF6 0000,810D9F02 0000
+
+//----
+
+[9ABC592A-2AA5DEE2-C:58]
+Name=Michael Owens WLS 2000 (E) [f1] (NTSC)
+Cheat0="Score\Away Team Scores",8105FFA8 00??,81065C3A 00??
+Cheat0_O=$00 0 Goals,$63 99 Goals
+Cheat1="Score\Home Team Scores",8105FF94 00??,81065C36 00??
+Cheat1_O=$00 0 Goals,$63 99 Goals
+Cheat2="Freeze timer at 00:00 (Infinite Time)",81060A16 0000,81060A22 0000,810D9EF6 0000,810D9F02 0000
+
+//----
+
+[D9042FBB-FCFF997C-C:46]
+Name=Telefoot Soccer 2000 (F)
+Cheat0="Score\Away Team Scores",8105FFA8 00??,81065C3A 00??
+Cheat0_O=$00 0 Goals,$63 99 Goals
+Cheat1="Score\Home Team Scores",8105FF94 00??,81065C36 00??
+Cheat1_O=$00 0 Goals,$63 99 Goals
+Cheat2="Freeze timer at 00:00 (Infinite Time)",81060A16 0000,81060A22 0000,810D9EF6 0000,810D9F02 0000
+
+//----
+
+[6440D7CE-F6597A03-C:46]
+Name=Telefoot Soccer 2000 (F) [f1] (NTSC)
+Cheat0="Score\Away Team Scores",8105FFA8 00??,81065C3A 00??
+Cheat0_O=$00 0 Goals,$63 99 Goals
+Cheat1="Score\Home Team Scores",8105FF94 00??,81065C36 00??
+Cheat1_O=$00 0 Goals,$63 99 Goals
+Cheat2="Freeze timer at 00:00 (Infinite Time)",81060A16 0000,81060A22 0000,810D9EF6 0000,810D9F02 0000
+
+//----
+
+[658F8F37-1813D28D-C:44]
+Name=RTL World League Soccer 2000 (G)
+Cheat0="Score\Away Team Scores",8105FFA8 00??,81065C3A 00??
+Cheat0_O=$00 0 Goals,$63 99 Goals
+Cheat1="Score\Home Team Scores",8105FF94 00??,81065C36 00??
+Cheat1_O=$00 0 Goals,$63 99 Goals
+Cheat2="Freeze timer at 00:00 (Infinite Time)",81060A16 0000,81060A22 0000,810D9EF6 0000,810D9F02 0000
+
+//----
+
+[4D0224A5-1BEB5794-C:4A]
+Name=V-Rally Edition 99 (J)
+Cheat0="Access\All Cars",80140E27 003F
+Cheat1="Access\All Arcade Tracks",80140E22 0070
+Cheat2="Access\Championship,World,Expert",80140E30 0001
+Cheat3="Access\All Expert Times",80140E24 0031
+Cheat5="Unlock Cheat Menu",D0140E24 0000,80140E24 0020
+Cheat5_N=Press Z Button and L Button togther to enable & disable..
+
+//----
+
+[D3D806FC-B43AA2A8-C:50]
+Name=Monster Truck Madness 64 (E) (M5)
+Cheat0="Unlock all Circuit Tracks",50000920 0000,801286EB 0001
+Cheat1="Unlock all Exhibition Tracks",50000320 0000,801287AF 0001
+Cheat2="Infinite Homing Missiles (On Pickup)",801959E4 0009
+Cheat3="Always have Weapon Select (On Pickup)",801959EB 00??
+Cheat3_O=$00 Nitro,$01 Hover Weapon,$02 Lightning,$03 Blimp Missile,$04 Spring,$05 Diamond,$06 Homing Missiles,$07 Oil Slick
+Cheat4="Laps to race",D11958BE 00FF,801958BF 00??
+Cheat4_O=$00 2 Laps,$01 1 Lap,$02 0 Laps (Instant Win)
+
+//----
+
+[AE5E467C-D7194A71-C:50]
+Name=Monster Truck Madness 64 (E) (M5) [f1] (NTSC)
+Cheat0="Unlock all Circuit Tracks",50000920 0000,801286EB 0001
+Cheat1="Unlock all Exhibition Tracks",50000320 0000,801287AF 0001
+Cheat2="Infinite Homing Missiles (On Pickup)",801959E4 0009
+Cheat3="Always have Weapon Select (On Pickup)",801959EB 00??
+Cheat3_O=$00 Nitro,$01 Hover Weapon,$02 Lightning,$03 Blimp Missile,$04 Spring,$05 Diamond,$06 Homing Missiles,$07 Oil Slick
+Cheat4="Laps to race",D11958BE 00FF,801958BF 00??
+Cheat4_O=$00 2 Laps,$01 1 Lap,$02 0 Laps (Instant Win)
+
+//----
+
+[EE08C602-6BC2D5A6-C:50]
+Name=PGA European Tour (E) (M5)
+Cheat0="Hole In One (Player 1)",50001202 0000,801005C3 0000
+Cheat0_N=Player 1 is always on 1st Shot for all holes and all courses
+Cheat1="Weather Select",802A4D1D 00??
+Cheat1_O=$00 Sunny,$01 Cloudy,$02 Overcast,$03 Wet,$04 Misty
+
+//----
+
+[5243B915-BE7743B1-C:50]
+Name=PGA European Tour (E) (M5) [f1] (NTSC)
+Cheat0="Hole In One (Player 1)",50001202 0000,801005C3 0000
+Cheat0_N=Player 1 is always on 1st Shot for all holes and all courses 
+Cheat1="Weather Select",802A4D1D 00??
+Cheat1_O=$00 Sunny,$01 Cloudy,$02 Overcast,$03 Wet,$04 Misty
+
+//----
+
+[C908CFAD-42EE5547-C:50]
+Name=PGA European Tour Golf (E) (Prototype)
+Cheat0="Hole In One (Player 1)",50001202 0000,800F83F3 0000
+Cheat0_N=Player 1 is always on 1st Shot for all holes and all courses 
+Cheat1="Weather Select",802A13DD 00??
+Cheat1_O=$00 Sunny,$01 Cloudy,$02 Overcast,$03 Wet,$04 Misty
+
+//----
+
+[39F60C11-AB2EBA7D-C:50]
+Name=Power Rangers - Lightspeed Rescue (E)
+Cheat0="Unlock All\Characters",50000C01 0000,800624ED 0001
+Cheat1="Infinite\Health",81064DB0 42C8
+Cheat1_N=For Overhead & Driving Levels
+Cheat2="Unlock All\Levels",50000301 0000,800624C8 0001,50000901 0000,800624CC 0001,50000801 0000,800624D6 0001,50000A01 0000,800624DF 0001
+
+//----
+
+[8CD06379-62319493-C:50]
+Name=Power Rangers - Lightspeed Rescue (E) [f1] (NTSC)
+Cheat0="Unlock All\Characters",50000C01 0000,800624ED 0001
+Cheat1="Infinite\Health",81064DB0 42C8
+Cheat1_N=For Overhead & Driving Levels
+Cheat2="Unlock All\Levels",50000301 0000,800624C8 0001,50000901 0000,800624CC 0001,50000801 0000,800624D6 0001,50000A01 0000,800624DF 0001
+
+//----
+
+[E9675D3A-84A5F92E-C:00]
+Name=Kumi-Daiko Beatoff 64
+Cheat0="Infinite 9 Lives",800F4FDB 0005
+Cheat1="Press F9 to Start with 65535 Score",890F4FE2 FFFF
+
+//----
+
+[28768D6D-B379976C-C:45]
+Name=Monaco Grand Prix (U)
+Cheat0="Laps to Race",801C5913 00??,D01C5927 0000,801C5927 00??
+Cheat0_N=1 Lap to go will result in you coming in 1st.
+Cheat0_O=$03:00 3 Laps to Race,$03:02 1 Lap to Race of 3,$05:00 5 Laps to Race,$05:04 1 Lap to Race of 5,$09:00 9 Laps to Race,$09:08 1 Lap to Race of 9
+Cheat1="Car Position view is always from behind",801C5487 0020
+Cheat1_N=This will lock the view in that position until disabled. The upside to this is you cannot hit the C-Right by mistake and change the view. If at the start of the race,  the car seems the wqrong way. Just press the A Button, followed by C-Right.
+Cheat2="Damage:",D00B0094 0000,800B0094 00??,D00B0094 0001,800B0094 00??,D00B0094 0002,800B0094 00??
+Cheat2_N=From Immune to any Damage to very realistic.
+Cheat2_O=$00 No Damage,$01 Average,$02 Realistic
+Cheat3="Weather:",D00B0098 0000,800B0098 00??,D00B0098 0001,D00B0098 0002,800B0098 00??,800B0098 00??,D00B0098 0003,800B0098 00??
+Cheat3_O=$00 Random,$01 Always Sunny,$03 Always Rainy
+Cheat4="Start with  254L Fuel",800B04B3 00FF
+
+//----
+
+[28705FA5-B509690E-C:50]
+Name=Monaco Grand Prix - Racing Simulation 2 (E) (M4)
+Cheat0="Laps to Race",801C5913 00??,D01C5927 0000,801C5927 00??
+Cheat0_N=1 Lap to go will result in you coming in 1st.
+Cheat0_O=$03:00 3 Laps to Race,$03:02 1 Lap to Race of 3,$05:00 5 Laps to Race,$05:04 1 Lap to Race of 5,$09:00 9 Laps to Race,$09:08 1 Lap to Race of 9
+Cheat1="Car Position view is always from behind",801C5487 0020
+Cheat1_N=This will lock the view in that position until disabled. The upside to this is you cannot hit the C-Right by mistake and change the view. If at the start of the race,  the car seems the wqrong way. Just press the A Button, followed by C-Right.
+Cheat2="Damage:",D00B0094 0000,800B0094 00??,D00B0094 0001,800B0094 00??,D00B0094 0002,800B0094 00??
+Cheat2_N=From Immune to any Damage to very realistic.
+Cheat2_O=$00 No Damage,$01 Average,$02 Realistic
+Cheat3="Weather:",D00B0098 0000,800B0098 00??,D00B0098 0001,800B0098 00??,D00B0098 0002,800B0098 00??,D00B0098 0003,800B0098 00??
+Cheat3_O=$00 Random,$01 Always Sunny,$03 Always Rainy
+Cheat4="Start with  254L Fuel",800B04B3 00FF
+
+//----
+
+[1EEEA2FF-3AF0FBEA-C:43]
+Name=Paper Mario (CHN) [f1]
+Cheat0="Infinite\Max Coins",8110D67C 03E7
+Cheat1="Infinite\Max HP + FP",50000601 0000,8010D671 0063
+Cheat1_N=[PaperMario]HPFP Note
+Cheat2="Have\All Star Spirits",8010D8FE 0007
+Cheat2_N=[PaperMario]AllStar Note
+Cheat3="Max\Level",8010D679 00??
+Cheat3_O=[PaperMario]Level
+Cheat4="Max\Star Points",8010D680 0063
+Cheat4_N=[PaperMario]StarPoints Note
+Cheat5="Max\Badge Points",8010D678 00??
+Cheat5_O=[PaperMario]Badge
+Cheat6="Max\Star Pieces",8010D67F 00A0,8010D99D 00A0
+Cheat7="Have\All Members in your party",50000C08 0000,8010D68C 0001
+Cheat8="Upgrade Member\Goomario",8010D68D 00??
+Cheat8_O=[PaperMario]Level 1-2
+Cheat9="Upgrade Member\Kooper",8010D695 00??
+Cheat9_O=[PaperMario]Level 1-2
+Cheat10="Upgrade Member\Bombette",8010D69D 00??
+Cheat10_O=[PaperMario]Level 1-2
+Cheat11="Upgrade Member\Parrakary",8010D6A5 00??
+Cheat11_O=[PaperMario]Level 1-2
+Cheat12="Upgrade Member\Watt",8010D6B5 00??
+Cheat12_O=[PaperMario]Level 1-2
+Cheat13="Upgrade Member\Sushie",8010D6BD 00??
+Cheat13_O=[PaperMario]Level 1-2
+Cheat14="Upgrade Member\Lakilester",8010D6C5 00??
+Cheat14_O=[PaperMario]Level 1-2
+Cheat15="Upgrade Member\Bow",8010D6CD 00??
+Cheat15_O=[PaperMario]Level 1-2
+Cheat16="Have\Hammer",8010D671 00??
+Cheat16_O=[PaperMario]Level 1-3
+Cheat17="Have\Jump Boots",8010D670 00??
+Cheat17_O=[PaperMario]Level 1-3
+Cheat18="No Star Points (0)",8010D680 0000
+Cheat18_N=[PaperMario]NoStar Note
+Cheat19="Have\Attack item",8110D824 ????
+Cheat19_N=[PaperMario]Only Use
+Cheat19_O=[PaperMario]Attack
+Cheat20="Have\Defense item",8110D824 ????
+Cheat20_N=[PaperMario]Only Use
+Cheat20_O=[PaperMario]Defense
+Cheat21="Have\Enemy Stats item",8110D824 ????
+Cheat21_N=[PaperMario]Only Use
+Cheat21_O=[PaperMario]Enemy Stats
+Cheat22="Have\Recovery Items Option 1",8110D824 ????
+Cheat22_N=[PaperMario]Only Use
+Cheat22_O=[PaperMario]Recovery
+Cheat23="Have\Key Items Options 1",8110D6E4 ????
+Cheat23_N=[PaperMario]Only Use
+Cheat23_O=[PaperMario]Key
+Cheat24="Infinite\Star Power",8110D900 0707
+//Cheat25="WideScreen GFX Fix",8102CC74 0802,8102CC76 5AA8,8102CC78 3C08,8102CC7A 3FAA,81096AA0 4488,81096AA2 0000,81096AA4 8E06,81096AA6 0018,81096AA8 4600,81096AAA 1082,81096AAC 0800,81096AAE B31F,81096AB0 4407,81096AB2 1000
+
+//----
+
+[E81D3F66-B4190056-C:45]
+Name=TOTSUGEKI 64 (U) (SM64 Hack)
+Cap Note=Here you can Choose Options for May with Her Cap on
+Cheat0="Press GS For 255 Coins",891D1F34 00FF
+Cheat0_N=Coins Note
+Cheat1="Monsters Don't Hurt May",A01D1EB3 0001
+Cheat2="Infinite Energy & Breath",801D1F3A 0008
+Cheat3="May's Cap Options",801D1E93 00??
+Cheat3_N=Cap Note
+Cheat3_O=Mays Cap
+Cheat4="[Slot A Codes]\Have All\120 Stars",8004CDC3 0001,8004CDAB 00C7,50001101 0000,8004CDAC 00FF
+Cheat4_N=Slot Note
+Cheat5="[Slot A Codes]\Have All\Key doors unlocked (and mote empty)",8004CDAA 007E
+Cheat6="[Slot A Codes]\Have All\Max 100 Coin Records For All Levels",50000F01 0000,8004CDC5 0064
+Cheat7="[Slot B Codes]\Have All\120 Stars",8004CE33 0001,8004CE1B 00C7,50001101 0000,8004CE1C 00FF
+Cheat7_N=Slot Note
+Cheat8="[Slot B Codes]\Have All\Key doors unlocked (and mote empty)",8004CE1A 007E
+Cheat9="[Slot B Codes]\Have All\Max 100 Coin Records For All Levels",50000F01 0000,8004CE35 0064
+Cheat10="[Slot C Codes]\Have All\120 Stars",8004CEA3 0001,8004CE8B 00C7,50001101 0000,8004CE8C 00FF
+Cheat10_N=Slot Note
+Cheat11="[Slot C Codes]\Have All\Key doors unlocked (and mote empty)",8004CE8A 007E
+Cheat12="[Slot C Codes]\Have All\Max 100 Coin Records For All Levels",50000F01 0000,8004CEA5 0064
+Cheat13="[Slot D Codes]\Have All\120 Stars",8004CF13 0001,8004CEFB 00C7,50001101 0000,8004CEFC 00FF
+Cheat13_N=Slot Note
+Cheat14="[Slot D Codes]\Have All\Key doors unlocked (and mote empty)",8004CEFA 007E
+Cheat15="[Slot D Codes]\Have All\Max 100 Coin Records For All Levels",50000F01 0000,8004CF85 0064
+Cheat16="Level Select",D01D0B51 0010,A019F86D 00??
+Cheat16_N=[Level Note
+Cheat16_O=Level Select
+Cheat17="Press L To Levitate",D01D0B51 0020,811D1ED8 4220,D01D0B51 0020,811D1E98 0300,D01D0B51 0020,811D1E9A 0880
+Cheat17_N=[SuperMario]Levitate Note
+Coins Note=Press GS Once on a Level To Get that amount of Coins
+Level Note=Select a Level. Jump Into a Painting. Press A at the Stars Collected Screen. As Stats are fading hold R, and you'll jump to the level you've selected.
+Level Select=$01 Intro,$04 Big Boo's Haunt,$05 Cool Cool Mountain,$06 Mushroom Castle,$07 Hazy Maze Cave,$08 Shifting Sand Land,$09 Bob omb Battlefield,$0A Snowman's Land,$0B Wet Dry World,$0C Jolly Roger Bay,$0D Tiny Huge World,$0E Tick tock Clock,$0F Rainbow Ride,$10 Mushroom Castle Field,$11 Bowser In The Dark World,$12 Vanish Cap Under The Moat,$13 Bowser In The Fire Sea,$14 The Secret Aquarium,$15 Bowser In The Sky,$16 Lethal Lava Land,$17 Dire Dire Docks,$18 Whomp's Fortress,$19 The End,$1A Castle Courtyard,$1B The Princess's Secret Slide,$1C Cavern Of The Metal Cap,$1D Tower Of The Wing Cap,$1E Bowser In The Dark World Boss,$1F Wing Mario Over The Rainbow,$21 Bowser In The Fire Sea Boss,$22 Bowser In The Sky Boss,$24 Tall Tall Mountain
+Levitate Note=Press L to levitate & Let go to land
+Mays Cap=$10 Normal,$12 Invisible May,$15 Metal May,$16 Invisible Metal May,$19 Flying May
+Slot Note=Once the Code is activated, you will see it as a new option in the chosen Save Slot.This will have the Cannon open already to get upto Yoshi on the Roof. but make sure to save the game after collecting Red Coins and turn this code off before saving. you will now have it all saved to mempak
+
+//----
+
+[52BDEE64-E3A1D4C4-C:45]
+Name=Marios Mafia Misadventure (U)
+Cap Note=Here you can Choose Options for Mario with his Cap on
+Cheat0="Press GS For 255 Coins",891FE878 00FF
+Cheat0_N=Coins Note
+Cheat1="Press L To Levitate",D01FCAD5 0020,811FE81C 4220,D01FCAD5 0020,811FE7DC 0300,D01FCAD5 0020,811FE7DE 0880
+Cheat1_N=Levitate Note
+Cheat2="Infinite Energy & Breath",801FE87E 0008
+Cheat3="Marios Cap Options",801FE7D7 00??
+Cheat3_N=Cap Note
+Cheat3_O=Marios Cap
+Cheat4="[Slot A Codes]\Have All\120 Stars",8004CDC3 0001,8004CDAB 00C7,50001101 0000,8004CDAC 00FF
+Cheat4_N=Slot Note
+Cheat5="[Slot A Codes]\Have All\Key doors unlocked (and mote empty)",8004CDAA 007E
+Cheat6="[Slot A Codes]\Have All\Max 100 Coin Records For All Levels",50000F01 0000,8004CDC5 0064
+Cheat7="[Slot B Codes]\Have All\120 Stars",8004CE33 0001,8004CE1B 00C7,50001101 0000,8004CE1C 00FF
+Cheat7_N=Slot Note
+Cheat8="[Slot B Codes]\Have All\Key doors unlocked (and mote empty)",8004CE1A 007E
+Cheat9="[Slot B Codes]\Have All\Max 100 Coin Records For All Levels",50000F01 0000,8004CE35 0064
+Cheat10="[Slot C Codes]\Have All\120 Stars",8004CEA3 0001,8004CE8B 00C7,50001101 0000,8004CE8C 00FF
+Cheat10_N=Slot Note
+Cheat11="[Slot C Codes]\Have All\Key doors unlocked (and mote empty)",8004CE8A 007E
+Cheat12="[Slot C Codes]\Have All\Max 100 Coin Records For All Levels",50000F01 0000,8004CEA5 0064
+Cheat13="[Slot D Codes]\Have All\120 Stars",8004CF13 0001,8004CEFB 00C7,50001101 0000,8004CEFC 00FF
+Cheat13_N=Slot Note
+Cheat14="[Slot D Codes]\Have All\Key doors unlocked (and mote empty)",8004CEFA 007E
+Cheat15="[Slot D Codes]\Have All\Max 100 Coin Records For All Levels",50000F01 0000,8004CF85 0064
+Coins Note=Press GS Once on a Level To Get that amount of Coins
+Levitate Note=Press L to levitate & Let go to land
+Marios Cap=$10 Normal,$12 Invisible Mario,$15 Metal Mario,$16 Invisible Metal Mario,$19 Flying Mario
+Slot Note=Once the Code is activated, you will see it as a new option in the chosen Save Slot.This will have the Cannon open already to get upto Yoshi on the Roof. but make sure to save the game after collecting Red Coins and turn this code off before saving. you will now have it all saved to mempak
+
+[904626B3-4A2E48D5-C:45]
+Name=Return To Yoshi's Island 64 (U) Demo (Hack)
+Cheat0="Press GS For 255 Coins",8921F9E8 00FF
+Cheat0_N=[SuperMario]Coins Note
+Cheat1="Infinite Energy & Breath",8021F9EE 0008
+Cheat2="Mario's Cap On Options",8021F947 00??
+Cheat2_N=[SuperMario]Cap Note
+Cheat2_O=[SuperMario]Marios Cap
+Cheat3="Press L To Levitate",D021F771 0020,8121F98C 4220,D021F98D 0020,8121F94C 0300,D021F98D 0020,8121F94E 0880
+Cheat3_N=[SuperMario]Levitate Note
+Cheat4="Monsters Don't Hurt Mario",A021F967 0001
+
+//----
+
+[D6824921-8779FEEF-C:00]
+Name=The Legend of Zelda - Majora's Mask (CHN)
+Cheat0="Infinite\Health",811F7346 0140
+Cheat1="Infinite\Hearts Options",811F7344 ????
+Cheat1_N=[ZeldaMM]Hearts Note
+Cheat1_O=[ZeldaMM]Hearts Mod
+Cheat2="Have\All Quest Status Items",801F73CD 0005,811F73CE F7CF 
+Cheat3="Infinite\Rupees",811F734A 03E7
+Cheat4="Infinite\Max & Double Magic Meter",801F7349 0060,811F7350 0101
+Cheat5="Infinite\Items",801F73B1 0063,801F73B6 0063,801F73B7 0063,801F73B8 0063,801F73B9 0063,801F73BA 0063,801F73BC 0063,801F73BD 0063
+Cheat6="Have\Ocarina of Time",801F7380 0000
+Cheat7="Have\Hero's Bow",801F7381 0001
+Cheat8="Have\Arrows\Fire Arrow",801F7382 0002
+Cheat9="Have\Arrows\Ice Arrow",801F7383 0003
+Cheat10="Have\Arrows\Light Arrow",801F7384 0004
+Cheat11="Have\Bombs",801F7386 0006
+Cheat12="Have\Bombchu",801F7387 0007
+Cheat13="Have\Deku Sticks",801F7388 0008
+Cheat14="Have\Deku Nuts",801F7389 0009
+Cheat15="Have\Magic Beans",801F738A 000A
+Cheat16="Have\Powder Kegs",801F738C 000C
+Cheat17="Have\Pictograph",801F738D 000D
+Cheat18="Have\Lens of Truth",801F738E 000E
+Cheat19="Have\Hookshot",801F738F 000F
+Cheat20="Have\Great Fairy's Sword",801F7390 0010
+Cheat21="Maximum Visibility",8016DDB8 0020
+Cheat22="Fog\Blue",8016F688 0020
+Cheat23="Fog\Pink",8016F68C 0020
+Cheat24="Fog\Yellow",8016F690 0020
+Cheat25="Press L To Levitate",D03EE6DB 0020,814079B8 40CB
+Cheat25_N=[ZeldaMM]Levitate
+Cheat26="Have\All Masks",801F7398 003E,801F7399 0038,801F739A 0047,801F739B 0045,801F739C 0040,801F739D 0032,801F739E 003A,801F739F 0046,801F73A0 0039,801F73A1 0042,801F73A2 0048,801F73A3 0033,801F73A4 003C,801F73A5 003D,801F73A6 0037,801F73A7 003F,801F73A8 0036,801F73A9 0034,801F73AA 0043,801F73AB 0041,801F73AC 003B,801F73AD 0044,801F73AE 0049,801F73AF 0035
+Cheat27="Beta World 1",D03EE6DB 0000,801F7312 00??
+Cheat27_N=[ZeldaMM]BetaWorld Note
+Cheat27_O=[ZeldaMM]BetaWorld
+Cheat28="Event Item\Modifier 1",801F7385 00??
+Cheat28_O=[ZeldaMM]Event Item
+Cheat29="Event Item\Modifier 2",801F738B 00??
+Cheat29_O=[ZeldaMM]Event Item
+Cheat30="Event Item\Modifier 3",801F7391 00??
+Cheat30_O=[ZeldaMM]Event Item
+Cheat31="Have\Item Modifier",801F7390 00??
+Cheat31_O=[ZeldaMM]Item Mod
+Cheat32="Bottles\Bottle 1 Modifier",801F7392 00??
+Cheat32_O=[ZeldaMM]Bottle Mod
+Cheat33="Bottles\Bottle 2 Modifier",801F7393 00??
+Cheat33_O=[ZeldaMM]Bottle Mod
+Cheat34="Bottles\Bottle 3 Modifier",801F7394 00??
+Cheat34_O=[ZeldaMM]Bottle Mod
+Cheat35="Bottles\Bottle 4 Modifier",801F7395 00??
+Cheat35_O=[ZeldaMM]Bottle Mod
+Cheat36="Bottles\Bottle 5 Modifier",801F7396 00??
+Cheat36_O=[ZeldaMM]Bottle Mod
+Cheat37="Bottles\Bottle 6 Modifier",801F7397 00??
+Cheat37_O=[ZeldaMM]Bottle Mod
+Cheat38="Use C-Buttons Anywhere",811FB228 0000,811FB22A 0000
+Cheat38_N=[ZeldaMM]C-Button Note
+Cheat39="All Equipment Upgrades",801F737D 0023,811F73CA 201B,801F735C 004F
+Cheat40="Replace Sword With",801F735C 00??
+Cheat40_N=[ZeldaMM]ReplaceSword Note
+Cheat40_O=[ZeldaMM]ReplaceSword
+Cheat41="Play As",801F7330 00??
+Cheat41_O=[ZeldaMM]Play As
+Cheat42="Warp Modifier",D03EE70A 0000,80406F35 0001,81406F3A ????
+Cheat42_N=[ZeldaMM]Warp Note
+Cheat42_O=[ZeldaMM]Warp Mod
+
+//----
+
+[6F4DF892-D3FFBD5B-C:43]
+Name=The Legend of Zelda - Majora's Mask (CHN) (iQue)
+Cheat0="Infinite\Health",811F3A06 0140
+Cheat1="Infinite\Hearts Options",811F3A04 ????
+Cheat1_N=[ZeldaMM]Hearts Note
+Cheat1_O=[ZeldaMM]Hearts Mod
+Cheat2="Have\All Quest Status Items",801F3A8D 0005,811F3A8E F7CF
+Cheat3="Infinite\Rupees",811F3A0A 03E7
+Cheat4="Infinite\Max & Double Magic Meter",801F3A09 0060,811F3A10 0101
+Cheat5="Infinite\Items",801F3A71 0063,801F3A76 0063,801F3A77 0063,801F3A78 0063,801F3A79 0063,801F3A7A 0063,801F3A7C 0063,801F3A7D 0063
+Cheat6="Have\Ocarina of Time",801F3A40 0000
+Cheat7="Have\Hero's Bow",801F3A41 0001
+Cheat8="Have\Arrows\Fire Arrow",801F3A42 0002
+Cheat9="Have\Arrows\Ice Arrow",801F3A43 0003
+Cheat10="Have\Arrows\Light Arrow",801F3A44 0004
+Cheat11="Have\Bombs",801F3A46 0006
+Cheat12="Have\Bombchu",801F3A47 0007
+Cheat13="Have\Deku Sticks",801F3A48 0008
+Cheat14="Have\Deku Nuts",801F3A49 0009
+Cheat15="Have\Magic Beans",801F3A4A 000A
+Cheat16="Have\Powder Kegs",801F3A4C 000C
+Cheat17="Have\Pictograph",801F3A4D 000D
+Cheat18="Have\Lens of Truth",801F3A4E 000E
+Cheat19="Have\Hookshot",801F3A4F 000F
+Cheat20="Have\Great Fairy's Sword",801F3A50 0010
+Cheat21="Maximum Visibility",8016BD58 0020
+Cheat22="Fog\Blue",8016BD48 0020
+Cheat23="Fog\Pink",8016BD4C 0020
+Cheat24="Fog\Yellow",8016BD50 0020
+Cheat25="Press L To Levitate",D03EAD9B 0020,81404078 40CB
+Cheat25_N=[ZeldaMM]Levitate
+Cheat26="Have\All Masks",801F3A58 003E,801F3A59 0038,801F3A5A 0047,801F3A5B 0045,801F3A5C 0040,801F3A5D 0032,801F3A5E 003A,801F3A5F 0046,801F3A60 0039,801F3A61 0042,801F3A62 0048,801F3A63 0033,801F3A64 003C,801F3A65 003D,801F3A66 0037,801F3A67 003F,801F3A68 0036,801F3A69 0034,801F3A6A 0043,801F3A6B 0041,801F3A6C 003B,801F3A6D 0044,801F3A6E 0049,801F3A6F 0035
+Cheat27="Beta World 1",D03EAD9B 0000,801F39D2 00??
+Cheat27_N=[ZeldaMM]BetaWorld Note
+Cheat27_O=[ZeldaMM]BetaWorld
+Cheat28="Event Item\Modifier 1",801F3A45 00??
+Cheat28_O=[ZeldaMM]Event Item
+Cheat29="Event Item\Modifier 2",801F3A4B 00??
+Cheat29_O=[ZeldaMM]Event Item
+Cheat30="Event Item\Modifier 3",801F3A51 00??
+Cheat30_O=[ZeldaMM]Event Item
+Cheat31="Have\Item Modifier",801F3A50 00??
+Cheat31_O=[ZeldaMM]Item Mod
+Cheat32="Bottles\Bottle 1 Modifier",801F3A52 00??
+Cheat32_O=[ZeldaMM]Bottle Mod
+Cheat33="Bottles\Bottle 2 Modifier",801F3A53 00??
+Cheat33_O=[ZeldaMM]Bottle Mod
+Cheat34="Bottles\Bottle 3 Modifier",801F3A54 00??
+Cheat34_O=[ZeldaMM]Bottle Mod
+Cheat35="Bottles\Bottle 4 Modifier",801F3A55 00??
+Cheat35_O=[ZeldaMM]Bottle Mod
+Cheat36="Bottles\Bottle 5 Modifier",801F3A56 00??
+Cheat36_O=[ZeldaMM]Bottle Mod
+Cheat37="Bottles\Bottle 6 Modifier",801F3A57 00??
+Cheat37_O=[ZeldaMM]Bottle Mod
+Cheat38="Use C-Buttons Anywhere",811F78E8 0000,811F78EA 0000
+Cheat38_N=[ZeldaMM]C-Button Note
+Cheat39="All Equipment Upgrades",801F3A3D 0023,811F3A8A 201B,801F3A1C 004F
+Cheat40="Replace Sword With",801F3A1C 00??
+Cheat40_N=[ZeldaMM]ReplaceSword Note
+Cheat40_O=[ZeldaMM]ReplaceSword
+Cheat41="Play As",801F39F0 00??
+Cheat41_O=[ZeldaMM]Play As
+Cheat42="Warp Modifier",D03EAD9A 0000,804035F5 0001,804035FA ????
+Cheat42_N=[ZeldaMM]Warp Note
+Cheat42_O=[ZeldaMM]Warp Mod
+Cheat43="Inventory Editor",D03EAD9B 0020,D0401C9F 0000,80401C9F 0002
+Cheat43_N=Enable this code, Press Start to open the Pause Menu, then L to open the Inventory Editor. Warning this freezes like it does on the Real Hardware. 
+
+[F6136DC4-2ECEDCA1-C:45]
+Name=Captain Falcon 64 1.3 (U) (Hack)
+Cheat0="Press GS For 255 Coins",8933B218 00FF
+Cheat0_N=[SuperMario]Coins Note
+Cheat1="Have\Level Select",A032D58C 00??
+Cheat1_O=@Off and On 1
+Cheat2="Monsters Don't Hurt Falcon",A033B197 0001
+Cheat3="Infinite\Lives",8033B21D 0064
+Cheat4="Infinite\Energy & Breath",8033B21E 0008
+Cheat5="Have\Debug Mode",A032D598 00??
+Cheat5_O=@Off and On 1
+Cheat6="Falcon's Cap On Options",8033B177 00??
+Cheat6_N=[[CaptainFalcon]Cap Note
+Cheat6_O=[CaptainFalcon]Falcons Cap
+Cheat7="Press L To Levitate",D033AFA1 0020,8133B1BC 4220,D033B1BD 0020,8133B17C 0300,D033B1BD 0020,8133B17E 0880
+Cheat7_N=[SuperMario]Levitate Note
+Cheat8="[Slot A Codes]\Have All\120 Stars",80207723 0001,8020770B 00C7,50001101 0000,8020770C 00FF
+Cheat8_N=[SuperMario]Slot Note
+Cheat9="[Slot A Codes]\Have All\Key doors unlocked (and mote empty)",8020770A 007E
+Cheat10="[Slot A Codes]\Have All\Max 100 Coin Records For All Levels",50000F01 0000,80207725 0064
+Cheat11="[Slot B Codes]\Have All\120 Stars",80207793 0001,8020777B 00C7,50001101 0000,8020777C 00FF
+Cheat11_N=[SuperMario]Slot Note
+Cheat12="[Slot B Codes]\Have All\Key doors unlocked (and mote empty)",8020777A 007E
+Cheat13="[Slot B Codes]\Have All\Max 100 Coin Records For All Levels",50000F01 0000,80207795 0064
+Cheat14="[Slot C Codes]\Have All\120 Stars",80207803 0001,802077EB 00C7,50001101 0000,802077EC 00FF
+Cheat14_N=[SuperMario]Slot Note
+Cheat15="[Slot C Codes]\Have All\Key doors unlocked (and mote empty)",802077EA 007E
+Cheat16="[Slot C Codes]\Have All\Max 100 Coin Records For All Levels",50000F01 0000,80207805 0064
+Cheat17="[Slot D Codes]\Have All\120 Stars",80207873 0001,8020785B 00C7,50001101 0000,8020785C 00FF
+Cheat17_N=[SuperMario]Slot Note
+Cheat18="[Slot D Codes]\Have All\Key doors unlocked (and mote empty)",8020785A 007E
+Cheat19="[Slot D Codes]\Have All\Max 100 Coin Records For All Levels",50000F01 0000,80207875 0064
+Cheat20="Level Select",D033AFA1 0020,A032DDF9 00??
+Cheat20_N=[SuperMario]Level Note
+Cheat20_O=[SuperMario]Level Select
+
+//----
+
+[9EFA01FB-F06E8E90-C:45]
+Name=Smash Remix (U)
+Cheat0="Give Kirby A Wierd Blow-Up",8025E158 000A
+Cheat1="Story Mode\Skip Straight To Master Hand",800A4AE7 000D
+Cheat2="Story Mode\Infinite Time",810A4B2E 43CB
+Cheat3="Story Mode\Player 1\Infinite Lives",800A4B43 0004
+Cheat4="Story Mode\Player 2\Infinite Lives",800A4BB7 0004
+Cheat5="Story Mode\Player 3\Infinite Lives",800A4C2B 0004
+Cheat6="Story Mode\Player 4\Infinite Lives",800A4C9F 0004
+Cheat7="Story Mode\Player 1\Low % Health",810A4B86 0000
+Cheat8="Story Mode\Player 2\Low % Health",810A4BFA 0000
+Cheat9="Story Mode\Player 3\Low % Health",810A4C6E 0000
+Cheat10="Story Mode\Player 4\Low % Health",810A4CE2 0000
+Cheat11="Story Mode\Player 1\Character Modifier",800A4B3B 00??
+Cheat11_N=[SuperSmashBrothers]Character Note
+Cheat11_O=[SuperSmashBrothers]Character Mod
+Cheat12="Story Mode\Player 2\Character Modifier",800A4BAF 00??
+Cheat12_N=[SuperSmashBrothers]Character Note
+Cheat12_O=[SuperSmashBrothers]Character Mod
+Cheat13="Story Mode\Player 3\Character Modifier",800A4C23 00?? 
+Cheat13_N=[SuperSmashBrothers]Character Note
+Cheat13_O=[SuperSmashBrothers]Character Mod
+Cheat14="Story Mode\Player 4\Character Modifier",800A4C97 00??
+Cheat14_N=[SuperSmashBrothers]Character Note
+Cheat14_O=[SuperSmashBrothers]Character Mod
+Cheat15="Story Mode\Player 1\Kirby B Button Move\Hyrule Castle",80268B0F 00??
+Cheat15_O=[SuperSmashBrothers]Kirby B Button Move
+Cheat16="Story Mode\Player 1\Kirby B Button Move\Yoshi's Island",80268E4F 00??
+Cheat16_O=[SuperSmashBrothers]Kirby B Button Move
+Cheat17="Story Mode\Player 1\Kirby B Button Move\Sector Z",802710F7 00??
+Cheat17_O=[SuperSmashBrothers]Kirby B Button Move
+Cheat18="Story Mode\Player 1\Kirby B Button Move\Peach's Castle",80263D9F 00??
+Cheat18_O=[SuperSmashBrothers]Kirby B Button Move
+Cheat19="Story Mode\Player 1\Kirby B Button Move\Saffron City",80273A97 00??
+Cheat19_O=[SuperSmashBrothers]Kirby B Button Move
+Cheat20="Story Mode\Player 1\Kirby B Button Move\Congo Jungle",80270ACF 00??
+Cheat20_O=[SuperSmashBrothers]Kirby B Button Move
+Cheat21="Story Mode\Player 1\Kirby B Button Move\Kirby's Dreamland",8026DB3F 00??
+Cheat21_O=[SuperSmashBrothers]Kirby B Button Move
+Cheat22="Story Mode\Player 1\Kirby B Button Move\Planet Zebes",8026FFA7 00??
+Cheat22_O=[SuperSmashBrothers]Kirby B Button Move
+Cheat23="Story Mode\Player 1\Kirby B Button Move\Metal Mario Stage",80263597 00??
+Cheat23_O=[SuperSmashBrothers]Kirby B Button Move
+Cheat24="Story Mode\Player 1\Kirby B Button Move\Fighting Polygon Team",8026271F 00??
+Cheat24_O=[SuperSmashBrothers]Kirby B Button Move
+Cheat25="Story Mode\Player 1\Kirby B Button Move\Master Hand Stage",80271C4F 00??
+Cheat25_O=[SuperSmashBrothers]Kirby B Button Move
+Cheat26="VS. Mode\Infinite Time",810A4D1E 43CB
+Cheat27="VS. Mode\Player 1\Low % Health",810A4D76 0000
+Cheat28="VS. Mode\Player 2\Low % Health",810A4DEA 0000
+Cheat29="VS. Mode\Player 3\Low % Health",810A4E5E 0000
+Cheat30="VS. Mode\Player 4\Low % Health",810A4ED2 0000
+Cheat31="VS. Mode\Player 1\Character Modifier",800A4D2B 00??
+Cheat31_N=[SuperSmashBrothers]=Character Note
+Cheat31_O=[SuperSmashBrothers]Character Mod
+Cheat32="VS. Mode\Player 2\Character Modifier",800A4D9F 00??
+Cheat32_N=[SuperSmashBrothers]Character Note
+Cheat32_O=[SuperSmashBrothers]Character Mod
+Cheat33="VS. Mode\Player 3\Character Modifier",800A4E13 00??
+Cheat33_N=[SuperSmashBrothers]Character Note
+Cheat33_O=[SuperSmashBrothers]Character Mod
+Cheat34="VS. Mode\Player 4\Character Modifier",800A4E87 00??
+Cheat34_N=[SuperSmashBrothers]Character Note
+Cheat34_O=[SuperSmashBrothers]Character Mod
+Cheat35="VS. Mode\Player 1\Kirby B Button Move\Hyrule Castle",802639EF 00??
+Cheat35_O=[SuperSmashBrothers]Kirby B Button Move
+Cheat36="VS. Mode\Player 1\Kirby B Button Move\Yoshi's Island",8026E2B7 00??
+Cheat36_O=[SuperSmashBrothers]Kirby B Button Move
+Cheat37="VS. Mode\Player 1\Kirby B Button Move\Sector Z",8026BF87 00??
+Cheat37_O=[SuperSmashBrothers]Kirby B Button Move
+Cheat38="P1 Press Down On D-Pad To Make Items Appear In Random Spots",D109EFA4 0400,8118D0A2 0001
+Cheat39="Have All Characters",810A4938 0FF0
+Cheat40="VS. Mode\Have\Mushroom Kindom",800A4937 00FF
+Cheat41="Story Mode\Always Get Pacifist (60,000 Points)",810A4B6E 0000
+Cheat42="Bonus Stage Character Modifier (Training Mode)",8018F1D3 00??
+Cheat42_N=[SuperSmashBrothers]Character Note
+Cheat42_O=[SuperSmashBrothers]Character Mod
+Cheat43="Enable Item Switch Menu (All Modes)",811348E2 0004
+Cheat43_N=[SuperSmashBrothers]Switch Menu Note
+Cheat44="Story Mode\Player 1\Stage Select",D1045188 0010,800A4AE7 00??
+Cheat44_O=[SuperSmashBrothers]Stage Select
+
+//----
+
+[2877AC2D-C3DC139A-C:44]
+Name=Racing Simulation 2 (G)
+Cheat0="Laps to Race",801C5913 00??,D01C5927 0000,801C5927 00??
+Cheat0_N=1 Lap to go will result in you coming in 1st.
+Cheat0_O=$03:00 3 Laps to Race,$03:02 1 Lap to Race of 3,$05:00 5 Laps to Race,$05:04 1 Lap to Race of 5,$09:00 9 Laps to Race,$09:08 1 Lap to Race of 9
+Cheat1="Car Position view is always from behind",801C5487 0020
+Cheat1_N=This will lock the view in that position until disabled. The upside to this is you cannot hit the C-Right by mistake and change the view. If at the start of the race,  the car seems the wqrong way. Just press the A Button, followed by C-Right.
+Cheat2="Damage:",D00B0094 0000,800B0094 00??,D00B0094 0001,800B0094 00??,D00B0094 0002,800B0094 00??
+Cheat2_N=From Immune to any Damage to very realistic.
+Cheat2_O=$00 No Damage,$01 Average,$02 Realistic
+Cheat3="Weather:",D00B0098 0000,800B0098 00??,D00B0098 0001,800B0098 00??,D00B0098 0002,800B0098 00??,D00B0098 0003,800B0098 00??
+Cheat3_O=$00 Random,$01 Always Sunny,$03 Always Rainy
+Cheat4="Start with  254L Fuel",800B04B3 00FF
+
+//----
+
+[1DF0128A-2D6126CF-C:45]
+Name=Banjo-Kazooie - Stay At Home v1.9 (U)
+Cheat0="Infinite\Eggs",80385F67 00FF
+Cheat1="Infinite\Lives",80385F8B 0009
+Cheat2="Infinite\Jiggies",80385FCB 00FF
+Cheat3="Press L To Levitate",D0281251 0020,8137C4BC 43E0
+Cheat3_N=Press L To Levitate & Let go to land
+Cheat4="Infinite\Notes",80385FF2 00FF,80385F62 0001
+Cheat4_N=Just collect one Note to Have\255 Notes in all Worlds.
+Cheat5="Infinite\Health",80385F83 0008,80385F87 0008
+Cheat6="Infinite\Air",81385F8E 0E10
+Cheat7="Infinite\Gold Feathers",80385F73 00FF
+Cheat8="Infinite\Red Feathers",80385F6F 00FF
+Cheat9="Always Have All Jinjos",80385F7B 00FF
+Cheat10="Have Zero Time all Levels",50000B04 0000,81386004 3000
+Cheat11="Character Select",D0281251 0008,8037C2D3 0002,D0281251 0001,8037C2D3 0003,D0281251 0004,8037C2D3 0004,D0281251 0002,8037C2D3 0005,D0281251 0010,8037C2D3 0006,D0281251 0020,8037C2D3 0007
+Cheat11_N=When Mumbo transforms you hold:C-Up for the Termite,C-Right for the Pumpkin,C-Down for the Walrus,C-Left for the Crocc,R for the Bumble Bee,L for the Washing Machine,Press nothing to turn into Banjo
+Cheat12="Infinite\Mumbo Tokens",80385FC7 0077,80385FA3 0077
+Cheat13="Do Anywhere Option",803????? 0002
+Cheat13_N=Press A Button. For Fly From Anywhere, use with Infinte Feathers Cheat. For Shock Spring Jump, use with Access All Moves Cheat.
+Cheat13_O=$7C1D1 Take Off And Fly From Anywhere,$7C1D2 Do Shock Spring Jump From Anywhere,$7C1D3 Normal
+Cheat14="Access All Moves",8037C3A0 0001,8037C3A1 007F,8037C3A2 00FF,8037C3A3 00FF
+Cheat15="Secret Items ",81283400 ????
+Cheat15_O=$FFFF Have All Collected,$0000 Have None
+Cheat16="Have Everything Unlocked",803831AD 00FF,813831AE FFFF,803831B0 00FF,813831B2 FFFF,803831B7 00FF,803831C4 8005,803831BF 00A2
+
+//----
+
+[C006E3C0-A67B4BBB-C:50]
+Name=F-1 World Grand Prix (E)
+Cheat0="Lap Mod",8031AB19 00??
+Cheat0_N=when you select 1 Lap to go of 4, you will be in position 1 but you will still retain your original position in results.
+Cheat0_O=$01 4  Laps to go of 4,$01 3  Laps to go of 4,$02 2  Laps to go of 4,$04 1 Lap to go of 4,$05 Instant end of race
+Cheat1="Always the Winner (Video Only)",801373F3 0000
+Cheat1_N=You still retain your original position in results.
+Cheat2="Always 1st Position",8103A57E 0001,8113737A 0001,8113F376 0001,812F7D78 0001
+Cheat3="No Damage (Player 1)",811670A6 0000
+Cheat4="Always Sunny",811670B2 0000
+Cheat5="Only 4 Lap Race",811670BA 0001
+Cheat6="Grid Position (Player 1)",8116709E 0001
+Cheat7="No Pit Stops (Player 1)",811670AA 0000
+
+[3AD30099-15383A39-C:50]
+Name=Stunt Racer 64 (E) [NTSC-Convert] (7103)
+Cheat0="Infinite\Mega Credit$",810C0CF0 FFFF,810E87EC F000
+Cheat1="Infinite\Turbo",800E83A5 0003,800E4385 0000
+Cheat1_N=If you Keep the Z Button pressed down, you will not run-out.
+Cheat2="Always 1st",810E81AE 0000
+Cheat3="Laps to Race",800E81A3 00??
+Cheat3_O=$00 3 Laps to Race,$01 2 Laps to Race,$02 1 Lap to Race
+Cheat4="Infinite\Restarts",800C0CEB 0009
+Cheat4_N=This gives you Infinite Races restarts
+Cheat5="Freeze All Timers",81007B90 2400,8005B7B4 0024
+Cheat5_N=For Contest, League, Practicee & Quick Race Timers.
+Cheat6="Coins & Mode",800E8804 00??,800E8809 00??
+Cheat6_N=All coins on the road will always be This when you make your selection
+Cheat6_O=$01:00 Normal (Gold),$02:20 Double 2x (Blue),$03:40 Triple 3x (Red)
+Cheat7="Unlock All\Tracks",50000801 0000,800C0CDF 0001
+Cheat8="Unlock All\Leagues",50000501 0000,800C0C08 0001
+Cheat9="Unlock All\Cars",50002004 0000,810C0C5C 0000,50000B04 0001,810C0C5E 0000,50001504 0001,810C0C8A 000C
+Cheat9_N=This Unlocks all Cars purchased and placed in the Gargage ready for use.
+Cheat10="Have all Qualify Tasks Complete",50000601 0000,800A6A02 001D
+Cheat10_N=This Has all tasks collected in Contest Mode Qualifier. As soon as this is enabled you will get a Passed Message.
+
+//----
+
+[6778CB96-DF58BDE4-C:45]
+Name=ZELDA COSMIC GODDESS (U)
+Cheat0="Infinite\Rupees",8111B99C 0001
+Cheat0_N=[ZeldaOOT]Rupees Note
+Cheat1="Use Any Item In Any House",8111B7F2 0000,8111B7F4 0000
+Cheat1_N=[ZeldaOOT]No use
+Cheat2="Have\All Equipment",8111E76C 7777
+Cheat2_N=[ZeldaOOT]Have All
+Cheat3="Have\All Quest Status Items",8111E774 30FF,8111E776 FFFF
+Cheat3_N=[ZeldaOOT]Have All
+Cheat4="Max\Heart Containers",8111ED6E 0140
+Cheat5="Max\Gold Skulltulas Killed",8011E7A1 0064
+Cheat6="Time of Day Modifier",8111A5DC ????
+Cheat6_O=[ZeldaOOT]Day Mod
+Cheat7="Infinite\Energy",8111E700 0140
+Cheat8="Infinite\Magic",D011E709 0008,8011E70A 0001,8011E70C 0001,8011E703 0060
+Cheat9="Tunic & Boot Options",8011E740 00??
+Cheat9_N=[ZeldaOOT]TunicBoot Note
+Cheat9_O=[ZeldaOOT]TunicBoot
+Cheat10="Infinite\Deku Sticks",8011EDCC 0063
+Cheat11="Infinite\Deku Nuts",8011EDCD 0063
+Cheat12="Infinite\Bombs",8011EDCE 0063
+Cheat13="Infinite\Arrows",8011EDCF 0063
+Cheat14="Infinite\Beretta Ammo",8011EDD2 0063
+Cheat15="Infinite\Bombchu's",8011EDD4 0063
+Cheat16="Infinite\Magic Beans",8011EDDA 0063
+Cheat17="Infinite\Big Key,Small Keys,Compass,& Map",8011A678 0007,8011A679 0007,8011A67A 0007,8011A67B 0007,8011A67C 0007,8011A67D 0007,8011A67E 0007,8011A67F 0007,8011A680 0007,8011A681 0007,8011A682 0007,8011A68F 0009,8011A690 0009,8011A691 0009,8011A692 0009,8011A693 0009,8011A699 0009,8011A69C 0009,8011A697 0009
+Cheat18="Have\Ocarina",8011A64B 00??
+Cheat18_O=[ZeldaOOT]Ocarina
+Cheat19="Have\Boomerang",8011A650 000E
+Cheat20="Have\Lens of Truth",8011A651 000F
+Cheat21="Have\Megaton Hammer",8011A653 0011
+Cheat22="Have\Deku Stick",8011A644 0000
+Cheat23="Have\Deku Nut",8011A645 0001
+Cheat24="Have\Bombs",8011A646 0002
+Cheat25="Have\Fairy Bow",8011A647 0003
+Cheat26="Have\Fairy Slingshot",8011A64A 0006
+Cheat27="Have\Bombchu",8011A64C 0009
+Cheat28="Have\Arrows\Fire Arrow",8011A648 0004
+Cheat29="Have\Arrows\Ice Arrow",8011A64E 000C
+Cheat30="Have\Arrows\Light Arrow",8011A654 0012
+Cheat31="Have\Hookshot",8011A64D 00??
+Cheat31_O=[ZeldaOOT]Hookshot
+Cheat32="Have\Magic Beans",8011A652 0010
+Cheat33="Have\Magic\Fairie's Wind",8011A64F 000D
+Cheat34="Have\Magic\Nayru's Love",8011A655 0013
+Cheat35="Have\Magic\Din's Fire",8011A649 0005
+Cheat36="Bottles\Bottle 1 Modifier",8011A656 00??
+Cheat36_O=[ZeldaOOT]Bottle Mod
+Cheat37="Bottles\Bottle 2 Modifier",8011A657 00??
+Cheat37_O=[ZeldaOOT]Bottle Mod
+Cheat38="Bottles\Bottle 3 Modifier",8011A658 00??
+Cheat38_O=[ZeldaOOT]Bottle Mod
+Cheat39="Bottles\Bottle 4 Modifier",8011A659 00??
+Cheat39_O=[ZeldaOOT]Bottle Mod
+Cheat40="Trading\Adult Link Item",8011A65A 00??
+Cheat40_O=[ZeldaOOT]AdultItem
+Cheat41="Trading\Young Link Item",8011A65B 00??
+Cheat41_O=[ZeldaOOT]YoungItem
+Cheat42="Turn Giant's Knife Into Biggoron's Sword",8011A60E 0001
+Cheat43="Equipment Modifier 1",8011A672 00??
+Cheat43_N=[ZeldaOOT]Equipt1 Note
+Cheat43_O=[ZeldaOOT]Equipt1
+Cheat44="Equipment Modifier 2",8011A673 00??
+Cheat44_N=[ZeldaOOT]Equipt1 Note
+Cheat44_O=[ZeldaOOT]Equipt2
+Cheat45="Press L\To Levitate",D01C84B5 0020,811DAA90 40CB
+Cheat45_N=[ZeldaOOT]Levitate Note
+Cheat46="Press L\For infinite Hover Boots",D01C84B5 0020,811DB2B2 000D
+Cheat46_N=[ZeldaOOT]Hover Note
+Cheat47="Press L\For Instant Step Hoover Boots",D01C84B5 0020,811DAA90 40CB,D01C84B5 0000,811DB2B2 000D,8011A640 00??
+Cheat47_N=[ZeldaOOT]InstantStep Note
+Cheat47_O=[ZeldaOOT]InstantStep
+Cheat48="Beta\Play Beta Quest Worlds",D01C84B5 0000,8011B9E3 00??
+Cheat48_N=[ZeldaOOT]BetaQuest Note
+Cheat48_O=[ZeldaOOT]BetaQuest
+Cheat49="Warp Song Location\Minuet of Forest & Serenade of Water",8011B965 00??
+Cheat49_N=[ZeldaOOT]Warp Note
+Cheat49_O=[ZeldaOOT]WarpSong1
+Cheat50="Warp Song Location\Prelude of Light & Nocturne of Shadow",8011B965 00??
+Cheat50_N=[ZeldaOOT]Warp Note
+Cheat50_O=[ZeldaOOT]WarpSong2
+Cheat51="Warp Song Location\Bolero of Fire",8011B965 00??
+Cheat51_N=[ZeldaOOT]Warp Note
+Cheat51_O=[ZeldaOOT]WarpSong3
+Cheat52="Warp Song Location\Requiem of Spirit",8011B965 00??
+Cheat52_N=[ZeldaOOT]Warp Note
+Cheat52_O=[ZeldaOOT]WarpSong4
+Cheat53="Max\Double Defense Power",8011A69F 0014
+Cheat53_N=[ZeldaOOT]DDP Note
+Cheat54="Nayru's Love is Always",8111B998 ????
+Cheat54_N=[ZeldaOOT]NayrusLove Note
+Cheat54_O=@Off and On 3
+Cheat55="Infinite\Timers\All Other Timers",8011B9A1 0032
+Cheat55_N=[ZeldaOOT]Other Timers Note
+Cheat56="Epona\Max Carrots\Lon Lon Raunch",801F2208 0005,801EEC88 0005
+Cheat56_N=[ZeldaOOT]Carrots Note
+Cheat57="Infinite\Timers\Escape From Gannons Tower",8011B9A5 00B4
+Cheat57_N=[ZeldaOOT]Gannons Timer Note
+Cheat58="Beta\Specific things lean",80025614 0001
+Cheat58_N=[ZeldaOOT]Lean Note
+Cheat59="Beta\Appear in Strange Places (Hold R)",D01C84B5 0010,8111B936 0001
+Cheat59_N=[ZeldaOOT]Appear Note
+Cheat60="Beta\Interface always off/on",8011B4B9 00FF,8011B92F 00??
+Cheat60_N=[ZeldaOOT]Beta Interface Note
+Cheat60_O=@Off and On 1
+Cheat61="Press R For Old Or Young Link",D01C84B5 0010,8011A5D7 00??
+Cheat61_N=To Activate this Cheat Hold The R Button when walking through a Doorway this will change you to the option on the other side, Disable this Cheat straight away after getting to the other side, in some places you might even get Access Violations. Just press ok untill you can carry on.
+Cheat61_O=$01 Link Young,$00 Link Old
+
 
 //End Of File----------> Anything under here was put in by you <--------------------------------
-
-
-
-
 
