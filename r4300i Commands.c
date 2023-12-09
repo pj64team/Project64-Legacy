@@ -398,6 +398,7 @@ void Enable_R4300i_Commands_Window ( void ) {
 void __cdecl Enter_R4300i_Commands_Window ( void ) {
 	if (!HaveDebugger) { return; }
 	Create_R4300i_Commands_Window ( FALSE );
+	Update_r4300iCommandList();
 }
 
 void Paint_R4300i_Commands (HWND hDlg) {
@@ -419,10 +420,10 @@ void Paint_R4300i_Commands (HWND hDlg) {
 	rcBox.left   = 625; rcBox.top    = 7;
 	rcBox.right  = 784; rcBox.bottom = 42;
 	DrawEdge( ps.hdc, &rcBox, EDGE_ETCHED, BF_RECT );
-		
+
 	if (NoOfMapEntries) {
 		rcBox.left   = 625; rcBox.top    = 49;
-		rcBox.right  = 724; rcBox.bottom = 84;
+		rcBox.right  = 784; rcBox.bottom = 84;
 		DrawEdge( ps.hdc, &rcBox, EDGE_ETCHED, BF_RECT );
 	}
 

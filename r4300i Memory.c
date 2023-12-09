@@ -82,8 +82,8 @@ struct MEMORY_VIEW_ROW {
 	unsigned char OldData[16];
 	COLORREF TextColors[16];
 	HFONT Fonts[16];
-	DWORD Location;
-	char LocationStr[11];
+	MIPS_DWORD Location;
+	char LocationStr[19];
 	char HexStr[16][3];
 	char AsciiStr[17];
 };
@@ -92,9 +92,9 @@ struct SELECTION {
 	BOOL enabled;
 	BOOL dragging;
 	BOOL column_hex;
-	DWORD anchor;
-	DWORD range[2];
-	DWORD range_cmp[2];
+	MIPS_DWORD anchor;
+	MIPS_DWORD range[2];
+	MIPS_DWORD range_cmp[2];
 };
 
 const COLORREF TC_INC			= RGB(0, 180, 0); // Value increased
@@ -199,13 +199,10 @@ void Update_Data_Column(struct MEMORY_VIEW_ROW* row, MIPS_WORD word, int index, 
 	row->OldData[index] = word.UB[3 - i];
 }
 
-void Update_Data_Column_With_WatchPoint(struct MEMORY_VIEW_ROW* row, DWORD location, MIPS_WORD word, int index, int i, BOOL ShowDiff) {
+void Update_Data_Column_With_WatchPoint(struct MEMORY_VIEW_ROW* row, MIPS_DWORD location, MIPS_WORD word, int index, int i, BOOL ShowDiff) {
 	sprintf(row->HexStr[index], "%02X", word.UB[3 - i]);
 
-	MIPS_DWORD WatchPointLocation;
-	WatchPointLocation.DW = (int)(location + i);
-
-	int has_watch = (int)HasWatchPoint(WatchPointLocation);
+	int has_watch = (int)HasWatchPoint(location);
 	if (has_watch & WP_ENABLED) {
 		row->Fonts[index] = hWatchFont;
 	} else {
@@ -238,20 +235,18 @@ void Update_Data_Column_With_WatchPoint(struct MEMORY_VIEW_ROW* row, DWORD locat
 	row->OldData[index] = word.UB[3 - i];
 }
 
-void Insert_MemoryLineDump (unsigned int location, int InsertPos, BOOL ShowDiff) {
+void Insert_MemoryLineDump (MIPS_DWORD location, int InsertPos, BOOL ShowDiff) {
 	struct MEMORY_VIEW_ROW* row = &MemoryViewRows[InsertPos];
 	MIPS_WORD word;
 
-	location <<= 4;
+	location.UDW <<= 4;
 
 	row->Location = location;
-	sprintf(row->LocationStr, "0x%08X", location);
 
 	if (SendMessage(hVAddr, BM_GETSTATE, 0, 0) & BST_CHECKED) {
+		sprintf(row->LocationStr, "0x%016llX", location.UDW);
 		for (int count = 0; count < 4; count++) {
-			MIPS_DWORD address;
-			address.DW = (long)location;
-			if (r4300i_LW_VAddr_NonCPU(address, &word.UW)) {
+			if (IsValidAddress(location) && r4300i_LW_VAddr_NonCPU(location, &word.UW)) {
 				for (int i = 0; i < 4; i++) {
 					Update_Data_Column_With_WatchPoint(row, location, word, count * 4 + i, i, ShowDiff);
 				}
@@ -271,12 +266,13 @@ void Insert_MemoryLineDump (unsigned int location, int InsertPos, BOOL ShowDiff)
 				}
 				strcpy(&row->AsciiStr[count * 4], "****");
 			}
-			location += 4;
+			location.UDW += 4;
 		}
 	} else {
+		sprintf(row->LocationStr, "0x%08X", location.UW[0]);
 		for (int count = 0; count < 4; count++) {
-			if (location <= 0x1FFFFFFC) {
-				r4300i_LW_NonMemory(location, &word.UW);
+			if (location.UW[0] <= 0x1FFFFFFC) {
+				r4300i_LW_NonMemory(location.UW[0], &word.UW);
 				for (int i = 0; i < 4; i++) {
 					Update_Data_Column(row, word, count * 4 + i, i, ShowDiff);
 				}
@@ -296,28 +292,25 @@ void Insert_MemoryLineDump (unsigned int location, int InsertPos, BOOL ShowDiff)
 				}
 				strcpy(&row->AsciiStr[count * 4], "****");
 			}
-			location += 4;
+			location.UDW += 4;
 		}
 	}
 }
 
-void Write_MemoryLineDump(char *output, unsigned int location) {
+void Write_MemoryLineDump(char *output, MIPS_DWORD location) {
 	MIPS_WORD word;
-
-	sprintf(output, "0x%08X  ", location);
-	output += 12;
 
 	char bytes[49] = { 0 };
 	char ascii[17] = { 0 };
 	char *b = bytes;
 	char *a = ascii;
 	if (SendMessage(hVAddr, BM_GETSTATE, 0, 0) & BST_CHECKED) {
+		sprintf(output, "0x%016llX  ", location.UDW);
+		output += 12;
 		for (int count = 0; count < 4; count++) {
-			MIPS_DWORD address;
-			address.DW = (long)location;
-			if (r4300i_LW_VAddr_NonCPU(address, &word.UW)) {
+			if (IsValidAddress(location) && r4300i_LW_VAddr_NonCPU(location, &word.UW)) {
 				for (int i = 0; i < 4; i++) {
-					if (selection.enabled && (selection.range[0] > location + i || selection.range[1] < location + i)) {
+					if (selection.enabled && (selection.range[0].UDW > location.UDW + i || selection.range[1].UDW < location.UDW + i)) {
 						strcpy(b, "   ");
 						strcpy(a, " ");
 					} else {
@@ -329,7 +322,7 @@ void Write_MemoryLineDump(char *output, unsigned int location) {
 				}
 			} else {
 				for (int i = 0; i < 4; i++) {
-					if (selection.enabled && (selection.range[0] > location + i || selection.range[1] < location + i)) {
+					if (selection.enabled && (selection.range[0].UDW > location.UDW + i || selection.range[1].UDW < location.UDW + i)) {
 						strcpy(b, "   ");
 						strcpy(a, " ");
 					} else {
@@ -340,14 +333,16 @@ void Write_MemoryLineDump(char *output, unsigned int location) {
 					a++;
 				}
 			}
-			location += 4;
+			location.UDW += 4;
 		}
 	} else {
+		sprintf(output, "0x%08X  ", location.UW[0]);
+		output += 12;
 		for (int count = 0; count < 4; count++) {
-			if (location <= 0x1FFFFFFC) {
-				r4300i_LW_NonMemory(location, &word.UW);
+			if (location.UDW <= 0x1FFFFFFC) {
+				r4300i_LW_NonMemory(location.UW[0], &word.UW);
 				for (int i = 0; i < 4; i++) {
-					if (selection.enabled && (selection.range[0] > location + i || selection.range[1] < location + i)) {
+					if (selection.enabled && (selection.range[0].UDW > location.UDW + i || selection.range[1].UDW < location.UDW + i)) {
 						strcpy(b, "   ");
 						strcpy(a, " ");
 					} else {
@@ -359,7 +354,7 @@ void Write_MemoryLineDump(char *output, unsigned int location) {
 				}
 			} else {
 				for (int i = 0; i < 4; i++) {
-					if (selection.enabled && (selection.range[0] > location + i || selection.range[1] < location + i)) {
+					if (selection.enabled && (selection.range[0].UDW > location.UDW + i || selection.range[1].UDW < location.UDW + i)) {
 						strcpy(b, "   ");
 						strcpy(a, " ");
 					} else {
@@ -370,7 +365,7 @@ void Write_MemoryLineDump(char *output, unsigned int location) {
 					a++;
 				}
 			}
-			location += 4;
+			location.UDW += 4;
 		}
 	}
 
@@ -395,20 +390,20 @@ LRESULT CALLBACK Memory_Window_Proc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM 
 		SetBkMode(ps.hdc, TRANSPARENT);
 
 		SelectObject(ps.hdc, hDefaultFont);
-		TextOut(ps.hdc, 731, 15, "Bookmarks:", 10);
+		TextOut(ps.hdc, 811, 15, "Bookmarks:", 10);
 
 		SelectObject(ps.hdc, GetStockObject(ANSI_FIXED_FONT));
 		TextOut(ps.hdc, 25, 17, "Address:", 8);
 
 		rcBox.left   = 5;
 		rcBox.top    = 5;
-		rcBox.right  = 719;
+		rcBox.right  = 799;
 		rcBox.bottom = 348;
 		DrawEdge(ps.hdc, &rcBox, EDGE_ETCHED, BF_RECT);
 
-		rcBox.left   = 724;
+		rcBox.left   = 804;
 		rcBox.top    = 5;
-		rcBox.right  = 891;
+		rcBox.right  = 971;
 		rcBox.bottom = 348;
 		DrawEdge(ps.hdc, &rcBox, EDGE_ETCHED, BF_RECT);
 
@@ -421,14 +416,32 @@ LRESULT CALLBACK Memory_Window_Proc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM 
 				Refresh_Memory_With_Diff(FALSE);
 			}
 			break;
-		case IDC_VADDR:
+		case IDC_VADDR: {
+			char Value[20];
+			GetWindowText(hAddrEdit, Value, sizeof(Value));
+			QWORD address = 0;
+			if (strlen(Value) == 8) {
+				address = (int)AsciiToHex(Value);
+			}
+			else {
+				address = AsciiToHex64(Value);
+			}
+
+			if (address < 0xFFFFFFFF80000000 || address >= 0xFFFFFFFF80800000) {
+				SetWindowText(hAddrEdit, "FFFFFFFF80000000");
+			}
+
+			Clear_Selection();
+			ListBox_SetCurSel(GetDlgItem(hDlg, IDC_BOOKMARKS), -1);
+			Refresh_Memory_With_Diff(FALSE);
+			break;
+		}
+
 		case IDC_PADDR: {
 			char Value[20];
 			GetWindowText(hAddrEdit, Value, sizeof(Value));
 			DWORD address = AsciiToHex(Value);
-			if (LOWORD(wParam) == IDC_VADDR && address < 0x80000000 || address >= 0x80800000) {
-				SetWindowText(hAddrEdit, "80000000");
-			} else if (LOWORD(wParam) == IDC_PADDR && address >= 0x20000000) {
+			if (address >= 0x20000000) {
 				SetWindowText(hAddrEdit, "00000000");
 			}
 
@@ -531,9 +544,10 @@ LRESULT CALLBACK Memory_Window_Proc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM 
 					SelectObject(lplvcd->nmcd.hdc, GetStockObject(ANSI_FIXED_FONT));
 					SetTextColor(lplvcd->nmcd.hdc, GetSysColor(COLOR_WINDOWTEXT));
 
-					DWORD location_start = row->Location;
-					DWORD location_end = row->Location + 15;
-					if (selection.enabled && location_start <= selection.range[1] && location_end >= selection.range[0]) {
+					MIPS_DWORD location_start = row->Location;
+					MIPS_DWORD location_end = row->Location;
+					location_end.UDW += 15;
+					if (selection.enabled && location_start.UDW <= selection.range[1].UDW && location_end.UDW >= selection.range[0].UDW) {
 						RECT rc = lplvcd->nmcd.rc;
 						rc.left += PADDING;
 						rc.right -= PADDING;
@@ -545,14 +559,14 @@ LRESULT CALLBACK Memory_Window_Proc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM 
 						// 2. Only the beginning of the line is selected (two DrawText calls)
 						// 3. Only the end of the line is selected (two DrawText calls)
 						// 4. Only the middle of the line is selected (three DrawText calls)
-						if (location_start >= selection.range[0] && location_end <= selection.range[1]) {
+						if (location_start.UDW >= selection.range[0].UDW && location_end.UDW <= selection.range[1].UDW) {
 							// Entire line selected
 							SetTextColor(lplvcd->nmcd.hdc, GetSysColor(COLOR_HIGHLIGHTTEXT));
 							FillRect(lplvcd->nmcd.hdc, &rc, GetSysColorBrush(COLOR_HIGHLIGHT));
 							DrawText(lplvcd->nmcd.hdc, row->AsciiStr, strlen(row->AsciiStr), &lplvcd->nmcd.rc, DT_SINGLELINE | DT_CENTER | DT_VCENTER);
-						} else if (location_start >= selection.range[0]) {
+						} else if (location_start.UDW >= selection.range[0].UDW) {
 							// Only the beginning selected
-							int unselected_count = location_end - selection.range[1];
+							int unselected_count = (int)(location_end.UDW - selection.range[1].UDW);
 							int selected_count = 16 - unselected_count;
 
 							// Draw right side (unselected)
@@ -566,9 +580,9 @@ LRESULT CALLBACK Memory_Window_Proc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM 
 							SetTextColor(lplvcd->nmcd.hdc, GetSysColor(COLOR_HIGHLIGHTTEXT));
 							FillRect(lplvcd->nmcd.hdc, &left_rc, GetSysColorBrush(COLOR_HIGHLIGHT));
 							DrawText(lplvcd->nmcd.hdc, row->AsciiStr, selected_count, &left_rc, DT_SINGLELINE | DT_CENTER | DT_VCENTER);
-						} else if (location_end <= selection.range[1]) {
+						} else if (location_end.UDW <= selection.range[1].UDW) {
 							// Only the end selected
-							int selected_count = location_end - selection.range[0] + 1;
+							int selected_count = (int)(location_end.UDW - selection.range[0].UDW + 1);
 							int unselected_count = 16 - selected_count;
 
 							// Draw left side (unselected)
@@ -584,8 +598,8 @@ LRESULT CALLBACK Memory_Window_Proc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM 
 							DrawText(lplvcd->nmcd.hdc, &row->AsciiStr[unselected_count], selected_count, &right_rc, DT_SINGLELINE | DT_CENTER | DT_VCENTER);
 						} else {
 							// Only the middle selected
-							int left_count = selection.range[0] - location_start;
-							int right_count = location_end - selection.range[1];
+							int left_count = (int)(selection.range[0].UDW - location_start.UDW);
+							int right_count = (int)(location_end.UDW - selection.range[1].UDW);
 							int selected_count = 16 - (left_count + right_count);
 
 							// Draw left side (unselected)
@@ -617,10 +631,11 @@ LRESULT CALLBACK Memory_Window_Proc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM 
 				default: {
 					// Hex columns
 					int index = lplvcd->iSubItem - 1;
-					DWORD location = row->Location + index;
+					MIPS_DWORD location;
+					location.UDW = row->Location.UDW + index;
 
 					SelectObject(lplvcd->nmcd.hdc, row->Fonts[index]);
-					if (selection.enabled && location >= selection.range[0] && location <= selection.range[1]) {
+					if (selection.enabled && location.UDW >= selection.range[0].UDW && location.UDW <= selection.range[1].UDW) {
 						SetTextColor(lplvcd->nmcd.hdc, GetSysColor(COLOR_HIGHLIGHTTEXT));
 						FillRect(lplvcd->nmcd.hdc, &lplvcd->nmcd.rc, GetSysColorBrush(COLOR_HIGHLIGHT));
 					} else {
@@ -636,7 +651,7 @@ LRESULT CALLBACK Memory_Window_Proc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM 
 					char* str = row->HexStr[index];
 					DrawText(lplvcd->nmcd.hdc, str, strlen(str), &lplvcd->nmcd.rc, DT_SINGLELINE | DT_CENTER | DT_VCENTER);
 
-					if (index % 4 == 3 && index < 15 && (!selection.enabled || location < selection.range[0] || location > selection.range[1])) {
+					if (index % 4 == 3 && index < 15 && (!selection.enabled || location.UDW < selection.range[0].UDW || location.UDW > selection.range[1].UDW)) {
 						// Draw vertical separators on word boundaries only when the byte is not selected
 						rcBox.left = lplvcd->nmcd.rc.right - 1;
 						rcBox.top = lplvcd->nmcd.rc.top;
@@ -776,11 +791,12 @@ LRESULT CALLBACK Memory_ListViewDrag_Proc(HWND hWnd, UINT uMsg, WPARAM wParam, L
 			index = hit_test.iSubItem - 1;
 		}
 
-		DWORD location = row->Location + index;
+		MIPS_DWORD location;
+		location.UDW = row->Location.UDW + index;
 		if (wParam & MK_SHIFT) {
 			// Shift-Click
-			selection.range[0] = min(location, selection.anchor);
-			selection.range[1] = max(location, selection.anchor);
+			selection.range[0].UDW = min(location.UDW, selection.anchor.UDW);
+			selection.range[1].UDW = max(location.UDW, selection.anchor.UDW);
 			memcpy(selection.range_cmp, selection.range, sizeof(selection.range_cmp));
 		}
 		else {
@@ -818,10 +834,11 @@ LRESULT CALLBACK Memory_ListViewDrag_Proc(HWND hWnd, UINT uMsg, WPARAM wParam, L
 				break;
 			}
 
-			DWORD location = row->Location + index;
+			MIPS_DWORD location;
+			location.UDW= row->Location.UDW + index;
 
-			selection.range[0] = min(location, selection.anchor);
-			selection.range[1] = max(location, selection.anchor);
+			selection.range[0].UDW = min(location.UDW, selection.anchor.UDW);
+			selection.range[1].UDW = max(location.UDW, selection.anchor.UDW);
 
 			if (memcmp(selection.range, selection.range_cmp, sizeof(selection.range)) != 0) {
 				// TODO: Invalidate only the changed rect
@@ -933,7 +950,7 @@ INT_PTR CALLBACK Edit_Bookmark_Proc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM 
 
 	switch (uMsg) {
 	case WM_INITDIALOG: {
-		char address[9] = { 0 };
+		char address[17] = { 0 };
 
 		// TODO: Support language translations
 		HWND hName = GetDlgItem(hDlg, IDC_NAME);
@@ -941,12 +958,12 @@ INT_PTR CALLBACK Edit_Bookmark_Proc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM 
 		Edit_LimitText(hName, sizeof(bookmarks->name) - 1);
 
 		HWND hStart = GetDlgItem(hDlg, IDC_START);
-		sprintf(address, "%08X", bookmarks[item].selection_range[0]);
+		sprintf(address, "%016llX", bookmarks[item].selection_range[0].UDW);
 		Edit_SetText(hStart, address);
 		Edit_LimitText(hStart, 8);
 
 		HWND hEnd = GetDlgItem(hDlg, IDC_END);
-		sprintf(address, "%08X", bookmarks[item].selection_range[1]);
+		sprintf(address, "%016llX", bookmarks[item].selection_range[1].UDW);
 		Edit_SetText(hEnd, address);
 		Edit_LimitText(hEnd, 8);
 
@@ -960,8 +977,9 @@ INT_PTR CALLBACK Edit_Bookmark_Proc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM 
 			char name[sizeof(bookmarks->name)] = { 0 };
 			char temp[9] = { 0 };
 			char *end = NULL;
-			DWORD start_address = 0;
-			DWORD end_address = 0;
+			MIPS_DWORD start_address;
+			MIPS_DWORD end_address;
+			start_address.UDW = end_address.UDW = 0;
 
 			// Validate inputs
 			Edit_GetText(GetDlgItem(hDlg, IDC_NAME), name, sizeof(name));
@@ -971,19 +989,19 @@ INT_PTR CALLBACK Edit_Bookmark_Proc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM 
 			}
 
 			Edit_GetText(GetDlgItem(hDlg, IDC_START), temp, sizeof(temp));
-			start_address = strtoul(temp, &end, 16);
+			start_address.UDW = strtoul(temp, &end, 16);
 			if (end == temp || *end != 0) {
 				DisplayError("Start address is invalid");
 				return FALSE;
 			}
 
 			Edit_GetText(GetDlgItem(hDlg, IDC_END), temp, sizeof(temp));
-			end_address = strtoul(temp, &end, 16);
+			end_address.UDW = strtoul(temp, &end, 16);
 			if (end == temp || *end != 0) {
 				DisplayError("End address is invalid");
 				return FALSE;
 			}
-			if (end_address < start_address) {
+			if (end_address.UDW < start_address.UDW) {
 				DisplayError("Invalid address range: End must be greater or equal to start");
 				return FALSE;
 			}
@@ -1024,11 +1042,11 @@ void Clear_Selection(void) {
 	selection.enabled = FALSE;
 	selection.dragging = FALSE;
 	selection.column_hex = FALSE;
-	selection.anchor = 0;
-	selection.range[0] = 0;
-	selection.range[1] = 0;
-	selection.range_cmp[0] = 0;
-	selection.range_cmp[1] = 0;
+	selection.anchor.UDW = 0;
+	selection.range[0].UDW = 0;
+	selection.range[1].UDW = 0;
+	selection.range_cmp[0].UDW = 0;
+	selection.range_cmp[1].UDW = 0;
 
 	EnableWindow(GetDlgItem(Memory_Win_hDlg, IDC_BOOKMARK_ADD), FALSE);
 }
@@ -1039,8 +1057,9 @@ void Copy_Selection(void) {
 	}
 	EmptyClipboard();
 
-	DWORD location = selection.range[0] & ~15;
-	int lines = (selection.range[1] - location) / 16 + 1;
+	MIPS_DWORD location;
+	location.UDW = selection.range[0].UDW & ~15;
+	int lines = (selection.range[1].UDW - location.UDW) / 16 + 1;
 
 	// Each line is exactly 79 bytes, plus the null terminator.
 	HGLOBAL hMemory = GlobalAlloc(GMEM_MOVEABLE, lines * 79 + 1);
@@ -1055,7 +1074,7 @@ void Copy_Selection(void) {
 	for (int i = 0; i < lines; i++) {
 		Write_MemoryLineDump(output, location);
 		output += 79;
-		location += 16;
+		location.UDW += 16;
 	}
 
 	GlobalUnlock(hMemory);
@@ -1086,23 +1105,29 @@ void Scroll_Memory_View(int lines) {
 	}
 
 	GetWindowText(hAddrEdit, value, sizeof(value));
-	unsigned int location = AsciiToHex(value);
+	MIPS_DWORD location;
+	if (strlen(value) == 8) {
+		location.DW = (int)AsciiToHex(value);
+	}
+	else {
+		location.UDW = AsciiToHex64(value);
+	}
 
 	if (lines > 0) {
-		if (UINT_MAX - location >= 256) {
-			location += lines * 16;
+		if (ULLONG_MAX - location.UDW >= 256LL) {
+			location.UDW += lines * 16;
 		} else {
-			location = UINT_MAX - 256 + 1;
+			location.UDW = ULLONG_MAX - 256 + 1;
 		}
 	} else {
-		if (location >= (unsigned int)(-lines * 16)) {
-			location += lines * 16;
+		if (location.UDW >= (unsigned long long)(-lines * 16)) {
+			location.UDW += lines * 16;
 		} else {
-			location = 0;
+			location.UDW = 0;
 		}
 	}
 
-	sprintf(value, "%08X", location);
+	sprintf(value, "%016llX", location.UDW);
 	SetWindowText(hAddrEdit, value);
 
 	ReleaseMutex(hRefreshMutex);
@@ -1131,7 +1156,7 @@ void __cdecl Refresh_Memory(void) {
 }
 
 void Refresh_Memory_With_Diff(BOOL ShowDiff) {
-	DWORD location;
+	MIPS_DWORD location;
 	char Value[20];
 	int count;
 
@@ -1144,11 +1169,18 @@ void Refresh_Memory_With_Diff(BOOL ShowDiff) {
 	}
 
 	GetWindowText(hAddrEdit, Value, sizeof(Value));
-	location = (AsciiToHex(Value) >> 4);
-	if (location > 0x0FFFFFF0) { location = 0x0FFFFFF0; }
+	if (strlen(Value) == 8) {
+		location.DW = (int)AsciiToHex(Value);
+		location.UDW >>= 4;
+	}
+	else {
+		location.UDW = AsciiToHex64(Value) >> 4;
+	}
+	if (location.UDW > 0x0FFFFFFFFFFFFFF0LL) { location.UDW = 0x0FFFFFFFFFFFFFF0LL; }
 
 	for (count = 0; count < 16; count ++) {
-		Insert_MemoryLineDump(location + count, count, ShowDiff);
+		Insert_MemoryLineDump(location, count, ShowDiff);
+		location.UDW++;
 	}
 	InvalidateRect(hList, NULL, FALSE);
 
@@ -1175,7 +1207,7 @@ void Start_Auto_Refresh_Thread(void) {
 }
 
 void Setup_Memory_Window (HWND hDlg) {
-#define WindowWidth  912
+#define WindowWidth  992
 #define WindowHeight 392
 	HWND hBookmarks, hBookmarkAdd, hBookmarkEdit, hBookmarkRemove;
 	DWORD X, Y;
@@ -1186,22 +1218,22 @@ void Setup_Memory_Window (HWND hDlg) {
 	}
 
 	hVAddr = CreateWindowEx(0,"BUTTON", "Virtual Addressing", WS_CHILD | WS_VISIBLE | 
-		BS_AUTORADIOBUTTON, 215,13,150,21,hDlg,(HMENU)IDC_VADDR,hInst,NULL );
+		BS_AUTORADIOBUTTON, 255,13,150,21,hDlg,(HMENU)IDC_VADDR,hInst,NULL );
 	SendMessage(hVAddr,BM_SETCHECK, BST_CHECKED,0);
 	SendMessage(hVAddr, WM_SETFONT, (WPARAM)hDefaultFont, 0);
 
 	hPAddr = CreateWindowEx(0, "BUTTON", "Physical Addressing", WS_CHILD | WS_VISIBLE |
-		BS_AUTORADIOBUTTON, 375, 13, 155, 21, hDlg, (HMENU)IDC_PADDR, hInst, NULL);
+		BS_AUTORADIOBUTTON, 455, 13, 155, 21, hDlg, (HMENU)IDC_PADDR, hInst, NULL);
 	SendMessage(hPAddr, WM_SETFONT, (WPARAM)hDefaultFont, 0);
 
 	hRefresh = CreateWindowEx(0, "BUTTON", "Auto Refresh", WS_CHILD | WS_VISIBLE |
-		BS_AUTOCHECKBOX, 595, 13, 100, 21, hDlg, (HMENU)IDC_REFRESH, hInst, NULL);
+		BS_AUTOCHECKBOX, 675, 13, 100, 21, hDlg, (HMENU)IDC_REFRESH, hInst, NULL);
 	SendMessage(hRefresh, BM_SETCHECK, BST_CHECKED, 0);
 	Start_Auto_Refresh_Thread();
 	SendMessage(hRefresh, WM_SETFONT, (WPARAM)hDefaultFont, 0);
 
 	hList = CreateWindowEx(WS_EX_CLIENTEDGE, WC_LISTVIEW, "", WS_CHILD | WS_VISIBLE |
-		LVS_OWNERDATA | LVS_REPORT | LVS_NOSORTHEADER | LVS_SINGLESEL, 12, 39, 682, 300, hDlg,
+		LVS_OWNERDATA | LVS_REPORT | LVS_NOSORTHEADER | LVS_SINGLESEL, 12, 39, 762, 300, hDlg,
 		(HMENU)IDC_LIST_VIEW, hInst, NULL);
 	if (hList) {
 		SendMessage(hList, WM_SETFONT, (WPARAM)hDefaultFont, 0);
@@ -1214,7 +1246,7 @@ void Setup_Memory_Window (HWND hDlg) {
 		col.fmt = LVCFMT_LEFT;
 
 		col.pszText = "Address";
-		col.cx = 90;
+		col.cx = 160;
 		col.iSubItem = 0;
 		ListView_InsertColumn(hList, 0, &col);
 
@@ -1234,7 +1266,9 @@ void Setup_Memory_Window (HWND hDlg) {
 		ListView_SetItemCount(hList, 16);
 		SendMessage(hList, WM_SETFONT, (WPARAM)GetStockObject(ANSI_FIXED_FONT), 0);
 		for (count = 0; count < 16; count++) {
-			Insert_MemoryLineDump(count, count, FALSE);
+			MIPS_DWORD location;
+			location.UDW = count;
+			Insert_MemoryLineDump(location, count, FALSE);
 		}
 		SetWindowSubclass(hList, Memory_ListViewScroll_Proc, 0, 0);
 		SetWindowSubclass(hList, Memory_ListViewKeys_Proc, 0, 0);
@@ -1246,16 +1280,16 @@ void Setup_Memory_Window (HWND hDlg) {
 
 	DWORD wait_result = WaitForSingleObject(hRefreshMutex, 0);
 	if (wait_result == WAIT_OBJECT_0) {
-		SetWindowText(hAddrEdit, "80000000");
+		SetWindowText(hAddrEdit, "FFFFFFFF80000000");
 	}
 	ReleaseMutex(hRefreshMutex);
 
-	SendMessage(hAddrEdit, EM_SETLIMITTEXT, (WPARAM)8, (LPARAM)0);
-	SetWindowPos(hAddrEdit, NULL, 100, 13, 100, 21, SWP_NOZORDER | SWP_SHOWWINDOW);
+	SendMessage(hAddrEdit, EM_SETLIMITTEXT, (WPARAM)16, (LPARAM)0);
+	SetWindowPos(hAddrEdit, NULL, 100, 13, 140, 21, SWP_NOZORDER | SWP_SHOWWINDOW);
 	SendMessage(hAddrEdit, WM_SETFONT, (WPARAM)GetStockObject(ANSI_FIXED_FONT), 0);
 
 	hScrlBar = CreateWindowEx(0, "SCROLLBAR", "", WS_CHILD | WS_VISIBLE |
-		WS_TABSTOP | SBS_VERT, 694, 39, 20, 300, hDlg, (HMENU)IDC_SCRL_BAR, hInst, NULL);
+		WS_TABSTOP | SBS_VERT, 774, 39, 20, 300, hDlg, (HMENU)IDC_SCRL_BAR, hInst, NULL);
 	if (hScrlBar) {
 		SCROLLINFO si;
 
@@ -1270,7 +1304,7 @@ void Setup_Memory_Window (HWND hDlg) {
 	}
 
 	hBookmarks = CreateWindowEx(WS_EX_CLIENTEDGE, WC_LISTBOX, "", WS_CHILD | WS_VISIBLE | WS_VSCROLL | WS_HSCROLL | LBS_NOTIFY,
-		731, 39, 152, 280, hDlg, (HMENU)IDC_BOOKMARKS, hInst, NULL);
+		811, 39, 152, 280, hDlg, (HMENU)IDC_BOOKMARKS, hInst, NULL);
 	SendMessage(hBookmarks, WM_SETFONT, (WPARAM)hDefaultFont, 0);
 	SetWindowSubclass(hBookmarks, Bookmarks_ListBox_Proc, 0, 0);
 
@@ -1280,17 +1314,17 @@ void Setup_Memory_Window (HWND hDlg) {
 	Update_Bookmark_Width();
 
 	hBookmarkAdd = CreateWindowEx(WS_EX_WINDOWEDGE, WC_BUTTON, "Add", WS_CHILD | WS_VISIBLE,
-		731, 318, 36, 22, hDlg, (HMENU)IDC_BOOKMARK_ADD, hInst, NULL);
+		811, 318, 36, 22, hDlg, (HMENU)IDC_BOOKMARK_ADD, hInst, NULL);
 	SendMessage(hBookmarkAdd, WM_SETFONT, (WPARAM)hDefaultFont, 0);
 	EnableWindow(hBookmarkAdd, FALSE);
 
 	hBookmarkEdit = CreateWindowEx(WS_EX_WINDOWEDGE, WC_BUTTON, "Update", WS_CHILD | WS_VISIBLE,
-		769, 318, 56, 22, hDlg, (HMENU)IDC_BOOKMARK_UPDATE, hInst, NULL);
+		849, 318, 56, 22, hDlg, (HMENU)IDC_BOOKMARK_UPDATE, hInst, NULL);
 	SendMessage(hBookmarkEdit, WM_SETFONT, (WPARAM)hDefaultFont, 0);
 	EnableWindow(hBookmarkEdit, FALSE);
 
 	hBookmarkRemove = CreateWindowEx(WS_EX_WINDOWEDGE, WC_BUTTON, "Remove", WS_CHILD | WS_VISIBLE,
-		827, 318, 56, 22, hDlg, (HMENU)IDC_BOOKMARK_REMOVE, hInst, NULL);
+		907, 318, 56, 22, hDlg, (HMENU)IDC_BOOKMARK_REMOVE, hInst, NULL);
 	SendMessage(hBookmarkRemove, WM_SETFONT, (WPARAM)hDefaultFont, 0);
 	EnableWindow(hBookmarkRemove, FALSE);
 
@@ -1331,27 +1365,26 @@ void Update_Bookmark_Width(void) {
 }
 
 void Create_Bookmark_Name(char *name, BOOL is_virtual) {
-	DWORD address = selection.range[0];
-	DWORD len = min(selection.range[1] - address + 1, sizeof(bookmarks->name) - (8 + 6));
+	MIPS_DWORD address = selection.range[0];
+	QWORD len = min(selection.range[1].UDW - address.UDW + 1, sizeof(bookmarks->name) - (8 + 6));
 	BYTE value = 0;
 
 	if (is_virtual) {
 		unsigned int i = 0;
 		while (i < len) {
 			MIPS_DWORD add;
-			add.DW = (long)(address + i);
-			if (r4300i_LB_VAddr_NonCPU(add, &value) && isprint(value)) {
+			add.UDW = address.UDW + i;
+			if (IsValidAddress(add) && r4300i_LB_VAddr_NonCPU(add, &value) && isprint(value)) {
 				name[i] = value;
 			} else {
-				sprintf(name, "[0x%08X]", address);
+				sprintf(name, "[0x%016llX]", address.UDW);
 				return;
 			}
-
 			i++;
 		}
-		sprintf(&name[i], " [0x%08X]", address);
+		sprintf(&name[i], " [0x%016llX]", address.UDW);
 	} else {
-		sprintf(name, "PHYS [0x%08X]", address);
+		sprintf(name, "PHYS [0x%08X]", address.UW[0]);
 	}
 }
 
@@ -1422,8 +1455,8 @@ void Load_Bookmark(unsigned int item) {
 	selection.range_cmp[0] = bookmarks[item].selection_range[0];
 	selection.range_cmp[1] = bookmarks[item].selection_range[1];
 
-	char address[10] = { 0 };
-	sprintf(address, "%08X", bookmarks[item].selection_range[0]);
+	char address[18] = { 0 };
+	sprintf(address, "%016llX", bookmarks[item].selection_range[0].UDW);
 	SetWindowText(hAddrEdit, address);
 
 	EnableWindow(GetDlgItem(Memory_Win_hDlg, IDC_BOOKMARK_ADD), TRUE);
