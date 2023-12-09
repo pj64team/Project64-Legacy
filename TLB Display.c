@@ -212,8 +212,17 @@ void RefreshTLBWindow (void) {
 
 		// -------------- rule --------------------
 		if (FastTlb[count].ValidEntry && FastTlb[count].VALID) {
-			sprintf(Output,"%08X:%08X -> %08X:%08X",FastTlb[count].VSTART,FastTlb[count].VEND,
-				FastTlb[count].PHYSSTART,FastTlb[count].VEND - FastTlb[count].VSTART + FastTlb[count].PHYSSTART);
+			if (!Addressing64Bits) {
+				sprintf(Output, "%08X:%08X -> %08X:%08X", FastTlb[count].VSTART, FastTlb[count].VEND,
+					FastTlb[count].PHYSSTART, FastTlb[count].VEND - FastTlb[count].VSTART + FastTlb[count].PHYSSTART);
+			}
+			else {
+				static const QWORD vpnMask = 0xC00000FFFFFFE000LL;
+				QWORD vstart = ((tlb[count / 2].EntryHi.Value & vpnMask) & (~((QWORD)tlb[count/2].PageMask.BreakDownPageMask.Mask) << 13));
+				QWORD vend = vstart + (tlb[count/2].PageMask.BreakDownPageMask.Mask << 12) + 0xFFF;
+				DWORD pageLength = (DWORD)(vend - vstart);
+				sprintf(Output, "%016llX:%016llX -> %08X:%08X", vstart, vend, FastTlb[count].PHYSSTART, pageLength + FastTlb[count].PHYSSTART);
+			}
 		} else {
 			strcpy(Output,"................");
 		}
@@ -269,7 +278,7 @@ void SetupTLBWindow (HWND hDlg) {
 	ListView_InsertColumn ( GetDlgItem(hDlg,IDC_LIST2), 1, &col);
 
 	col.pszText  = "Global";
-	col.cx       = 40;
+	col.cx       = 50;
 	col.iSubItem = 2;
 	ListView_InsertColumn ( GetDlgItem(hDlg,IDC_LIST2), 2, &col);
 
@@ -284,7 +293,7 @@ void SetupTLBWindow (HWND hDlg) {
 	ListView_InsertColumn ( GetDlgItem(hDlg,IDC_LIST2), 4, &col);
 
 	col.pszText  = "Rule";
-	col.cx       = 280;
+	col.cx       = 360;
 	col.iSubItem = 5;
 	ListView_InsertColumn ( GetDlgItem(hDlg,IDC_LIST2), 5, &col);
 
