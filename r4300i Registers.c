@@ -1225,7 +1225,7 @@ void SetupR4300iSPPanel (HWND hDlg) {
 void SetupR4300iSpecialPanel (HWND hDlg) {
 	int count;
 	hSpecial[0] = CreateWindowEx(WS_EX_CLIENTEDGE,"EDIT","", WS_CHILD | 
-		ES_READONLY | WS_BORDER | WS_TABSTOP,345,70,80,19, 
+		ES_READONLY | WS_BORDER | WS_TABSTOP,345,70,135,19, 
 		hDlg,0,hInst, NULL );
 	hSpecial[1] = CreateWindowEx(WS_EX_CLIENTEDGE,"EDIT","", WS_CHILD | 
 		ES_READONLY | WS_BORDER | WS_TABSTOP,345,100,135,19, 
@@ -1536,7 +1536,7 @@ void __cdecl UpdateCurrentR4300iRegisterPanel ( void ) {
 			break;
 		case SpecialRegister:
 			GetWindowText(hSpecial[0],OldWinText,60);
-			sprintf( RegisterValue," 0x%016llX",PROGRAM_COUNTER.UDW);
+			sprintf( RegisterValue," 0x%08X - %08X",PROGRAM_COUNTER.W[1], PROGRAM_COUNTER.W[0]);
 			if ( strcmp( RegisterValue, OldWinText) != 0 ) {
 				SetWindowText(hSpecial[0],RegisterValue);
 			}			

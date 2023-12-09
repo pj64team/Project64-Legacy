@@ -25,6 +25,8 @@
 
 #include <windows.h>
 
+#include "Types.h"
+
 #pragma once
 
 #define MAX_MEM_BOOKMARKS 1000
@@ -32,7 +34,7 @@
 struct MEM_BOOKMARK {
 	char name[100];
 	unsigned int width_required;
-	DWORD selection_range[2];
+	MIPS_DWORD selection_range[2];
 	BOOL is_virtual;
 };
 

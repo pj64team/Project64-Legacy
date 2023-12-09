@@ -156,6 +156,7 @@ void RefreshTLBWindow (void) {
 			}
 		}
 
+		// ----------------- valid ---------------
 		if (FastTlb[count].ValidEntry) {
 			sprintf(Output,"%s",FastTlb[count].VALID?"Yes":"No");
 		} else {
@@ -168,26 +169,65 @@ void RefreshTLBWindow (void) {
 			ListView_SetItem(hList,&item);
 		}
 
+		// -------------  global ------------------
+		if (FastTlb[count].ValidEntry) {
+			sprintf(Output, "%s", FastTlb[count].GLOBAL ? "Yes" : "No");
+		}
+		else {
+			strcpy(Output, "................");
+		}
+		item.iSubItem = 2;
+		OldItem.iSubItem = 2;
+		ListView_GetItem(hList, &OldItem);
+		if (strcmp(item.pszText, OldItem.pszText) != 0) {
+			ListView_SetItem(hList, &item);
+		}
+
+		// -------------  ASID ------------------
+		if (FastTlb[count].ValidEntry) {
+			sprintf(Output, "%d", tlb[count/2].EntryHi.BreakDownEntryHi.ASID);
+		}
+		else {
+			strcpy(Output, "................");
+		}
+		item.iSubItem = 3;
+		OldItem.iSubItem = 3;
+		ListView_GetItem(hList, &OldItem);
+		if (strcmp(item.pszText, OldItem.pszText) != 0) {
+			ListView_SetItem(hList, &item);
+		}
+
+		// -------------- dirty ----------------
 		if (FastTlb[count].ValidEntry && FastTlb[count].VALID) {
 			sprintf(Output,"%s",FastTlb[count].DIRTY?"Yes":"No");
 		} else {
 			strcpy(Output,"................");
 		}
-		item.iSubItem  = 2;
-		OldItem.iSubItem   = 2;
+		item.iSubItem  = 4;
+		OldItem.iSubItem   = 4;
 		ListView_GetItem(hList,&OldItem);
 		if ( strcmp( item.pszText, OldItem.pszText ) != 0 ) {
 			ListView_SetItem(hList,&item);
 		}
 
+		// -------------- rule --------------------
 		if (FastTlb[count].ValidEntry && FastTlb[count].VALID) {
-			sprintf(Output,"%08X:%08X -> %08X:%08X",FastTlb[count].VSTART,FastTlb[count].VEND,
-				FastTlb[count].PHYSSTART,FastTlb[count].VEND - FastTlb[count].VSTART + FastTlb[count].PHYSSTART);
+			if (!Addressing64Bits) {
+				sprintf(Output, "%08X:%08X -> %08X:%08X", FastTlb[count].VSTART, FastTlb[count].VEND,
+					FastTlb[count].PHYSSTART, FastTlb[count].VEND - FastTlb[count].VSTART + FastTlb[count].PHYSSTART);
+			}
+			else {
+				static const QWORD vpnMask = 0xC00000FFFFFFE000LL;
+				QWORD vstart = ((tlb[count / 2].EntryHi.Value & vpnMask) & (~((QWORD)tlb[count/2].PageMask.BreakDownPageMask.Mask) << 13));
+				QWORD vend = vstart + (tlb[count/2].PageMask.BreakDownPageMask.Mask << 12) + 0xFFF;
+				DWORD pageLength = (DWORD)(vend - vstart);
+				sprintf(Output, "%016llX:%016llX -> %08X:%08X", vstart, vend, FastTlb[count].PHYSSTART, pageLength + FastTlb[count].PHYSSTART);
+			}
 		} else {
 			strcpy(Output,"................");
 		}
-		item.iSubItem  = 3;
-		OldItem.iSubItem  = 3;
+		item.iSubItem  = 5;
+		OldItem.iSubItem  = 5;
 		ListView_GetItem(hList,&OldItem);
 		if ( strcmp( item.pszText, OldItem.pszText ) != 0 ) {
 			ListView_SetItem(hList,&item);
@@ -213,7 +253,7 @@ void SetupTLBWindow (HWND hDlg) {
 	ListView_InsertColumn ( GetDlgItem(hDlg,IDC_LIST), 1, &col);
 
 	col.pszText  = "Entry Hi";
-	col.cx       = 90;
+	col.cx       = 130;
 	col.iSubItem = 2;
 	ListView_InsertColumn ( GetDlgItem(hDlg,IDC_LIST), 2, &col);
 
@@ -237,15 +277,25 @@ void SetupTLBWindow (HWND hDlg) {
 	col.iSubItem = 1;
 	ListView_InsertColumn ( GetDlgItem(hDlg,IDC_LIST2), 1, &col);
 
-	col.pszText  = "Dirty";
-	col.cx       = 40;
+	col.pszText  = "Global";
+	col.cx       = 50;
 	col.iSubItem = 2;
 	ListView_InsertColumn ( GetDlgItem(hDlg,IDC_LIST2), 2, &col);
 
-	col.pszText  = "Rule";
-	col.cx       = 280;
+	col.pszText  = "ASID";
+	col.cx       = 40;
 	col.iSubItem = 3;
 	ListView_InsertColumn ( GetDlgItem(hDlg,IDC_LIST2), 3, &col);
+
+	col.pszText  = "Dirty";
+	col.cx       = 40;
+	col.iSubItem = 4;
+	ListView_InsertColumn ( GetDlgItem(hDlg,IDC_LIST2), 4, &col);
+
+	col.pszText  = "Rule";
+	col.cx       = 360;
+	col.iSubItem = 5;
+	ListView_InsertColumn ( GetDlgItem(hDlg,IDC_LIST2), 5, &col);
 
 	RefreshTLBWindow();
 	SendMessage(GetDlgItem(hDlg,IDC_TLB_ENTRIES),BM_SETCHECK, BST_CHECKED,0);
