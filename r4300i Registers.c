@@ -181,21 +181,21 @@ void PaintR4300iAIPanel (HWND hWnd) {
 	BeginPaint( hWnd, &ps );
 	
 	rcBox.left   = 184;
-	rcBox.top    = 44;
+	rcBox.top    = 74;
 	rcBox.right  = 450;
-	rcBox.bottom = 250;
+	rcBox.bottom = 280;
 	DrawEdge( ps.hdc, &rcBox, EDGE_ETCHED, BF_RECT );
 
 	hOldFont = SelectObject( ps.hdc,
 	GetStockObject(DEFAULT_GUI_FONT) );
 	OldBkMode = SetBkMode( ps.hdc, TRANSPARENT );
 
-	TextOut( ps.hdc, 207,66,"AI_DRAM_ADDR_REG:",17);
-	TextOut( ps.hdc, 207,96,"AI_LEN_REG:",11);
-	TextOut( ps.hdc, 207,126,"AI_CONTROL_REG:",15);
-	TextOut( ps.hdc, 207,156,"AI_STATUS_REG:",14);
-	TextOut( ps.hdc, 207,186,"AI_DACRATE_REG:",15);
-	TextOut( ps.hdc, 207,216,"AI_BITRATE_REG:",15);
+	TextOut( ps.hdc, 207,96,"AI_DRAM_ADDR_REG:",17);
+	TextOut( ps.hdc, 207,126,"AI_LEN_REG:",11);
+	TextOut( ps.hdc, 207,156,"AI_CONTROL_REG:",15);
+	TextOut( ps.hdc, 207,186,"AI_STATUS_REG:",14);
+	TextOut( ps.hdc, 207,216,"AI_DACRATE_REG:",15);
+	TextOut( ps.hdc, 207,246,"AI_BITRATE_REG:",15);
 		
 	SelectObject( ps.hdc,hOldFont );
 	SetBkMode( ps.hdc, OldBkMode );
@@ -210,40 +210,40 @@ void PaintR4300iCP0Panel (HWND hWnd) {
 	BeginPaint( hWnd, &ps );
 	
 	rcBox.left   = 10;
-	rcBox.top    = 34;
+	rcBox.top    = 64;
 	rcBox.right  = 650;
-	rcBox.bottom = 270;
+	rcBox.bottom = 300;
 	DrawEdge( ps.hdc, &rcBox, EDGE_ETCHED, BF_RECT );
 
 	hOldFont = SelectObject( ps.hdc,
 		GetStockObject(DEFAULT_GUI_FONT) );
 	OldBkMode = SetBkMode( ps.hdc, TRANSPARENT );
 
-	TextOut( ps.hdc, 20,49,"Index:",6);
-	TextOut( ps.hdc, 20,73,"Random:",7);
-	TextOut( ps.hdc, 20,97,"EntryLo0:",9);
-	TextOut( ps.hdc, 20,121,"EntryLo1:",9);
-	TextOut( ps.hdc, 20,145,"Context:",8);
-	TextOut( ps.hdc, 20,169,"PageMask:",9);
-	TextOut( ps.hdc, 20,193,"Wired:",6);
-	TextOut( ps.hdc, 20,217,"BadVaddr:",9);
-	TextOut( ps.hdc, 20,241,"Count:",6);
-	TextOut( ps.hdc, 225,49,"EntryHi:",8);
-	TextOut( ps.hdc, 225,73,"Compare:",8);
-	TextOut( ps.hdc, 225,97,"Status:",7);
-	TextOut( ps.hdc, 225,121,"Cause:",6);
-	TextOut( ps.hdc, 225,145,"EPC:",4);
-	TextOut( ps.hdc, 225,169,"PRId:",5);
-	TextOut( ps.hdc, 225,193,"Config:",7);
-	TextOut( ps.hdc, 225,217,"LLAddr:",7);
-	TextOut( ps.hdc, 435,49,"WatchLo:",8);
-	TextOut( ps.hdc, 435,73,"WatchHi:",8);
-	TextOut( ps.hdc, 435,97,"XContext:",9);
-	TextOut( ps.hdc, 435,121,"Parity Error:",13);
-	TextOut( ps.hdc, 435,145,"Cache Error:",12);
-	TextOut( ps.hdc, 435,169,"TagLo:",6);
-	TextOut( ps.hdc, 435,193,"TagHi:",6);
-	TextOut( ps.hdc, 435,217,"ErrorEPC:",9);
+	TextOut( ps.hdc, 20,79,"Index:",6);
+	TextOut( ps.hdc, 20,103,"Random:",7);
+	TextOut( ps.hdc, 20,127,"EntryLo0:",9);
+	TextOut( ps.hdc, 20,151,"EntryLo1:",9);
+	TextOut( ps.hdc, 20,175,"Context:",8);
+	TextOut( ps.hdc, 20,199,"PageMask:",9);
+	TextOut( ps.hdc, 20,223,"Wired:",6);
+	TextOut( ps.hdc, 20,247,"BadVaddr:",9);
+	TextOut( ps.hdc, 20,271,"Count:",6);
+	TextOut( ps.hdc, 225,79,"EntryHi:",8);
+	TextOut( ps.hdc, 225,103,"Compare:",8);
+	TextOut( ps.hdc, 225,127,"Status:",7);
+	TextOut( ps.hdc, 225,151,"Cause:",6);
+	TextOut( ps.hdc, 225,175,"EPC:",4);
+	TextOut( ps.hdc, 225,199,"PRId:",5);
+	TextOut( ps.hdc, 225,223,"Config:",7);
+	TextOut( ps.hdc, 225,247,"LLAddr:",7);
+	TextOut( ps.hdc, 435,79,"WatchLo:",8);
+	TextOut( ps.hdc, 435,103,"WatchHi:",8);
+	TextOut( ps.hdc, 435,127,"XContext:",9);
+	TextOut( ps.hdc, 435,151,"Parity Error:",13);
+	TextOut( ps.hdc, 435,175,"Cache Error:",12);
+	TextOut( ps.hdc, 435,199,"TagLo:",6);
+	TextOut( ps.hdc, 435,223,"TagHi:",6);
+	TextOut( ps.hdc, 435,247,"ErrorEPC:",9);
 		
 	SelectObject( ps.hdc,hOldFont );
 	SetBkMode( ps.hdc, OldBkMode );
@@ -259,47 +259,47 @@ void PaintR4300iFPRPanel (HWND hWnd) {
 	BeginPaint( hWnd, &ps );
 	
 	rcBox.left   = 10;
-	rcBox.top    = 29;
+	rcBox.top    = 59;
 	rcBox.right  = 650;
-	rcBox.bottom = 275;
+	rcBox.bottom = 305;
 	DrawEdge( ps.hdc, &rcBox, EDGE_ETCHED, BF_RECT );
 
 	hOldFont = SelectObject( ps.hdc,
 	GetStockObject(DEFAULT_GUI_FONT) );
 	OldBkMode = SetBkMode( ps.hdc, TRANSPARENT );	
 
-	TextOut( ps.hdc, 25,46," Reg 0:",7);
-	TextOut( ps.hdc, 25,66," Reg 1:",7);
-	TextOut( ps.hdc, 25,86," Reg 2:",7);
-	TextOut( ps.hdc, 25,106," Reg 3:",7);
-	TextOut( ps.hdc, 25,126," Reg 4:",7);
-	TextOut( ps.hdc, 25,146," Reg 5:",7);
-	TextOut( ps.hdc, 25,166," Reg 6:",7);
-	TextOut( ps.hdc, 25,186," Reg 7:",7);
-	TextOut( ps.hdc, 25,206," Reg 8:",7);
-	TextOut( ps.hdc, 25,226," Reg 9:",7);
-	TextOut( ps.hdc, 25,246,"Reg 10:",7);
-	TextOut( ps.hdc, 240,46,"Reg 11:",7);
-	TextOut( ps.hdc, 240,66,"Reg 12:",7);
-	TextOut( ps.hdc, 240,86,"Reg 13:",7);
-	TextOut( ps.hdc, 240,106,"Reg 14:",7);
-	TextOut( ps.hdc, 240,126,"Reg 15:",7);
-	TextOut( ps.hdc, 240,146,"Reg 16:",7);
-	TextOut( ps.hdc, 240,166,"Reg 17:",7);
-	TextOut( ps.hdc, 240,186,"Reg 18:",7);
-	TextOut( ps.hdc, 240,206,"Reg 19:",7);
-	TextOut( ps.hdc, 240,226,"Reg 20:",7);
-	TextOut( ps.hdc, 240,246,"Reg 21:",7);
-	TextOut( ps.hdc, 450,46,"Reg 22:",7);
-	TextOut( ps.hdc, 450,66,"Reg 23:",7);
-	TextOut( ps.hdc, 450,86,"Reg 24:",7);
-	TextOut( ps.hdc, 450,106,"Reg 25:",7);
-	TextOut( ps.hdc, 450,126,"Reg 26:",7);
-	TextOut( ps.hdc, 450,146,"Reg 27:",7);
-	TextOut( ps.hdc, 450,166,"Reg 28:",7);
-	TextOut( ps.hdc, 450,186,"Reg 29:",7);
-	TextOut( ps.hdc, 450,206,"Reg 30:",7);
-	TextOut( ps.hdc, 450,226,"Reg 31:",7);
+	TextOut( ps.hdc, 25,76," Reg 0:",7);
+	TextOut( ps.hdc, 25,96," Reg 1:",7);
+	TextOut( ps.hdc, 25,116," Reg 2:",7);
+	TextOut( ps.hdc, 25,136," Reg 3:",7);
+	TextOut( ps.hdc, 25,156," Reg 4:",7);
+	TextOut( ps.hdc, 25,176," Reg 5:",7);
+	TextOut( ps.hdc, 25,196," Reg 6:",7);
+	TextOut( ps.hdc, 25,216," Reg 7:",7);
+	TextOut( ps.hdc, 25,236," Reg 8:",7);
+	TextOut( ps.hdc, 25,256," Reg 9:",7);
+	TextOut( ps.hdc, 25,276,"Reg 10:",7);
+	TextOut( ps.hdc, 240,76,"Reg 11:",7);
+	TextOut( ps.hdc, 240,96,"Reg 12:",7);
+	TextOut( ps.hdc, 240,116,"Reg 13:",7);
+	TextOut( ps.hdc, 240,136,"Reg 14:",7);
+	TextOut( ps.hdc, 240,156,"Reg 15:",7);
+	TextOut( ps.hdc, 240,176,"Reg 16:",7);
+	TextOut( ps.hdc, 240,196,"Reg 17:",7);
+	TextOut( ps.hdc, 240,216,"Reg 18:",7);
+	TextOut( ps.hdc, 240,236,"Reg 19:",7);
+	TextOut( ps.hdc, 240,256,"Reg 20:",7);
+	TextOut( ps.hdc, 240,276,"Reg 21:",7);
+	TextOut( ps.hdc, 450,76,"Reg 22:",7);
+	TextOut( ps.hdc, 450,96,"Reg 23:",7);
+	TextOut( ps.hdc, 450,116,"Reg 24:",7);
+	TextOut( ps.hdc, 450,136,"Reg 25:",7);
+	TextOut( ps.hdc, 450,156,"Reg 26:",7);
+	TextOut( ps.hdc, 450,176,"Reg 27:",7);
+	TextOut( ps.hdc, 450,196,"Reg 28:",7);
+	TextOut( ps.hdc, 450,216,"Reg 29:",7);
+	TextOut( ps.hdc, 450,236,"Reg 30:",7);
+	TextOut( ps.hdc, 450,256,"Reg 31:",7);
 		
 	SelectObject( ps.hdc,hOldFont );
 	SetBkMode( ps.hdc, OldBkMode );
@@ -314,47 +314,47 @@ void PaintR4300iCOP1SPanel(HWND hWnd) {
 	BeginPaint(hWnd, &ps);
 
 	rcBox.left = 10;
-	rcBox.top = 29;
+	rcBox.top = 59;
 	rcBox.right = 650;
-	rcBox.bottom = 275;
+	rcBox.bottom = 305;
 	DrawEdge(ps.hdc, &rcBox, EDGE_ETCHED, BF_RECT);
 
 	hOldFont = SelectObject(ps.hdc,
 		GetStockObject(DEFAULT_GUI_FONT));
 	OldBkMode = SetBkMode(ps.hdc, TRANSPARENT);
 
-	TextOut(ps.hdc, 25, 46, " Reg 0:", 7);
-	TextOut(ps.hdc, 25, 66, " Reg 1:", 7);
-	TextOut(ps.hdc, 25, 86, " Reg 2:", 7);
-	TextOut(ps.hdc, 25, 106, " Reg 3:", 7);
-	TextOut(ps.hdc, 25, 126, " Reg 4:", 7);
-	TextOut(ps.hdc, 25, 146, " Reg 5:", 7);
-	TextOut(ps.hdc, 25, 166, " Reg 6:", 7);
-	TextOut(ps.hdc, 25, 186, " Reg 7:", 7);
-	TextOut(ps.hdc, 25, 206, " Reg 8:", 7);
-	TextOut(ps.hdc, 25, 226, " Reg 9:", 7);
-	TextOut(ps.hdc, 25, 246, "Reg 10:", 7);
-	TextOut(ps.hdc, 240, 46, "Reg 11:", 7);
-	TextOut(ps.hdc, 240, 66, "Reg 12:", 7);
-	TextOut(ps.hdc, 240, 86, "Reg 13:", 7);
-	TextOut(ps.hdc, 240, 106, "Reg 14:", 7);
-	TextOut(ps.hdc, 240, 126, "Reg 15:", 7);
-	TextOut(ps.hdc, 240, 146, "Reg 16:", 7);
-	TextOut(ps.hdc, 240, 166, "Reg 17:", 7);
-	TextOut(ps.hdc, 240, 186, "Reg 18:", 7);
-	TextOut(ps.hdc, 240, 206, "Reg 19:", 7);
-	TextOut(ps.hdc, 240, 226, "Reg 20:", 7);
-	TextOut(ps.hdc, 240, 246, "Reg 21:", 7);
-	TextOut(ps.hdc, 450, 46, "Reg 22:", 7);
-	TextOut(ps.hdc, 450, 66, "Reg 23:", 7);
-	TextOut(ps.hdc, 450, 86, "Reg 24:", 7);
-	TextOut(ps.hdc, 450, 106, "Reg 25:", 7);
-	TextOut(ps.hdc, 450, 126, "Reg 26:", 7);
-	TextOut(ps.hdc, 450, 146, "Reg 27:", 7);
-	TextOut(ps.hdc, 450, 166, "Reg 28:", 7);
-	TextOut(ps.hdc, 450, 186, "Reg 29:", 7);
-	TextOut(ps.hdc, 450, 206, "Reg 30:", 7);
-	TextOut(ps.hdc, 450, 226, "Reg 31:", 7);
+	TextOut(ps.hdc, 25, 76, " Reg 0:", 7);
+	TextOut(ps.hdc, 25, 96, " Reg 1:", 7);
+	TextOut(ps.hdc, 25, 116, " Reg 2:", 7);
+	TextOut(ps.hdc, 25, 136, " Reg 3:", 7);
+	TextOut(ps.hdc, 25, 156, " Reg 4:", 7);
+	TextOut(ps.hdc, 25, 176, " Reg 5:", 7);
+	TextOut(ps.hdc, 25, 196, " Reg 6:", 7);
+	TextOut(ps.hdc, 25, 216, " Reg 7:", 7);
+	TextOut(ps.hdc, 25, 236, " Reg 8:", 7);
+	TextOut(ps.hdc, 25, 256, " Reg 9:", 7);
+	TextOut(ps.hdc, 25, 276, "Reg 10:", 7);
+	TextOut(ps.hdc, 240, 76, "Reg 11:", 7);
+	TextOut(ps.hdc, 240, 96, "Reg 12:", 7);
+	TextOut(ps.hdc, 240, 116, "Reg 13:", 7);
+	TextOut(ps.hdc, 240, 136, "Reg 14:", 7);
+	TextOut(ps.hdc, 240, 156, "Reg 15:", 7);
+	TextOut(ps.hdc, 240, 176, "Reg 16:", 7);
+	TextOut(ps.hdc, 240, 196, "Reg 17:", 7);
+	TextOut(ps.hdc, 240, 216, "Reg 18:", 7);
+	TextOut(ps.hdc, 240, 236, "Reg 19:", 7);
+	TextOut(ps.hdc, 240, 256, "Reg 20:", 7);
+	TextOut(ps.hdc, 240, 276, "Reg 21:", 7);
+	TextOut(ps.hdc, 450, 76, "Reg 22:", 7);
+	TextOut(ps.hdc, 450, 96, "Reg 23:", 7);
+	TextOut(ps.hdc, 450, 116, "Reg 24:", 7);
+	TextOut(ps.hdc, 450, 136, "Reg 25:", 7);
+	TextOut(ps.hdc, 450, 156, "Reg 26:", 7);
+	TextOut(ps.hdc, 450, 176, "Reg 27:", 7);
+	TextOut(ps.hdc, 450, 196, "Reg 28:", 7);
+	TextOut(ps.hdc, 450, 216, "Reg 29:", 7);
+	TextOut(ps.hdc, 450, 236, "Reg 30:", 7);
+	TextOut(ps.hdc, 450, 256, "Reg 31:", 7);
 
 	SelectObject(ps.hdc, hOldFont);
 	SetBkMode(ps.hdc, OldBkMode);
@@ -369,47 +369,47 @@ void PaintR4300iCOP1DPanel(HWND hWnd) {
 	BeginPaint(hWnd, &ps);
 
 	rcBox.left = 10;
-	rcBox.top = 29;
+	rcBox.top = 59;
 	rcBox.right = 650;
-	rcBox.bottom = 275;
+	rcBox.bottom = 305;
 	DrawEdge(ps.hdc, &rcBox, EDGE_ETCHED, BF_RECT);
 
 	hOldFont = SelectObject(ps.hdc,
 		GetStockObject(DEFAULT_GUI_FONT));
 	OldBkMode = SetBkMode(ps.hdc, TRANSPARENT);
 
-	TextOut(ps.hdc, 25, 46, " Reg 0:", 7);
-	TextOut(ps.hdc, 25, 66, " Reg 1:", 7);
-	TextOut(ps.hdc, 25, 86, " Reg 2:", 7);
-	TextOut(ps.hdc, 25, 106, " Reg 3:", 7);
-	TextOut(ps.hdc, 25, 126, " Reg 4:", 7);
-	TextOut(ps.hdc, 25, 146, " Reg 5:", 7);
-	TextOut(ps.hdc, 25, 166, " Reg 6:", 7);
-	TextOut(ps.hdc, 25, 186, " Reg 7:", 7);
-	TextOut(ps.hdc, 25, 206, " Reg 8:", 7);
-	TextOut(ps.hdc, 25, 226, " Reg 9:", 7);
-	TextOut(ps.hdc, 25, 246, "Reg 10:", 7);
-	TextOut(ps.hdc, 240, 46, "Reg 11:", 7);
-	TextOut(ps.hdc, 240, 66, "Reg 12:", 7);
-	TextOut(ps.hdc, 240, 86, "Reg 13:", 7);
-	TextOut(ps.hdc, 240, 106, "Reg 14:", 7);
-	TextOut(ps.hdc, 240, 126, "Reg 15:", 7);
-	TextOut(ps.hdc, 240, 146, "Reg 16:", 7);
-	TextOut(ps.hdc, 240, 166, "Reg 17:", 7);
-	TextOut(ps.hdc, 240, 186, "Reg 18:", 7);
-	TextOut(ps.hdc, 240, 206, "Reg 19:", 7);
-	TextOut(ps.hdc, 240, 226, "Reg 20:", 7);
-	TextOut(ps.hdc, 240, 246, "Reg 21:", 7);
-	TextOut(ps.hdc, 450, 46, "Reg 22:", 7);
-	TextOut(ps.hdc, 450, 66, "Reg 23:", 7);
-	TextOut(ps.hdc, 450, 86, "Reg 24:", 7);
-	TextOut(ps.hdc, 450, 106, "Reg 25:", 7);
-	TextOut(ps.hdc, 450, 126, "Reg 26:", 7);
-	TextOut(ps.hdc, 450, 146, "Reg 27:", 7);
-	TextOut(ps.hdc, 450, 166, "Reg 28:", 7);
-	TextOut(ps.hdc, 450, 186, "Reg 29:", 7);
-	TextOut(ps.hdc, 450, 206, "Reg 30:", 7);
-	TextOut(ps.hdc, 450, 226, "Reg 31:", 7);
+	TextOut(ps.hdc, 25, 76, " Reg 0:", 7);
+	TextOut(ps.hdc, 25, 96, " Reg 1:", 7);
+	TextOut(ps.hdc, 25, 116, " Reg 2:", 7);
+	TextOut(ps.hdc, 25, 136, " Reg 3:", 7);
+	TextOut(ps.hdc, 25, 156, " Reg 4:", 7);
+	TextOut(ps.hdc, 25, 176, " Reg 5:", 7);
+	TextOut(ps.hdc, 25, 196, " Reg 6:", 7);
+	TextOut(ps.hdc, 25, 216, " Reg 7:", 7);
+	TextOut(ps.hdc, 25, 236, " Reg 8:", 7);
+	TextOut(ps.hdc, 25, 256, " Reg 9:", 7);
+	TextOut(ps.hdc, 25, 276, "Reg 10:", 7);
+	TextOut(ps.hdc, 240, 76, "Reg 11:", 7);
+	TextOut(ps.hdc, 240, 96, "Reg 12:", 7);
+	TextOut(ps.hdc, 240, 116, "Reg 13:", 7);
+	TextOut(ps.hdc, 240, 136, "Reg 14:", 7);
+	TextOut(ps.hdc, 240, 156, "Reg 15:", 7);
+	TextOut(ps.hdc, 240, 176, "Reg 16:", 7);
+	TextOut(ps.hdc, 240, 196, "Reg 17:", 7);
+	TextOut(ps.hdc, 240, 216, "Reg 18:", 7);
+	TextOut(ps.hdc, 240, 236, "Reg 19:", 7);
+	TextOut(ps.hdc, 240, 256, "Reg 20:", 7);
+	TextOut(ps.hdc, 240, 276, "Reg 21:", 7);
+	TextOut(ps.hdc, 450, 76, "Reg 22:", 7);
+	TextOut(ps.hdc, 450, 96, "Reg 23:", 7);
+	TextOut(ps.hdc, 450, 116, "Reg 24:", 7);
+	TextOut(ps.hdc, 450, 136, "Reg 25:", 7);
+	TextOut(ps.hdc, 450, 156, "Reg 26:", 7);
+	TextOut(ps.hdc, 450, 176, "Reg 27:", 7);
+	TextOut(ps.hdc, 450, 196, "Reg 28:", 7);
+	TextOut(ps.hdc, 450, 216, "Reg 29:", 7);
+	TextOut(ps.hdc, 450, 236, "Reg 30:", 7);
+	TextOut(ps.hdc, 450, 256, "Reg 31:", 7);
 
 	SelectObject(ps.hdc, hOldFont);
 	SetBkMode(ps.hdc, OldBkMode);
@@ -424,47 +424,47 @@ void PaintR4300iCOP1WPanel(HWND hWnd) {
 	BeginPaint(hWnd, &ps);
 
 	rcBox.left = 10;
-	rcBox.top = 29;
+	rcBox.top = 59;
 	rcBox.right = 650;
-	rcBox.bottom = 275;
+	rcBox.bottom = 305;
 	DrawEdge(ps.hdc, &rcBox, EDGE_ETCHED, BF_RECT);
 
 	hOldFont = SelectObject(ps.hdc,
 		GetStockObject(DEFAULT_GUI_FONT));
 	OldBkMode = SetBkMode(ps.hdc, TRANSPARENT);
 
-	TextOut(ps.hdc, 25, 46, " Reg 0:", 7);
-	TextOut(ps.hdc, 25, 66, " Reg 1:", 7);
-	TextOut(ps.hdc, 25, 86, " Reg 2:", 7);
-	TextOut(ps.hdc, 25, 106, " Reg 3:", 7);
-	TextOut(ps.hdc, 25, 126, " Reg 4:", 7);
-	TextOut(ps.hdc, 25, 146, " Reg 5:", 7);
-	TextOut(ps.hdc, 25, 166, " Reg 6:", 7);
-	TextOut(ps.hdc, 25, 186, " Reg 7:", 7);
-	TextOut(ps.hdc, 25, 206, " Reg 8:", 7);
-	TextOut(ps.hdc, 25, 226, " Reg 9:", 7);
-	TextOut(ps.hdc, 25, 246, "Reg 10:", 7);
-	TextOut(ps.hdc, 240, 46, "Reg 11:", 7);
-	TextOut(ps.hdc, 240, 66, "Reg 12:", 7);
-	TextOut(ps.hdc, 240, 86, "Reg 13:", 7);
-	TextOut(ps.hdc, 240, 106, "Reg 14:", 7);
-	TextOut(ps.hdc, 240, 126, "Reg 15:", 7);
-	TextOut(ps.hdc, 240, 146, "Reg 16:", 7);
-	TextOut(ps.hdc, 240, 166, "Reg 17:", 7);
-	TextOut(ps.hdc, 240, 186, "Reg 18:", 7);
-	TextOut(ps.hdc, 240, 206, "Reg 19:", 7);
-	TextOut(ps.hdc, 240, 226, "Reg 20:", 7);
-	TextOut(ps.hdc, 240, 246, "Reg 21:", 7);
-	TextOut(ps.hdc, 450, 46, "Reg 22:", 7);
-	TextOut(ps.hdc, 450, 66, "Reg 23:", 7);
-	TextOut(ps.hdc, 450, 86, "Reg 24:", 7);
-	TextOut(ps.hdc, 450, 106, "Reg 25:", 7);
-	TextOut(ps.hdc, 450, 126, "Reg 26:", 7);
-	TextOut(ps.hdc, 450, 146, "Reg 27:", 7);
-	TextOut(ps.hdc, 450, 166, "Reg 28:", 7);
-	TextOut(ps.hdc, 450, 186, "Reg 29:", 7);
-	TextOut(ps.hdc, 450, 206, "Reg 30:", 7);
-	TextOut(ps.hdc, 450, 226, "Reg 31:", 7);
+	TextOut(ps.hdc, 25, 76, " Reg 0:", 7);
+	TextOut(ps.hdc, 25, 96, " Reg 1:", 7);
+	TextOut(ps.hdc, 25, 116, " Reg 2:", 7);
+	TextOut(ps.hdc, 25, 136, " Reg 3:", 7);
+	TextOut(ps.hdc, 25, 156, " Reg 4:", 7);
+	TextOut(ps.hdc, 25, 176, " Reg 5:", 7);
+	TextOut(ps.hdc, 25, 196, " Reg 6:", 7);
+	TextOut(ps.hdc, 25, 216, " Reg 7:", 7);
+	TextOut(ps.hdc, 25, 236, " Reg 8:", 7);
+	TextOut(ps.hdc, 25, 256, " Reg 9:", 7);
+	TextOut(ps.hdc, 25, 276, "Reg 10:", 7);
+	TextOut(ps.hdc, 240, 76, "Reg 11:", 7);
+	TextOut(ps.hdc, 240, 96, "Reg 12:", 7);
+	TextOut(ps.hdc, 240, 116, "Reg 13:", 7);
+	TextOut(ps.hdc, 240, 136, "Reg 14:", 7);
+	TextOut(ps.hdc, 240, 156, "Reg 15:", 7);
+	TextOut(ps.hdc, 240, 176, "Reg 16:", 7);
+	TextOut(ps.hdc, 240, 196, "Reg 17:", 7);
+	TextOut(ps.hdc, 240, 216, "Reg 18:", 7);
+	TextOut(ps.hdc, 240, 236, "Reg 19:", 7);
+	TextOut(ps.hdc, 240, 256, "Reg 20:", 7);
+	TextOut(ps.hdc, 240, 276, "Reg 21:", 7);
+	TextOut(ps.hdc, 450, 76, "Reg 22:", 7);
+	TextOut(ps.hdc, 450, 96, "Reg 23:", 7);
+	TextOut(ps.hdc, 450, 116, "Reg 24:", 7);
+	TextOut(ps.hdc, 450, 136, "Reg 25:", 7);
+	TextOut(ps.hdc, 450, 156, "Reg 26:", 7);
+	TextOut(ps.hdc, 450, 176, "Reg 27:", 7);
+	TextOut(ps.hdc, 450, 196, "Reg 28:", 7);
+	TextOut(ps.hdc, 450, 216, "Reg 29:", 7);
+	TextOut(ps.hdc, 450, 236, "Reg 30:", 7);
+	TextOut(ps.hdc, 450, 256, "Reg 31:", 7);
 
 	SelectObject(ps.hdc, hOldFont);
 	SetBkMode(ps.hdc, OldBkMode);
@@ -479,47 +479,47 @@ void PaintR4300iCOP1LPanel(HWND hWnd) {
 	BeginPaint(hWnd, &ps);
 
 	rcBox.left = 10;
-	rcBox.top = 29;
+	rcBox.top = 59;
 	rcBox.right = 650;
-	rcBox.bottom = 275;
+	rcBox.bottom = 305;
 	DrawEdge(ps.hdc, &rcBox, EDGE_ETCHED, BF_RECT);
 
 	hOldFont = SelectObject(ps.hdc,
 		GetStockObject(DEFAULT_GUI_FONT));
 	OldBkMode = SetBkMode(ps.hdc, TRANSPARENT);
 
-	TextOut(ps.hdc, 25, 46, " Reg 0:", 7);
-	TextOut(ps.hdc, 25, 66, " Reg 1:", 7);
-	TextOut(ps.hdc, 25, 86, " Reg 2:", 7);
-	TextOut(ps.hdc, 25, 106, " Reg 3:", 7);
-	TextOut(ps.hdc, 25, 126, " Reg 4:", 7);
-	TextOut(ps.hdc, 25, 146, " Reg 5:", 7);
-	TextOut(ps.hdc, 25, 166, " Reg 6:", 7);
-	TextOut(ps.hdc, 25, 186, " Reg 7:", 7);
-	TextOut(ps.hdc, 25, 206, " Reg 8:", 7);
-	TextOut(ps.hdc, 25, 226, " Reg 9:", 7);
-	TextOut(ps.hdc, 25, 246, "Reg 10:", 7);
-	TextOut(ps.hdc, 240, 46, "Reg 11:", 7);
-	TextOut(ps.hdc, 240, 66, "Reg 12:", 7);
-	TextOut(ps.hdc, 240, 86, "Reg 13:", 7);
-	TextOut(ps.hdc, 240, 106, "Reg 14:", 7);
-	TextOut(ps.hdc, 240, 126, "Reg 15:", 7);
-	TextOut(ps.hdc, 240, 146, "Reg 16:", 7);
-	TextOut(ps.hdc, 240, 166, "Reg 17:", 7);
-	TextOut(ps.hdc, 240, 186, "Reg 18:", 7);
-	TextOut(ps.hdc, 240, 206, "Reg 19:", 7);
-	TextOut(ps.hdc, 240, 226, "Reg 20:", 7);
-	TextOut(ps.hdc, 240, 246, "Reg 21:", 7);
-	TextOut(ps.hdc, 450, 46, "Reg 22:", 7);
-	TextOut(ps.hdc, 450, 66, "Reg 23:", 7);
-	TextOut(ps.hdc, 450, 86, "Reg 24:", 7);
-	TextOut(ps.hdc, 450, 106, "Reg 25:", 7);
-	TextOut(ps.hdc, 450, 126, "Reg 26:", 7);
-	TextOut(ps.hdc, 450, 146, "Reg 27:", 7);
-	TextOut(ps.hdc, 450, 166, "Reg 28:", 7);
-	TextOut(ps.hdc, 450, 186, "Reg 29:", 7);
-	TextOut(ps.hdc, 450, 206, "Reg 30:", 7);
-	TextOut(ps.hdc, 450, 226, "Reg 31:", 7);
+	TextOut(ps.hdc, 25, 76, " Reg 0:", 7);
+	TextOut(ps.hdc, 25, 96, " Reg 1:", 7);
+	TextOut(ps.hdc, 25, 116, " Reg 2:", 7);
+	TextOut(ps.hdc, 25, 136, " Reg 3:", 7);
+	TextOut(ps.hdc, 25, 156, " Reg 4:", 7);
+	TextOut(ps.hdc, 25, 176, " Reg 5:", 7);
+	TextOut(ps.hdc, 25, 196, " Reg 6:", 7);
+	TextOut(ps.hdc, 25, 216, " Reg 7:", 7);
+	TextOut(ps.hdc, 25, 236, " Reg 8:", 7);
+	TextOut(ps.hdc, 25, 256, " Reg 9:", 7);
+	TextOut(ps.hdc, 25, 276, "Reg 10:", 7);
+	TextOut(ps.hdc, 240, 76, "Reg 11:", 7);
+	TextOut(ps.hdc, 240, 96, "Reg 12:", 7);
+	TextOut(ps.hdc, 240, 116, "Reg 13:", 7);
+	TextOut(ps.hdc, 240, 136, "Reg 14:", 7);
+	TextOut(ps.hdc, 240, 156, "Reg 15:", 7);
+	TextOut(ps.hdc, 240, 176, "Reg 16:", 7);
+	TextOut(ps.hdc, 240, 196, "Reg 17:", 7);
+	TextOut(ps.hdc, 240, 216, "Reg 18:", 7);
+	TextOut(ps.hdc, 240, 236, "Reg 19:", 7);
+	TextOut(ps.hdc, 240, 256, "Reg 20:", 7);
+	TextOut(ps.hdc, 240, 276, "Reg 21:", 7);
+	TextOut(ps.hdc, 450, 76, "Reg 22:", 7);
+	TextOut(ps.hdc, 450, 96, "Reg 23:", 7);
+	TextOut(ps.hdc, 450, 116, "Reg 24:", 7);
+	TextOut(ps.hdc, 450, 136, "Reg 25:", 7);
+	TextOut(ps.hdc, 450, 156, "Reg 26:", 7);
+	TextOut(ps.hdc, 450, 176, "Reg 27:", 7);
+	TextOut(ps.hdc, 450, 196, "Reg 28:", 7);
+	TextOut(ps.hdc, 450, 216, "Reg 29:", 7);
+	TextOut(ps.hdc, 450, 236, "Reg 30:", 7);
+	TextOut(ps.hdc, 450, 256, "Reg 31:", 7);
 
 	SelectObject(ps.hdc, hOldFont);
 	SetBkMode(ps.hdc, OldBkMode);
@@ -534,47 +534,47 @@ void PaintR4300iGPRPanel (HWND hWnd) {
 	BeginPaint( hWnd, &ps );
 	
 	rcBox.left   = 10;
-	rcBox.top    = 29;
+	rcBox.top    = 59;
 	rcBox.right  = 650;
-	rcBox.bottom = 275;
+	rcBox.bottom = 305;
 	DrawEdge( ps.hdc, &rcBox, EDGE_ETCHED, BF_RECT );
 
 	hOldFont = SelectObject( ps.hdc,
 	GetStockObject(DEFAULT_GUI_FONT) );
 	OldBkMode = SetBkMode( ps.hdc, TRANSPARENT );
 
-	TextOut( ps.hdc, 20,46,"R0 - Reg 0:",11);
-	TextOut( ps.hdc, 20,66,"AT - Reg 1:",11);
-	TextOut( ps.hdc, 20,86,"V0 - Reg 2:",11);
-	TextOut( ps.hdc, 20,106,"V1 - Reg 3:",11);
-	TextOut( ps.hdc, 20,126,"A0 - Reg 4:",11);
-	TextOut( ps.hdc, 20,146,"A1 - Reg 5:",11);
-	TextOut( ps.hdc, 20,166,"A2 - Reg 6:",11);
-	TextOut( ps.hdc, 20,186,"A3 - Reg 7:",11);
-	TextOut( ps.hdc, 20,206,"T0 - Reg 8:",11);
-	TextOut( ps.hdc, 20,226,"T1 - Reg 9:",11);
-	TextOut( ps.hdc, 20,246,"T2 - Reg 10:",12);
-	TextOut( ps.hdc, 225,46,"T3 - Reg 11:",12);
-	TextOut( ps.hdc, 225,66,"T4 - Reg 12:",12);
-	TextOut( ps.hdc, 225,86,"T5 - Reg 13:",12);
-	TextOut( ps.hdc, 225,106,"T6 - Reg 14:",12);
-	TextOut( ps.hdc, 225,126,"T7 - Reg 15:",12);
-	TextOut( ps.hdc, 225,146,"S0 - Reg 16:",12);
-	TextOut( ps.hdc, 225,166,"S1 - Reg 17:",12);
-	TextOut( ps.hdc, 225,186,"S2 - Reg 18:",12);
-	TextOut( ps.hdc, 225,206,"S3 - Reg 19:",12);
-	TextOut( ps.hdc, 225,226,"S4 - Reg 20:",12);
-	TextOut( ps.hdc, 225,246,"S5 - Reg 21:",12);
-	TextOut( ps.hdc, 435,46,"S6 - Reg 22:",12);
-	TextOut( ps.hdc, 435,66,"S7 - Reg 23:",12);
-	TextOut( ps.hdc, 435,86,"T8 - Reg 24:",12);
-	TextOut( ps.hdc, 435,106,"T9 - Reg 25:",12);
-	TextOut( ps.hdc, 435,126,"K0 - Reg 26:",12);
-	TextOut( ps.hdc, 435,146,"K1 - Reg 27:",12);
-	TextOut( ps.hdc, 435,166,"GP - Reg 28:",12);
-	TextOut( ps.hdc, 435,186,"SP - Reg 29:",12);
-	TextOut( ps.hdc, 435,206,"S8 - Reg 30:",12);
-	TextOut( ps.hdc, 435,226,"RA - Reg 31:",12);
+	TextOut( ps.hdc, 20,76,"R0 - Reg 0:",11);
+	TextOut( ps.hdc, 20,96,"AT - Reg 1:",11);
+	TextOut( ps.hdc, 20,116,"V0 - Reg 2:",11);
+	TextOut( ps.hdc, 20,136,"V1 - Reg 3:",11);
+	TextOut( ps.hdc, 20,156,"A0 - Reg 4:",11);
+	TextOut( ps.hdc, 20,176,"A1 - Reg 5:",11);
+	TextOut( ps.hdc, 20,196,"A2 - Reg 6:",11);
+	TextOut( ps.hdc, 20,216,"A3 - Reg 7:",11);
+	TextOut( ps.hdc, 20,236,"T0 - Reg 8:",11);
+	TextOut( ps.hdc, 20,256,"T1 - Reg 9:",11);
+	TextOut( ps.hdc, 20,276,"T2 - Reg 10:",12);
+	TextOut( ps.hdc, 225,76,"T3 - Reg 11:",12);
+	TextOut( ps.hdc, 225,96,"T4 - Reg 12:",12);
+	TextOut( ps.hdc, 225,116,"T5 - Reg 13:",12);
+	TextOut( ps.hdc, 225,136,"T6 - Reg 14:",12);
+	TextOut( ps.hdc, 225,156,"T7 - Reg 15:",12);
+	TextOut( ps.hdc, 225,176,"S0 - Reg 16:",12);
+	TextOut( ps.hdc, 225,196,"S1 - Reg 17:",12);
+	TextOut( ps.hdc, 225,216,"S2 - Reg 18:",12);
+	TextOut( ps.hdc, 225,236,"S3 - Reg 19:",12);
+	TextOut( ps.hdc, 225,256,"S4 - Reg 20:",12);
+	TextOut( ps.hdc, 225,276,"S5 - Reg 21:",12);
+	TextOut( ps.hdc, 435,76,"S6 - Reg 22:",12);
+	TextOut( ps.hdc, 435,96,"S7 - Reg 23:",12);
+	TextOut( ps.hdc, 435,116,"T8 - Reg 24:",12);
+	TextOut( ps.hdc, 435,136,"T9 - Reg 25:",12);
+	TextOut( ps.hdc, 435,156,"K0 - Reg 26:",12);
+	TextOut( ps.hdc, 435,176,"K1 - Reg 27:",12);
+	TextOut( ps.hdc, 435,196,"GP - Reg 28:",12);
+	TextOut( ps.hdc, 435,216,"SP - Reg 29:",12);
+	TextOut( ps.hdc, 435,236,"S8 - Reg 30:",12);
+	TextOut( ps.hdc, 435,256,"RA - Reg 31:",12);
 		
 	SelectObject( ps.hdc,hOldFont );
 	SetBkMode( ps.hdc, OldBkMode );
@@ -589,25 +589,25 @@ void PaintR4300iRDRamPanel (HWND hWnd) {
 	BeginPaint( hWnd, &ps );
 	
 	rcBox.left   = 155;
-	rcBox.top    = 34;
+	rcBox.top    = 64;
 	rcBox.right  = 495;
-	rcBox.bottom = 270;
+	rcBox.bottom = 300;
 	DrawEdge( ps.hdc, &rcBox, EDGE_ETCHED, BF_RECT );
 
 	hOldFont = SelectObject( ps.hdc,
 	GetStockObject(DEFAULT_GUI_FONT) );
 	OldBkMode = SetBkMode( ps.hdc, TRANSPARENT );
 
-	TextOut( ps.hdc, 190,56,"RDRAM_CONFIG_REG:",17);
-	TextOut( ps.hdc, 190,76,"RDRAM_DEVICE_ID_REG:",20);
-	TextOut( ps.hdc, 190,96,"RDRAM_DELAY_REG:",16);
-	TextOut( ps.hdc, 190,116,"RDRAM_MODE_REG:",15);
-	TextOut( ps.hdc, 190,136,"RDRAM_REF_INTERVAL_REG:",23);
-	TextOut( ps.hdc, 190,156,"RDRAM_REF_ROW_REG:",18);
-	TextOut( ps.hdc, 190,176,"RDRAM_RAS_INTERVAL_REG:",23);
-	TextOut( ps.hdc, 190,196,"RDRAM_MIN_INTERVAL_REG:",23);
-	TextOut( ps.hdc, 190,216,"RDRAM_ADDR_SELECT_REG:",22);
-	TextOut( ps.hdc, 190,236,"RDRAM_DEVICE_MANUF_REG:",23);
+	TextOut( ps.hdc, 190,86,"RDRAM_CONFIG_REG:",17);
+	TextOut( ps.hdc, 190,106,"RDRAM_DEVICE_ID_REG:",20);
+	TextOut( ps.hdc, 190,126,"RDRAM_DELAY_REG:",16);
+	TextOut( ps.hdc, 190,146,"RDRAM_MODE_REG:",15);
+	TextOut( ps.hdc, 190,166,"RDRAM_REF_INTERVAL_REG:",23);
+	TextOut( ps.hdc, 190,186,"RDRAM_REF_ROW_REG:",18);
+	TextOut( ps.hdc, 190,206,"RDRAM_RAS_INTERVAL_REG:",23);
+	TextOut( ps.hdc, 190,226,"RDRAM_MIN_INTERVAL_REG:",23);
+	TextOut( ps.hdc, 190,246,"RDRAM_ADDR_SELECT_REG:",22);
+	TextOut( ps.hdc, 190,266,"RDRAM_DEVICE_MANUF_REG:",23);
 		
 	SelectObject( ps.hdc,hOldFont );
 	SetBkMode( ps.hdc, OldBkMode );
@@ -622,23 +622,23 @@ void PaintR4300iRIPanel (HWND hWnd) {
 	BeginPaint( hWnd, &ps );
 	
 	rcBox.left   = 95;
-	rcBox.top    = 64;
+	rcBox.top    = 94;
 	rcBox.right  = 565;
-	rcBox.bottom = 215;
+	rcBox.bottom = 245;
 	DrawEdge( ps.hdc, &rcBox, EDGE_ETCHED, BF_RECT );
 
 	hOldFont = SelectObject( ps.hdc,
 	GetStockObject(DEFAULT_GUI_FONT) );
 	OldBkMode = SetBkMode( ps.hdc, TRANSPARENT );
 
-	TextOut( ps.hdc, 110,86,"RI_MODE_REG:",12);
-	TextOut( ps.hdc, 110,116,"RI_CONFIG_REG:",14);
-	TextOut( ps.hdc, 110,146,"RI_CURRENT_LOAD_REG:",20);
-	TextOut( ps.hdc, 110,176,"RI_SELECT_REG:",14);
-	TextOut( ps.hdc, 360,86,"RI_REFRESH_REG:",15);
-	TextOut( ps.hdc, 360,116,"RI_LATENCY_REG:",15);
-	TextOut( ps.hdc, 360,146,"RI_RERROR_REG:",14);
-	TextOut( ps.hdc, 360,176,"RI_WERROR_REG:",14);
+	TextOut( ps.hdc, 110,116,"RI_MODE_REG:",12);
+	TextOut( ps.hdc, 110,146,"RI_CONFIG_REG:",14);
+	TextOut( ps.hdc, 110,176,"RI_CURRENT_LOAD_REG:",20);
+	TextOut( ps.hdc, 110,206,"RI_SELECT_REG:",14);
+	TextOut( ps.hdc, 360,116,"RI_REFRESH_REG:",15);
+	TextOut( ps.hdc, 360,146,"RI_LATENCY_REG:",15);
+	TextOut( ps.hdc, 360,176,"RI_RERROR_REG:",14);
+	TextOut( ps.hdc, 360,206,"RI_WERROR_REG:",14);
 		
 	SelectObject( ps.hdc,hOldFont );
 	SetBkMode( ps.hdc, OldBkMode );
@@ -653,19 +653,19 @@ void PaintR4300iSIPanel (HWND hWnd) {
 	BeginPaint( hWnd, &ps );
 	
 	rcBox.left   = 175;
-	rcBox.top    = 64;
+	rcBox.top    = 94;
 	rcBox.right  = 475;
-	rcBox.bottom = 210;
+	rcBox.bottom = 240;
 	DrawEdge( ps.hdc, &rcBox, EDGE_ETCHED, BF_RECT );
 
 	hOldFont = SelectObject( ps.hdc,
 	GetStockObject(DEFAULT_GUI_FONT) );
 	OldBkMode = SetBkMode( ps.hdc, TRANSPARENT );
 
-	TextOut( ps.hdc, 200,86,"SI_DRAM_ADDR_REG:",17);
-	TextOut( ps.hdc, 200,116,"SI_PIF_ADDR_RD64B_REG:",22);
-	TextOut( ps.hdc, 200,146,"SI_PIF_ADDR_WR64B_REG:",22);
-	TextOut( ps.hdc, 200,176,"SI_STATUS_REG:",14);
+	TextOut( ps.hdc, 200,116,"SI_DRAM_ADDR_REG:",17);
+	TextOut( ps.hdc, 200,146,"SI_PIF_ADDR_RD64B_REG:",22);
+	TextOut( ps.hdc, 200,176,"SI_PIF_ADDR_WR64B_REG:",22);
+	TextOut( ps.hdc, 200,206,"SI_STATUS_REG:",14);
 		
 	SelectObject( ps.hdc,hOldFont );
 	SetBkMode( ps.hdc, OldBkMode );
@@ -680,25 +680,25 @@ void PaintR4300iSPPanel (HWND hWnd) {
 	BeginPaint( hWnd, &ps );
 	
 	rcBox.left   = 95;
-	rcBox.top    = 64;
+	rcBox.top    = 94;
 	rcBox.right  = 565;
-	rcBox.bottom = 232;
+	rcBox.bottom = 262;
 	DrawEdge( ps.hdc, &rcBox, EDGE_ETCHED, BF_RECT );
 
 	hOldFont = SelectObject( ps.hdc,
 	GetStockObject(DEFAULT_GUI_FONT) );
 	OldBkMode = SetBkMode( ps.hdc, TRANSPARENT );
 
-	TextOut( ps.hdc, 110,81,"SP_MEM_ADDR_REG:",16);
-	TextOut( ps.hdc, 110,111,"SP_DRAM_ADDR_REG:",17);
-	TextOut( ps.hdc, 110,141,"SP_RD_LEN_REG:",14);
-	TextOut( ps.hdc, 110,171,"SP_WR_LEN_REG:",14);
-	TextOut( ps.hdc, 110,201,"SP_STATUS_REG:",14);
-	TextOut( ps.hdc, 340,81,"SP_DMA_FULL_REG:",16);
-	TextOut( ps.hdc, 340,111,"SP_DMA_BUSY_REG:",16);
-	TextOut( ps.hdc, 340,141,"SP_SEMAPHORE_REG:",17);
-	TextOut( ps.hdc, 340,171,"SP_PC_REG:",10);
-	TextOut( ps.hdc, 340,201,"SP_IBIST_REG:",13);
+	TextOut( ps.hdc, 110,111,"SP_MEM_ADDR_REG:",16);
+	TextOut( ps.hdc, 110,141,"SP_DRAM_ADDR_REG:",17);
+	TextOut( ps.hdc, 110,171,"SP_RD_LEN_REG:",14);
+	TextOut( ps.hdc, 110,201,"SP_WR_LEN_REG:",14);
+	TextOut( ps.hdc, 110,231,"SP_STATUS_REG:",14);
+	TextOut( ps.hdc, 340,111,"SP_DMA_FULL_REG:",16);
+	TextOut( ps.hdc, 340,141,"SP_DMA_BUSY_REG:",16);
+	TextOut( ps.hdc, 340,171,"SP_SEMAPHORE_REG:",17);
+	TextOut( ps.hdc, 340,201,"SP_PC_REG:",10);
+	TextOut( ps.hdc, 340,231,"SP_IBIST_REG:",13);
 		
 	SelectObject( ps.hdc,hOldFont );
 	SetBkMode( ps.hdc, OldBkMode );
@@ -713,21 +713,21 @@ void PaintR4300iSpecialPanel (HWND hWnd) {
 	BeginPaint( hWnd, &ps );
 	
 	rcBox.left   = 155;
-	rcBox.top    = 34;
+	rcBox.top    = 64;
 	rcBox.right  = 495;
-	rcBox.bottom = 270;
+	rcBox.bottom = 300;
 	DrawEdge( ps.hdc, &rcBox, EDGE_ETCHED, BF_RECT );
 
 	hOldFont = SelectObject( ps.hdc,
 	GetStockObject(DEFAULT_GUI_FONT) );
 	OldBkMode = SetBkMode( ps.hdc, TRANSPARENT );
 
-	TextOut( ps.hdc, 210,66,"Program Counter:",16);
-	TextOut( ps.hdc, 210,96,"Multi/Divide HI:",16);
-	TextOut( ps.hdc, 210,126,"Multi/Divide LO:",16);
-	TextOut( ps.hdc, 210,156,"Load/Link Bit:",14);
-	TextOut( ps.hdc, 210,186,"Implementation/Revision:",24);
-	TextOut( ps.hdc, 210,216,"Control/Status:",15);
+	TextOut( ps.hdc, 210,96,"Program Counter:",16);
+	TextOut( ps.hdc, 210,126,"Multi/Divide HI:",16);
+	TextOut( ps.hdc, 210,156,"Multi/Divide LO:",16);
+	TextOut( ps.hdc, 210,186,"Load/Link Bit:",14);
+	TextOut( ps.hdc, 210,216,"Implementation/Revision:",24);
+	TextOut( ps.hdc, 210,246,"Control/Status:",15);
 		
 	SelectObject( ps.hdc,hOldFont );
 	SetBkMode( ps.hdc, OldBkMode );
@@ -742,19 +742,19 @@ void PaintR4300iMIPanel (HWND hWnd) {
 	BeginPaint( hWnd, &ps );
 	
 	rcBox.left   = 175;
-	rcBox.top    = 64;
+	rcBox.top    = 94;
 	rcBox.right  = 475;
-	rcBox.bottom = 210;
+	rcBox.bottom = 240;
 	DrawEdge( ps.hdc, &rcBox, EDGE_ETCHED, BF_RECT );
 
 	hOldFont = SelectObject( ps.hdc,
 	GetStockObject(DEFAULT_GUI_FONT) );
 	OldBkMode = SetBkMode( ps.hdc, TRANSPARENT );
 
-	TextOut( ps.hdc, 210,86,"MI_MODE_REG:",12);
-	TextOut( ps.hdc, 210,116,"MI_VERSION_REG:",15);
-	TextOut( ps.hdc, 210,146,"MI_INTR_REG:",12);
-	TextOut( ps.hdc, 210,176,"MI_INTR_MASK_REG:",17);
+	TextOut( ps.hdc, 210,116,"MI_MODE_REG:",12);
+	TextOut( ps.hdc, 210,146,"MI_VERSION_REG:",15);
+	TextOut( ps.hdc, 210,176,"MI_INTR_REG:",12);
+	TextOut( ps.hdc, 210,206,"MI_INTR_MASK_REG:",17);
 		
 	SelectObject( ps.hdc,hOldFont );
 	SetBkMode( ps.hdc, OldBkMode );
@@ -769,27 +769,27 @@ void PaintR4300iPIPanel (HWND hWnd) {
 	BeginPaint( hWnd, &ps );
 	
 	rcBox.left   = 85;
-	rcBox.top    = 34;
+	rcBox.top    = 64;
 	rcBox.right  = 575;
-	rcBox.bottom = 270;
+	rcBox.bottom = 300;
 	DrawEdge( ps.hdc, &rcBox, EDGE_ETCHED, BF_RECT );
 
 	hOldFont = SelectObject( ps.hdc, GetStockObject(DEFAULT_GUI_FONT) );
 	OldBkMode = SetBkMode( ps.hdc, TRANSPARENT );
 
-	TextOut( ps.hdc, 95,55,"PI_DRAM_ADDR_REG:",17);
-	TextOut( ps.hdc, 95,85,"PI_CART_ADDR_REG:",17);
-	TextOut( ps.hdc, 95,115,"PI_RD_LEN_REG:",14);
-	TextOut( ps.hdc, 95,145,"PI_WR_LEN_REG:",14);
-	TextOut( ps.hdc, 95,175,"PI_STATUS_REG:",14);
-	TextOut( ps.hdc, 95,205,"PI_DOMAIN1_REG:",15);
-	TextOut( ps.hdc, 95,235,"PI_BSD_DOM1_PWD_REG:",20);
-	TextOut( ps.hdc, 330,55,"PI_BSD_DOM1_PGS_REG:",20);
-	TextOut( ps.hdc, 330,85,"PI_BSD_DOM1_RLS_REG:",20);
-	TextOut( ps.hdc, 330,115,"PI_DOMAIN2_REG:",15);
-	TextOut( ps.hdc, 330,145,"PI_BSD_DOM2_PWD_REG:",20);
-	TextOut( ps.hdc, 330,175,"PI_BSD_DOM2_PGS_REG:",20);
-	TextOut( ps.hdc, 330,205,"PI_BSD_DOM2_RLS_REG:",20);
+	TextOut( ps.hdc, 95,85,"PI_DRAM_ADDR_REG:",17);
+	TextOut( ps.hdc, 95,115,"PI_CART_ADDR_REG:",17);
+	TextOut( ps.hdc, 95,145,"PI_RD_LEN_REG:",14);
+	TextOut( ps.hdc, 95,175,"PI_WR_LEN_REG:",14);
+	TextOut( ps.hdc, 95,205,"PI_STATUS_REG:",14);
+	TextOut( ps.hdc, 95,235,"PI_DOMAIN1_REG:",15);
+	TextOut( ps.hdc, 95,265,"PI_BSD_DOM1_PWD_REG:",20);
+	TextOut( ps.hdc, 330,85,"PI_BSD_DOM1_PGS_REG:",20);
+	TextOut( ps.hdc, 330,115,"PI_BSD_DOM1_RLS_REG:",20);
+	TextOut( ps.hdc, 330,145,"PI_DOMAIN2_REG:",15);
+	TextOut( ps.hdc, 330,175,"PI_BSD_DOM2_PWD_REG:",20);
+	TextOut( ps.hdc, 330,205,"PI_BSD_DOM2_PGS_REG:",20);
+	TextOut( ps.hdc, 330,235,"PI_BSD_DOM2_RLS_REG:",20);
 		
 	SelectObject( ps.hdc,hOldFont );
 	SetBkMode( ps.hdc, OldBkMode );
@@ -804,28 +804,28 @@ void PaintR4300iVIPanel (HWND hWnd) {
 	BeginPaint( hWnd, &ps );
 	
 	rcBox.left   = 85;
-	rcBox.top    = 34;
+	rcBox.top    = 64;
 	rcBox.right  = 575;
-	rcBox.bottom = 270;
+	rcBox.bottom = 300;
 	DrawEdge( ps.hdc, &rcBox, EDGE_ETCHED, BF_RECT );
 
 	hOldFont = SelectObject( ps.hdc,GetStockObject(DEFAULT_GUI_FONT) );
 	OldBkMode = SetBkMode( ps.hdc, TRANSPARENT );
 
-	TextOut( ps.hdc, 95,55,"VI_STATUS_REG:",14);
-	TextOut( ps.hdc, 95,85,"VI_DRAM_ADDR_REG:",17);
-	TextOut( ps.hdc, 95,115,"VI_WIDTH_REG:",13);
-	TextOut( ps.hdc, 95,145,"VI_INTR_REG:",12);
-	TextOut( ps.hdc, 95,175,"VI_V_CURRENT_LINE_REG:",22);
-	TextOut( ps.hdc, 95,205,"VI_TIMING_REG:",14);
-	TextOut( ps.hdc, 95,235,"VI_V_SYNC_REG:",14);
-	TextOut( ps.hdc, 345,55,"VI_H_SYNC_REG:",14);
-	TextOut( ps.hdc, 345,85,"VI_H_SYNC_LEAP_REG:",19);
-	TextOut( ps.hdc, 345,115,"VI_H_START_REG:",15);
-	TextOut( ps.hdc, 345,145,"VI_V_START_REG:",15);
-	TextOut( ps.hdc, 345,175,"VI_V_BURST_REG:",15);
-	TextOut( ps.hdc, 345,205,"VI_X_SCALE_REG:",15);
-	TextOut( ps.hdc, 345,235,"VI_Y_SCALE_REG:",15);
+	TextOut( ps.hdc, 95,85,"VI_STATUS_REG:",14);
+	TextOut( ps.hdc, 95,115,"VI_DRAM_ADDR_REG:",17);
+	TextOut( ps.hdc, 95,145,"VI_WIDTH_REG:",13);
+	TextOut( ps.hdc, 95,175,"VI_INTR_REG:",12);
+	TextOut( ps.hdc, 95,205,"VI_V_CURRENT_LINE_REG:",22);
+	TextOut( ps.hdc, 95,235,"VI_TIMING_REG:",14);
+	TextOut( ps.hdc, 95,265,"VI_V_SYNC_REG:",14);
+	TextOut( ps.hdc, 345,85,"VI_H_SYNC_REG:",14);
+	TextOut( ps.hdc, 345,115,"VI_H_SYNC_LEAP_REG:",19);
+	TextOut( ps.hdc, 345,145,"VI_H_START_REG:",15);
+	TextOut( ps.hdc, 345,175,"VI_V_START_REG:",15);
+	TextOut( ps.hdc, 345,205,"VI_V_BURST_REG:",15);
+	TextOut( ps.hdc, 345,235,"VI_X_SCALE_REG:",15);
+	TextOut( ps.hdc, 345,265,"VI_Y_SCALE_REG:",15);
 		
 	SelectObject( ps.hdc,hOldFont );
 	SetBkMode( ps.hdc, OldBkMode );
@@ -952,7 +952,7 @@ void SetupR4300iAIPanel (HWND hDlg) {
 
 	for (count = 0; count < 6;count ++) {
 		hAI[count] = CreateWindowEx(WS_EX_CLIENTEDGE,"EDIT","", WS_CHILD | 
-			ES_READONLY | WS_BORDER | WS_TABSTOP,342,(count*30) + 69,80,19, 
+			ES_READONLY | WS_BORDER | WS_TABSTOP,342,(count*30) + 99,80,19, 
 			hDlg,0,hInst, NULL );
 		SendMessage(hAI[count],WM_SETFONT, (WPARAM)GetStockObject(DEFAULT_GUI_FONT),0);
 	}
@@ -961,7 +961,7 @@ void SetupR4300iAIPanel (HWND hDlg) {
 void SetupR4300iCP0Panel (HWND hDlg) {
 	int count, top;
 	for (count = 0;count < 32;count ++) { hCP0[count] = NULL; }
-	top = 53;
+	top = 83;
 	for (count = 0; count < 10;count ++) {
 		if (count == 7) { continue; }
 		hCP0[count] = CreateWindowEx(WS_EX_CLIENTEDGE,"EDIT","", WS_CHILD | 
@@ -971,7 +971,7 @@ void SetupR4300iCP0Panel (HWND hDlg) {
 		top += 24;
 	}
 
-	top = 53;
+	top = 83;
 	for (count = 0; count < 8;count ++) {
 		hCP0[count + 10] = CreateWindowEx(WS_EX_CLIENTEDGE,"EDIT","", WS_CHILD | 
 			ES_READONLY | WS_BORDER | WS_TABSTOP,300,top,135,19, 
@@ -980,7 +980,7 @@ void SetupR4300iCP0Panel (HWND hDlg) {
 		top += 24;
 	}
 
-	top = 53;
+	top = 83;
 	for (count = 0; count < 13;count ++) {
 		if (count >= 3 && count <= 7 ) { continue; }
 		hCP0[count + 18] = CreateWindowEx(WS_EX_CLIENTEDGE,"EDIT","", WS_CHILD | 
@@ -997,20 +997,20 @@ void SetupR4300iFPRPanel (HWND hDlg) {
 
 	for (count = 0; count < 11;count ++) {
 		hFPR[count] = CreateWindowEx(WS_EX_CLIENTEDGE,"EDIT","", WS_CHILD | 
-			ES_READONLY | WS_BORDER | WS_TABSTOP,90,(count*20) + 50,135,19, 
+			ES_READONLY | WS_BORDER | WS_TABSTOP,90,(count*20) + 80,135,19, 
 			hDlg,0,hInst, NULL );
 		SendMessage(hFPR[count],WM_SETFONT, (WPARAM)GetStockObject(DEFAULT_GUI_FONT),0);
 
 	}
 	for (count = 0; count < 11;count ++) {
 		hFPR[count + 11] = CreateWindowEx(WS_EX_CLIENTEDGE,"EDIT","", WS_CHILD | 
-			ES_READONLY | WS_BORDER | WS_TABSTOP,300,(count*20) + 50,135,19, 
+			ES_READONLY | WS_BORDER | WS_TABSTOP,300,(count*20) + 80,135,19, 
 			hDlg,0,hInst, NULL );
 		SendMessage(hFPR[ count + 11 ],WM_SETFONT, (WPARAM)GetStockObject(DEFAULT_GUI_FONT),0);
 	}
 	for (count = 0; count < 10;count ++) {
 		hFPR[count + 22] = CreateWindowEx(WS_EX_CLIENTEDGE,"EDIT","", WS_CHILD |  
-			ES_READONLY | WS_BORDER | WS_TABSTOP,510,(count*20) + 50,135,19, 
+			ES_READONLY | WS_BORDER | WS_TABSTOP,510,(count*20) + 80,135,19, 
 			hDlg,0,hInst, NULL );
 		SendMessage(hFPR[ count + 22 ],WM_SETFONT, (WPARAM)GetStockObject(DEFAULT_GUI_FONT),0);
 	}
@@ -1021,20 +1021,20 @@ void SetupR4300iCOP1SPanel(HWND hDlg) {
 
 	for (count = 0; count < 11; count++) {
 		hCOP1S[count] = CreateWindowEx(WS_EX_CLIENTEDGE, "EDIT", "", WS_CHILD |
-			ES_READONLY | WS_BORDER | WS_TABSTOP, 90, (count * 20) + 50, 135, 19,
+			ES_READONLY | WS_BORDER | WS_TABSTOP, 90, (count * 20) + 80, 135, 19,
 			hDlg, 0, hInst, NULL);
 		SendMessage(hCOP1S[count], WM_SETFONT, (WPARAM)GetStockObject(DEFAULT_GUI_FONT), 0);
 
 	}
 	for (count = 0; count < 11; count++) {
 		hCOP1S[count + 11] = CreateWindowEx(WS_EX_CLIENTEDGE, "EDIT", "", WS_CHILD |
-			ES_READONLY | WS_BORDER | WS_TABSTOP, 300, (count * 20) + 50, 135, 19,
+			ES_READONLY | WS_BORDER | WS_TABSTOP, 300, (count * 20) + 80, 135, 19,
 			hDlg, 0, hInst, NULL);
 		SendMessage(hCOP1S[count + 11], WM_SETFONT, (WPARAM)GetStockObject(DEFAULT_GUI_FONT), 0);
 	}
 	for (count = 0; count < 10; count++) {
 		hCOP1S[count + 22] = CreateWindowEx(WS_EX_CLIENTEDGE, "EDIT", "", WS_CHILD |
-			ES_READONLY | WS_BORDER | WS_TABSTOP, 510, (count * 20) + 50, 135, 19,
+			ES_READONLY | WS_BORDER | WS_TABSTOP, 510, (count * 20) + 80, 135, 19,
 			hDlg, 0, hInst, NULL);
 		SendMessage(hCOP1S[count + 22], WM_SETFONT, (WPARAM)GetStockObject(DEFAULT_GUI_FONT), 0);
 	}
@@ -1045,20 +1045,20 @@ void SetupR4300iCOP1DPanel(HWND hDlg) {
 
 	for (count = 0; count < 11; count++) {
 		hCOP1D[count] = CreateWindowEx(WS_EX_CLIENTEDGE, "EDIT", "", WS_CHILD |
-			ES_READONLY | WS_BORDER | WS_TABSTOP, 90, (count * 20) + 50, 135, 19,
+			ES_READONLY | WS_BORDER | WS_TABSTOP, 90, (count * 20) + 80, 135, 19,
 			hDlg, 0, hInst, NULL);
 		SendMessage(hCOP1D[count], WM_SETFONT, (WPARAM)GetStockObject(DEFAULT_GUI_FONT), 0);
 
 	}
 	for (count = 0; count < 11; count++) {
 		hCOP1D[count + 11] = CreateWindowEx(WS_EX_CLIENTEDGE, "EDIT", "", WS_CHILD |
-			ES_READONLY | WS_BORDER | WS_TABSTOP, 300, (count * 20) + 50, 135, 19,
+			ES_READONLY | WS_BORDER | WS_TABSTOP, 300, (count * 20) + 80, 135, 19,
 			hDlg, 0, hInst, NULL);
 		SendMessage(hCOP1D[count + 11], WM_SETFONT, (WPARAM)GetStockObject(DEFAULT_GUI_FONT), 0);
 	}
 	for (count = 0; count < 10; count++) {
 		hCOP1D[count + 22] = CreateWindowEx(WS_EX_CLIENTEDGE, "EDIT", "", WS_CHILD |
-			ES_READONLY | WS_BORDER | WS_TABSTOP, 510, (count * 20) + 50, 135, 19,
+			ES_READONLY | WS_BORDER | WS_TABSTOP, 510, (count * 20) + 80, 135, 19,
 			hDlg, 0, hInst, NULL);
 		SendMessage(hCOP1D[count + 22], WM_SETFONT, (WPARAM)GetStockObject(DEFAULT_GUI_FONT), 0);
 	}
@@ -1069,20 +1069,20 @@ void SetupR4300iCOP1WPanel(HWND hDlg) {
 
 	for (count = 0; count < 11; count++) {
 		hCOP1W[count] = CreateWindowEx(WS_EX_CLIENTEDGE, "EDIT", "", WS_CHILD |
-			ES_READONLY | WS_BORDER | WS_TABSTOP, 90, (count * 20) + 50, 135, 19,
+			ES_READONLY | WS_BORDER | WS_TABSTOP, 90, (count * 20) + 80, 135, 19,
 			hDlg, 0, hInst, NULL);
 		SendMessage(hCOP1W[count], WM_SETFONT, (WPARAM)GetStockObject(DEFAULT_GUI_FONT), 0);
 
 	}
 	for (count = 0; count < 11; count++) {
 		hCOP1W[count + 11] = CreateWindowEx(WS_EX_CLIENTEDGE, "EDIT", "", WS_CHILD |
-			ES_READONLY | WS_BORDER | WS_TABSTOP, 300, (count * 20) + 50, 135, 19,
+			ES_READONLY | WS_BORDER | WS_TABSTOP, 300, (count * 20) + 80, 135, 19,
 			hDlg, 0, hInst, NULL);
 		SendMessage(hCOP1W[count + 11], WM_SETFONT, (WPARAM)GetStockObject(DEFAULT_GUI_FONT), 0);
 	}
 	for (count = 0; count < 10; count++) {
 		hCOP1W[count + 22] = CreateWindowEx(WS_EX_CLIENTEDGE, "EDIT", "", WS_CHILD |
-			ES_READONLY | WS_BORDER | WS_TABSTOP, 510, (count * 20) + 50, 135, 19,
+			ES_READONLY | WS_BORDER | WS_TABSTOP, 510, (count * 20) + 80, 135, 19,
 			hDlg, 0, hInst, NULL);
 		SendMessage(hCOP1W[count + 22], WM_SETFONT, (WPARAM)GetStockObject(DEFAULT_GUI_FONT), 0);
 	}
@@ -1093,20 +1093,20 @@ void SetupR4300iCOP1LPanel(HWND hDlg) {
 
 	for (count = 0; count < 11; count++) {
 		hCOP1L[count] = CreateWindowEx(WS_EX_CLIENTEDGE, "EDIT", "", WS_CHILD |
-			ES_READONLY | WS_BORDER | WS_TABSTOP, 90, (count * 20) + 50, 135, 19,
+			ES_READONLY | WS_BORDER | WS_TABSTOP, 90, (count * 20) + 80, 135, 19,
 			hDlg, 0, hInst, NULL);
 		SendMessage(hCOP1L[count], WM_SETFONT, (WPARAM)GetStockObject(DEFAULT_GUI_FONT), 0);
 
 	}
 	for (count = 0; count < 11; count++) {
 		hCOP1L[count + 11] = CreateWindowEx(WS_EX_CLIENTEDGE, "EDIT", "", WS_CHILD |
-			ES_READONLY | WS_BORDER | WS_TABSTOP, 300, (count * 20) + 50, 135, 19,
+			ES_READONLY | WS_BORDER | WS_TABSTOP, 300, (count * 20) + 80, 135, 19,
 			hDlg, 0, hInst, NULL);
 		SendMessage(hCOP1L[count + 11], WM_SETFONT, (WPARAM)GetStockObject(DEFAULT_GUI_FONT), 0);
 	}
 	for (count = 0; count < 10; count++) {
 		hCOP1L[count + 22] = CreateWindowEx(WS_EX_CLIENTEDGE, "EDIT", "", WS_CHILD |
-			ES_READONLY | WS_BORDER | WS_TABSTOP, 510, (count * 20) + 50, 135, 19,
+			ES_READONLY | WS_BORDER | WS_TABSTOP, 510, (count * 20) + 80, 135, 19,
 			hDlg, 0, hInst, NULL);
 		SendMessage(hCOP1L[count + 22], WM_SETFONT, (WPARAM)GetStockObject(DEFAULT_GUI_FONT), 0);
 	}
@@ -1117,20 +1117,20 @@ void SetupR4300iGPRPanel (HWND hDlg) {
 
 	for (count = 0; count < 11;count ++) {
 		hGPR[count] = CreateWindowEx(WS_EX_CLIENTEDGE,"EDIT","", WS_CHILD | 
-			ES_READONLY | WS_BORDER | WS_TABSTOP,90,(count*20) + 50,135,19, 
+			ES_READONLY | WS_BORDER | WS_TABSTOP,90,(count*20) + 80,135,19, 
 			hDlg,0,hInst, NULL );
 		SendMessage(hGPR[count],WM_SETFONT, (WPARAM)GetStockObject(DEFAULT_GUI_FONT),0);
 
 	}
 	for (count = 0; count < 11;count ++) {
 		hGPR[count + 11] = CreateWindowEx(WS_EX_CLIENTEDGE,"EDIT","", WS_CHILD | 
-			ES_READONLY | WS_BORDER | WS_TABSTOP,300,(count*20) + 50,135,19, 
+			ES_READONLY | WS_BORDER | WS_TABSTOP,300,(count*20) + 80,135,19, 
 			hDlg,0,hInst, NULL );
 		SendMessage(hGPR[ count + 11 ],WM_SETFONT, (WPARAM)GetStockObject(DEFAULT_GUI_FONT),0);
 	}
 	for (count = 0; count < 10;count ++) {
 		hGPR[count + 22] = CreateWindowEx(WS_EX_CLIENTEDGE,"EDIT","", WS_CHILD |  
-			ES_READONLY | WS_BORDER | WS_TABSTOP,510,(count*20) + 50,135,19, 
+			ES_READONLY | WS_BORDER | WS_TABSTOP,510,(count*20) + 80,135,19, 
 			hDlg,0,hInst, NULL );
 		SendMessage(hGPR[ count + 22 ],WM_SETFONT, (WPARAM)GetStockObject(DEFAULT_GUI_FONT),0);
 	}
@@ -1141,7 +1141,7 @@ void SetupR4300iMIPanel (HWND hDlg) {
 
 	for (count = 0; count < 4;count ++) {
 		hMI[count] = CreateWindowEx(WS_EX_CLIENTEDGE,"EDIT","", WS_CHILD | 
-			ES_READONLY | WS_BORDER | WS_TABSTOP,340,(count*30) + 89,80,19, 
+			ES_READONLY | WS_BORDER | WS_TABSTOP,340,(count*30) + 119,80,19, 
 			hDlg,0,hInst, NULL );
 		SendMessage(hMI[count],WM_SETFONT, (WPARAM)GetStockObject(DEFAULT_GUI_FONT),0);
 	}
@@ -1152,13 +1152,13 @@ void SetupR4300iPIPanel (HWND hDlg) {
 
 	for (count = 0; count < 7;count ++) {
 		hPI[count] = CreateWindowEx(WS_EX_CLIENTEDGE,"EDIT","", WS_CHILD | 
-			ES_READONLY | WS_BORDER | WS_TABSTOP,245,(count*30) + 58,80,19, 
+			ES_READONLY | WS_BORDER | WS_TABSTOP,245,(count*30) + 88,80,19, 
 			hDlg,0,hInst, NULL );
 		SendMessage(hPI[count],WM_SETFONT, (WPARAM)GetStockObject(DEFAULT_GUI_FONT),0);
 	}
 	for (count = 0; count < 6;count ++) {
 		hPI[count + 7] = CreateWindowEx(WS_EX_CLIENTEDGE,"EDIT","", WS_CHILD | 
-			ES_READONLY | WS_BORDER | WS_TABSTOP,480,(count*30) + 58,80,19, 
+			ES_READONLY | WS_BORDER | WS_TABSTOP,480,(count*30) + 88,80,19, 
 			hDlg,0,hInst, NULL );
 		SendMessage(hPI[count + 7],WM_SETFONT, (WPARAM)GetStockObject(DEFAULT_GUI_FONT),0);
 	}
@@ -1169,7 +1169,7 @@ void SetupR4300iRDRamPanel (HWND hDlg) {
 
 	for (count = 0; count < 10;count ++) {
 		hRDRam[count] = CreateWindowEx(WS_EX_CLIENTEDGE,"EDIT","", WS_CHILD | 
-			ES_READONLY | WS_BORDER | WS_TABSTOP,375,(count*20) + 58,80,19, 
+			ES_READONLY | WS_BORDER | WS_TABSTOP,375,(count*20) + 88,80,19, 
 			hDlg,0,hInst, NULL );
 		SendMessage(hRDRam[count],WM_SETFONT, (WPARAM)GetStockObject(DEFAULT_GUI_FONT),0);
 	}
@@ -1180,14 +1180,14 @@ void SetupR4300iRIPanel (HWND hDlg) {
 
 	for (count = 0; count < 4;count ++) {
 		hRI[count] = CreateWindowEx(WS_EX_CLIENTEDGE,"EDIT","", WS_CHILD | 
-			ES_READONLY | WS_BORDER | WS_TABSTOP,260,(count*30) + 90,80,19, 
+			ES_READONLY | WS_BORDER | WS_TABSTOP,260,(count*30) + 120,80,19, 
 			hDlg,0,hInst, NULL );
 		SendMessage(hRI[count],WM_SETFONT, (WPARAM)GetStockObject(DEFAULT_GUI_FONT),0);
 	}
 
 	for (count = 0; count < 4;count ++) {
 		hRI[count + 4] = CreateWindowEx(WS_EX_CLIENTEDGE,"EDIT","", WS_CHILD | 
-			ES_READONLY | WS_BORDER | WS_TABSTOP,475,(count*30) + 90,80,19, 
+			ES_READONLY | WS_BORDER | WS_TABSTOP,475,(count*30) + 120,80,19, 
 			hDlg,0,hInst, NULL );
 		SendMessage(hRI[count + 4],WM_SETFONT, (WPARAM)GetStockObject(DEFAULT_GUI_FONT),0);
 	}
@@ -1198,7 +1198,7 @@ void SetupR4300iSIPanel (HWND hDlg) {
 
 	for (count = 0; count < 4;count ++) {
 		hSI[count] = CreateWindowEx(WS_EX_CLIENTEDGE,"EDIT","", WS_CHILD | 
-			ES_READONLY | WS_BORDER | WS_TABSTOP,360,(count*30) + 89,80,19, 
+			ES_READONLY | WS_BORDER | WS_TABSTOP,360,(count*30) + 119,80,19, 
 			hDlg,0,hInst, NULL );
 		SendMessage(hSI[count],WM_SETFONT, (WPARAM)GetStockObject(DEFAULT_GUI_FONT),0);
 	}
@@ -1210,13 +1210,13 @@ void SetupR4300iSPPanel (HWND hDlg) {
 
 	for (count = 0; count < 5;count ++) {
 		hSP[count] = CreateWindowEx(WS_EX_CLIENTEDGE,"EDIT","", WS_CHILD | 
-			ES_READONLY | WS_BORDER | WS_TABSTOP,250,(count*30) + 84,80,19, 
+			ES_READONLY | WS_BORDER | WS_TABSTOP,250,(count*30) + 114,80,19, 
 			hDlg,0,hInst, NULL );
 		SendMessage(hSP[count],WM_SETFONT, (WPARAM)GetStockObject(DEFAULT_GUI_FONT),0);
 	}
 	for (count = 0; count < 5;count ++) {
 		hSP[count + 5] = CreateWindowEx(WS_EX_CLIENTEDGE,"EDIT","", WS_CHILD | 
-			ES_READONLY | WS_BORDER | WS_TABSTOP,475,(count*30) + 84,80,19, 
+			ES_READONLY | WS_BORDER | WS_TABSTOP,475,(count*30) + 114,80,19, 
 			hDlg,0,hInst, NULL );
 		SendMessage(hSP[ count + 5 ],WM_SETFONT, (WPARAM)GetStockObject(DEFAULT_GUI_FONT),0);
 	}
@@ -1225,22 +1225,22 @@ void SetupR4300iSPPanel (HWND hDlg) {
 void SetupR4300iSpecialPanel (HWND hDlg) {
 	int count;
 	hSpecial[0] = CreateWindowEx(WS_EX_CLIENTEDGE,"EDIT","", WS_CHILD | 
-		ES_READONLY | WS_BORDER | WS_TABSTOP,345,70,135,19, 
-		hDlg,0,hInst, NULL );
-	hSpecial[1] = CreateWindowEx(WS_EX_CLIENTEDGE,"EDIT","", WS_CHILD | 
 		ES_READONLY | WS_BORDER | WS_TABSTOP,345,100,135,19, 
 		hDlg,0,hInst, NULL );
-	hSpecial[2] = CreateWindowEx(WS_EX_CLIENTEDGE,"EDIT","", WS_CHILD | 
+	hSpecial[1] = CreateWindowEx(WS_EX_CLIENTEDGE,"EDIT","", WS_CHILD | 
 		ES_READONLY | WS_BORDER | WS_TABSTOP,345,130,135,19, 
 		hDlg,0,hInst, NULL );
+	hSpecial[2] = CreateWindowEx(WS_EX_CLIENTEDGE,"EDIT","", WS_CHILD | 
+		ES_READONLY | WS_BORDER | WS_TABSTOP,345,160,135,19, 
+		hDlg,0,hInst, NULL );
 	hSpecial[3] = CreateWindowEx(WS_EX_CLIENTEDGE,"EDIT","", WS_CHILD | 
-		ES_READONLY | WS_BORDER | WS_TABSTOP,345,160,34,19, 
+		ES_READONLY | WS_BORDER | WS_TABSTOP,345,190,34,19, 
 		hDlg,0,hInst, NULL );
 	hSpecial[4] = CreateWindowEx(WS_EX_CLIENTEDGE,"EDIT","", WS_CHILD | 
-		ES_READONLY | WS_BORDER | WS_TABSTOP,345,190,80,19, 
+		ES_READONLY | WS_BORDER | WS_TABSTOP,345,220,80,19, 
 		hDlg,0,hInst, NULL );
 	hSpecial[5] = CreateWindowEx(WS_EX_CLIENTEDGE,"EDIT","", WS_CHILD | 
-		ES_READONLY | WS_BORDER | WS_TABSTOP,345,220,80,19, 
+		ES_READONLY | WS_BORDER | WS_TABSTOP,345,250,80,19, 
 		hDlg,0,hInst, NULL );
 	for (count = 0; count < 6;count ++) {
 		SendMessage(hSpecial[count],WM_SETFONT, (WPARAM)GetStockObject(DEFAULT_GUI_FONT),0);
@@ -1252,13 +1252,13 @@ void SetupR4300iVIPanel (HWND hDlg) {
 
 	for (count = 0; count < 7;count ++) {
 		hVI[count] = CreateWindowEx(WS_EX_CLIENTEDGE,"EDIT","", WS_CHILD | 
-			ES_READONLY | WS_BORDER | WS_TABSTOP,250,(count*30) + 58,80,19, 
+			ES_READONLY | WS_BORDER | WS_TABSTOP,250,(count*30) + 88,80,19, 
 			hDlg,0,hInst, NULL );
 		SendMessage(hVI[count],WM_SETFONT, (WPARAM)GetStockObject(DEFAULT_GUI_FONT),0);
 	}
 	for (count = 0; count < 7;count ++) {
 		hVI[count + 7] = CreateWindowEx(WS_EX_CLIENTEDGE,"EDIT","", WS_CHILD | 
-			ES_READONLY | WS_BORDER | WS_TABSTOP,480,(count*30) + 58,80,19, 
+			ES_READONLY | WS_BORDER | WS_TABSTOP,480,(count*30) + 88,80,19, 
 			hDlg,0,hInst, NULL );
 		SendMessage(hVI[count + 7],WM_SETFONT, (WPARAM)GetStockObject(DEFAULT_GUI_FONT),0);
 	}
@@ -1266,10 +1266,10 @@ void SetupR4300iVIPanel (HWND hDlg) {
 
 void SetupR4300iRegistersMain (HWND hDlg) {
 #define WindowWidth  685
-#define WindowHeight 340
+#define WindowHeight 370
 	DWORD X, Y;
 
-	hTab = CreateWindowEx(0,WC_TABCONTROL,"", WS_TABSTOP | WS_CHILD | WS_VISIBLE,5,6,660,290,
+	hTab = CreateWindowEx(0,WC_TABCONTROL,"", WS_TABSTOP | WS_CHILD | WS_VISIBLE | TCS_MULTILINE,5,6,660,320,
 		hDlg,(HMENU)IDC_TAB_CONTROL,hInst,NULL );
 	if ( hTab ) {
 		TC_ITEM item;
@@ -1342,7 +1342,7 @@ void SetupR4300iRegistersMain (HWND hDlg) {
 	SetupR4300iSpecialPanel ( hDlg );
 	SetupR4300iVIPanel ( hDlg);
 
-	hStatic = CreateWindowEx(0,"STATIC","", WS_CHILD|WS_VISIBLE, 5,6,660,290,hDlg,0,hInst,NULL );
+	hStatic = CreateWindowEx(0,"STATIC","", WS_CHILD|WS_VISIBLE, 5,6,660,320,hDlg,0,hInst,NULL );
 	r4300iRegRefreshProc = (FARPROC)SetWindowLong( hStatic,GWL_WNDPROC,(long)RefreshR4300iRegProc);
 
 	ShowR4300iRegisterPanel ( GeneralPurpose );
