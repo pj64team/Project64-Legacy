@@ -134,7 +134,9 @@ void Compile_R4300i_SPECIAL_BREAK  ( BLOCK_SECTION * Section );
 
 /************************** COP0 functions **************************/
 void Compile_R4300i_COP0_MF        ( BLOCK_SECTION * Section );
+void Compile_R4300i_COP0_DMF       ( BLOCK_SECTION * Section );
 void Compile_R4300i_COP0_MT        ( BLOCK_SECTION * Section );
+void Compile_R4300i_COP0_DMT       ( BLOCK_SECTION * Section );
 
 /************************** COP0 CO functions ***********************/
 void Compile_R4300i_COP0_CO_TLBR   ( BLOCK_SECTION * Section );

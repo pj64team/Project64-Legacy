@@ -3046,7 +3046,7 @@ void __cdecl StartRecompilerCPU (void ) {
 						NextInstruction = NORMAL;
 						Addr = PROGRAM_COUNTER.UW[0];
 						if (!TranslateVaddr(&Addr)) {
-							DisplayError("Failed to tranlate PC to a PAddr: %X\n\nEmulation stopped",PROGRAM_COUNTER);
+							DisplayError("Failed to tranlate PC to a PAddr: %llX\n\nEmulation stopped",PROGRAM_COUNTER.UDW);
 							ExitThread(0);
 						}
 					}
@@ -3058,7 +3058,7 @@ void __cdecl StartRecompilerCPU (void ) {
 					__try {
 						Value = (DWORD)(*(DelaySlotTable + (Addr >> 12)));
 					} __except(EXCEPTION_EXECUTE_HANDLER) {
-						DisplayError("Executing Delay Slot from non maped space\nPROGRAM_COUNTER = 0x%X\nEmulation stopped",PROGRAM_COUNTER);
+						DisplayError("Executing Delay Slot from non maped space\nPROGRAM_COUNTER = 0x%llX\nEmulation stopped",PROGRAM_COUNTER.UDW);
 						ExitThread(0);
 					}
 					if ( (Value >> 16) == 0x7C7C) {
@@ -3172,7 +3172,7 @@ void __cdecl StartRecompilerCPU (void ) {
 					NextInstruction = NORMAL;
 					Addr = PROGRAM_COUNTER.UW[0];
 					if (!TranslateVaddr(&Addr)) {
-						DisplayError("Failed to tranlate PC to a PAddr: %X\n\nEmulation stopped",PROGRAM_COUNTER);
+						DisplayError("Failed to tranlate PC to a PAddr: %llX\n\nEmulation stopped",PROGRAM_COUNTER.UDW);
 						ExitThread(0);
 					}
 				}
