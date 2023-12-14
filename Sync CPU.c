@@ -264,7 +264,7 @@ void __cdecl StartSyncCPU (void ) {
 					NextInstruction = NORMAL;
 					Addr = PROGRAM_COUNTER.UW[0];
 					if (!TranslateVaddr(&Addr)) {
-						DisplayError("Failed to tranlate PC to a PAddr: %X\n\nEmulation stopped",PROGRAM_COUNTER);
+						DisplayError("Failed to tranlate PC to a PAddr: %llX\n\nEmulation stopped",PROGRAM_COUNTER.UDW);
 						ExitThread(0);
 					}
 				}
