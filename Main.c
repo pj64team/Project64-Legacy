@@ -683,7 +683,7 @@ int InitalizeApplication(HINSTANCE hInstance) {
 	InitiliazeCPUFlags();
 	SetupRegisters(&Registers);
 	QueryPerformanceFrequency(&Frequency);
-	if (HaveDebugger) {
+	if (HaveDebugger || FORCE_LOGGING) {
 		LoadLogOptions(&LogOptions, FALSE);
 		StartLog();
 	}

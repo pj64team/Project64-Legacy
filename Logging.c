@@ -42,11 +42,13 @@ LRESULT CALLBACK LogRegProc     ( HWND, UINT, WPARAM, LPARAM );
 LOG_OPTIONS LogOptions,TempOptions;
 HANDLE hLogFile = NULL;
 
+const int FORCE_LOGGING = 0;
+
 void EnterLogOptions(HWND hwndOwner) {
     PROPSHEETPAGE psp[3];
     PROPSHEETHEADER psh;
 
-	if (!HaveDebugger) { return; }
+	if (!HaveDebugger && !FORCE_LOGGING) { return; }
 
     psp[0].dwSize = sizeof(PROPSHEETPAGE);
     psp[0].dwFlags = PSP_USETITLE;
@@ -102,7 +104,7 @@ void LoadLogOptions (LOG_OPTIONS * LogOptions, BOOL AlwaysFill) {
 	lResult = RegOpenKeyEx( HKEY_CURRENT_USER,String,0,KEY_ALL_ACCESS,
 		&hKeyResults);
 	
-	if (lResult == ERROR_SUCCESS && HaveDebugger) {	
+	if (lResult == ERROR_SUCCESS && (HaveDebugger || FORCE_LOGGING)) {	
 		LoadLogSetting(hKeyResults,"Generate Log File",&LogOptions->GenerateLog);
 		if (LogOptions->GenerateLog || AlwaysFill) {
 			LoadLogSetting(hKeyResults,"Log RDRAM",&LogOptions->LogRDRamRegisters);
@@ -430,7 +432,7 @@ void __cdecl LogMessage (char * Message, ...) {
 	char Msg[0x2000];
 	va_list ap;
 
-	if(!HaveDebugger) { return; }
+	if(!HaveDebugger && !FORCE_LOGGING) { return; }
 	if(hLogFile == NULL) { return; }
 
 	va_start( ap, Message );

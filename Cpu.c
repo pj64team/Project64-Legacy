@@ -960,7 +960,7 @@ BOOL Machine_LoadState(void) {
 	Stop_x86_Log();
 	Start_x86_Log();
 #endif
-	if (HaveDebugger) {
+	if (HaveDebugger || FORCE_LOGGING) {
 		StopLog();
 		StartLog();
 	}
