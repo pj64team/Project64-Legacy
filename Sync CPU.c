@@ -68,12 +68,7 @@ void AllocateSyncMemory ( void ) {
 	if(VirtualAlloc(SyncMemory + 0x04000000, 0x2000, MEM_COMMIT, PAGE_READWRITE)==NULL) {
 		DisplayError(GS(MSG_MEM_ALLOC_ERROR));
 		ExitThread(0);
-	}
-
-	if (VirtualAlloc(SyncMemory + 0x10000000, RomFileSize, MEM_COMMIT, PAGE_READWRITE) == NULL) {
-		DisplayError(GS(MSG_MEM_ALLOC_ERROR));
-		ExitThread(0);
-	}
+	}	
 
 	TLB_SyncReadMap = (DWORD *)VirtualAlloc(NULL,0xFFFFF * sizeof(DWORD),MEM_RESERVE|MEM_COMMIT,PAGE_READWRITE);
 	if (TLB_SyncReadMap == NULL) {
@@ -103,10 +98,7 @@ void AllocateSyncMemory ( void ) {
 	RDRAM = (unsigned char *)(N64MEM);
 	DMEM  = (unsigned char *)(N64MEM+0x04000000);
 	IMEM  = (unsigned char *)(N64MEM+0x04001000);
-	ROM   = (unsigned char *)(N64MEM+0x10000000);
 	SyncMemory = TempMemPtr;
-
-	memcpy(ROM, SyncMemory + 0x10000000, RomFileSize);
 
 	InitilizeTLB();
 	memcpy(SyncFastTlb,FastTlb,sizeof(FastTlb));
@@ -245,7 +237,7 @@ void StartErrorLog (void) {
 	Error_Message("");
 }
 
-void __cdecl StartSyncCPU (void ) { 
+void __cdecl StartSyncCPU (void ) {
 	DWORD Addr;
 	BYTE * Block;
 #ifdef Log_x86Code
@@ -386,7 +378,6 @@ void SwitchSyncRegisters (void) {
 	RDRAM = (unsigned char *)(N64MEM);
 	DMEM  = (unsigned char *)(N64MEM+0x04000000);
 	IMEM  = (unsigned char *)(N64MEM+0x04001000);
-	ROM   = (unsigned char *)(N64MEM+0x10000000);
 	SyncMemory = TempMemPtr;
 	ReInitializeRSP();
 	ProtectMemory();
