@@ -245,9 +245,6 @@ BOOL CALLBACK DefaultOptionsProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lPa
 		AddDropDownItem(hDlg, IDC_CPU_TYPE, CORE_INTERPTER, CPU_Interpreter, &SystemCPU_Type);
 		AddDropDownItem(hDlg, IDC_CPU_TYPE, CORE_RECOMPILER, CPU_Recompiler, &SystemCPU_Type);
 		AddDropDownItem(hDlg, IDC_CPU_TYPE, CORE_SYNC, CPU_SyncCores, &SystemCPU_Type);
-		if (HaveDebugger) {
-			EnableWindow(GetDlgItem(hDlg, IDC_CPU_TYPE), FALSE);
-		}
 
 		AddDropDownItem(hDlg, IDC_SELFMOD, SMCM_NONE, ModCode_None, &SystemSelfModCheck);
 		AddDropDownItem(hDlg, IDC_SELFMOD, SMCM_CACHE, ModCode_Cache, &SystemSelfModCheck);
@@ -264,8 +261,6 @@ BOOL CALLBACK DefaultOptionsProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lPa
 		break;
 	case WM_COMMAND:
 		if (HIWORD(wParam) == BN_CLICKED && LOWORD(wParam) == IDC_USEDEBUGGER) {
-			BOOL enable_cpu_type = !(Button_GetCheck(lParam) & BST_CHECKED);
-			EnableWindow(GetDlgItem(hDlg, IDC_CPU_TYPE), enable_cpu_type);
 			ShowCursor(TRUE);
 		}
 		break;
@@ -960,7 +955,7 @@ BOOL CALLBACK RomSettingsProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam
 		AddDropDownItem(hDlg, IDC_CPU_TYPE, ROM_DEFAULT, CPU_Default, &RomCPUType);
 		AddDropDownItem(hDlg, IDC_CPU_TYPE, CORE_INTERPTER, CPU_Interpreter, &RomCPUType);
 		AddDropDownItem(hDlg, IDC_CPU_TYPE, CORE_RECOMPILER, CPU_Recompiler, &RomCPUType);
-		if (HaveDebugger) { AddDropDownItem(hDlg, IDC_CPU_TYPE, CORE_SYNC, CPU_SyncCores, &RomCPUType); }
+		AddDropDownItem(hDlg, IDC_CPU_TYPE, CORE_SYNC, CPU_SyncCores, &RomCPUType);
 
 		AddDropDownItem(hDlg, IDC_SELFMOD, ROM_DEFAULT, ModCode_Default, &RomSelfMod);
 		AddDropDownItem(hDlg, IDC_SELFMOD, SMCM_NONE, ModCode_None, &RomSelfMod);

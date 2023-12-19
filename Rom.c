@@ -635,10 +635,12 @@ void LoadRomOptions(void) {
 			VirtualFree((BYTE*)DelaySlotTable + (0x400000 >> 0xA), (0x400000 >> 0xA), MEM_DECOMMIT);
 		}
 	}
+	DWORD CRC1 = *(DWORD*)&ROM[0x10];
+	DWORD CRC2 = *(DWORD*)&ROM[0x14];
 	RdramSize = NewRamSize;
 	CPU_Type = SystemCPU_Type;
 	if (HaveDebugger) { CPU_Type = CPU_Interpreter; }
-	else if (RomCPUType != CPU_Default) { CPU_Type = RomCPUType; }
+	else if (CPU_Type != CPU_SyncCores && RomCPUType != CPU_Default && !(CRC1 == 0 && CRC2 == 0)) { CPU_Type = RomCPUType; }
 	CountPerOp = RomCF;
 	if (CountPerOp < 1 || CountPerOp > 6)
 		CountPerOp = Default_CountPerOp;

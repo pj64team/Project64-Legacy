@@ -59,6 +59,7 @@ typedef struct {
 } LOG_OPTIONS;
 
 extern LOG_OPTIONS LogOptions;
+extern const int FORCE_LOGGING;
 
 void EnterLogOptions ( HWND hwndOwner );
 void LoadLogOptions  ( LOG_OPTIONS * LogOptions, BOOL AlwaysFill );

@@ -163,7 +163,7 @@ void ApplyGSButton(void) {
 				switch (Code.Command & 0xFF000000) {
 					// Gameshark / AR
 				case 0x88000000:
-					Address.DW = (DWORD)(0x80000000 | (Code.Command & 0xFFFFFF));
+					Address.DW = (int)(0x80000000 | (Code.Command & 0xFFFFFF));
 					Memory = Code.Value;
 					for (count3 = 0; count3 < numrepeats; count3++) {
 						r4300i_SB_VAddr_NonCPU(Address, (BYTE)Memory);
@@ -172,7 +172,7 @@ void ApplyGSButton(void) {
 					}
 					break;
 				case 0x89000000:
-					Address.DW = (DWORD)(0x80000000 | (Code.Command & 0xFFFFFF));
+					Address.DW = (int)(0x80000000 | (Code.Command & 0xFFFFFF));
 					Memory = Code.Value;
 					for (count3 = 0; count3 < numrepeats; count3++) {
 						r4300i_SH_VAddr_NonCPU(Address, (WORD)Memory);
@@ -183,7 +183,7 @@ void ApplyGSButton(void) {
 
 					// Xplorer64
 				case 0xA8000000:
-					Address.DW = (DWORD)(0x80000000 | (ConvertXP64Address(Code.Command) & 0xFFFFFF));
+					Address.DW = (int)(0x80000000 | (ConvertXP64Address(Code.Command) & 0xFFFFFF));
 					Memory = ConvertXP64Value(Code.Value);
 					for (count3 = 0; count3 < numrepeats; count3++) {
 						r4300i_SB_VAddr_NonCPU(Address, (BYTE)Memory);
@@ -192,7 +192,7 @@ void ApplyGSButton(void) {
 					}
 					break;
 				case 0xA9000000:
-					Address.DW = (DWORD)(0x80000000 | (ConvertXP64Address(Code.Command) & 0xFFFFFF));
+					Address.DW = (int)(0x80000000 | (ConvertXP64Address(Code.Command) & 0xFFFFFF));
 					Memory = ConvertXP64Value(Code.Value);
 					for (count3 = 0; count3 < numrepeats; count3++) {
 						r4300i_SH_VAddr_NonCPU(Address, (WORD)Memory);
@@ -207,20 +207,20 @@ void ApplyGSButton(void) {
 				switch (Code.Command & 0xFF000000) {
 					// Gameshark / AR
 				case 0x88000000:
-					Address.DW = (DWORD)(0x80000000 | (Code.Command & 0xFFFFFF));
+					Address.DW = (int)(0x80000000 | (Code.Command & 0xFFFFFF));
 					r4300i_SB_VAddr_NonCPU(Address, (BYTE)Code.Value);
 					break;
 				case 0x89000000:
-					Address.DW = (DWORD)(0x80000000 | (Code.Command & 0xFFFFFF));
+					Address.DW = (int)(0x80000000 | (Code.Command & 0xFFFFFF));
 					r4300i_SH_VAddr_NonCPU(Address, Code.Value);
 					break;
 					// Xplorer64
 				case 0xA8000000:
-					Address.DW = (DWORD)(0x80000000 | (ConvertXP64Address(Code.Command) & 0xFFFFFF));
+					Address.DW = (int)(0x80000000 | (ConvertXP64Address(Code.Command) & 0xFFFFFF));
 					r4300i_SB_VAddr_NonCPU(Address, (BYTE)ConvertXP64Value(Code.Value));
 					break;
 				case 0xA9000000:
-					Address.DW = (DWORD)(0x80000000 | (ConvertXP64Address(Code.Command) & 0xFFFFFF));
+					Address.DW = (int)(0x80000000 | (ConvertXP64Address(Code.Command) & 0xFFFFFF));
 					r4300i_SH_VAddr_NonCPU(Address, ConvertXP64Value(Code.Value));
 					break;
 				default:
@@ -248,7 +248,7 @@ int ApplyCheatEntry(GAMESHARK_CODE* Code, BOOL Execute) {
 	case 0x40000000:
 	{
 		// Write bytes with virtual addresses (supports TLB mapping)
-		Address.DW = (DWORD)Code[1].Command;
+		Address.DW = (int)Code[1].Command;
 		int count = Code[1].Value + 1;
 		int i;
 
@@ -296,7 +296,7 @@ int ApplyCheatEntry(GAMESHARK_CODE* Code, BOOL Execute) {
 		switch (Code[1].Command & 0xFF000000) {
 		case 0x80000000:
 			if (Execute) {
-				Address.DW = (DWORD)(0x80000000 | (Code[1].Command & 0xFFFFFF));
+				Address.DW = (int)(0x80000000 | (Code[1].Command & 0xFFFFFF));
 				Memory = Code[1].Value;
 				for (count = 0; count < numrepeats; count++) {
 					r4300i_SB_VAddr_NonCPU(Address, (BYTE)Memory);
@@ -307,7 +307,7 @@ int ApplyCheatEntry(GAMESHARK_CODE* Code, BOOL Execute) {
 			return 2;
 		case 0x81000000:
 			if (Execute) {
-				Address.DW = (DWORD)(0x80000000 | (Code[1].Command & 0xFFFFFF));
+				Address.DW = (int)(0x80000000 | (Code[1].Command & 0xFFFFFF));
 				Memory = Code[1].Value;
 				for (count = 0; count < numrepeats; count++) {
 					r4300i_SH_VAddr_NonCPU(Address, (WORD)Memory);
@@ -321,40 +321,40 @@ int ApplyCheatEntry(GAMESHARK_CODE* Code, BOOL Execute) {
 	}
 	break;
 	case 0x80000000:
-		Address.DW = (DWORD)(0x80000000 | (Code->Command & 0xFFFFFF));
+		Address.DW = (int)(0x80000000 | (Code->Command & 0xFFFFFF));
 		if (Execute) { r4300i_SB_VAddr_NonCPU(Address, (BYTE)Code->Value); }
 		break;
 	case 0x81000000:
-		Address.DW = (DWORD)(0x80000000 | (Code->Command & 0xFFFFFF));
+		Address.DW = (int)(0x80000000 | (Code->Command & 0xFFFFFF));
 		if (Execute) { r4300i_SH_VAddr_NonCPU(Address, Code->Value); }
 		break;
 	case 0xA0000000:
-		Address.DW = (DWORD)(0xA0000000 | (Code->Command & 0xFFFFFF));
+		Address.DW = (int)(0xA0000000 | (Code->Command & 0xFFFFFF));
 		if (Execute) { r4300i_SB_VAddr_NonCPU(Address, (BYTE)Code->Value); }
 		break;
 	case 0xA1000000:
-		Address.DW = (DWORD)(0xA0000000 | (Code->Command & 0xFFFFFF));
+		Address.DW = (int)(0xA0000000 | (Code->Command & 0xFFFFFF));
 		if (Execute) { r4300i_SH_VAddr_NonCPU(Address, Code->Value); }
 		break;
 	case 0xD0000000:													// Added by Witten (witten@pj64cheats.net)
-		Address.DW = (DWORD)(0x80000000 | (Code->Command & 0xFFFFFF));
+		Address.DW = (int)(0x80000000 | (Code->Command & 0xFFFFFF));
 		r4300i_LB_VAddr_NonCPU(Address, (BYTE*)&Memory);
 		Memory &= 0x00FF;
 		if (Memory != Code->Value) { Execute = FALSE; }
 		return ApplyCheatEntry(&Code[1], Execute) + 1;
 	case 0xD1000000:													// Added by Witten (witten@pj64cheats.net)
-		Address.DW = (DWORD)(0x80000000 | (Code->Command & 0xFFFFFF));
+		Address.DW = (int)(0x80000000 | (Code->Command & 0xFFFFFF));
 		r4300i_LH_VAddr_NonCPU(Address, (WORD*)&Memory);
 		if (Memory != Code->Value) { Execute = FALSE; }
 		return ApplyCheatEntry(&Code[1], Execute) + 1;
 	case 0xD2000000:													// Added by Witten (witten@pj64cheats.net)
-		Address.DW = (DWORD)(0x80000000 | (Code->Command & 0xFFFFFF));
+		Address.DW = (int)(0x80000000 | (Code->Command & 0xFFFFFF));
 		r4300i_LB_VAddr_NonCPU(Address, (BYTE*)&Memory);
 		Memory &= 0x00FF;
 		if (Memory == Code->Value) { Execute = FALSE; }
 		return ApplyCheatEntry(&Code[1], Execute) + 1;
 	case 0xD3000000:													// Added by Witten (witten@pj64cheats.net)
-		Address.DW = (DWORD)(0x80000000 | (Code->Command & 0xFFFFFF));
+		Address.DW = (int)(0x80000000 | (Code->Command & 0xFFFFFF));
 		r4300i_LH_VAddr_NonCPU(Address, (WORD*)&Memory);
 		if (Memory == Code->Value) { Execute = FALSE; }
 		return ApplyCheatEntry(&Code[1], Execute) + 1;
@@ -363,50 +363,50 @@ int ApplyCheatEntry(GAMESHARK_CODE* Code, BOOL Execute) {
 	case 0x30000000:
 	case 0x82000000:
 	case 0x84000000:
-		Address.DW = (DWORD)(0x80000000 | (Code->Command & 0xFFFFFF));
+		Address.DW = (int)(0x80000000 | (Code->Command & 0xFFFFFF));
 		if (Execute) { r4300i_SB_VAddr_NonCPU(Address, (BYTE)Code->Value); }
 		break;
 	case 0x31000000:
 	case 0x83000000:
 	case 0x85000000:
-		Address.DW = (DWORD)(0x80000000 | (Code->Command & 0xFFFFFF));
+		Address.DW = (int)(0x80000000 | (Code->Command & 0xFFFFFF));
 		if (Execute) { r4300i_SH_VAddr_NonCPU(Address, Code->Value); }
 		break;
 	case 0xE8000000:
-		Address.DW = (DWORD)(0x80000000 | (ConvertXP64Address(Code->Command) & 0xFFFFFF));
+		Address.DW = (int)(0x80000000 | (ConvertXP64Address(Code->Command) & 0xFFFFFF));
 		if (Execute) { r4300i_SB_VAddr_NonCPU(Address, (BYTE)ConvertXP64Value(Code->Value)); }
 		break;
 	case 0xE9000000:
-		Address.DW = (DWORD)(0x80000000 | (ConvertXP64Address(Code->Command) & 0xFFFFFF));
+		Address.DW = (int)(0x80000000 | (ConvertXP64Address(Code->Command) & 0xFFFFFF));
 		if (Execute) { r4300i_SH_VAddr_NonCPU(Address, ConvertXP64Value(Code->Value)); }
 		break;
 	case 0xC8000000:
-		Address.DW = (DWORD)(0xA0000000 | (ConvertXP64Address(Code->Command) & 0xFFFFFF));
+		Address.DW = (int)(0xA0000000 | (ConvertXP64Address(Code->Command) & 0xFFFFFF));
 		if (Execute) { r4300i_SB_VAddr_NonCPU(Address, (BYTE)Code->Value); }
 		break;
 	case 0xC9000000:
-		Address.DW = (DWORD)(0xA0000000 | (ConvertXP64Address(Code->Command) & 0xFFFFFF));
+		Address.DW = (int)(0xA0000000 | (ConvertXP64Address(Code->Command) & 0xFFFFFF));
 		if (Execute) { r4300i_SH_VAddr_NonCPU(Address, ConvertXP64Value(Code->Value)); }
 		break;
 	case 0xB8000000:
-		Address.DW = (DWORD)(0x80000000 | (ConvertXP64Address(Code->Command) & 0xFFFFFF));
+		Address.DW = (int)(0x80000000 | (ConvertXP64Address(Code->Command) & 0xFFFFFF));
 		r4300i_LB_VAddr_NonCPU(Address, (BYTE*)&Memory);
 		Memory &= 0x00FF;
 		if (Memory != ConvertXP64Value(Code->Value)) { Execute = FALSE; }
 		return ApplyCheatEntry(&Code[1], Execute) + 1;
 	case 0xB9000000:
-		Address.DW = (DWORD)(0x80000000 | (ConvertXP64Address(Code->Command) & 0xFFFFFF));
+		Address.DW = (int)(0x80000000 | (ConvertXP64Address(Code->Command) & 0xFFFFFF));
 		r4300i_LH_VAddr_NonCPU(Address, (WORD*)&Memory);
 		if (Memory != ConvertXP64Value(Code->Value)) { Execute = FALSE; }
 		return ApplyCheatEntry(&Code[1], Execute) + 1;
 	case 0xBA000000:
-		Address.DW = (DWORD)(0x80000000 | (ConvertXP64Address(Code->Command) & 0xFFFFFF));
+		Address.DW = (int)(0x80000000 | (ConvertXP64Address(Code->Command) & 0xFFFFFF));
 		r4300i_LB_VAddr_NonCPU(Address, (BYTE*)&Memory);
 		Memory &= 0x00FF;
 		if (Memory == ConvertXP64Value(Code->Value)) { Execute = FALSE; }
 		return ApplyCheatEntry(&Code[1], Execute) + 1;
 	case 0xBB000000:
-		Address.DW = (DWORD)(0x80000000 | (ConvertXP64Address(Code->Command) & 0xFFFFFF));
+		Address.DW = (int)(0x80000000 | (ConvertXP64Address(Code->Command) & 0xFFFFFF));
 		r4300i_LH_VAddr_NonCPU(Address, (WORD*)&Memory);
 		if (Memory == ConvertXP64Value(Code->Value)) { Execute = FALSE; }
 		return ApplyCheatEntry(&Code[1], Execute) + 1;
