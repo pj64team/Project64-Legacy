@@ -17,7 +17,7 @@
 // Note that Project64 automatically prefixes "http://"
 
 Author=PJ64LegacyTeam
-Date=9th December 2023 Version: 1
+Date=21th December 2023 Version: 1
 Homepage=www.project64-legacy.com
 Version=Project64 1.6.2 (Legacy)
 
@@ -28151,6 +28151,65 @@ Cheat61="Press R For Old Or Young Link",D01C84B5 0010,8011A5D7 00??
 Cheat61_N=To Activate this Cheat Hold The R Button when walking through a Doorway this will change you to the option on the other side, Disable this Cheat straight away after getting to the other side, in some places you might even get Access Violations. Just press ok untill you can carry on.
 Cheat61_O=$01 Link Young,$00 Link Old
 
+[81A753C5-5F5C6BCB-C:45]
+Name=Getter Love!! - Panda Love Unit (U)
+Cheat0="Cash Select\Player 1",81120850 ????,81120852 ????
+Cheat0_O=$0000:0000 No Cash,$0001:869F Infinite Max Cash
+Cheat1="Style Select\Player 1",80120844 00??
+Cheat1_O=$00 No Style,$FF Infinite Max Style
+Cheat2="Stamina Select\Player 1",80120848 00??
+Cheat2_O=$00 No Stamina,$FF Infinite Max Stamina
+Cheat3="Cash Select\Player 2",81120854 ????,81120856 ????
+Cheat3_O=$0000:0000 No Cash,$0001:869F Infinite Max Cash
+Cheat4="Style Select\Player 2",80120845 00??
+Cheat4_O=$00 No Style,$FF Infinite Max Style
+Cheat5="Stamina Select\Player 2",80120849 00??
+Cheat5_O=$00 No Stamina,$FF Infinite Max Stamina
+Cheat6="Cash Select\Player 3",81120858 ????,8112085A ????
+Cheat6_O=$0000:0000 No Cash,$0001:869F Infinite Max Cash
+Cheat7="Style Select\Player 3",80120846 00??
+Cheat7_O=$00 No Style,$FF Infinite Max Style
+Cheat8="Stamina Select\Player 3",8012084A 00??
+Cheat8_O=$00 No Stamina,$FF Infinite Max Stamina
+Cheat9="Cash Select\Player 4",8112085C ????,8112085E ????
+Cheat9_O=$0000:0000 No Cash,$0001:869F Infinite Max Cash
+Cheat10="Style Select\Player 4",80120847 00??
+Cheat10_O=$00 No Style,$FF Infinite Max Style
+Cheat11="Stamina Select\Player 4",8012084B 00??
+Cheat11_O=$00 No Stamina,$FF Infinite Max Stamina
+Cheat12="Action Select for Player 1",801206B9 00??
+Cheat12_N=Disable until the game starts. Select your option you want the effect for. Disable again if there are other options in any stage.
+Cheat12_O=$00 Wash,$01 Rest,$02 Work,$03 Use an item,$04 Do nothing
+
+[72F34717-DFB5A44F-C:50]
+Name=Getter Love!! - Panda Love Unit (E) [NTSC-PAL]
+Cheat0="Cash Select\Player 1",81120850 ????,81120852 ????
+Cheat0_O=$0000:0000 No Cash,$0001:869F Infinite Max Cash
+Cheat1="Style Select\Player 1",80120844 00??
+Cheat1_O=$00 No Style,$FF Infinite Max Style
+Cheat2="Stamina Select\Player 1",80120848 00??
+Cheat2_O=$00 No Stamina,$FF Infinite Max Stamina
+Cheat3="Cash Select\Player 2",81120854 ????,81120856 ????
+Cheat3_O=$0000:0000 No Cash,$0001:869F Infinite Max Cash
+Cheat4="Style Select\Player 2",80120845 00??
+Cheat4_O=$00 No Style,$FF Infinite Max Style
+Cheat5="Stamina Select\Player 2",80120849 00??
+Cheat5_O=$00 No Stamina,$FF Infinite Max Stamina
+Cheat6="Cash Select\Player 3",81120858 ????,8112085A ????
+Cheat6_O=$0000:0000 No Cash,$0001:869F Infinite Max Cash
+Cheat7="Style Select\Player 3",80120846 00??
+Cheat7_O=$00 No Style,$FF Infinite Max Style
+Cheat8="Stamina Select\Player 3",8012084A 00??
+Cheat8_O=$00 No Stamina,$FF Infinite Max Stamina
+Cheat9="Cash Select\Player 4",8112085C ????,8112085E ????
+Cheat9_O=$0000:0000 No Cash,$0001:869F Infinite Max Cash
+Cheat10="Style Select\Player 4",80120847 00??
+Cheat10_O=$00 No Style,$FF Infinite Max Style
+Cheat11="Stamina Select\Player 4",8012084B 00??
+Cheat11_O=$00 No Stamina,$FF Infinite Max Stamina
+Cheat12="Action Select for Player 1",801206B9 00??
+Cheat12_N=Disable until the game starts. Select your option you want the effect for. Disable again if there are other options in any stage.
+Cheat12_O=$00 Wash,$01 Rest,$02 Work,$03 Use an item,$04 Do nothing
 
 //End Of File----------> Anything under here was put in by you <--------------------------------
 

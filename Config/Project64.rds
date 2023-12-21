@@ -19,7 +19,7 @@
 // Note that Project64 automatically prefixes "http://"
 
 Author=PJ64LegacyTeam
-Date=9th December 2023 Version: 1
+Date=21th December 2023 Version: 1
 Homepage=www.project64-legacy.com
 Version=Project64 1.6.2 (Legacy)
 
@@ -3188,7 +3188,16 @@ Save Type=First Save Type
 Self-modifying code Method=Protected Memory
 Status=Compatible
 
-[CDDB4BDF-84E5EFAC-C:45]
+[CDDB4BDF-84E5EFAC-C:4A]
+Name=Getter Love!! - Cho Ren-ai Party Game (English Translation v1.01)
+CPU Type=Recompiler
+Counter Factor=2
+Linking=Global
+Save Type=First Save Type
+Self-modifying code Method=Protected Memory
+Status=Compatible
+
+[81A753C5-5F5C6BCB-C:45]
 Name=Getter Love!! - Panda Love Unit (U)
 CPU Type=Recompiler
 Counter Factor=2
@@ -3738,9 +3747,8 @@ Status=Compatible
 Name=Indiana Jones and the Infernal Machine (U)
 CPU Type=Interpreter
 Counter Factor=2
-Disable Reg Cache
 ExpansionPak
-Linking=Off
+Linking=On
 Plugin Note=[video] Use GlideN64
 Save Type=First Save Type
 Self-modifying code Method=Check Memory Advance
@@ -13093,6 +13101,7 @@ Name=Banjo-Tooie (U) [f1] (Flashcart) [Crack + Save Fix]
 CPU Type=Recompiler
 Core Note=Unhandled 4300i OpCode
 Counter Factor=1
+Disable Reg Cache
 ExpansionPak
 Linking=Global
 Save Type=First Save Type
@@ -13443,10 +13452,10 @@ Use Large Buffer
 
 [3A6F8C6B-2897BAEB-C:50]
 Name=Indiana Jones and the Infernal Machine (E) (Prototype)
-CPU Type=Recompiler
+CPU Type=Interpreter
 Counter Factor=2
 ExpansionPak
-Linking=Global
+Linking=Off
 Plugin Note=[video] Use GlideN64
 Save Type=First Save Type
 Self-modifying code Method=Check Memory Advance
@@ -15745,7 +15754,7 @@ Save Type=First Save Type
 Self-modifying code Method=Change Memory
 Status=Compatible
 
-[BCCEEFDD-B3654EB0-C:50]
+[72F34717-DFB5A44F-C:50]
 Name=Getter Love!! - Panda Love Unit (E) [NTSC-PAL]
 CPU Type=Recompiler
 Counter Factor=2
@@ -16353,6 +16362,16 @@ Save Type=First Save Type
 Self-modifying code Method=Check Memory Advance
 Status=Compatible
 
+[A89B78F6-3F5B3390-C:20]
+Name=portal_pak_000 (patched) 0.12.0.z64
+CPU Type=Recompiler
+Counter Factor=2
+ExpansionPak
+Linking=On
+Save Type=First Save Type
+Self-modifying code Method=Check Memory Advance
+Status=Compatible
+
 [01DF51BC-EBA4E907-C:00]
 Name=SuperSnooperSpookers (PD)
 CPU Type=Recompiler
@@ -16379,7 +16398,7 @@ Name=XENO CRISIS 64 (JU)
 CPU Type=Recompiler
 Counter Factor=2
 Disable Reg Cache
-Linking=Global
+Linking=Off
 Save Type=First Save Type
 Self-modifying code Method=Check Memory Advance
 Status=Use GLideN64 HLE Video
@@ -18178,31 +18197,32 @@ CPU Type=Interpreter
 Counter Factor=Default
 Disable Reg Cache
 ExpansionPak
-Linking=Global
+Linking=On
 Save Type=First Save Type
-Self-modifying code Method=Default
+Self-modifying code Method=Check Memory Advance
 Status=Unsupported
 Use Large Buffer
 
 [AB7C9861-4DA44119-C:00]
 Name=GL Demo (PD)
-CPU Type=Interpreter
+CPU Type=Recompiler
 Counter Factor=1
+Disable Reg Cache
 ExpansionPak
-Linking=Global
+Linking=On
 Save Type=First Save Type
-Self-modifying code Method=Check Memory & cache
-Status=Interpreter only
+Self-modifying code Method=Check Memory Advance
+Status=Uncertain
 
 [CE72E06C-82E0B2EC-C:00]
 Name=Spritemap (PD)
-CPU Type=Interpreter
+CPU Type=Recompiler
 Counter Factor=2
 ExpansionPak
 Linking=On
 Save Type=First Save Type
 Self-modifying code Method=Check Memory Advance
-Status=Interpreter only
+Status=Compatible
 
 [D06080CD-1F73F9FE-C:20]
 Name=Perfect Trainer 2003 (PD by NAN)
@@ -18357,6 +18377,7 @@ ExpansionPak
 Linking=On
 Save Type=First Save Type
 Self-modifying code Method=Cache
+Status=Compatible
 
 [A79C11AB-15DD4324-C:45]
 Name=ZELDA COSMIC GODDESS (U) (64bit build)
@@ -18415,4 +18436,7 @@ Status=Compatible
 //
 //-------- Any entries below this point are for ROMs you have added yourself via the GUI [EOF] --------
 //
+
+
+
 
