@@ -36,7 +36,7 @@ Project64 Legacy is a Portable Emulator and all you need to do is right click an
 * RAM
   * 512MB or more
 * Graphics card
-  * DirectX 8 capable (Jabo's Direct3D8)
+  * DirectX 8 capable (Jabo's Direct3D8/Icepir8sLegacyLLE)
   * OpenGL 3.3 capable (Icepir8sLegacyLLE/GLideN64)
   
 <sub>Intel integrated graphics can have issues that are not present with Nvidia and AMD GPU's even when the requirements are met.</sub>
