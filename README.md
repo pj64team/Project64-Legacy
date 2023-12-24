@@ -18,7 +18,7 @@ Project64 Legacy is a free and open-source emulator for the Nintendo 64 and is a
 ## Screenshot
 
 <p align="center">
-  <img src="https://www.project64-legacy.com/data/uploads/Docs/screen_about.png" alt="screenshot" width="400" />
+  <img src="https://www.project64-legacy.com/data/uploads/Docs/screen_about_2023.png" alt="screenshot" width="400" />
 </p>
 
 ## Installation
