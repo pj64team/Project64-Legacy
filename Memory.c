@@ -786,7 +786,7 @@ BOOL Compile_SW_Const ( DWORD Value, DWORD Addr ) {
 		switch (Addr) {
 		case 0x04700000: MoveConstToVariable(Value,&RI_MODE_REG,"RI_MODE_REG"); break;
 		case 0x04700004: MoveConstToVariable(Value,&RI_CONFIG_REG,"RI_CONFIG_REG"); break;
-		case 0x04700008: MoveConstToVariable(Value,&RI_CURRENT_LOAD_REG,"RI_CURRENT_LOAD_REG"); break;
+		case 0x04700008: break;
 		case 0x0470000C: MoveConstToVariable(Value,&RI_SELECT_REG,"RI_SELECT_REG"); break;
 		default:
 			if (ShowUnhandledMemory) { DisplayError("Compile_SW_Const\ntrying to store %X in %X?",Value,Addr); }
@@ -1835,12 +1835,17 @@ int r4300i_LW_NonMemory ( DWORD PAddr, DWORD * Value ) {
 		switch (PAddr) {
 		case 0x04700000: * Value = RI_MODE_REG; break;
 		case 0x04700004: * Value = RI_CONFIG_REG; break;
-		case 0x04700008: * Value = RI_CURRENT_LOAD_REG; break;
+		case 0x04700008:
+			*Value = 0x6 |
+				(RI_RERROR_REG & 0x01) | // Ack
+				(RI_MODE_REG   & 0x08) | // STOP_R
+				(RI_SELECT_REG & 0x10);  // TSEL[0]
+			break;
 		case 0x0470000C: * Value = RI_SELECT_REG; break;
 		case 0x04700010: * Value = RI_REFRESH_REG; break;
 		case 0x04700014: * Value = RI_LATENCY_REG; break;
 		case 0x04700018: * Value = RI_RERROR_REG; break;
-		case 0x0470001C: * Value = RI_WERROR_REG; break;
+		case 0x0470001C: * Value = RI_BANK_STATUS_REG; break;
 		default:
 			* Value = 0;
 			return FALSE;
@@ -2700,12 +2705,12 @@ int r4300i_SW_NonMemory ( DWORD PAddr, DWORD Value ) {
 		switch (PAddr) {
 		case 0x04700000: RI_MODE_REG = Value; break;
 		case 0x04700004: RI_CONFIG_REG = Value; break;
-		case 0x04700008: RI_CURRENT_LOAD_REG = Value; break;
+		case 0x04700008: break; // RI_CURRENT_LOAD_REG
 		case 0x0470000C: RI_SELECT_REG = Value; break;
 		case 0x04700010: RI_REFRESH_REG = Value; break;
 		case 0x04700014: RI_LATENCY_REG = Value; break;
 		case 0x04700018: RI_RERROR_REG = Value; break;
-		case 0x0470001C: RI_WERROR_REG = Value; break;
+		case 0x0470001C: RI_BANK_STATUS_REG = Value; break;
 		default:
 			return FALSE;
 		}

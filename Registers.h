@@ -153,13 +153,11 @@
 
 #define RI_MODE_REG				RegRI[0]
 #define RI_CONFIG_REG			RegRI[1]
-#define RI_CURRENT_LOAD_REG		RegRI[2]
 #define RI_SELECT_REG			RegRI[3]
-#define RI_COUNT_REG			RegRI[4]
 #define RI_REFRESH_REG			RegRI[4]
 #define RI_LATENCY_REG			RegRI[5]
 #define RI_RERROR_REG			RegRI[6]
-#define RI_WERROR_REG			RegRI[7]
+#define RI_BANK_STATUS_REG		RegRI[7]
 
 #define SI_DRAM_ADDR_REG		RegSI[0]
 #define SI_PIF_ADDR_RD64B_REG	RegSI[1]
