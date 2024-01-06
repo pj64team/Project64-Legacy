@@ -1876,6 +1876,15 @@ int r4300i_LW_NonMemory ( DWORD PAddr, DWORD * Value ) {
 		}
 		*Value = ReadFromFlashStatus(PAddr);
 		break;
+	case 0x13F00000:
+		if (PAddr >= 0x13FF0020 && PAddr < 0x13FF0220) {
+			*Value =
+				(ISViewerBuffer[PAddr - 0x13FF0020 + 0] << 24) |
+				(ISViewerBuffer[PAddr - 0x13FF0020 + 1] << 16) |
+				(ISViewerBuffer[PAddr - 0x13FF0020 + 2] << 8) |
+				(ISViewerBuffer[PAddr - 0x13FF0020 + 3] << 0);
+		}
+		break;
 	case 0x1FC00000:
 		if (PAddr < 0x1FC007C0) {
 			DWORD ToSwap = *(DWORD *)(&PifRom[PAddr - 0x1FC00000]);
