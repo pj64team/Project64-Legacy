@@ -327,6 +327,7 @@ void InitalizeR4300iRegisters (int UsePif, int Country, enum CIC_CHIP CIC_Chip) 
 	memset(FPCR,0,sizeof(Registers.FPCR));
 	for (int i = 0; i < 4; ++i) {
 		memset((*RegRDRAM)[i], 0, sizeof(Registers.RDRAM[i]));
+		RDRAM_DELAY_REG(i) = RDRAM_DELAY_FIXED_VALUE;
 	}
 	memset(RegSP,0,sizeof(Registers.SP));	
 	memset(RegDPC,0,sizeof(Registers.DPC));	
