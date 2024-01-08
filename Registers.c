@@ -77,8 +77,9 @@ char *Cop0_Name[32] = {"Index","Random","EntryLo0","EntryLo1","Context","PageMas
                     "Config","LLAddr","WatchLo","WatchHi","XContext","21","22","23",
                     "24","25","ECC","CacheErr","TagLo","TagHi","ErrEPC","31"};
 
-DWORD *FPCR,*RegRDRAM,*RegSP,*RegDPC,*RegMI,*RegVI,*RegAI,*RegPI,
+DWORD *FPCR,*RegSP,*RegDPC,*RegMI,*RegVI,*RegAI,*RegPI,
 	*RegRI,*RegSI, HalfLine, RegModValue, ViFieldSerration, LLBit;
+DWORD (*RegRDRAM)[4][10];
 void * FPRDoubleLocation[32], * FPRFloatLoadStoreLocation[32], *FPRFloatUpperHalfLocation[32], *FPRFloatFSLocation[32];
 void* FPRFloatOtherLocation[32], *FPRDoubleFTFDLocation[32];
 MIPS_DWORD PROGRAM_COUNTER, *GPR, *FPR, HI, LO, *CP0;
@@ -323,8 +324,10 @@ int FreeX86Reg (BLOCK_SECTION * Section) {
 
 void InitalizeR4300iRegisters (int UsePif, int Country, enum CIC_CHIP CIC_Chip) {
 	memset(CP0,0,sizeof(Registers.CP0));	
-	memset(FPCR,0,sizeof(Registers.FPCR));	
-	memset(RegRDRAM,0,sizeof(Registers.RDRAM));	
+	memset(FPCR,0,sizeof(Registers.FPCR));
+	for (int i = 0; i < 4; ++i) {
+		memset((*RegRDRAM)[i], 0, sizeof(Registers.RDRAM[i]));
+	}
 	memset(RegSP,0,sizeof(Registers.SP));	
 	memset(RegDPC,0,sizeof(Registers.DPC));	
 	memset(RegMI,0,sizeof(Registers.MI));	
@@ -1071,7 +1074,7 @@ void SetupRegisters(N64_REGISTERS * n64_Registers) {
 	GPR      = n64_Registers->GPR;
 	FPR      = n64_Registers->FPR;
 	FPCR     = n64_Registers->FPCR;
-	RegRDRAM = n64_Registers->RDRAM;
+	RegRDRAM = &n64_Registers->RDRAM;
 	RegSP    = n64_Registers->SP;
 	RegDPC   = n64_Registers->DPC;
 	RegMI    = n64_Registers->MI;

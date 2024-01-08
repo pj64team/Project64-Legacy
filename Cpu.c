@@ -670,7 +670,7 @@ BOOL Machine_LoadState(void) {
 				VirtualProtect(SyncMemory,RdramSize,PAGE_READWRITE,&OldProtect);
 				VirtualProtect(SyncMemory + 0x04000000,0x2000,PAGE_READWRITE,&OldProtect);	
 			}
-			if (CPU_Type != CPU_Interpreter) { 
+			if (CPU_Type != CPU_Interpreter) {
 				ResetRecompCode(); 
 			}
 
@@ -734,7 +734,17 @@ BOOL Machine_LoadState(void) {
 			unzReadCurrentFile(file,FPCR,sizeof(DWORD)*32);
 			unzReadCurrentFile(file,&HI,sizeof(_int64));
 			unzReadCurrentFile(file,&LO,sizeof(_int64));
-			unzReadCurrentFile(file,RegRDRAM,sizeof(DWORD)*10);
+			if (formatVersion == SaveStateFormat_ORIGINAL) {
+				unzReadCurrentFile(file, (*RegRDRAM)[0], sizeof(DWORD) * 10);
+				for (int i = 1; i < 4; ++i) {
+					memset((*RegRDRAM)[i], 0, sizeof(Registers.RDRAM[i]));
+				}
+			}
+			else {
+				for (int i = 0; i < 4; ++i) {
+					unzReadCurrentFile(file, (*RegRDRAM)[i], sizeof(DWORD) * 10);
+				}
+			}
 			unzReadCurrentFile(file,RegSP,sizeof(DWORD)*10);
 			unzReadCurrentFile(file,RegDPC,sizeof(DWORD)*10);
 			unzReadCurrentFile(file,RegMI,sizeof(DWORD)*4);
@@ -876,7 +886,17 @@ BOOL Machine_LoadState(void) {
 		ReadFile( hSaveFile,FPCR,sizeof(DWORD)*32,&dwRead,NULL);
 		ReadFile( hSaveFile,&HI,sizeof(_int64),&dwRead,NULL);
 		ReadFile( hSaveFile,&LO,sizeof(_int64),&dwRead,NULL);
-		ReadFile( hSaveFile,RegRDRAM,sizeof(DWORD)*10,&dwRead,NULL);
+		if (formatVersion == SaveStateFormat_ORIGINAL) {
+			ReadFile(hSaveFile, (*RegRDRAM)[0], sizeof(DWORD) * 10, &dwRead, NULL);
+			for (int i = 1; i < 4; ++i) {
+				memset((*RegRDRAM)[i], 0, sizeof(Registers.RDRAM[i]));
+			}
+		}
+		else {
+			for (int i = 0; i < 4; ++i) {
+				ReadFile(hSaveFile, (*RegRDRAM)[i], sizeof(DWORD) * 10, &dwRead, NULL);
+			}
+		}
 		ReadFile( hSaveFile,RegSP,sizeof(DWORD)*10,&dwRead,NULL);
 		ReadFile( hSaveFile,RegDPC,sizeof(DWORD)*10,&dwRead,NULL);
 		ReadFile( hSaveFile,RegMI,sizeof(DWORD)*4,&dwRead,NULL);
@@ -1009,7 +1029,9 @@ BOOL Machine_SaveState(void) {
 		zipWriteInFileInZip( file,FPCR,sizeof(DWORD)*32);
 		zipWriteInFileInZip( file,&HI,sizeof(_int64));
 		zipWriteInFileInZip( file,&LO,sizeof(_int64));
-		zipWriteInFileInZip( file,RegRDRAM,sizeof(DWORD)*10);
+		for (int i = 0; i < 4; ++i) {
+			zipWriteInFileInZip(file, (*RegRDRAM)[i], sizeof(DWORD) * 10);
+		}
 		zipWriteInFileInZip( file,RegSP,sizeof(DWORD)*10);
 		zipWriteInFileInZip( file,RegDPC,sizeof(DWORD)*10);
 
@@ -1081,7 +1103,9 @@ BOOL Machine_SaveState(void) {
 		WriteFile( hSaveFile,FPCR,sizeof(DWORD)*32,&dwWritten,NULL);
 		WriteFile( hSaveFile,&HI,sizeof(_int64),&dwWritten,NULL);
 		WriteFile( hSaveFile,&LO,sizeof(_int64),&dwWritten,NULL);
-		WriteFile( hSaveFile,RegRDRAM,sizeof(DWORD)*10,&dwWritten,NULL);
+		for (int i = 0; i < 4; ++i) {
+			WriteFile(hSaveFile, (*RegRDRAM)[i], sizeof(DWORD) * 10, &dwWritten, NULL);
+		}
 		WriteFile( hSaveFile,RegSP,sizeof(DWORD)*10,&dwWritten,NULL);
 		WriteFile( hSaveFile,RegDPC,sizeof(DWORD)*10,&dwWritten,NULL);
 
