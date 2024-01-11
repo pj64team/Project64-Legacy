@@ -523,7 +523,9 @@ BOOL Compile_SW_Const ( DWORD Value, DWORD Addr ) {
 		case 0x03F00008:
 			MoveConstToVariable(RDRAM_DELAY_FIXED_VALUE | (Value & ~RDRAM_DELAY_FIXED_VALUE_MASK),&RDRAM_DELAY_REG(0),"RDRAM_DELAY_REG");
 			break;
-		case 0x03F0000C: MoveConstToVariable(Value,&RDRAM_MODE_REG(0),"RDRAM_MODE_REG"); break;
+		case 0x03F0000C:
+			MoveConstToVariable(Value ^ RDRAM_MODE_X2,&RDRAM_MODE_REG(0),"RDRAM_MODE_REG");
+			break;
 		case 0x03F00010: MoveConstToVariable(Value,&RDRAM_REF_INTERVAL_REG(0),"RDRAM_REF_INTERVAL_REG"); break;
 		case 0x03F00014: MoveConstToVariable(Value,&RDRAM_REF_ROW_REG(0),"RDRAM_REF_ROW_REG"); break;
 		case 0x03F00018: MoveConstToVariable(Value,&RDRAM_RAS_INTERVAL_REG(0),"RDRAM_RAS_INTERVAL_REG"); break;
@@ -534,14 +536,33 @@ BOOL Compile_SW_Const ( DWORD Value, DWORD Addr ) {
 		case 0x03F04004: break;
 
 		case 0x03F08004: break;
-		case 0x03F80004: break;
+
+		/*case 0x03F7FC04:
+			for (int i = 0, i < NUMBER_OF_RDRAM_MODULES; ++i) {
+
+			}*/
+
+		case 0x03F80004:
+			for (int i = 0; i < NUMBER_OF_RDRAM_MODULES; ++i) {
+				MoveConstToVariable(Value, &RDRAM_DEVICE_ID_REG(i), "RDRAM_DEVICE_ID_REG"); break;
+			}
+			break;
 		case 0x03F80008:
 			for (int i = 0; i < NUMBER_OF_RDRAM_MODULES; ++i) {
 				MoveConstToVariable(RDRAM_DELAY_FIXED_VALUE | (Value & ~RDRAM_DELAY_FIXED_VALUE_MASK), &RDRAM_DELAY_REG(i), "RDRAM_DELAY_REG");
 			}
 			break;
-		case 0x03F8000C: break;
-		case 0x03F80014: break;
+		case 0x03F8000C:
+			for (int i = 0; i < NUMBER_OF_RDRAM_MODULES; ++i) {
+				MoveConstToVariable(Value ^ RDRAM_MODE_X2, &RDRAM_MODE_REG(i), "RDRAM_MODE_REG");
+			}
+			break;
+		case 0x03F80014:
+			for (int i = 0; i < NUMBER_OF_RDRAM_MODULES; ++i) {
+				MoveConstToVariable(Value, &RDRAM_REF_ROW_REG(i), "RDRAM_REF_ROW_REG"); break;
+			}
+			break;
+
 		default:
 			if (ShowUnhandledMemory) { DisplayError("Compile_SW_Const\ntrying to store %X in %X?",Value,Addr); }
 		}
@@ -2336,34 +2357,75 @@ int r4300i_SW_NonMemory ( DWORD PAddr, DWORD Value ) {
 		}
 		break;
 	case 0x03F00000:
-		switch (PAddr) {
-		case 0x03F00000: break; // RDRAM_DEVICE_TYPE_REG
-		case 0x03F00004: RDRAM_DEVICE_ID_REG(0) = Value; break;
-		case 0x03F00008:
-			RDRAM_DELAY_REG(0) = RDRAM_DELAY_FIXED_VALUE | (Value & ~RDRAM_DELAY_FIXED_VALUE_MASK);
-			break;
-		case 0x03F0000C: RDRAM_MODE_REG(0) = Value; break;
-		case 0x03F00010: RDRAM_REF_INTERVAL_REG(0) = Value; break;
-		case 0x03F00014: RDRAM_REF_ROW_REG(0) = Value; break;
-		case 0x03F00018: RDRAM_RAS_INTERVAL_REG(0) = Value; break;
-		case 0x03F0001C: break; // RDRAM_MIN_INTERVAL_REG
-		case 0x03F00020: RDRAM_ADDR_SELECT_REG(0) = Value; break;
-		case 0x03F00024: break; // RDRAM_DEVICE_MANUF_REG is read only
+		if (!(PAddr & 0x80000)) {
+			int deviceId = (PAddr >> 10) & 0x1FE;
+			deviceId = (((deviceId >> 0) & 0x3F) << 26) |
+				(((deviceId >> 6) & 1) << 23) |
+				(((deviceId >> 7) & 0xFF) << 8) |
+				(((deviceId >> 15) & 0x1) << 7);
 
-		/*case 0x03F04004: break;
-		
-		case 0x03F08004: break;
-		case 0x03F80004: break;*/
-		case 0x03F80008:
+			int deviceIndex = -1;
+
 			for (int i = 0; i < NUMBER_OF_RDRAM_MODULES; ++i) {
-				RDRAM_DELAY_REG(i) = RDRAM_DELAY_FIXED_VALUE | (Value & ~RDRAM_DELAY_FIXED_VALUE_MASK);
+				if (deviceId == (RDRAM_DEVICE_ID_REG(i) & 0xF880FF80)) {
+					deviceIndex = i;
+					break;
+				}
 			}
-			break;
-		/*case 0x03F8000C: break;
-		case 0x03F80014: break;*/
-		default:
-			LogMessage("SW to %x", PAddr);
-			return FALSE;
+
+			if (deviceIndex != -1) {
+				switch (PAddr & 0x3FF) {
+				case 0x000: break; // RDRAM_DEVICE_TYPE_REG
+				case 0x004: RDRAM_DEVICE_ID_REG(deviceIndex) = Value; break;
+				case 0x008:
+					RDRAM_DELAY_REG(deviceIndex) = RDRAM_DELAY_FIXED_VALUE | (Value & ~RDRAM_DELAY_FIXED_VALUE_MASK);
+					break;
+				case 0x00C:
+					RDRAM_MODE_REG(deviceIndex) = Value ^ RDRAM_MODE_X2;
+					break;
+				case 0x010: RDRAM_REF_INTERVAL_REG(deviceIndex) = Value; break;
+				case 0x014: RDRAM_REF_ROW_REG(deviceIndex) = Value; break;
+				case 0x018: RDRAM_RAS_INTERVAL_REG(deviceIndex) = Value; break;
+				case 0x01C: break; // RDRAM_MIN_INTERVAL_REG
+				case 0x020: RDRAM_ADDR_SELECT_REG(deviceIndex) = Value; break;
+				case 0x024: break; // RDRAM_DEVICE_MANUF_REG is read only
+
+				default:
+					LogMessage("SW to %x", PAddr);
+					return FALSE;
+				}
+			}
+			else {
+				LogMessage("rambus device not found at address %x", PAddr);
+			}
+		}
+		else { // broadcast
+			switch (PAddr & 0x3FF) {
+			case 0x004:
+				for (int i = 0; i < NUMBER_OF_RDRAM_MODULES; ++i) {
+					RDRAM_DEVICE_ID_REG(i) = Value;
+				}
+				break;
+			case 0x008:
+				for (int i = 0; i < NUMBER_OF_RDRAM_MODULES; ++i) {
+					RDRAM_DELAY_REG(i) = RDRAM_DELAY_FIXED_VALUE | (Value & ~RDRAM_DELAY_FIXED_VALUE_MASK);
+				}
+				break;
+			case 0x00C:
+				for (int i = 0; i < NUMBER_OF_RDRAM_MODULES; ++i) {
+					RDRAM_MODE_REG(i) = Value ^ RDRAM_MODE_X2;
+				}
+				break;
+			case 0x014:
+				for (int i = 0; i < NUMBER_OF_RDRAM_MODULES; ++i) {
+					RDRAM_REF_ROW_REG(i) = Value;
+				}
+				break;
+
+			default:
+				LogMessage("SW to %x", PAddr);
+				return FALSE;
+			}
 		}
 		break;
 	case 0x04000000: 
