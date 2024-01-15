@@ -760,6 +760,7 @@ BOOL Machine_LoadState(void) {
 			unzReadCurrentFile(file,IMEM,0x1000);
 
 			SetFpuLocations();
+			CheckRdramStatus();
 
 			// Specific data introducted in 2023.1
 			unzReadCurrentFile(file, &lastUnusedCOP0Register, sizeof(int));
@@ -912,6 +913,7 @@ BOOL Machine_LoadState(void) {
 		ReadFile( hSaveFile,IMEM,0x1000,&dwRead,NULL);
 
 		SetFpuLocations();
+		CheckRdramStatus();
 
 		// Specific data introducted in 2023.1
 		ReadFile(hSaveFile, &lastUnusedCOP0Register, sizeof(int), &dwRead, NULL);

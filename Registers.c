@@ -365,6 +365,7 @@ void InitalizeR4300iRegisters (int UsePif, int Country, enum CIC_CHIP CIC_Chip) 
 	PRID_REGISTER       = 0xB22;
 	lastUnusedCOP0Register = -1;
 	SetFpuLocations();
+	CheckRdramStatus();
 	cop2LatchedValue.UDW = 0;
 	if (UsePif) {
 		PROGRAM_COUNTER.DW = (int)0xBFC00000;			
