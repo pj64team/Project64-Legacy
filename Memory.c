@@ -1809,7 +1809,7 @@ int r4300i_LW_NonMemory ( DWORD PAddr, DWORD * Value ) {
 		case 0x03F00020: * Value = RDRAM_ADDR_SELECT_REG(0); break;
 		case 0x03F00024: * Value = RDRAM_DEVICE_MANUF_REG(0); break;	
 		default:
-			LogMessage("LW from %x", PAddr);
+			LogMessage("LW from %x, PC=%llx", PAddr, PROGRAM_COUNTER.UDW);
 			* Value = 0;
 			return FALSE;
 		}
@@ -2503,13 +2503,7 @@ int r4300i_SW_NonMemory ( DWORD PAddr, DWORD Value ) {
 					break;
 				case 0x00C:
 					{
-						DWORD v = Value ^ RDRAM_MODE_X2;
-						if (v & 0x80000000) {
-							LogMessage("auto mode");
-							v &= 0xFF3F3F3F;
-							v |= 0x00808080;
-						}
-						LogMessage("v:%x", v);
+						DWORD v = Value ^ (RDRAM_MODE_CC | RDRAM_MODE_X2 | RDRAM_MODE_C_MASK);
 						RDRAM_MODE_REG(deviceIndex) = v;
 					}
 					break;
@@ -3224,10 +3218,30 @@ BOOL IsValidAddress(MIPS_DWORD address) {
 	}
 }
 
+#define CURRENT_THRESHOLD 0x00808000 // below this value, the rdram chip doesn't enough current
+
 void CheckRdramStatus() {
 	RdramFullyConfigured = TRUE;
+	for (int i = 0; i < NUMBER_OF_RDRAM_MODULES; ++i) {
+		if ((RDRAM_MODE_REG(i) & RDRAM_MODE_DE) == 0) {
+			RdramFullyConfigured = FALSE;
+			return;
+		}
+		if ((RDRAM_MODE_REG(i) & CURRENT_THRESHOLD) == 0) {
+			RdramFullyConfigured = FALSE;
+			return;
+		}
+	}
 }
 
 BYTE* GetBaseRdramAddress(DWORD PAddr) {
-	return NULL;
+	if ((PAddr & 0xFFF00000) == 0) {
+		if ((RDRAM_MODE_REG(0) & RDRAM_MODE_DE) == 0) {
+			return NULL;
+		}
+		if ((RDRAM_MODE_REG(0) & CURRENT_THRESHOLD) == 0) {
+			return NULL;
+		}
+		return N64MEM;
+	}
 }
