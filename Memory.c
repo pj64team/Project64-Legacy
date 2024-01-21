@@ -3253,17 +3253,23 @@ void CheckRdramStatus() {
 			RdramFullyConfigured = FALSE;
 			return;
 		}
+		if (((RDRAM_DEVICE_ID_REG(i) >> 26) & 7) != (i * 2)) {
+			RdramFullyConfigured = FALSE;
+			return;
+		}
 	}
 }
 
 BYTE* GetBaseRdramAddress(DWORD PAddr) {
-	if ((PAddr & 0xFFF00000) == 0) {
-		if ((RDRAM_MODE_REG(0) & RDRAM_MODE_DE) == 0) {
-			return NULL;
-		}
-		if ((RDRAM_MODE_REG(0) & CURRENT_THRESHOLD) == 0) {
-			return NULL;
-		}
-		return N64MEM;
+	int deviceId = (PAddr >> 21) & 3;
+	if ((RDRAM_MODE_REG(deviceId) & RDRAM_MODE_DE) == 0) {
+		return NULL;
 	}
+	if ((RDRAM_MODE_REG(deviceId) & CURRENT_THRESHOLD) == 0) {
+		return NULL;
+	}
+	if (((RDRAM_DEVICE_ID_REG(deviceId) >> 26) & 7) != (deviceId * 2)) {
+		return NULL;
+	}
+	return N64MEM;
 }
