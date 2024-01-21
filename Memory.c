@@ -1797,21 +1797,43 @@ int r4300i_LW_NonMemory ( DWORD PAddr, DWORD * Value ) {
 
 	switch (PAddr & 0xFFF00000) {
 	case 0x03F00000:
-		switch (PAddr) {
-		case 0x03F00000: * Value = RDRAM_DEVICE_TYPE_REG(0); break;
-		case 0x03F00004: * Value = RDRAM_DEVICE_ID_REG(0); break;
-		case 0x03F00008: * Value = RDRAM_DELAY_REG(0); break;
-		case 0x03F0000C: * Value = RDRAM_MODE_REG(0); break;
-		case 0x03F00010: * Value = RDRAM_REF_INTERVAL_REG(0); break;
-		case 0x03F00014: * Value = RDRAM_REF_ROW_REG(0); break;
-		case 0x03F00018: * Value = RDRAM_RAS_INTERVAL_REG(0); break;
-		case 0x03F0001C: * Value = RDRAM_MIN_INTERVAL_REG(0); break;
-		case 0x03F00020: * Value = RDRAM_ADDR_SELECT_REG(0); break;
-		case 0x03F00024: * Value = RDRAM_DEVICE_MANUF_REG(0); break;	
-		default:
-			LogMessage("LW from %x, PC=%llx", PAddr, PROGRAM_COUNTER.UDW);
-			* Value = 0;
-			return FALSE;
+		{
+			int deviceId = (PAddr >> 10) & 0x1FE;
+			deviceId = (((deviceId >> 0) & 0x3F) << 26) |
+				(((deviceId >> 6) & 1) << 23) |
+				(((deviceId >> 7) & 0xFF) << 8) |
+				(((deviceId >> 15) & 0x1) << 7);
+				
+			int deviceIndex = -1;
+
+			for (int i = 0; i < NUMBER_OF_RDRAM_MODULES; ++i) {
+				if (deviceId == (RDRAM_DEVICE_ID_REG(i) & 0xF880FF80)) {
+					deviceIndex = i;
+					break;
+				}
+			}
+			
+			if (deviceIndex != -1) {
+				switch (PAddr & 0x3FF) {
+				case 0x000: *Value = RDRAM_DEVICE_TYPE_REG(deviceIndex); break;
+				case 0x004: *Value = RDRAM_DEVICE_ID_REG(deviceIndex); break;
+				case 0x008: *Value = RDRAM_DELAY_REG(deviceIndex); break;
+				case 0x00C: *Value = RDRAM_MODE_REG(deviceIndex); break;
+				case 0x010: *Value = RDRAM_REF_INTERVAL_REG(deviceIndex); break;
+				case 0x014: *Value = RDRAM_REF_ROW_REG(deviceIndex); break;
+				case 0x018: *Value = RDRAM_RAS_INTERVAL_REG(deviceIndex); break;
+				case 0x01C: *Value = RDRAM_MIN_INTERVAL_REG(deviceIndex); break;
+				case 0x020: *Value = RDRAM_ADDR_SELECT_REG(deviceIndex); break;
+				case 0x024: *Value = RDRAM_DEVICE_MANUF_REG(deviceIndex); break;
+				default:
+					LogMessage("LW from %x, PC=%llx", PAddr, PROGRAM_COUNTER.UDW);
+					*Value = 0;
+					return FALSE;
+				}
+			}
+			else {
+				LogMessage("rambus device not found at address %x", PAddr);
+			}
 		}
 		break;
 	case 0x04000000:
