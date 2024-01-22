@@ -546,9 +546,23 @@ void SP_DMA_WRITE(void) {
 	length = ((length + 7) & 0x01FF8);
 	for (int i = 0; i <= count; i++)
 	{
-		memcpy(N64MEM + SP_DRAM_ADDR_REG, DMEM + (SP_MEM_ADDR_REG & 0x1FFF), length);
-		SP_MEM_ADDR_REG += length;
-		SP_DRAM_ADDR_REG += length + skip;
+		int remainingLength = length;
+		while (remainingLength > 0) {
+			unsigned int blockLength = remainingLength;
+			if ((0x1000 - (SP_MEM_ADDR_REG & 0xFFF)) < blockLength) {
+				blockLength = 0x1000 - (SP_MEM_ADDR_REG & 0xFFF);
+			}
+			memcpy(N64MEM + SP_DRAM_ADDR_REG, DMEM + (SP_MEM_ADDR_REG & 0x1FFF), blockLength);
+			if (((SP_MEM_ADDR_REG + blockLength) & 0xFFF) != 0) {
+				SP_MEM_ADDR_REG += blockLength;
+			}
+			else { // loop
+				SP_MEM_ADDR_REG &= 0x1000;
+			}
+			SP_DRAM_ADDR_REG += blockLength;
+			remainingLength -= blockLength;
+		}
+		SP_DRAM_ADDR_REG += skip;
 	}
 
 	//SP_DRAM_ADDR_REG += 8;

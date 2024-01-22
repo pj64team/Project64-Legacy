@@ -49,6 +49,7 @@ DWORD ISViewerTempBufferLength;
 
 int Addressing64Bits;
 BOOL KernelMode;
+BOOL RdramFullyConfigured;
 
 int Allocate_ROM ( void ) {	
 	ROM = (BYTE *)malloc(RomFileSize);
@@ -518,22 +519,51 @@ BOOL Compile_SW_Const ( DWORD Value, DWORD Addr ) {
 		break;
 	case 0x03F00000:
 		switch (Addr) {
-		case 0x03F00000: MoveConstToVariable(Value,&RDRAM_CONFIG_REG,"RDRAM_CONFIG_REG"); break;
-		case 0x03F00004: MoveConstToVariable(Value,&RDRAM_DEVICE_ID_REG,"RDRAM_DEVICE_ID_REG"); break;
-		case 0x03F00008: MoveConstToVariable(Value,&RDRAM_DELAY_REG,"RDRAM_DELAY_REG"); break;
-		case 0x03F0000C: MoveConstToVariable(Value,&RDRAM_MODE_REG,"RDRAM_MODE_REG"); break;
-		case 0x03F00010: MoveConstToVariable(Value,&RDRAM_REF_INTERVAL_REG,"RDRAM_REF_INTERVAL_REG"); break;
-		case 0x03F00014: MoveConstToVariable(Value,&RDRAM_REF_ROW_REG,"RDRAM_REF_ROW_REG"); break;
-		case 0x03F00018: MoveConstToVariable(Value,&RDRAM_RAS_INTERVAL_REG,"RDRAM_RAS_INTERVAL_REG"); break;
-		case 0x03F0001C: MoveConstToVariable(Value,&RDRAM_MIN_INTERVAL_REG,"RDRAM_MIN_INTERVAL_REG"); break;
-		case 0x03F00020: MoveConstToVariable(Value,&RDRAM_ADDR_SELECT_REG,"RDRAM_ADDR_SELECT_REG"); break;
-		case 0x03F00024: MoveConstToVariable(Value,&RDRAM_DEVICE_MANUF_REG,"RDRAM_DEVICE_MANUF_REG"); break;
+		case 0x03F00000: break; // RDRAM_DEVICE_TYPE_REG is read only
+		case 0x03F00004: MoveConstToVariable(Value,&RDRAM_DEVICE_ID_REG(0),"RDRAM_DEVICE_ID_REG"); break;
+		case 0x03F00008:
+			MoveConstToVariable(RDRAM_DELAY_FIXED_VALUE | (Value & ~RDRAM_DELAY_FIXED_VALUE_MASK),&RDRAM_DELAY_REG(0),"RDRAM_DELAY_REG");
+			break;
+		case 0x03F0000C:
+			MoveConstToVariable(Value ^ RDRAM_MODE_X2,&RDRAM_MODE_REG(0),"RDRAM_MODE_REG");
+			break;
+		case 0x03F00010: MoveConstToVariable(Value,&RDRAM_REF_INTERVAL_REG(0),"RDRAM_REF_INTERVAL_REG"); break;
+		case 0x03F00014: MoveConstToVariable(Value,&RDRAM_REF_ROW_REG(0),"RDRAM_REF_ROW_REG"); break;
+		case 0x03F00018: MoveConstToVariable(Value,&RDRAM_RAS_INTERVAL_REG(0),"RDRAM_RAS_INTERVAL_REG"); break;
+		case 0x03F0001C: break; // RDRAM_MIN_INTERVAL_REG is read only
+		case 0x03F00020: MoveConstToVariable(Value,&RDRAM_ADDR_SELECT_REG(0),"RDRAM_ADDR_SELECT_REG"); break;
+		case 0x03F00024: break; // RDRAM_DEVICE_MANUF_REG is read only
+
 		case 0x03F04004: break;
+
 		case 0x03F08004: break;
-		case 0x03F80004: break;
-		case 0x03F80008: break;
-		case 0x03F8000C: break;
-		case 0x03F80014: break;
+
+		/*case 0x03F7FC04:
+			for (int i = 0, i < NUMBER_OF_RDRAM_MODULES; ++i) {
+
+			}*/
+
+		case 0x03F80004:
+			for (int i = 0; i < NUMBER_OF_RDRAM_MODULES; ++i) {
+				MoveConstToVariable(Value, &RDRAM_DEVICE_ID_REG(i), "RDRAM_DEVICE_ID_REG"); break;
+			}
+			break;
+		case 0x03F80008:
+			for (int i = 0; i < NUMBER_OF_RDRAM_MODULES; ++i) {
+				MoveConstToVariable(RDRAM_DELAY_FIXED_VALUE | (Value & ~RDRAM_DELAY_FIXED_VALUE_MASK), &RDRAM_DELAY_REG(i), "RDRAM_DELAY_REG");
+			}
+			break;
+		case 0x03F8000C:
+			for (int i = 0; i < NUMBER_OF_RDRAM_MODULES; ++i) {
+				MoveConstToVariable(Value ^ RDRAM_MODE_X2, &RDRAM_MODE_REG(i), "RDRAM_MODE_REG");
+			}
+			break;
+		case 0x03F80014:
+			for (int i = 0; i < NUMBER_OF_RDRAM_MODULES; ++i) {
+				MoveConstToVariable(Value, &RDRAM_REF_ROW_REG(i), "RDRAM_REF_ROW_REG"); break;
+			}
+			break;
+
 		default:
 			if (ShowUnhandledMemory) { DisplayError("Compile_SW_Const\ntrying to store %X in %X?",Value,Addr); }
 		}
@@ -786,7 +816,7 @@ BOOL Compile_SW_Const ( DWORD Value, DWORD Addr ) {
 		switch (Addr) {
 		case 0x04700000: MoveConstToVariable(Value,&RI_MODE_REG,"RI_MODE_REG"); break;
 		case 0x04700004: MoveConstToVariable(Value,&RI_CONFIG_REG,"RI_CONFIG_REG"); break;
-		case 0x04700008: MoveConstToVariable(Value,&RI_CURRENT_LOAD_REG,"RI_CURRENT_LOAD_REG"); break;
+		case 0x04700008: break;
 		case 0x0470000C: MoveConstToVariable(Value,&RI_SELECT_REG,"RI_SELECT_REG"); break;
 		default:
 			if (ShowUnhandledMemory) { DisplayError("Compile_SW_Const\ntrying to store %X in %X?",Value,Addr); }
@@ -1449,7 +1479,18 @@ BOOL r4300i_LB_VAddr ( MIPS_DWORD VAddr, BYTE * Value ) {
 
 	// DRAM, DMEM, and IMEM can all be accessed directly through the host's virtual memory.
 	if (PAddr < RdramSize) {
-		*Value = *(BYTE*)(N64MEM + (PAddr ^ 3));
+		if (RdramFullyConfigured) {
+			*Value = *(BYTE*)(N64MEM + (PAddr ^ 3));
+		}
+		else {
+			BYTE* base = GetBaseRdramAddress(PAddr);
+			if (base) {
+				*Value = *(BYTE*)(base + (PAddr ^ 3));
+			}
+			else {
+				*Value = 0;
+			}
+		}
 	}
 	else if (((PAddr & ~0x03E000) >= 0x04000000 && (PAddr & ~0x03E000) < 0x04004000)) {
 		*Value = *(BYTE*)(N64MEM + (((PAddr & ~0x3E000) & ~0x2000) ^ 3));
@@ -1476,7 +1517,18 @@ BOOL r4300i_LB_VAddr_NonCPU(MIPS_DWORD VAddr, BYTE *Value) {
 
 	// DRAM, DMEM, and IMEM can all be accessed directly through the host's virtual memory.
 	if (PAddr < RdramSize) {
-		*Value = *(BYTE*)(N64MEM + (PAddr ^ 3));
+		if (RdramFullyConfigured) {
+			*Value = *(BYTE*)(N64MEM + (PAddr ^ 3));
+		}
+		else {
+			BYTE* base = GetBaseRdramAddress(PAddr);
+			if (base) {
+				*Value = *(BYTE*)(base + (PAddr ^ 3));
+			}
+			else {
+				*Value = 0;
+			}
+		}
 	} else if (((PAddr & ~0x03E000) >= 0x04000000 && (PAddr & ~0x03E000) < 0x04004000)) {
 		*Value = *(BYTE*)(N64MEM + (((PAddr & ~0x3E000) & ~0x2000) ^ 3));
 	}
@@ -1509,8 +1561,20 @@ BOOL r4300i_LD_VAddr ( MIPS_DWORD VAddr, unsigned _int64 * Value, DWORD* outPAdd
 
 	// DRAM, DMEM, and IMEM can all be accessed directly through the host's virtual memory.
 	if (PAddr < RdramSize) {
-		*((DWORD*)(Value)+1) = *(DWORD*)(N64MEM + PAddr);
-		*((DWORD*)(Value)) = *(DWORD*)(N64MEM + PAddr + 4);
+		if (RdramFullyConfigured) {
+			*((DWORD*)(Value)+1) = *(DWORD*)(N64MEM + PAddr);
+			*((DWORD*)(Value)) = *(DWORD*)(N64MEM + PAddr + 4);
+		}
+		else {
+			BYTE* base = GetBaseRdramAddress(PAddr);
+			if (base) {
+				*((DWORD*)(Value)+1) = *(DWORD*)(base + PAddr);
+				*((DWORD*)(Value)) = *(DWORD*)(base + PAddr + 4);
+			}
+			else {
+				*Value = 0;
+			}
+		}
 	}
 	else if (((PAddr & ~0x03E000) >= 0x04000000 && (PAddr & ~0x03E000) < 0x04004000)) {
 		*((DWORD*)(Value)+1) = *(DWORD*)(N64MEM + ((PAddr & ~0x3E000) & ~0x2000));
@@ -1605,7 +1669,18 @@ BOOL r4300i_LH_VAddr ( MIPS_DWORD VAddr, WORD * Value ) {
 
 	// DRAM, DMEM, and IMEM can all be accessed directly through the host's virtual memory.
 	if (PAddr < RdramSize) {
-		*Value = *(WORD*)(N64MEM + (PAddr ^ 2));
+		if (RdramFullyConfigured) {
+			*Value = *(WORD*)(N64MEM + (PAddr ^ 2));
+		}
+		else {
+			BYTE* base = GetBaseRdramAddress(PAddr);
+			if (base) {
+				*Value = *(WORD*)(base + (PAddr ^ 2));
+			}
+			else {
+				*Value = 0;
+			}
+		}
 	}
 	else if (((PAddr & ~0x03E000) >= 0x04000000 && (PAddr & ~0x03E000) < 0x04004000)) {
     *Value = *(WORD*)(N64MEM + (((PAddr & ~0x3E000) & ~0x2000) ^ 2));
@@ -1632,7 +1707,18 @@ BOOL r4300i_LH_VAddr_NonCPU ( MIPS_DWORD VAddr, WORD * Value ) {
 
 	// DRAM, DMEM, and IMEM can all be accessed directly through the host's virtual memory.
 	if (PAddr < RdramSize) {
-		*Value = *(WORD*)(N64MEM + (PAddr ^ 2));
+		if (RdramFullyConfigured) {
+			*Value = *(WORD*)(N64MEM + (PAddr ^ 2));
+		}
+		else {
+			BYTE* base = GetBaseRdramAddress(PAddr);
+			if (base) {
+				*Value = *(WORD*)(base + (PAddr ^ 2));
+			}
+			else {
+				*Value = 0;
+			}
+		}
 	}
 	else if (((PAddr & ~0x03E000) >= 0x04000000 && (PAddr & ~0x03E000) < 0x04004000)) {
     *Value = *(WORD*)(N64MEM + (((PAddr & ~0x3E000) & ~0x2000) ^ 2));
@@ -1667,8 +1753,9 @@ int r4300i_LW_NonMemory ( DWORD PAddr, DWORD * Value ) {
 	}
 	
 	if (PAddr < 0x03F00000) {
-		if (PAddr < RdramSize)
-			Value = (DWORD *)(RDRAM + PAddr);
+		if (PAddr < RdramSize) {
+			Value = (DWORD*)(RDRAM + PAddr);
+		}
 		else Value = 0x0;
 		return TRUE;
 	}
@@ -1710,20 +1797,43 @@ int r4300i_LW_NonMemory ( DWORD PAddr, DWORD * Value ) {
 
 	switch (PAddr & 0xFFF00000) {
 	case 0x03F00000:
-		switch (PAddr) {
-		case 0x03F00000: * Value = RDRAM_CONFIG_REG; break;
-		case 0x03F00004: * Value = RDRAM_DEVICE_ID_REG; break;
-		case 0x03F00008: * Value = RDRAM_DELAY_REG; break;
-		case 0x03F0000C: * Value = RDRAM_MODE_REG; break;
-		case 0x03F00010: * Value = RDRAM_REF_INTERVAL_REG; break;
-		case 0x03F00014: * Value = RDRAM_REF_ROW_REG; break;
-		case 0x03F00018: * Value = RDRAM_RAS_INTERVAL_REG; break;
-		case 0x03F0001C: * Value = RDRAM_MIN_INTERVAL_REG; break;
-		case 0x03F00020: * Value = RDRAM_ADDR_SELECT_REG; break;
-		case 0x03F00024: * Value = RDRAM_DEVICE_MANUF_REG; break;	
-		default:
-			* Value = 0;
-			return FALSE;
+		{
+			int deviceId = (PAddr >> 10) & 0x1FE;
+			deviceId = (((deviceId >> 0) & 0x3F) << 26) |
+				(((deviceId >> 6) & 1) << 23) |
+				(((deviceId >> 7) & 0xFF) << 8) |
+				(((deviceId >> 15) & 0x1) << 7);
+				
+			int deviceIndex = -1;
+
+			for (int i = 0; i < NUMBER_OF_RDRAM_MODULES; ++i) {
+				if (deviceId == (RDRAM_DEVICE_ID_REG(i) & 0xF880FF80)) {
+					deviceIndex = i;
+					break;
+				}
+			}
+			
+			if (deviceIndex != -1) {
+				switch (PAddr & 0x3FF) {
+				case 0x000: *Value = RDRAM_DEVICE_TYPE_REG(deviceIndex); break;
+				case 0x004: *Value = RDRAM_DEVICE_ID_REG(deviceIndex); break;
+				case 0x008: *Value = RDRAM_DELAY_REG(deviceIndex); break;
+				case 0x00C: *Value = RDRAM_MODE_REG(deviceIndex); break;
+				case 0x010: *Value = RDRAM_REF_INTERVAL_REG(deviceIndex); break;
+				case 0x014: *Value = RDRAM_REF_ROW_REG(deviceIndex); break;
+				case 0x018: *Value = RDRAM_RAS_INTERVAL_REG(deviceIndex); break;
+				case 0x01C: *Value = RDRAM_MIN_INTERVAL_REG(deviceIndex); break;
+				case 0x020: *Value = RDRAM_ADDR_SELECT_REG(deviceIndex); break;
+				case 0x024: *Value = RDRAM_DEVICE_MANUF_REG(deviceIndex); break;
+				default:
+					LogMessage("LW from %x, PC=%llx", PAddr, PROGRAM_COUNTER.UDW);
+					*Value = 0;
+					return FALSE;
+				}
+			}
+			else {
+				LogMessage("rambus device not found at address %x", PAddr);
+			}
 		}
 		break;
 	case 0x04000000:
@@ -1835,12 +1945,17 @@ int r4300i_LW_NonMemory ( DWORD PAddr, DWORD * Value ) {
 		switch (PAddr) {
 		case 0x04700000: * Value = RI_MODE_REG; break;
 		case 0x04700004: * Value = RI_CONFIG_REG; break;
-		case 0x04700008: * Value = RI_CURRENT_LOAD_REG; break;
+		case 0x04700008:
+			*Value = 0x6 |
+				(RI_RERROR_REG & 0x01) | // Ack
+				(RI_MODE_REG   & 0x08) | // STOP_R
+				(RI_SELECT_REG & 0x10);  // TSEL[0]
+			break;
 		case 0x0470000C: * Value = RI_SELECT_REG; break;
 		case 0x04700010: * Value = RI_REFRESH_REG; break;
 		case 0x04700014: * Value = RI_LATENCY_REG; break;
 		case 0x04700018: * Value = RI_RERROR_REG; break;
-		case 0x0470001C: * Value = RI_WERROR_REG; break;
+		case 0x0470001C: * Value = RI_BANK_STATUS_REG; break;
 		default:
 			* Value = 0;
 			return FALSE;
@@ -1875,6 +1990,15 @@ int r4300i_LW_NonMemory ( DWORD PAddr, DWORD * Value ) {
 			return FALSE;
 		}
 		*Value = ReadFromFlashStatus(PAddr);
+		break;
+	case 0x13F00000:
+		if (PAddr >= 0x13FF0020 && PAddr < 0x13FF0220) {
+			*Value =
+				(ISViewerBuffer[PAddr - 0x13FF0020 + 0] << 24) |
+				(ISViewerBuffer[PAddr - 0x13FF0020 + 1] << 16) |
+				(ISViewerBuffer[PAddr - 0x13FF0020 + 2] << 8) |
+				(ISViewerBuffer[PAddr - 0x13FF0020 + 3] << 0);
+		}
 		break;
 	case 0x1FC00000:
 		if (PAddr < 0x1FC007C0) {
@@ -1928,7 +2052,18 @@ BOOL r4300i_LW_VAddr ( MIPS_DWORD VAddr, DWORD * Value, DWORD* outPAddr ) {
 	
 	// DRAM, DMEM, and IMEM can all be accessed directly through the host's virtual memory.
 	if (PAddr < RdramSize) {
-		*Value = *(DWORD*)(N64MEM + PAddr);
+		if (RdramFullyConfigured) {
+			*Value = *(DWORD*)(N64MEM + PAddr);
+		}
+		else {
+			BYTE* base = GetBaseRdramAddress(PAddr);
+			if (base) {
+				*Value = *(DWORD*)(base + PAddr);
+			}
+			else {
+				*Value = 0;
+			}
+		}
 	}
 	else if (((PAddr & ~0x03E000) >= 0x04000000 && (PAddr & ~0x03E000) < 0x04004000)) {
     *Value = *(DWORD*)(N64MEM + ((PAddr& ~0x3E000) & ~0x2000));
@@ -1953,7 +2088,18 @@ BOOL r4300i_LW_VAddr_NonCPU ( MIPS_DWORD VAddr, DWORD * Value ) {
 
 	// DRAM, DMEM, and IMEM can all be accessed directly through the host's virtual memory.
 	if (PAddr < RdramSize) {
-		*Value = *(DWORD*)(N64MEM + PAddr);
+		if (RdramFullyConfigured) {
+			*Value = *(DWORD*)(N64MEM + PAddr);
+		}
+		else {
+			BYTE* base = GetBaseRdramAddress(PAddr);
+			if (base) {
+				*Value = *(DWORD*)(base + PAddr);
+			}
+			else {
+				*Value = 0;
+			}
+		}
 	} 
 	else if (((PAddr & ~0x03E000) >= 0x04000000 && (PAddr & ~0x03E000) < 0x04004000)) {
 		*Value = *(DWORD*)(N64MEM + ((PAddr& ~0x3E000) & ~0x2000));
@@ -2060,7 +2206,15 @@ BOOL r4300i_SB_VAddr ( MIPS_DWORD VAddr, MIPS_DWORD* Value ) {
 
 	// DRAM, DMEM, and IMEM can all be accessed directly through the host's virtual memory.
 	if (PAddr < RdramSize) {
-		*(BYTE*)(N64MEM + (PAddr ^ 3)) = Value->UB[0];
+		if (RdramFullyConfigured) {
+			*(BYTE*)(N64MEM + (PAddr ^ 3)) = Value->UB[0];
+		}
+		else {
+			BYTE* base = GetBaseRdramAddress(PAddr);
+			if (base) {
+				*(BYTE*)(base + (PAddr ^ 3)) = Value->UB[0];
+			}
+		}
 	}
 	else if (((PAddr & ~0x03E000) >= 0x04000000 && (PAddr & ~0x03E000) < 0x04004000)) {
 		int tmp = PAddr & 3;
@@ -2088,7 +2242,15 @@ BOOL r4300i_SB_VAddr_NonCPU ( MIPS_DWORD VAddr, BYTE Value ) {
 
 	// DRAM, DMEM, and IMEM can all be accessed directly through the host's virtual memory.
 	if (PAddr < RdramSize) {
-		*(BYTE*)(N64MEM + (PAddr ^ 3)) = Value;
+		if (RdramFullyConfigured) {
+			*(BYTE*)(N64MEM + (PAddr ^ 3)) = Value;
+		}
+		else {
+			BYTE* base = GetBaseRdramAddress(PAddr);
+			if (base) {
+				*(BYTE*)(base + (PAddr ^ 3)) = Value;
+			}
+		}
 	}
 	else if (((PAddr & ~0x03E000) >= 0x04000000 && (PAddr & ~0x03E000) < 0x04004000)) {
 		int tmp = PAddr & 3;
@@ -2190,8 +2352,17 @@ BOOL r4300i_SD_VAddr ( MIPS_DWORD VAddr, unsigned _int64 Value ) {
 
 	// DRAM, DMEM, and IMEM can all be accessed directly through the host's virtual memory.
 	if (PAddr < RdramSize) {
-		*(DWORD*)(N64MEM + PAddr) = *((DWORD*)(&Value)+1);
-		*(DWORD*)(N64MEM + PAddr + 4) = *((DWORD*)(&Value));
+		if (RdramFullyConfigured) {
+			*(DWORD*)(N64MEM + PAddr) = *((DWORD*)(&Value) + 1);
+			*(DWORD*)(N64MEM + PAddr + 4) = *((DWORD*)(&Value));
+		}
+		else {
+			BYTE* base = GetBaseRdramAddress(PAddr);
+			if (base) {
+				*(DWORD*)(base + PAddr) = *((DWORD*)(&Value) + 1);
+				*(DWORD*)(base + PAddr + 4) = *((DWORD*)(&Value));
+			}
+		}
 	}
 	else if (((PAddr & ~0x03E000) >= 0x04000000 && (PAddr & ~0x03E000) < 0x04004000)) {
     *(DWORD*)(N64MEM + ((PAddr & ~0x3E000 & ~0x2000))) = *((DWORD*)(&Value)+1);
@@ -2219,7 +2390,15 @@ BOOL r4300i_SH_VAddr ( MIPS_DWORD VAddr, MIPS_DWORD* Value) {
 
 	// DRAM, DMEM, and IMEM can all be accessed directly through the host's virtual memory.
 	if (PAddr < RdramSize) {
-		*(WORD*)(N64MEM + (PAddr ^ 2)) = Value->UHW[0];
+		if (RdramFullyConfigured) {
+			*(WORD*)(N64MEM + (PAddr ^ 2)) = Value->UHW[0];
+		}
+		else {
+			BYTE* base = GetBaseRdramAddress(PAddr);
+			if (base) {
+				*(WORD*)(base + (PAddr ^ 2)) = Value->UHW[0];
+			}
+		}
 	}
 	else if (((PAddr & ~0x03E000) >= 0x04000000 && (PAddr & ~0x03E000) < 0x04004000)) {
 		if ((PAddr & 2) == 0)
@@ -2250,7 +2429,15 @@ BOOL r4300i_SH_VAddr_NonCPU ( MIPS_DWORD VAddr, WORD Value ) {
 
 	// DRAM, DMEM, and IMEM can all be accessed directly through the host's virtual memory.
 	if (PAddr < RdramSize) {
-		*(WORD*)(N64MEM + (PAddr ^ 2)) = Value;
+		if (RdramFullyConfigured) {
+			*(WORD*)(N64MEM + (PAddr ^ 2)) = Value;
+		}
+		else {
+			BYTE* base = GetBaseRdramAddress(PAddr);
+			if (base) {
+				*(WORD*)(base + (PAddr ^ 2)) = Value;
+			}
+		}
 	}
   else if (((PAddr & ~0x03E000) >= 0x04000000 && (PAddr & ~0x03E000) < 0x04004000)) {
 		if ((PAddr & 2) == 0)
@@ -2313,26 +2500,80 @@ int r4300i_SW_NonMemory ( DWORD PAddr, DWORD Value ) {
 		}
 		break;
 	case 0x03F00000:
-		switch (PAddr) {
-		case 0x03F00000: RDRAM_CONFIG_REG = Value; break;
-		case 0x03F00004: RDRAM_DEVICE_ID_REG = Value; break;
-		case 0x03F00008: RDRAM_DELAY_REG = Value; break;
-		case 0x03F0000C: RDRAM_MODE_REG = Value; break;
-		case 0x03F00010: RDRAM_REF_INTERVAL_REG = Value; break;
-		case 0x03F00014: RDRAM_REF_ROW_REG = Value; break;
-		case 0x03F00018: RDRAM_RAS_INTERVAL_REG = Value; break;
-		case 0x03F0001C: RDRAM_MIN_INTERVAL_REG = Value; break;
-		case 0x03F00020: RDRAM_ADDR_SELECT_REG = Value; break;
-		case 0x03F00024: RDRAM_DEVICE_MANUF_REG = Value; break;
-		case 0x03F04004: break;
-		case 0x03F08004: break;
-		case 0x03F80004: break;
-		case 0x03F80008: break;
-		case 0x03F8000C: break;
-		case 0x03F80014: break;
-		default:
-			return FALSE;
+		if (!(PAddr & 0x80000)) {
+			int deviceId = (PAddr >> 10) & 0x1FE;
+			deviceId = (((deviceId >> 0) & 0x3F) << 26) |
+				(((deviceId >> 6) & 1) << 23) |
+				(((deviceId >> 7) & 0xFF) << 8) |
+				(((deviceId >> 15) & 0x1) << 7);
+
+			int deviceIndex = -1;
+
+			for (int i = 0; i < NUMBER_OF_RDRAM_MODULES; ++i) {
+				if (deviceId == (RDRAM_DEVICE_ID_REG(i) & 0xF880FF80)) {
+					deviceIndex = i;
+					break;
+				}
+			}
+
+			if (deviceIndex != -1) {
+				switch (PAddr & 0x3FF) {
+				case 0x000: break; // RDRAM_DEVICE_TYPE_REG
+				case 0x004: RDRAM_DEVICE_ID_REG(deviceIndex) = Value; break;
+				case 0x008:
+					RDRAM_DELAY_REG(deviceIndex) = RDRAM_DELAY_FIXED_VALUE | (Value & ~RDRAM_DELAY_FIXED_VALUE_MASK);
+					break;
+				case 0x00C:
+					{
+						DWORD v = Value ^ (RDRAM_MODE_CC | RDRAM_MODE_X2 | RDRAM_MODE_C_MASK);
+						RDRAM_MODE_REG(deviceIndex) = v;
+					}
+					break;
+				case 0x010: RDRAM_REF_INTERVAL_REG(deviceIndex) = Value; break;
+				case 0x014: RDRAM_REF_ROW_REG(deviceIndex) = Value; break;
+				case 0x018: RDRAM_RAS_INTERVAL_REG(deviceIndex) = Value; break;
+				case 0x01C: break; // RDRAM_MIN_INTERVAL_REG
+				case 0x020: RDRAM_ADDR_SELECT_REG(deviceIndex) = Value; break;
+				case 0x024: break; // RDRAM_DEVICE_MANUF_REG is read only
+
+				default:
+					LogMessage("SW to %x", PAddr);
+					return FALSE;
+				}
+			}
+			else {
+				LogMessage("rambus device not found at address %x", PAddr);
+			}
 		}
+		else { // broadcast
+			switch (PAddr & 0x3FF) {
+			case 0x004:
+				for (int i = 0; i < NUMBER_OF_RDRAM_MODULES; ++i) {
+					RDRAM_DEVICE_ID_REG(i) = Value;
+				}
+				break;
+			case 0x008:
+				for (int i = 0; i < NUMBER_OF_RDRAM_MODULES; ++i) {
+					RDRAM_DELAY_REG(i) = RDRAM_DELAY_FIXED_VALUE | (Value & ~RDRAM_DELAY_FIXED_VALUE_MASK);
+				}
+				break;
+			case 0x00C:
+				for (int i = 0; i < NUMBER_OF_RDRAM_MODULES; ++i) {
+					RDRAM_MODE_REG(i) = Value ^ RDRAM_MODE_X2;
+				}
+				break;
+			case 0x014:
+				for (int i = 0; i < NUMBER_OF_RDRAM_MODULES; ++i) {
+					RDRAM_REF_ROW_REG(i) = Value;
+				}
+				break;
+
+			default:
+				LogMessage("SW to %x", PAddr);
+				return FALSE;
+			}
+		}
+		CheckRdramStatus();
 		break;
 	case 0x04000000: 
 		if (PAddr < 0x04004000) {
@@ -2689,17 +2930,25 @@ int r4300i_SW_NonMemory ( DWORD PAddr, DWORD Value ) {
 		break;
 	case 0x04700000:
 		switch (PAddr) {
-		case 0x04700000: RI_MODE_REG = Value; break;
+		case 0x04700000:
+			RI_MODE_REG = Value;
+			if ((RI_MODE_REG & 3) == 0) { // reset mode
+				for (int i = 0; i < NUMBER_OF_RDRAM_MODULES; ++i) {
+					RDRAM_MODE_REG(i) &= ~RDRAM_MODE_DE;
+				}
+			}
+			break;
 		case 0x04700004: RI_CONFIG_REG = Value; break;
-		case 0x04700008: RI_CURRENT_LOAD_REG = Value; break;
+		case 0x04700008: break; // RI_CURRENT_LOAD_REG
 		case 0x0470000C: RI_SELECT_REG = Value; break;
 		case 0x04700010: RI_REFRESH_REG = Value; break;
 		case 0x04700014: RI_LATENCY_REG = Value; break;
 		case 0x04700018: RI_RERROR_REG = Value; break;
-		case 0x0470001C: RI_WERROR_REG = Value; break;
+		case 0x0470001C: RI_BANK_STATUS_REG = Value; break;
 		default:
 			return FALSE;
 		}
+		CheckRdramStatus();
 		break;
 	case 0x04800000:
 		switch (PAddr) {
@@ -2790,7 +3039,15 @@ BOOL r4300i_SW_VAddr ( MIPS_DWORD VAddr, DWORD Value ) {
 
 	// DRAM, DMEM, and IMEM can all be accessed directly through the host's virtual memory.
 	if (PAddr < RdramSize) {
-		*(DWORD*)(N64MEM + PAddr) = Value;
+		if (RdramFullyConfigured) {
+			*(DWORD*)(N64MEM + PAddr) = Value;
+		}
+		else {
+			BYTE* base = GetBaseRdramAddress(PAddr);
+			if (base) {
+				*(DWORD*)(base + PAddr) = Value;
+			}
+		}
 	}
 	else if (((PAddr & ~0x03E000) >= 0x04000000 && (PAddr & ~0x03E000) < 0x04004000)) {
     *(DWORD*)(N64MEM + ((PAddr & ~0x3E000) & ~0x2000)) = Value;
@@ -2817,7 +3074,15 @@ BOOL r4300i_SW_VAddr_NonCPU ( MIPS_DWORD VAddr, DWORD Value ) {
 
 	// DRAM, DMEM, and IMEM can all be accessed directly through the host's virtual memory.
 	if (PAddr < RdramSize) {
-		*(DWORD*)(N64MEM + PAddr) = Value;
+		if (RdramFullyConfigured) {
+			*(DWORD*)(N64MEM + PAddr) = Value;
+		}
+		else {
+			BYTE* base = GetBaseRdramAddress(PAddr);
+			if (base) {
+				*(DWORD*)(base + PAddr) = Value;
+			}
+		}
 	}
   else if (((PAddr & ~0x03E000) >= 0x04000000 && (PAddr & ~0x03E000) < 0x04004000)) {
     *(DWORD*)(N64MEM + ((PAddr & ~0x3E000) & ~0x2000)) = Value;
@@ -2973,4 +3238,38 @@ BOOL IsValidAddress(MIPS_DWORD address) {
 		}
 		return IsSignExtended(address);
 	}
+}
+
+#define CURRENT_THRESHOLD 0x00808000 // below this value, the rdram chip doesn't enough current
+
+void CheckRdramStatus() {
+	RdramFullyConfigured = TRUE;
+	for (int i = 0; i < NUMBER_OF_RDRAM_MODULES; ++i) {
+		if ((RDRAM_MODE_REG(i) & RDRAM_MODE_DE) == 0) {
+			RdramFullyConfigured = FALSE;
+			return;
+		}
+		if ((RDRAM_MODE_REG(i) & CURRENT_THRESHOLD) == 0) {
+			RdramFullyConfigured = FALSE;
+			return;
+		}
+		if (((RDRAM_DEVICE_ID_REG(i) >> 26) & 7) != (i * 2)) {
+			RdramFullyConfigured = FALSE;
+			return;
+		}
+	}
+}
+
+BYTE* GetBaseRdramAddress(DWORD PAddr) {
+	int deviceId = (PAddr >> 21) & 3;
+	if ((RDRAM_MODE_REG(deviceId) & RDRAM_MODE_DE) == 0) {
+		return NULL;
+	}
+	if ((RDRAM_MODE_REG(deviceId) & CURRENT_THRESHOLD) == 0) {
+		return NULL;
+	}
+	if (((RDRAM_DEVICE_ID_REG(deviceId) >> 26) & 7) != (deviceId * 2)) {
+		return NULL;
+	}
+	return N64MEM;
 }

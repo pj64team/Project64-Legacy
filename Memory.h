@@ -65,6 +65,8 @@ int  r4300i_SW_NonMemory         ( DWORD PAddr, DWORD Value );
 BOOL r4300i_SW_VAddr             ( MIPS_DWORD VAddr, DWORD Value );
 BOOL r4300i_SW_VAddr_NonCPU      ( MIPS_DWORD VAddr, DWORD Value );
 BOOL IsValidAddress              ( MIPS_DWORD address );
+void CheckRdramStatus            ( void );
+BYTE* GetBaseRdramAddress        ( DWORD PAddr );
 
 /* Recompiler Memory Functions */
 BOOL Compile_LB                  ( int Reg, DWORD Addr, BOOL SignExtend );

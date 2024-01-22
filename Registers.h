@@ -63,17 +63,18 @@
 #define GPR_SP					GPR[29]
 #define GPR_RA					GPR[31]
 
-#define RDRAM_CONFIG_REG		RegRDRAM[0]
-#define RDRAM_DEVICE_TYPE_REG	RegRDRAM[0]
-#define RDRAM_DEVICE_ID_REG		RegRDRAM[1]
-#define RDRAM_DELAY_REG			RegRDRAM[2]
-#define RDRAM_MODE_REG			RegRDRAM[3]
-#define RDRAM_REF_INTERVAL_REG	RegRDRAM[4]
-#define RDRAM_REF_ROW_REG		RegRDRAM[5]
-#define RDRAM_RAS_INTERVAL_REG	RegRDRAM[6]
-#define RDRAM_MIN_INTERVAL_REG	RegRDRAM[7]
-#define RDRAM_ADDR_SELECT_REG	RegRDRAM[8]
-#define RDRAM_DEVICE_MANUF_REG	RegRDRAM[9]
+#define RDRAM_DEVICE_TYPE_REG(deviceId)		(*RegRDRAM)[deviceId][0]
+#define RDRAM_DEVICE_ID_REG(deviceId)		(*RegRDRAM)[deviceId][1]
+#define RDRAM_DELAY_REG(deviceId)			(*RegRDRAM)[deviceId][2]
+#define RDRAM_MODE_REG(deviceId)			(*RegRDRAM)[deviceId][3]
+#define RDRAM_REF_INTERVAL_REG(deviceId)	(*RegRDRAM)[deviceId][4]
+#define RDRAM_REF_ROW_REG(deviceId)			(*RegRDRAM)[deviceId][5]
+#define RDRAM_RAS_INTERVAL_REG(deviceId)	(*RegRDRAM)[deviceId][6]
+#define RDRAM_MIN_INTERVAL_REG(deviceId)	(*RegRDRAM)[deviceId][7]
+#define RDRAM_ADDR_SELECT_REG(deviceId)		(*RegRDRAM)[deviceId][8]
+#define RDRAM_DEVICE_MANUF_REG(deviceId)	(*RegRDRAM)[deviceId][9]
+
+#define NUMBER_OF_RDRAM_MODULES (RdramSize == 0x400000 ? 2 : 4)
 
 #define SP_MEM_ADDR_REGW		RegSPW[0]
 #define SP_DRAM_ADDR_REGW		RegSPW[1]
@@ -153,18 +154,38 @@
 
 #define RI_MODE_REG				RegRI[0]
 #define RI_CONFIG_REG			RegRI[1]
-#define RI_CURRENT_LOAD_REG		RegRI[2]
 #define RI_SELECT_REG			RegRI[3]
-#define RI_COUNT_REG			RegRI[4]
 #define RI_REFRESH_REG			RegRI[4]
 #define RI_LATENCY_REG			RegRI[5]
 #define RI_RERROR_REG			RegRI[6]
-#define RI_WERROR_REG			RegRI[7]
+#define RI_BANK_STATUS_REG		RegRI[7]
 
 #define SI_DRAM_ADDR_REG		RegSI[0]
 #define SI_PIF_ADDR_RD64B_REG	RegSI[1]
 #define SI_PIF_ADDR_WR64B_REG	RegSI[2]
 #define SI_STATUS_REG			RegSI[3]
+
+#define RDRAM_DEVICE_TYPE_COLUMN_BITS	0xB
+#define RDRAM_DEVICE_TYPE_BN			1
+#define RDRAM_DEVICE_TYPE_EN			0
+#define RDRAM_DEVICE_TYPE_BANK_BITS		1
+#define RDRAM_DEVICE_TYPE_ROW_BITS		9
+#define RDRAM_DEVICE_TYPE_VERSION		1
+#define RDRAM_DEVICE_TYPE_TYPE			0
+
+#define RDRAM_DELAY_ACKWINBITS	(3 << 24)
+#define RDRAM_DELAY_READBITS	(3 << 16)
+#define RDRAM_DELAY_ACKBITS		(2 << 8)
+#define RDRAM_DELAY_WRITEBITS	(3)
+#define RDRAM_DELAY_FIXED_VALUE (RDRAM_DELAY_ACKWINBITS | RDRAM_DELAY_READBITS | RDRAM_DELAY_ACKBITS | RDRAM_DELAY_WRITEBITS)
+#define RDRAM_DELAY_FIXED_VALUE_MASK 0x07070707
+
+#define RDRAM_MODE_CC			0x80000000
+#define RDRAM_MODE_X2			0x40000000
+#define RDRAM_MODE_DE			0x02000000
+#define RDRAM_MODE_C_MASK		0x00C0C0C0
+
+#define RDRAM_DEVICE_MANUFACTURER_NEC 0x500
 
 #define STATUS_IE				0x00000001
 #define STATUS_EXL				0x00000002
@@ -345,7 +366,7 @@ typedef struct {
 	DWORD      FPCR[32];
 	MIPS_DWORD HI;
 	MIPS_DWORD LO;
-	DWORD      RDRAM[10];
+	DWORD      RDRAM[4][10];
 	DWORD      SP[10];
 	DWORD      DPC[10];
 	DWORD      MI[4];
@@ -360,8 +381,9 @@ typedef struct {
 
 extern char *GPR_Name[32], *GPR_NameHi[32], *GPR_NameLo[32], *FPR_Name[32], *FPR_NameHi[32],
 	*FPR_NameLo[32],*FPR_Ctrl_Name[32],*Cop0_Name[32];
-extern DWORD *FPCR,*RegRDRAM,*RegSP,*RegDPC,*RegMI,*RegVI,*RegAI,*RegPI,
+extern DWORD *FPCR,*RegSP,*RegDPC,*RegMI,*RegVI,*RegAI,*RegPI,
 	*RegRI,*RegSI, HalfLine, RegModValue, ViFieldSerration, LLBit;
+extern DWORD (*RegRDRAM)[4][10];
 extern void* FPRDoubleLocation[32], * FPRFloatLoadStoreLocation[32], *FPRFloatUpperHalfLocation[32], *FPRFloatFSLocation[32];
 extern void* FPRFloatOtherLocation[32], *FPRDoubleFTFDLocation[32];
 extern MIPS_DWORD PROGRAM_COUNTER, *GPR, *FPR, HI, LO, *CP0;
