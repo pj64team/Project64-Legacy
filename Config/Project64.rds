@@ -19,7 +19,7 @@
 // Note that Project64 automatically prefixes "http://"
 
 Author=PJ64LegacyTeam
-Date=21th December 2023 Version: 1
+Date=22nd December 2023 Version: 1
 Homepage=www.project64-legacy.com
 Version=Project64 1.6.2 (Legacy)
 
@@ -336,7 +336,7 @@ Status=Prototype
 Name=1080 Snowboarding (E) (M4)
 CPU Type=Recompiler
 Counter Factor=2
-Linking=Off
+Linking=On
 Plugin Note=[audio] (see GameFAQ)
 Save Type=First Save Type
 Self-modifying code Method=Protected Memory
@@ -346,8 +346,7 @@ Status=Compatible
 Name=1080 Snowboarding (JU) (M2)
 CPU Type=Recompiler
 Counter Factor=2
-ExpansionPak
-Linking=Off
+Linking=On
 Plugin Note=[audio] (see GameFAQ)
 Save Type=First Save Type
 Self-modifying code Method=Protected Memory
@@ -672,7 +671,7 @@ CPU Type=Recompiler
 Core Note=(see GameFAQ)
 Counter Factor=2
 ExpansionPak
-Linking=Global
+Linking=Off
 Plugin Note=[video] errors:framebuffer/menus [audio] (See Gamefaq)
 Save Type=First Save Type
 Self-modifying code Method=Check Memory Advance
@@ -739,8 +738,9 @@ Status=Compatible
 Name=Armorines - Project S.W.A.R.M. (U)
 CPU Type=Recompiler
 Counter Factor=2
+Disable Reg Cache
 ExpansionPak
-Linking=Global
+Linking=Off
 Plugin Note=[audio] (See Gamefaq)
 Save Type=First Save Type
 Self-modifying code Method=Check Memory & cache
@@ -916,7 +916,6 @@ Name=Banjo-Kazooie (U) (V1.0)
 CPU Type=Recompiler
 Core Note=(see GameFAQ)
 Counter Factor=2
-Disable Reg Cache
 Disable TLB
 Linking=Global
 Plugin Note=[video] framebuffer  (Use 3rd party plugin for perfection) (See Gamefaq)
@@ -1200,7 +1199,8 @@ Status=Compatible
 Name=Blues Brothers 2000 (U)
 CPU Type=Recompiler
 Counter Factor=2
-Linking=Global
+Disable Reg Cache
+Linking=Off
 Save Type=First Save Type
 Self-modifying code Method=Check Memory & cache
 Status=Compatible
@@ -1806,9 +1806,8 @@ Use Large Buffer
 
 [30C7AC50-7704072D-C:45]
 Name=Conker's Bad Fur Day (U)
-CPU Type=Interpreter
+CPU Type=Recompiler
 Counter Factor=2
-Disable Reg Cache
 Linking=On
 Save Type=16kbit Eeprom
 Self-modifying code Method=Protected Memory
@@ -2001,8 +2000,8 @@ CPU Type=Recompiler
 Counter Factor=2
 Linking=Off
 Save Type=First Save Type
-Self-modifying code Method=Check Memory & cache
-Status=Compatible
+Self-modifying code Method=Protected Memory
+Status=Unsupported
 
 [A5F667E1-DA1FBD1F-C:4A]
 Name=Derby Stallion 64 (J)
@@ -2285,6 +2284,28 @@ Save Type=First Save Type
 Self-modifying code Method=Cache
 Status=Compatible
 
+[5318786C-994249C6-C:45]
+Name=Doom 64 Complete Edition (U) (v1.0)[Full]
+CPU Type=Recompiler
+Counter Factor=2
+ExpansionPak
+Linking=Global
+Plugin Note=[video] (see GameFAQ)
+Save Type=First Save Type
+Self-modifying code Method=Cache
+Status=Compatible
+
+[E0099092-F60D5D9F-C:50]
+Name=Doom 64 Complete Edition (E) (v1.0) [Full] [NTSC-PAL]
+CPU Type=Recompiler
+Counter Factor=2
+ExpansionPak
+Linking=On
+Plugin Note=[video] (see GameFAQ)
+Save Type=First Save Type
+Self-modifying code Method=Check Memory Advance
+Status=Compatible
+
 [BFF7B1C2-AEBF148E-C:4A]
 Name=Doraemon: Nobita to Mittsu no Seireiseki (J)
 CPU Type=Recompiler
@@ -2331,7 +2352,8 @@ Status=Use GLideN64 Video
 Name=Animal Forest - Doubutsu no Mori (U) [T-Eng]
 CPU Type=Recompiler
 Counter Factor=2
-Linking=Global
+ExpansionPak
+Linking=On
 Save Type=FlashRam
 Self-modifying code Method=Check Memory Advance
 Status=Compatible
@@ -2590,9 +2612,10 @@ Self-modifying code Method=Check Memory & cache
 Status=Compatible
 
 [07861842-A12EBC9F-C:45]
-Name=Excitebike 64 (U) (V1.0) 
+Name=Excitebike 64 (U) (V1.0)
 CPU Type=Recompiler
 Counter Factor=1
+Disable Reg Cache
 ExpansionPak
 Linking=Global
 Plugin Note=[video] slow in places.
@@ -3174,7 +3197,7 @@ Counter Factor=1
 Disable Reg Cache
 ExpansionPak
 Linking=Off
-Plugin Note=[video] missing:status bar. flicker [audio] (See Gamefaq)
+Plugin Note=[video] missing:status bar. flicker [audio] (See Gamefaq) Where is this?
 Save Type=First Save Type
 Self-modifying code Method=Check Memory Advance
 Status=Issues (plugin)
@@ -3752,7 +3775,7 @@ Linking=On
 Plugin Note=[video] Use GlideN64
 Save Type=First Save Type
 Self-modifying code Method=Check Memory Advance
-Status=Use GLideN64 Video
+Status=Interpreter only
 Use Large Buffer
 
 [E436467A-82DE8F9B-C:45]
@@ -4163,6 +4186,7 @@ Status=Compatible
 Name=John Romero's Daikatana (E) (M3)
 CPU Type=Recompiler
 Counter Factor=2
+ExpansionPak
 Linking=Global
 Save Type=First Save Type
 Self-modifying code Method=Protected Memory
@@ -4172,6 +4196,7 @@ Status=Compatible
 Name=John Romero's Daikatana (J)
 CPU Type=Recompiler
 Counter Factor=2
+ExpansionPak
 Linking=Global
 Save Type=First Save Type
 Self-modifying code Method=Protected Memory
@@ -4181,6 +4206,7 @@ Status=Compatible
 Name=John Romero's Daikatana (U)
 CPU Type=Recompiler
 Counter Factor=2
+ExpansionPak
 Linking=Global
 Save Type=First Save Type
 Self-modifying code Method=Protected Memory
@@ -4223,6 +4249,7 @@ Status=Issues (plugin)
 Name=Killer Instinct Gold (U) (V1.0)
 CPU Type=Recompiler
 Counter Factor=2
+Disable Reg Cache
 Linking=Global
 Plugin Note=[video] slow
 Save Type=First Save Type
@@ -4255,6 +4282,7 @@ CPU Type=Interpreter
 Core Note=Interpreter Only For Azi Legacy Sound
 Counter Factor=2
 Delay RDP
+Disable Reg Cache
 Emulate AI
 Linking=On
 Plugin Note=[video] errors:menu snowflakes
@@ -4313,6 +4341,7 @@ Status=Compatible
 Name=Knife Edge - Nose Gunner (U)
 CPU Type=Recompiler
 Counter Factor=2
+Disable Reg Cache
 Linking=Off
 Save Type=First Save Type
 Self-modifying code Method=Check Memory Advance
@@ -7864,7 +7893,6 @@ Save Type=First Save Type
 Self-modifying code Method=Check Memory Advance
 Status=Use GLideN64 Video
 //Cheat0=81036274 0000,81036276 0000//jal 800970F0 osRecvMesg #14
-
 
 
 [F3F2F385-6E490C7F-C:4A]
@@ -13229,7 +13257,7 @@ ExpansionPak
 Linking=Global
 Save Type=First Save Type
 Self-modifying code Method=Protected Memory
-Status=Compatible
+Status=Use GLideN64 Video
 
 [870611BA-D8B1226C-C:00]
 Name=Die Hard 64 ProtoType (Disc 1)
@@ -13459,7 +13487,7 @@ Linking=Off
 Plugin Note=[video] Use GlideN64
 Save Type=First Save Type
 Self-modifying code Method=Check Memory Advance
-Status=Use GLideN64 Video
+Status=Interpreter only
 Use Large Buffer
 
 [C6CE0AAA-D117F019-C:4A]
@@ -14187,6 +14215,7 @@ ExpansionPak
 Linking=Global
 Save Type=First Save Type
 Self-modifying code Method=Default
+Status=Compatible
 
 [4248BA87-99BE605D-C:00]
 Name=Kuru Kuru Fever [Aleck64]
@@ -14362,6 +14391,7 @@ Cheat0=80042480 0014 // Cheat fixes the in a permanent loop issue
 Counter Factor=Default
 ExpansionPak
 Linking=Global
+Plugin Note=Use GlideN64 Video
 Save Type=First Save Type
 Self-modifying code Method=Check Memory Advance
 Status=Issues (64DD)
@@ -14675,6 +14705,19 @@ Save Type=First Save Type
 Self-modifying code Method=Change Memory
 Status=Compatible
 
+[EA5E3409-6F8B09C2-C:45]
+Name=SMASH REMIX (U) 1.5.0
+CPU Type=Recompiler
+Counter Factor=2
+Disable Reg Cache
+Disable TLB
+ExpansionPak
+Linking=Off
+Plugin Note=[video] (see GameFAQ)
+Save Type=First Save Type
+Self-modifying code Method=Change Memory
+Status=Compatible
+
 [FB315F95-7786CBFB-C:45]
 Name=Star Wars - Shadows of the Empire (USA) (Beta)
 CPU Type=Recompiler
@@ -14929,11 +14972,10 @@ Status=Unsupported
 [A78C688A-FE16A636-C:43]
 Name=Animal Crossing (CHN) (iQue) (GameFix)
 CPU Type=Recompiler
-Counter Factor=1
-Disable Reg Cache
+Counter Factor=2
 Linking=Off
 Save Type=FlashRam
-Self-modifying code Method=Default
+Self-modifying code Method=Check Memory Advance
 Status=GlideN64 & RSP Emulation
 
 [3EA79920-2FA5A328-C:00]
@@ -16398,7 +16440,7 @@ Name=XENO CRISIS 64 (JU)
 CPU Type=Recompiler
 Counter Factor=2
 Disable Reg Cache
-Linking=Off
+Linking=Global
 Save Type=First Save Type
 Self-modifying code Method=Check Memory Advance
 Status=Use GLideN64 HLE Video
@@ -17143,7 +17185,7 @@ ExpansionPak
 Linking=Global
 Save Type=First Save Type
 Self-modifying code Method=Protected Memory
-Status=Compatible
+Status=Use GLideN64 Video
 
 [D510922E-3D0D44CC-C:4A]
 Name=Mario no Photopie (J) (Cardless Hack)
@@ -18174,10 +18216,9 @@ CPU Type=Recompiler
 Counter Factor=2
 ExpansionPak
 Linking=Global
-Plugin Note=[video] missing:dissolve effect (see GameFAQ)
 Save Type=First Save Type
-Self-modifying code Method=Default
-Status=Unknown
+Self-modifying code Method=Check Memory Advance
+Status=Compatible
 
 [D6824921-8779FEEF-C:00]
 Name=The Legend of Zelda - Majora's Mask (CHN)
@@ -18414,29 +18455,45 @@ Save Type=First Save Type
 Self-modifying code Method=Cache
 Use Large Buffer
 
-[AD6A5E18-36320263-C:43]
-Name=Animal Crossing (CHN) (iQue) (GameFix) [6103]
+[00000000-00000000-C:00]
+Name=Joypad Test (PD)
 CPU Type=Recompiler
-Counter Factor=1
-Disable Reg Cache
-Linking=Off
+Counter Factor=Default
+ExpansionPak
+Linking=On
+Save Type=First Save Type
+Self-modifying code Method=Check Memory Advance
+
+[318B3640-72EC843F-C:00]
+Name=testcart_reflash
+CPU Type=Interpreter
+Counter Factor=Default
+ExpansionPak
+Linking=Global
 Save Type=First Save Type
 Self-modifying code Method=Default
-Status=GlideN64 & RSP Emulation
+Status=Compatible
 
-[3062A444-258B275D-C:45]
-Name=Animal Forest (U) [6103]
-CPU Type=Recompiler
-Counter Factor=2
+[CE54F86A-3D2E0607-C:00]
+Name=GL Demo (PD)
+CPU Type=Interpreter
+Counter Factor=Default
+ExpansionPak
 Linking=Global
-Save Type=FlashRam
-Self-modifying code Method=Check Memory Advance
+Save Type=First Save Type
+Self-modifying code Method=Default
+Status=Unsupported
+
+[BDFEF553-94A42EF9-C:00]
+Name=testcart_runtime_v2
+CPU Type=Interpreter
+Counter Factor=Default
+ExpansionPak
+Linking=Global
+Save Type=First Save Type
+Self-modifying code Method=Default
 Status=Compatible
 
 //
 //-------- Any entries below this point are for ROMs you have added yourself via the GUI [EOF] --------
-//
-
-
-
 

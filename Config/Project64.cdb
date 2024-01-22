@@ -17,7 +17,7 @@
 // Note that Project64 automatically prefixes "http://"
 
 Author=PJ64LegacyTeam
-Date=21th December 2023 Version: 1
+Date=22nd January 2024 Version: 1
 Homepage=www.project64-legacy.com
 Version=Project64 1.6.2 (Legacy)
 
@@ -2393,6 +2393,8 @@ Cheat6="Max\Acro",801ED25B 0007
 Cheat7="Max\Power",801ED25D 0007
 Cheat8="Infinite\Ammo (All Weapons)",8125E330 A05B
 Cheat9="Have All Weapons",811ED1E2 FFFF
+Cheat10="Res Select",801ED2CE 00??
+Cheat10_O=$00 Low Res,01 High Res
 
 //----
 
@@ -4586,6 +4588,8 @@ Cheat12_N=This gives All Players & CPU the ability to have a Moon Gravity effect
 Cheat12_O=$2400:2400:1000:1000 On,$11E0:5320:5120:1420 Off
 Cheat13="Always First Place (Player 1)",81267B88 2400
 Cheat13_N=The game will still show you in 2nd when you are behind. But when you cross the finish line, you will win!
+Cheat14="Contest\Start with 65535 Score (Player 1)",8169BE4E FFFF,8169BE52 FFFF
+Cheat14_N=This keeps Accumulating expernentiaslly on the first to make up the most of the score, and slightly more on the rest.
 
 //--------------- NTSC (U) Region Cheat Codes ---------------
 
@@ -6655,6 +6659,13 @@ Cheat19="Infinite\Ammo All Weapons",50000404 0000,810632E2 013C
 Cheat20="Have\All\Keys",50000504 0000,8106328E FFFF
 Cheat21="Enable Cheat Menu",8005A7D3 0001
 Cheat22="Have\All\Secret Pentagram Items",800632A7 0007
+Cheat23="No Time Taken",800633D0 0000
+Cheat24="Press F9 to Have100%\Items",880633BF 0064
+Cheat24_N=Only Enable once scores have finished loading.
+Cheat25="Press F9 to Have100%\Kills",880633BB 0064
+Cheat25_N=Only Enable once scores have finished loading.
+Cheat26="Press F9 to Have100%\Secrets",880633C3 0064
+Cheat26_N=Only Enable once scores have finished loading.
 
 //----
 
@@ -6686,6 +6697,54 @@ Cheat20="Enable Cheat Menu",8005A883 0001
 
 //----
 
+[5318786C-994249C6-C:45]
+Name=Doom 64 Complete Edition (U) (v1.0)[Full]
+Cheat0="Always Have\Gun",80062D33 0001
+Cheat1="Always Have\Shotgun",80062D37 0001
+Cheat2="Always Have\Double Shotgun",80062D3B 0001
+Cheat3="Always Have\Chain Gun",80062D3F 0001
+Cheat4="Always Have\Missile Launcher",80062D43 0001
+Cheat5="Always Have\Chainsaw",80062D2B 0001
+Cheat6="Always Have\Plasma Rifle",80062D47 0001
+Cheat7="Always Have\BFG 9000",80062D4B 0001
+Cheat8="Always Have\Have\Rocket Launcher",80062D41 0001
+Cheat9="Always Have\Laser Weapon",80062D4F FFFF
+Cheat10="Always Have\Bio Suite",80062CF3 00??
+Cheat10_O=@Off and On 2
+Cheat11="Infinite\Armor",80062CDF 00FF
+Cheat12="Invincible",80062D7B 0002
+Cheat13="Turn Map Markers On",80062D7B 0004
+Cheat14="Invincible And Map Markers",80062D7B 0006
+Cheat15="Infinite\Ammo All Weapons",80062D53 00FF,80062D57 00FF,80062D5B 00FF,80062D5F 00FF
+Cheat16="Have All Keys",80062CFF 0001,80062D03 0001,80062D04 0001,80062D13 0001,80062D0F 0001,80062D08 0001
+Cheat17="Enable Cheat Menu",800A6FE3 0001
+
+//----
+
+[E0099092-F60D5D9F-C:50]
+Name=Doom 64 Complete Edition (E) (v1.0) [Full] [NTSC-PAL]
+Cheat0="Always Have\Gun",80062D33 0001
+Cheat1="Always Have\Shotgun",80062D37 0001
+Cheat2="Always Have\Double Shotgun",80062D3B 0001
+Cheat3="Always Have\Chain Gun",80062D3F 0001
+Cheat4="Always Have\Missile Launcher",80062D43 0001
+Cheat5="Always Have\Chainsaw",80062D2B 0001
+Cheat6="Always Have\Plasma Rifle",80062D47 0001
+Cheat7="Always Have\BFG 9000",80062D4B 0001
+Cheat8="Always Have\Have\Rocket Launcher",80062D41 0001
+Cheat9="Always Have\Laser Weapon",80062D4F FFFF
+Cheat10="Always Have\Bio Suite",80062CF3 00??
+Cheat10_O=@Off and On 2
+Cheat11="Infinite\Armor",80062CDF 00FF
+Cheat12="Invincible",80062D7B 0002
+Cheat13="Turn Map Markers On",80062D7B 0004
+Cheat14="Invincible And Map Markers",80062D7B 0006
+Cheat15="Infinite\Ammo All Weapons",80062D53 00FF,80062D57 00FF,80062D5B 00FF,80062D5F 00FF
+Cheat16="Have All Keys",80062CFF 0001,80062D03 0001,80062D04 0001,80062D13 0001,80062D0F 0001,80062D08 0001
+Cheat17="Enable Cheat Menu",800A6FE3 0001
+
+//----
+
 [A62230C3-F0834488-C:45]
 Name=Dual Heroes (U)
 Cheat0="Player 1\Energy",8022671D 00??
@@ -6705,7 +6764,7 @@ Cheat7_N=[DualHeroes]Char2 Note
 Cheat8="Player 1\Have Medals",800F499B 001E,50001E20 0000,800F49AB 0014,50001E20 0000,800F49B3 00??
 Cheat8_N=[DualHeroes]Mem1 Note
 Cheat8_O=[DualHeroes]Medals
-Cheat9="Player 2\Have Medals",800F5D9B 001E,50001E20 0000,800F5DAB 0014,50001E20 0000,800F5DB3 00??
+Cheat9="Player 2\Have Medals",800F5D9B 001E,50001E20 0000,800F5DAB 0014,50001E20 0000,800F5DB3 00?? 
 Cheat9_N=[DualHeroes]Mem2 Note
 Cheat9_O=[DualHeroes]Medals
 
@@ -7942,6 +8001,8 @@ Cheat6="Max\Acro",8020A96F 0007
 Cheat7="Max\Power",8020A971 0007
 Cheat8="Infinite\Ammo (All Weapons)",81261A40 A05B
 Cheat9="Have All Weapons",8120A8F6 FFFF
+Cheat10="Res Select",8020A9E2 00??
+Cheat10_O=$00 Low Res,01 High Res
 
 //----
 
@@ -14467,7 +14528,8 @@ Cheat12_N=This gives All Players & CPU the ability to have a Moon Gravity effect
 Cheat12_O=$2400:2400:1000:1000 On,$11E0:5320:5120:1420 Off
 Cheat13="Always First Place (Player 1)",812679BC 2400
 Cheat13_N=The game will still show you in 2nd when you are behind. But when you cross the finish line, you will win!
-
+Cheat14="Contest\Start with 65535 Score (Player 1)",8129BD3E FFFF,8129BD42 FFFF
+Cheat14_N=This keeps Accumulating expernentiaslly on the first to make up the most of the score, and slightly more on the rest.
 //----
 
 [93C5ED78-F67E8528-C:50]
@@ -14493,6 +14555,8 @@ Cheat12_N=This gives All Players & CPU the ability to have a Moon Gravity effect
 Cheat12_O=$2400:2400:1000:1000 On,$11E0:5320:5120:1420 Off
 Cheat13="Always First Place (Player 1)",812679BC 2400
 Cheat13_N=The game will still show you in 2nd when you are behind. But when you cross the finish line, you will win!
+Cheat14="Contest\Start with 65535 Score (Player 1)",8129BD3E FFFF,8129BD42 FFFF
+Cheat14_N=This keeps Accumulating expernentiaslly on the first to make up the most of the score, and slightly more on the rest.
 
 //----
 
@@ -17291,7 +17355,7 @@ Cheat27="Wide Screen Always Off",800FECA8 0000
 //----
 
 [0F743195-D8A6DB95-C:50]
-Name=John Romero's Daikatana (E)
+Name=John Romero's Daikatana (E) (M3)
 Cheat0="Infinite\Health",81207B24 03E7
 Cheat1="Max\Experience",81207B26 03E7
 Cheat2="Infinite\Armour",81207B44 0001,81207B46 03E7
@@ -17300,6 +17364,8 @@ Cheat4="Level Select",811C6B4E 0001
 Cheat5="Access\All Items",D0209D85 0020,81207B8C 007F
 Cheat5_N=Press L Button Where Items Are available
 Cheat6="Access\All Guns & Infinite Ammo",81207AB4 007F,81207AB6 FFFF,81207B84 03E7,50000A02 0000,81207B70 03E7
+Cheat7="Res Select",80207BA2 00??
+Cheat7_O=$00 Low Res,01 High Res
 
 //----
 
@@ -17313,6 +17379,8 @@ Cheat4="Level Select",811C6B4E 0001
 Cheat5="Access\All Items",D0209D85 0020,81207B8C 007F
 Cheat5_N=Press L Button Where Items Are available
 Cheat6="Access\All Guns & Infinite Ammo",81207AB4 007F,81207AB6 FFFF,81207B84 03E7,50000A02 0000,81207B70 03E7
+Cheat7="Res Select",80207BA2 00??
+Cheat7_O=$00 Low Res,01 High Res
 
 //----
 
@@ -25957,6 +26025,8 @@ Cheat12_N=This gives All Players & CPU the ability to have a Moon Gravity effect
 Cheat12_O=$2400:2400:1000:1000 On,$11E0:5320:5120:1420 Off
 Cheat13="Always First Place (Player 1)",8126495C 2400
 Cheat13_N=The game will still show you in 2nd when you are behind. But when you cross the finish line, you will win!
+Cheat14="Contest\Start with 65535 Score (Player 1)",8169BE56 FFFF,8169BE5A 
+Cheat14_N=This keeps Accumulating expernentiaslly on the first to make up the most of the score, and slightly more on the rest.
 
 //----
 
@@ -27959,6 +28029,90 @@ Cheat44_O=[SuperSmashBrothers]Stage Select
 
 //----
 
+[BBEDF4BF-5F0D8C56-C:50]
+Name=SMASH REMIX (E) (NTSC-PAL)
+Cheat0="Give Kirby A Wierd Blow-Up",8025E158 000A
+Cheat1="Story Mode\Skip Straight To Master Hand",800A4AE7 000D
+Cheat2="Story Mode\Infinite Time",810A4B2E 43CB
+Cheat3="Story Mode\Player 1\Infinite Lives",800A4B43 0004
+Cheat4="Story Mode\Player 2\Infinite Lives",800A4BB7 0004
+Cheat5="Story Mode\Player 3\Infinite Lives",800A4C2B 0004
+Cheat6="Story Mode\Player 4\Infinite Lives",800A4C9F 0004
+Cheat7="Story Mode\Player 1\Low % Health",810A4B86 0000
+Cheat8="Story Mode\Player 2\Low % Health",810A4BFA 0000
+Cheat9="Story Mode\Player 3\Low % Health",810A4C6E 0000
+Cheat10="Story Mode\Player 4\Low % Health",810A4CE2 0000
+Cheat11="Story Mode\Player 1\Character Modifier",800A4B3B 00??
+Cheat11_N=[SuperSmashBrothers]Character Note
+Cheat11_O=[SuperSmashBrothers]Character Mod
+Cheat12="Story Mode\Player 2\Character Modifier",800A4BAF 00??
+Cheat12_N=[SuperSmashBrothers]Character Note
+Cheat12_O=[SuperSmashBrothers]Character Mod
+Cheat13="Story Mode\Player 3\Character Modifier",800A4C23 00?? 
+Cheat13_N=[SuperSmashBrothers]Character Note
+Cheat13_O=[SuperSmashBrothers]Character Mod
+Cheat14="Story Mode\Player 4\Character Modifier",800A4C97 00??
+Cheat14_N=[SuperSmashBrothers]Character Note
+Cheat14_O=[SuperSmashBrothers]Character Mod
+Cheat15="Story Mode\Player 1\Kirby B Button Move\Hyrule Castle",80268B0F 00??
+Cheat15_O=[SuperSmashBrothers]Kirby B Button Move
+Cheat16="Story Mode\Player 1\Kirby B Button Move\Yoshi's Island",80268E4F 00??
+Cheat16_O=[SuperSmashBrothers]Kirby B Button Move
+Cheat17="Story Mode\Player 1\Kirby B Button Move\Sector Z",802710F7 00??
+Cheat17_O=[SuperSmashBrothers]Kirby B Button Move
+Cheat18="Story Mode\Player 1\Kirby B Button Move\Peach's Castle",80263D9F 00??
+Cheat18_O=[SuperSmashBrothers]Kirby B Button Move
+Cheat19="Story Mode\Player 1\Kirby B Button Move\Saffron City",80273A97 00??
+Cheat19_O=[SuperSmashBrothers]Kirby B Button Move
+Cheat20="Story Mode\Player 1\Kirby B Button Move\Congo Jungle",80270ACF 00??
+Cheat20_O=[SuperSmashBrothers]Kirby B Button Move
+Cheat21="Story Mode\Player 1\Kirby B Button Move\Kirby's Dreamland",8026DB3F 00??
+Cheat21_O=[SuperSmashBrothers]Kirby B Button Move
+Cheat22="Story Mode\Player 1\Kirby B Button Move\Planet Zebes",8026FFA7 00??
+Cheat22_O=[SuperSmashBrothers]Kirby B Button Move
+Cheat23="Story Mode\Player 1\Kirby B Button Move\Metal Mario Stage",80263597 00??
+Cheat23_O=[SuperSmashBrothers]Kirby B Button Move
+Cheat24="Story Mode\Player 1\Kirby B Button Move\Fighting Polygon Team",8026271F 00??
+Cheat24_O=[SuperSmashBrothers]Kirby B Button Move
+Cheat25="Story Mode\Player 1\Kirby B Button Move\Master Hand Stage",80271C4F 00??
+Cheat25_O=[SuperSmashBrothers]Kirby B Button Move
+Cheat26="VS. Mode\Infinite Time",810A4D1E 43CB
+Cheat27="VS. Mode\Player 1\Low % Health",810A4D76 0000
+Cheat28="VS. Mode\Player 2\Low % Health",810A4DEA 0000
+Cheat29="VS. Mode\Player 3\Low % Health",810A4E5E 0000
+Cheat30="VS. Mode\Player 4\Low % Health",810A4ED2 0000
+Cheat31="VS. Mode\Player 1\Character Modifier",800A4D2B 00??
+Cheat31_N=[SuperSmashBrothers]=Character Note
+Cheat31_O=[SuperSmashBrothers]Character Mod
+Cheat32="VS. Mode\Player 2\Character Modifier",800A4D9F 00??
+Cheat32_N=[SuperSmashBrothers]Character Note
+Cheat32_O=[SuperSmashBrothers]Character Mod
+Cheat33="VS. Mode\Player 3\Character Modifier",800A4E13 00??
+Cheat33_N=[SuperSmashBrothers]Character Note
+Cheat33_O=[SuperSmashBrothers]Character Mod
+Cheat34="VS. Mode\Player 4\Character Modifier",800A4E87 00??
+Cheat34_N=[SuperSmashBrothers]Character Note
+Cheat34_O=[SuperSmashBrothers]Character Mod
+Cheat35="VS. Mode\Player 1\Kirby B Button Move\Hyrule Castle",802639EF 00??
+Cheat35_O=[SuperSmashBrothers]Kirby B Button Move
+Cheat36="VS. Mode\Player 1\Kirby B Button Move\Yoshi's Island",8026E2B7 00??
+Cheat36_O=[SuperSmashBrothers]Kirby B Button Move
+Cheat37="VS. Mode\Player 1\Kirby B Button Move\Sector Z",8026BF87 00??
+Cheat37_O=[SuperSmashBrothers]Kirby B Button Move
+Cheat38="P1 Press Down On D-Pad To Make Items Appear In Random Spots",D109EFA4 0400,8118D0A2 0001
+Cheat39="Have All Characters",810A4938 0FF0
+Cheat40="VS. Mode\Have\Mushroom Kindom",800A4937 00FF
+Cheat41="Story Mode\Always Get Pacifist (60,000 Points)",810A4B6E 0000
+Cheat42="Bonus Stage Character Modifier (Training Mode)",8018F1D3 00??
+Cheat42_N=[SuperSmashBrothers]Character Note
+Cheat42_O=[SuperSmashBrothers]Character Mod
+Cheat43="Enable Item Switch Menu (All Modes)",811348E2 0004
+Cheat43_N=[SuperSmashBrothers]Switch Menu Note
+Cheat44="Story Mode\Player 1\Stage Select",D1045188 0010,800A4AE7 00??
+Cheat44_O=[SuperSmashBrothers]Stage Select
+
+//----
+
 [2877AC2D-C3DC139A-C:44]
 Name=Racing Simulation 2 (G)
 Cheat0="Laps to Race",801C5913 00??,D01C5927 0000,801C5927 00??
@@ -28212,4 +28366,3 @@ Cheat12_N=Disable until the game starts. Select your option you want the effect 
 Cheat12_O=$00 Wash,$01 Rest,$02 Work,$03 Use an item,$04 Do nothing
 
 //End Of File----------> Anything under here was put in by you <--------------------------------
-
