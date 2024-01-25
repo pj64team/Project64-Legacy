@@ -1060,13 +1060,12 @@ void _fastcall r4300i_SPECIAL_JALR (void) {
 	}
 	NextInstruction = DELAY_SLOT;
 	JumpToLocation = GPR[Opcode.BRANCH.rs];
+	GPR[Opcode.REG.rd].UDW = PROGRAM_COUNTER.UDW + 8;
 	if (JumpToLocation.UW[0] & 3) {
 		PROGRAM_COUNTER = JumpToLocation;
 		DoAddressError(FALSE, GPR[Opcode.BRANCH.rs].UDW, TRUE);
 		NextInstruction = JUMP;
 		JumpToLocation = PROGRAM_COUNTER;
-	} else {
-		GPR[Opcode.REG.rd].UDW = PROGRAM_COUNTER.UDW + 8;
 	}
 }
 
