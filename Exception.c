@@ -82,7 +82,7 @@ void DoIntegerOverflow(BOOL DelaySlot) {
 
 void DoAddressError ( BOOL DelaySlot, QWORD BadVaddr, BOOL FromRead) {
 	if (ShowDebugMessages) {
-		DisplayError("AddressError while accessing %016llX (%s). PC: %08llX",
+		DisplayError("AddressError while accessing %016llX (%s). PC: %016llX",
 			BadVaddr,
 			FromRead ? "read" : "write",
 			DelaySlot ? PROGRAM_COUNTER.UDW - 4 : PROGRAM_COUNTER.UDW);
