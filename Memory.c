@@ -227,10 +227,51 @@ BOOL Compile_LH ( int Reg, DWORD Addr, BOOL SignExtend) {
 	return TRUE;
 }
 
+DWORD ReadRdramRegisterAddr;
+DWORD ReadRdramRegister() {
+	int deviceId = (ReadRdramRegisterAddr >> 10) & 0x1FE;
+	deviceId = (((deviceId >> 0) & 0x3F) << 26) |
+		(((deviceId >> 6) & 1) << 23) |
+		(((deviceId >> 7) & 0xFF) << 8) |
+		(((deviceId >> 15) & 0x1) << 7);
+
+	int deviceIndex = -1;
+
+	for (int i = 0; i < NUMBER_OF_RDRAM_MODULES; ++i) {
+		if (deviceId == (RDRAM_DEVICE_ID_REG(i) & 0xF880FF80)) {
+			deviceIndex = i;
+			break;
+		}
+	}
+
+	if (deviceIndex != -1) {
+		switch (ReadRdramRegisterAddr & 0x3FF) {
+		case 0x000: return RDRAM_DEVICE_TYPE_REG(deviceIndex);
+		case 0x004: return RDRAM_DEVICE_ID_REG(deviceIndex);
+		case 0x008: return RDRAM_DELAY_REG(deviceIndex);
+		case 0x00C: return RDRAM_MODE_REG(deviceIndex);
+		case 0x010: return RDRAM_REF_INTERVAL_REG(deviceIndex);
+		case 0x014: return RDRAM_REF_ROW_REG(deviceIndex);
+		case 0x018: return RDRAM_RAS_INTERVAL_REG(deviceIndex);
+		case 0x01C: return RDRAM_MIN_INTERVAL_REG(deviceIndex);
+		case 0x020: return RDRAM_ADDR_SELECT_REG(deviceIndex);
+		case 0x024: return RDRAM_DEVICE_MANUF_REG(deviceIndex);
+		default:
+			LogMessage("LW from %x, PC=%llx", ReadRdramRegisterAddr, PROGRAM_COUNTER.UDW);
+			return 0;
+		}
+	}
+	else {
+		LogMessage("rambus device not found at address %x", ReadRdramRegisterAddr);
+	}
+	return 0;
+}
+
 BOOL Compile_LW(int Reg, DWORD Addr) {
 	char VarName[100];
 
 	if (!TranslateVaddr(&Addr)) {
+		DisplayError("Couldn't translate");
 		return FALSE;
 	}
 
@@ -242,13 +283,21 @@ BOOL Compile_LW(int Reg, DWORD Addr) {
 	case 0x00400000: 
 	case 0x00500000: 
 	case 0x00600000: 
-	case 0x00700000: 
+	case 0x00700000:
 	case 0x06000000:  // Added for 64DD IPL
 	// TODO: This is most certainly not enough! It only covers 2 MB PI ROM!
 	case 0x10000000:
 	case 0x10200000:  // Same as 0x10000000, added for Game Boy 64 by McBain & Snake (POM '98) (PD)
  		sprintf(VarName,"N64MEM + %X",Addr);
 		MoveVariableToX86reg(Addr + N64MEM,VarName,Reg); 
+		break;
+	case 0x03F00000:
+		MoveConstToVariable(Addr & 0x1FFFFFFF, &ReadRdramRegisterAddr, "ReadRdramRegisterAddr");
+		Pushad();
+		Call_Direct(&ReadRdramRegister, "ReadRdramRegister");
+		MoveX86regToVariable(x86_EAX, &TempValue, "TempValue");
+		Popad();
+		MoveVariableToX86reg(&TempValue, "TempValue", Reg);
 		break;
 	case 0x04000000:
 		if (Addr < 0x04002000) { 
@@ -501,7 +550,6 @@ static DWORD ValueToWriteToRdramRegister;
 static DWORD AddrToWriteToRdramRegister;
 
 static void WriteValueToRdramRegister(void) {
-	DisplayError("WriteValueToRdramRegister");
 	if (!(AddrToWriteToRdramRegister & 0x80000)) {
 		int deviceId = (AddrToWriteToRdramRegister >> 10) & 0x1FE;
 		deviceId = (((deviceId >> 0) & 0x3F) << 26) |
@@ -600,7 +648,7 @@ BOOL Compile_SW_Const ( DWORD Value, DWORD Addr ) {
 		break;
 	case 0x03F00000:
 		MoveConstToVariable(Value, &ValueToWriteToRdramRegister, "ValueToWriteToRdramRegister");
-		MoveConstToVariable(Addr, &AddrToWriteToRdramRegister, "AddrToWriteToRdramRegister");
+		MoveConstToVariable(Addr & 0x1FFFFFFF, &AddrToWriteToRdramRegister, "AddrToWriteToRdramRegister");
 		Pushad();
 		Call_Direct(&WriteValueToRdramRegister, "WriteValueToRdramRegister");
 		Popad();
@@ -914,7 +962,7 @@ BOOL Compile_SW_Register ( int x86Reg, DWORD Addr ) {
 		break;
 	case 0x03F00000:
 		MoveX86regToVariable(x86Reg, &ValueToWriteToRdramRegister, "ValueToWriteToRdramRegister");
-		MoveConstToVariable(Addr, &AddrToWriteToRdramRegister, "AddrToWriteToRdramRegister");
+		MoveConstToVariable(Addr & 0x1FFFFFFF, &AddrToWriteToRdramRegister, "AddrToWriteToRdramRegister");
 		Pushad();
 		Call_Direct(&WriteValueToRdramRegister, "WriteValueToRdramRegister");
 		Popad();
@@ -1792,15 +1840,15 @@ int r4300i_LW_NonMemory ( DWORD PAddr, DWORD * Value ) {
 
 	// N64DD hacked cartridges read from here and take a long time to boot if this isn't handled
 	if (PAddr == 0x18000200) {
-		Value = 0x0;
+		*Value = 0x0;
 		return TRUE;
 	}
 	
 	if (PAddr < 0x03F00000) {
 		if (PAddr < RdramSize) {
-			Value = (DWORD*)(RDRAM + PAddr);
+			*Value = (DWORD*)(RDRAM + PAddr);
 		}
-		else Value = 0x0;
+		else *Value = 0x0;
 		return TRUE;
 	}
 
@@ -3288,6 +3336,9 @@ BOOL IsValidAddress(MIPS_DWORD address) {
 
 void CheckRdramStatus() {
 	RdramFullyConfigured = TRUE;
+	if (CPU_Type != CPU_Interpreter) {
+		return;
+	}
 	for (int i = 0; i < NUMBER_OF_RDRAM_MODULES; ++i) {
 		if ((RDRAM_MODE_REG(i) & RDRAM_MODE_DE) == 0) {
 			RdramFullyConfigured = FALSE;
