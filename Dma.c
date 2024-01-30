@@ -449,7 +449,7 @@ void SP_DMA_READ(void) {
 	if ((length & 0x07) == 0)
 		length++;
 
-	if (SP_DRAM_ADDR_REG > RdramSize) {
+	if (SP_DRAM_ADDR_REGW > RdramSize) {
 		if (ShowDebugMessages)
 			DisplayError("SP DMA\nSP_DRAM_ADDR_REG not in RDRam space");
 		SP_DMA_BUSY_REG = 0;
@@ -522,7 +522,7 @@ void SP_DMA_WRITE(void) {
 
 	int IDMEM_SELECT = SP_MEM_ADDR_REGW & 0x01000;
 
-	if (SP_DRAM_ADDR_REG > RdramSize) {
+	if (SP_DRAM_ADDR_REGW > RdramSize) {
 		if (ShowDebugMessages)
 			DisplayError("SP DMA WRITE\nSP_DRAM_ADDR_REG not in RDRam space");
 		return;
