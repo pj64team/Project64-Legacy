@@ -2687,14 +2687,14 @@ int r4300i_SW_NonMemory ( DWORD PAddr, DWORD Value ) {
 			return TRUE;
 		}
 		switch (PAddr) {
-		case 0x04040000: SP_MEM_ADDR_REGW = Value; break;
-		case 0x04040004: SP_DRAM_ADDR_REGW = Value; break;
+		case 0x04040000: SP_MEM_ADDR_REGW = (Value & 0x1FF8); break;
+		case 0x04040004: SP_DRAM_ADDR_REGW = (Value & 0xFFFFF8); break;
 		case 0x04040008: 
-			SP_RD_LEN_REG = Value; 
+			SP_RD_LEN_REG = (Value & 0xFF8FFFF8); 
 			SP_DMA_READ();
 			break;
 		case 0x0404000C: 
-			SP_WR_LEN_REG = Value; 
+			SP_WR_LEN_REG = (Value & 0xFF8FFFF8); 
 			SP_DMA_WRITE();
 			break;
 		case 0x04040010: 
