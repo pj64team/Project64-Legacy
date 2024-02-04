@@ -1257,7 +1257,7 @@ void RefreshScreen (void ){
 }
 
 #define NUMCYCLES 200
-#define RSP_TIMER_INC 100
+#define RSP_TIMER_INC 5000
 int RSPisRunning = 0;
 int CheckRSPInterrupt = 0;
 
