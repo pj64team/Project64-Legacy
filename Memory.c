@@ -2718,6 +2718,7 @@ int r4300i_SW_NonMemory ( DWORD PAddr, DWORD Value ) {
 				CheckInterrupts();
 				break;
 			case SP_SET_INTR: MI_INTR_REG |= MI_INTR_SP;
+				CheckInterrupts();
 				break;
 			}
 			//if (ShowDebugMessages)
@@ -2818,11 +2819,11 @@ int r4300i_SW_NonMemory ( DWORD PAddr, DWORD Value ) {
 			// Automated Delay RSP / Delay RDP, based on information from Mupen64 Plus HLE RSP source code
 			// // If the ucode boot size (DMEM + 0xFED) is not within 0 to 1000 then assume the rsp is being called by the operating system
 			// The next bit checks to make sure either the GFX (1) or RSP (2) is being called to do work
-			if (!(*(DWORD*)(DMEM + 0xFED) >= 0 && *(DWORD*)(DMEM + 0xFED) <= 1000) &&
+			/*if (!(*(DWORD*)(DMEM + 0xFED) >= 0 && *(DWORD*)(DMEM + 0xFED) <= 1000) &&
 				(*(DWORD*)(DMEM + 0xFC0) == 1 || *(DWORD*)(DMEM + 0xFC0) == 2)) {
 				ChangeTimer(RspTimer, 0x900);
 				break;
-			}
+			}*/
 
 			/*
 			if (DelayRDP == TRUE && *( DWORD *)(DMEM + 0xFC0) == 1) {
@@ -2871,13 +2872,14 @@ int r4300i_SW_NonMemory ( DWORD PAddr, DWORD Value ) {
 			if ( ( Value & DPC_SET_FLUSH ) != 0) { DPC_STATUS_REG |= DPC_STATUS_FLUSH;  }
 			if ( ( Value & DPC_CLR_FREEZE ) != 0) 
 			{
-				if ( ( SP_STATUS_REG & SP_STATUS_HALT ) == 0) 
+				/*if ( ( SP_STATUS_REG & SP_STATUS_HALT ) == 0) 
 				{
 					if ( ( SP_STATUS_REG & SP_STATUS_BROKE ) == 0 ) 
 					{
 						RunRsp();
 					}
-				}
+				}*/
+				if (ProcessRDPList) { ProcessRDPList(); }
 			}
 			if (ShowUnhandledMemory) {
 				//if ( ( Value & DPC_CLR_TMEM_CTR ) != 0) { DisplayError("RSP: DPC_STATUS_REG: DPC_CLR_TMEM_CTR"); }
@@ -2968,7 +2970,7 @@ int r4300i_SW_NonMemory ( DWORD PAddr, DWORD Value ) {
 		break;
 	case 0x04500000: 
 		switch (PAddr) {
-		case 0x04500000: AI_DRAM_ADDR_REG = Value; break;
+		case 0x04500000: AI_DRAM_ADDR_REG = (Value & 0xFFFFF8); break;
 		case 0x04500004: 
 			AI_LEN_REG = Value;  
 			if (AiLenChanged != NULL) { AiLenChanged(); }
@@ -2991,7 +2993,7 @@ int r4300i_SW_NonMemory ( DWORD PAddr, DWORD Value ) {
 		break;
 	case 0x04600000: 
 		switch (PAddr) {
-		case 0x04600000: PI_DRAM_ADDR_REG = Value; break;
+		case 0x04600000: PI_DRAM_ADDR_REG = (Value & 0xFFFFFE); break;
 		case 0x04600004: PI_CART_ADDR_REG = Value; break;
 		case 0x04600008: 
 			PI_RD_LEN_REG = Value;
