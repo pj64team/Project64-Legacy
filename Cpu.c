@@ -99,25 +99,43 @@ void ChangeCompareTimer(void) {
 }
 
 void ChangeTimer(int Type, int Value) {
+	int TimeSinceCurrentEventInserted = Timers.NextTimer[Timers.CurrentTimerType] - Timers.Timer;
+
+	for (int count = 0; count < MaxTimers; count++) {
+		if (count == Timers.CurrentTimerType || count == Type) continue;
+		if (!Timers.Active[count]) { continue; }
+		if (!(count == CompareTimer && Timers.NextTimer[count] == 0x7FFFFFFF)) {
+			Timers.NextTimer[count] -= TimeSinceCurrentEventInserted;
+		}
+	}
+
 	if (Value == 0) { 
 		Timers.NextTimer[Type] = 0;
-		Timers.Active[Type] = FALSE; 
-		return;
+		Timers.Active[Type] = FALSE;
 	}
-	Timers.NextTimer[Type] = Value - Timers.Timer;
-	Timers.Active[Type] = TRUE;
+	else {
+		Timers.NextTimer[Type] = Value;
+		Timers.Active[Type] = TRUE;
+	}
+
+	if (Timers.CurrentTimerType != Type) {
+		if (!(Timers.CurrentTimerType == CompareTimer && Timers.NextTimer[Timers.CurrentTimerType] == 0x7FFFFFFF)) {
+			Timers.NextTimer[Timers.CurrentTimerType] = Timers.Timer;
+		}
+	}
 	CheckTimer();
 }
 
 void CheckTimer (void) {
 	int count;
 
-	for (count = 0; count < MaxTimers; count++) {
-		if (!Timers.Active[count]) { continue; }
-		if (!(count == CompareTimer && Timers.NextTimer[count] == 0x7FFFFFFF)) {
-			Timers.NextTimer[count] += Timers.Timer;
+	if (Timers.NextTimer[CompareTimer] == 0x7FFFFFFF) {
+		DWORD NextCompare = COMPARE_REGISTER - COUNT_REGISTER;
+		if ((NextCompare & 0x80000000) == 0 && NextCompare != 0x7FFFFFFF) {
+			Timers.NextTimer[CompareTimer] = NextCompare;
 		}
 	}
+
 	Timers.CurrentTimerType = -1;
 	Timers.Timer = 0x7FFFFFFF;
 	for (count = 0; count < MaxTimers; count++) {
@@ -126,22 +144,10 @@ void CheckTimer (void) {
 		Timers.Timer = Timers.NextTimer[count];
 		Timers.CurrentTimerType = count;
 	}
+
 	if (Timers.CurrentTimerType == -1) {
 		DisplayError("No active timers ???\nEmulation Stoped");
 		ExitThread(0);
-	}
-	for (count = 0; count < MaxTimers; count++) {
-		if (!Timers.Active[count]) { continue; }
-		if (!(count == CompareTimer && Timers.NextTimer[count] == 0x7FFFFFFF)) {
-			Timers.NextTimer[count] -= Timers.Timer;
-		}
-	}
-	
-	if (Timers.NextTimer[CompareTimer] == 0x7FFFFFFF) {
-		DWORD NextCompare = COMPARE_REGISTER - COUNT_REGISTER;
-		if ((NextCompare & 0x80000000) == 0 && NextCompare != 0x7FFFFFFF) {
-			ChangeCompareTimer();
-		}
 	}
 }
 
@@ -1276,8 +1282,7 @@ void RunRsp (void) {
 			}
 			else
 			{
-				Timers.NextTimer[RspTimer] = RSP_TIMER_INC;
-				Timers.Active[RspTimer] = TRUE;
+				ChangeTimer(RspTimer, RSP_TIMER_INC);
 			}
 			return;
 		}
@@ -1341,20 +1346,20 @@ return;
 
 			RSPisRunning = 1;
 			DoRspCycles(NUMCYCLES);
-			if ((SP_STATUS_REG & SP_STATUS_HALT) != 0)
+			if ((SP_STATUS_REG & SP_STATUS_HALT) != 0) {
 				RSPisRunning = 0;
+			}
 			StartTimer(Label);
 		} else {
 			RSPisRunning = 1;
 			DoRspCycles(NUMCYCLES);
 
-			if ((SP_STATUS_REG & SP_STATUS_HALT) != 0)
+			if ((SP_STATUS_REG & SP_STATUS_HALT) != 0) {
 				RSPisRunning = 0;
+			}
 			else
-
 			{
-				Timers.NextTimer[RspTimer] = RSP_TIMER_INC;
-				Timers.Active[RspTimer] = TRUE;
+				ChangeTimer(RspTimer, RSP_TIMER_INC);
 			}
 		}
 #ifdef CFB_READ
@@ -1363,10 +1368,7 @@ return;
 			}
 #endif
 		if ((SP_STATUS_REG & SP_STATUS_HALT) == 0) {
-			if ((DPC_STATUS_REG & DPC_STATUS_FREEZE) == 0) {
-				Timers.NextTimer[RspTimer] = RSP_TIMER_INC;
-				Timers.Active[RspTimer] = TRUE;
-			}
+			ChangeTimer(RspTimer, RSP_TIMER_INC);
 		}
 	} 
 }
@@ -1504,7 +1506,6 @@ void TimerDone (void) {
 		AiCheckInterrupts();
 		break;
 	}
-	CheckTimer();
 	if (Profiling) { 
 		StartTimer(Label); 
 	}

@@ -210,7 +210,6 @@ void PI_DMA_WRITE (void) {
 		CheckInterrupts();
 		//ChangeTimer(PiTimer,(int)(PI_WR_LEN_REG * 8.9) + 50);
 		//ChangeTimer(PiTimer,(int)(PI_WR_LEN_REG * 8.9));
-		CheckTimer();
 		return;
 	}
 	
@@ -247,7 +246,6 @@ void PI_DMA_WRITE (void) {
 		CheckInterrupts();
 		//ChangeTimer(PiTimer,(int)(PI_WR_LEN_REG * 8.9) + 50);
 		//ChangeTimer(PiTimer,(int)(PI_WR_LEN_REG * 8.9));
-		CheckTimer();
 		return;
 	}
 	
