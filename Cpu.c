@@ -1263,11 +1263,13 @@ void RefreshScreen (void ){
 }
 
 #define NUMCYCLES 200
-#define RSP_TIMER_INC 5000
+#define RSP_TIMER_INC 100
 int RSPisRunning = 0;
 int CheckRSPInterrupt = 0;
 
 void RunRsp (void) {
+	if (Timers.Active[RspTimer]) return;
+
 	if ( ( SP_STATUS_REG & SP_STATUS_HALT ) == 0) {
 		DWORD Task = *( DWORD *)(DMEM + 0xFC0);
 
@@ -1349,6 +1351,10 @@ return;
 			if ((SP_STATUS_REG & SP_STATUS_HALT) != 0) {
 				RSPisRunning = 0;
 			}
+			else
+			{
+				ChangeTimer(RspTimer, RSP_TIMER_INC);
+			}
 			StartTimer(Label);
 		} else {
 			RSPisRunning = 1;
@@ -1367,9 +1373,9 @@ return;
 				SetFrameBuffer(VI_ORIGIN_REG, (DWORD)(VI_WIDTH_REG * (VI_WIDTH_REG *.75)));
 			}
 #endif
-		if ((SP_STATUS_REG & SP_STATUS_HALT) == 0) {
+		/*if ((SP_STATUS_REG & SP_STATUS_HALT) == 0) {
 			ChangeTimer(RspTimer, RSP_TIMER_INC);
-		}
+		}*/
 	} 
 }
 

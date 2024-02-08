@@ -187,13 +187,13 @@ void ChangeSpStatus (void) {
 	// Automated Delay RSP / Delay RDP, based on information from Mupen64 Plus HLE RSP source code
 	// If the ucode boot size (DMEM + 0xFED) is not within 0 to 1000 then assume the rsp is being called by the operating system
 	// The next bit checks to make sure either the GFX (1) or RSP (2) is being called to do work
-	if (!(*( DWORD *)(DMEM + 0xFED) >= 0 && *( DWORD *)(DMEM + 0xFED) <= 1000) && 
+	/*if (!(*( DWORD *)(DMEM + 0xFED) >= 0 && *( DWORD *)(DMEM + 0xFED) <= 1000) && 
 		(*( DWORD *)(DMEM + 0xFC0) == 1 || *( DWORD *)(DMEM + 0xFC0) == 2)) {
 		if ((SP_STATUS_REG & SP_STATUS_HALT) == 0) {
 			ChangeTimer(RspTimer, 0x900);
 			return;
 		}
-	}
+	}*/
 	/*
 	if (DelayRDP == TRUE && *( DWORD *)(DMEM + 0xFC0) == 1) {
 		int j = 0;
