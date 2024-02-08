@@ -1226,7 +1226,7 @@ void RefreshScreen (void ){
 		}
 	}
 
-	ChangeTimer(ViTimer,Timers.Timer + Timers.NextTimer[ViTimer] + VI_INTR_TIME);
+	ChangeTimer(ViTimer,Timers.Timer + /*Timers.NextTimer[ViTimer] +*/ VI_INTR_TIME);
 	EmuAI_SetVICountPerFrame(VI_INTR_TIME);
 	
 
@@ -1263,6 +1263,7 @@ void RefreshScreen (void ){
 }
 
 #define NUMCYCLES 200
+#define RSP_TIMER_INC 300
 #define RSP_TIMER_INC 100
 int RSPisRunning = 0;
 int CheckRSPInterrupt = 0;
