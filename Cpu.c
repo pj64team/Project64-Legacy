@@ -120,7 +120,9 @@ void ChangeTimer(int Type, int Value) {
 
 	if (Timers.CurrentTimerType != Type) {
 		if (!(Timers.CurrentTimerType == CompareTimer && Timers.NextTimer[Timers.CurrentTimerType] == 0x7FFFFFFF)) {
-			Timers.NextTimer[Timers.CurrentTimerType] = Timers.Timer;
+			if (Timers.Active[Timers.CurrentTimerType]) {
+				Timers.NextTimer[Timers.CurrentTimerType] = Timers.Timer;
+			}
 		}
 	}
 	CheckTimer();
