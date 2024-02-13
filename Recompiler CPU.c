@@ -669,10 +669,14 @@ void CompileExit (DWORD TargetPC, REG_INFO ExitRegSet, int reason, int CompileNo
 		Ret();
 		break;
 	case TLBReadMiss:
-		MoveConstToX86reg(NextInstruction == JUMP || NextInstruction == DELAY_SLOT,x86_ECX);
-		MoveVariableToX86reg(&TLBLoadAddress,"TLBLoadAddress",x86_EDX);
-		PushImm32("FromRead", 1);
-		Call_Direct(DoTLBMiss,"DoTLBMiss");
+		MoveVariableToX86reg(&TLBLoadAddress, "TLBLoadAddress", x86_EDX);
+		MoveX86RegToX86Reg(x86_EDX, x86_ECX);
+		ShiftRightSignImmed(x86_ECX, 31);
+		Push(x86_ECX);
+		Push(x86_EDX);
+		MoveConstToX86reg(NextInstruction == JUMP || NextInstruction == DELAY_SLOT, x86_ECX);
+		MoveConstToX86reg(1, x86_EDX);
+		Call_Direct(DoTLBMiss, "DoTLBMiss");
 		if (CPU_Type == CPU_SyncCores) { Call_Direct(SyncToPC, "SyncToPC"); }
 		Ret();
 		break;
