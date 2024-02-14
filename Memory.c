@@ -271,7 +271,6 @@ BOOL Compile_LW(int Reg, DWORD Addr) {
 	char VarName[100];
 
 	if (!TranslateVaddr(&Addr)) {
-		DisplayError("Couldn't translate");
 		return FALSE;
 	}
 
