@@ -508,18 +508,15 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ResourceCompile Include="PJ64.rc">
+    <ResourceCompile Include="MiB64.rc">
       <Filter>Resource Files</Filter>
     </ResourceCompile>
-    <ResourceCompile Include="PJ64_Cheat.rc">
+    <ResourceCompile Include="MiB64_Cheat.rc">
       <Filter>Resource Files</Filter>
     </ResourceCompile>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="left.ico">
-      <Filter>Resource Files</Filter>
-    </CustomBuild>
-    <CustomBuild Include="pj64.ico">
       <Filter>Resource Files</Filter>
     </CustomBuild>
     <CustomBuild Include="right.ico">
@@ -530,21 +527,7 @@
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>
-    <None Include="PJ64.BMP">
-      <Filter>Resource Files</Filter>
-    </None>
     <None Include=".editorconfig" />
-  </ItemGroup>
-  <ItemGroup>
-    <Image Include="PJ64_2.bmp">
-      <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="PJ64_3.bmp">
-      <Filter>Resource Files</Filter>
-    </Image>
-  </ItemGroup>
-  <ItemGroup>
-    <Text Include="About.txt" />
   </ItemGroup>
   <ItemGroup>
     <Library Include="Compression\zlibstat.lib">

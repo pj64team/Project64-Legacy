@@ -53,7 +53,7 @@ LRESULT CALLBACK AboutBoxProc (HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
 			int point2 = -MulDiv(14, GetDeviceCaps(hdc, LOGPIXELSY), 72);
 			ReleaseDC(NULL, hdc);
 
-			SetWindowText(hDlg, "About Project64 Legacy - " __DATE__ " " __TIME__);
+			SetWindowText(hDlg, "About MiB64 - " __DATE__ " " __TIME__);
 
 			SendMessage(hDlg, WM_SETICON, ICON_SMALL, (LPARAM)LoadIcon(hInst, "ICON"));
 

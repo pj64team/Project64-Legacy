@@ -1,12 +1,13 @@
 /*
- * Project 64 Legacy - A Nintendo 64 emulator.
+ * MiB64 - A Nintendo 64 emulator.
  *
- * (c) Copyright 2001 Zilmar, Jabo, Smiff, Gent, Witten 
- * (c) Copyright 2010 PJ64LegacyTeam
+ * Project64 (c) Copyright 2001 Zilmar, Jabo, Smiff, Gent, Witten
+ * Projectg64 Legacy (c) Copyright 2010 PJ64LegacyTeam
+ * MiB64 (c) Copyright 2024 MiB64Team
  *
- * Project64 Legacy Homepage: www.project64-legacy.com
+ * MiB64 Homepage: www.mib64.net
  *
- * Permission to use, copy, modify and distribute Project64 in both binary and
+ * Permission to use, copy, modify and distribute MiB64 in both binary and
  * source form, for non-commercial purposes, is hereby granted without fee,
  * providing that this license information and copyright notice appear with
  * all copies and any derived work.
@@ -15,9 +16,9 @@
  * warranty. In no event shall the authors be held liable for any damages
  * arising from the use of this software.
  *
- * Project64 is freeware for PERSONAL USE only. Commercial users should
+ * MiB64 is freeware for PERSONAL USE only. Commercial users should
  * seek permission of the copyright holders first. Commercial use includes
- * charging money for Project64 or software derived from Project64.
+ * charging money for MiB64 or software derived from MiB64.
  *
  * The copyright holders request that bug fixes and improvements to the code
  * should be forwarded to them so if they want them.
@@ -42,15 +43,15 @@ extern "C" {
 
 /********* General Defaults **********/
 #if (!defined(EXTERNAL_RELEASE))
-#define AppVer   "Project64 - Build 59"
-#define AppName  "Project64 (Build 59)"
+#define AppVer   "MiB64 - Build 01"
+#define AppName  "MiB64 (Build 01)"
 #else
 #define BETA_VERSION
-#define AppVer   "Project64 Legacy - 1.6.2"
+#define AppVer   "MiB64 - 1.0"
 #ifdef BETA_VERSION
-#define AppName  "Project64 Legacy - 1.6.2 Beta"
+#define AppName  "MiB64 - 1.0 Beta"
 #else
-#define AppName  "Project64 Legacy - 1.6.2 Alpha"
+#define AppName  "MiB64 - 1.0 Alpha"
 #endif
 #endif
 

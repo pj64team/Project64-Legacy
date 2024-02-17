@@ -1,10 +1,10 @@
 <p align="center">
-  <img src="https://www.project64-legacy.com/data/uploads/logo_leg._med_clear.png" alt="logo" width="433" />
+  <img src="https://www.mib64.net/data/uploads/mib64_banner_logo.png" alt="logo" width="433" />
 </p>
 
-# Project64 Legacy
+# MiB64
 
-Project64 Legacy is a free and open-source emulator for the Nintendo 64 and is a continuation of the original Project 64 1.6 source. Legacy is written in C/C++ currently only for Windows (possible planned support for other platforms in the future).
+MiB64 is a free and open-source emulator for the Nintendo 64 and is a continuation of the original Project 64 1.6 source. Legacy is written in C/C++ currently only for Windows (possible planned support for other platforms in the future).
 
 ## Features
 
@@ -18,14 +18,14 @@ Project64 Legacy is a free and open-source emulator for the Nintendo 64 and is a
 ## Screenshot
 
 <p align="center">
-  <img src="https://www.project64-legacy.com/data/uploads/Docs/screen_about_2023.png" alt="screenshot" width="400" />
+  <img src="https://www.mib64.net/data/uploads/Docs/screen_about_2023.png" alt="screenshot" width="400" />
 </p>
 
 ## Installation
 
-Project64 Legacy - 1.6.2 (Beta) releases are available [here](https://github.com/pj64team/Project64-Legacy/releases).
+MiB64 - 1.0 (Beta) releases are available [here](https://github.com/mib64team/MiB64/releases).
 
-Project64 Legacy is a Portable Emulator and all you need to do is right click and Extract Here with your preferred file archiver software to a directory of your choosing and load and use. If you do not have a installed we recommend [7-zip](https://www.7-zip.org). As 7-Zip is free software with open source.
+MiB64 is a Portable Emulator and all you need to do is right click and Extract Here with your preferred file archiver software to a directory of your choosing and load and use. If you do not have a installed we recommend [7-zip](https://www.7-zip.org). As 7-Zip is free software with open source.
 
 ## Minimum requirements
 
@@ -43,7 +43,7 @@ Project64 Legacy is a Portable Emulator and all you need to do is right click an
 
 ## Support
 
-Please join our [Dev Board](https://www.project64-legacy.com/dev/) & [Discord server](https://discord.gg/ha7HWAFE8uc) for support, questions, etc.
+Please join our [Discord server](https://discord.gg/ha7HWAFE8uc) for support, questions, etc.
 
 ## Contributing
 
@@ -51,13 +51,9 @@ Contributors are always welcome!
 
 ## Maintainers and contributors
 
-- [@Project64-Legacy](https://github.com/pj64team/Project64-Legacy)
+- [@MiB64](https://github.com/mib64team/MiB64)
 
-- Zilmar (Tooie) - Project Founder / Previous contributor
-- Jabo - Previous contributor
-- Smiff - Previous contributor
 - Witten - Current maintainer
-- RadeonUser - Previous contributor
 - Gent - Current maintainer
 - Azimer - Current contributor
 - Icepir8 - Current maintainer
@@ -65,14 +61,12 @@ Contributors are always welcome!
 - Hacktarux - Current contributor
 - Kimbjo - Current maintainer
 - parasyte - Current contributor
-- Squall-Leonhart - Previous contributor
 
 
 
-Also see the list of [community contributors](https://github.com/pj64team/Project64-Legacy/graphs/contributors).
+Also see the list of [community contributors](https://github.com/mib64team/MiB64/graphs/contributors).
 
 ## 🔗 Links
-- [Website](https://www.project64-legacy.com/)
-- [Dev Board](https://www.project64-legacy.com/dev)
+- [Website](https://www.mib64.net/)
 - [Discord](https://discord.gg/ha7HWAFE8u)
 
