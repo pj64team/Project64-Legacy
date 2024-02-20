@@ -590,6 +590,13 @@ void CompileExit (DWORD TargetPC, REG_INFO ExitRegSet, int reason, int CompileNo
 		if (CPU_Type == CPU_SyncCores) { Call_Direct(SyncToPC, "SyncToPC"); }
 		Ret();
 		break;
+	case TLBWriteMiss:
+		MoveConstToX86reg(NextInstruction == JUMP || NextInstruction == DELAY_SLOT, x86_ECX);
+		MoveVariableToX86reg(&TLBLoadAddress, "TLBLoadAddress", x86_EDX);
+		Call_Direct(DoTLBMiss, "DoTLBMiss");
+		if (CPU_Type == CPU_SyncCores) { Call_Direct(SyncToPC, "SyncToPC"); }
+		Ret();
+		break;
 	default:
 		if (ShowDebugMessages)
 			DisplayError("how did you want to exit on reason (%d) ???",reason);

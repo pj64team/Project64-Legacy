@@ -38,6 +38,12 @@ void CompileReadTLBMiss (BLOCK_SECTION * Section, int AddressReg, int LookUpReg 
 	CompileExit(Section->CompilePC,Section->RegWorking,TLBReadMiss,FALSE,JeLabel32);
 }
 
+void CompileWriteTLBMiss(BLOCK_SECTION* Section, int AddressReg, int LookUpReg) {
+	MoveX86regToVariable(AddressReg, &TLBLoadAddress, "TLBLoadAddress");
+	TestX86RegToX86Reg(LookUpReg, LookUpReg);
+	CompileExit(Section->CompilePC, Section->RegWorking, TLBWriteMiss, FALSE, JeLabel32);
+}
+
 /************************** Branch functions  ************************/
 void Compile_R4300i_Branch (BLOCK_SECTION * Section, void (*CompareFunc)(BLOCK_SECTION * Section), int BranchType, BOOL Link) {
 	static int EffectDelaySlot, DoneJumpDelay, DoneContinueDelay;
@@ -1988,6 +1994,7 @@ void Compile_R4300i_SB (BLOCK_SECTION * Section){
 		MoveX86RegToX86Reg(TempReg1, TempReg2);
 		ShiftRightUnsignImmed(TempReg2,12);
 		MoveVariableDispToX86Reg(TLB_WriteMap,"TLB_WriteMap",TempReg2,TempReg2,4);
+		CompileWriteTLBMiss(Section, TempReg1, TempReg2);
 		//For tlb miss
 		//0041C522 85 C0                test        eax,eax
 		//0041C524 75 01                jne         0041C527
@@ -2059,6 +2066,7 @@ void Compile_R4300i_SH (BLOCK_SECTION * Section){
 		MoveX86RegToX86Reg(TempReg1, TempReg2);
 		ShiftRightUnsignImmed(TempReg2,12);
 		MoveVariableDispToX86Reg(TLB_WriteMap,"TLB_WriteMap",TempReg2,TempReg2,4);
+		CompileWriteTLBMiss(Section, TempReg1, TempReg2);
 		//For tlb miss
 		//0041C522 85 C0                test        eax,eax
 		//0041C524 75 01                jne         0041C527
@@ -2167,6 +2175,7 @@ void Compile_R4300i_SWL (BLOCK_SECTION * Section) {
 		MoveX86RegToX86Reg(TempReg1, TempReg2);
 		ShiftRightUnsignImmed(TempReg2,12);
 		MoveVariableDispToX86Reg(TLB_WriteMap,"TLB_WriteMap",TempReg2,TempReg2,4);
+		CompileWriteTLBMiss(Section, TempReg1, TempReg2);
 
 		MoveX86regToX86regPointer(Value,TempReg1, TempReg2);
 	} else {
@@ -2230,6 +2239,7 @@ void Compile_R4300i_SW (BLOCK_SECTION * Section){
 			MoveX86RegToX86Reg(TempReg1, TempReg2);
 			ShiftRightUnsignImmed(TempReg2,12);
 			MoveVariableDispToX86Reg(TLB_WriteMap,"TLB_WriteMap",TempReg2,TempReg2,4);
+			CompileWriteTLBMiss(Section, TempReg1, TempReg2);
 			//For tlb miss
 			//0041C522 85 C0                test        eax,eax
 			//0041C524 75 01                jne         0041C527
@@ -2337,6 +2347,7 @@ void Compile_R4300i_SWR (BLOCK_SECTION * Section) {
 		MoveX86RegToX86Reg(TempReg1, TempReg2);
 		ShiftRightUnsignImmed(TempReg2,12);
 		MoveVariableDispToX86Reg(TLB_WriteMap,"TLB_WriteMap",TempReg2,TempReg2,4);
+		CompileWriteTLBMiss(Section, TempReg1, TempReg2);
 
 		MoveX86regToX86regPointer(Value,TempReg1, TempReg2);
 	} else {
@@ -2558,6 +2569,7 @@ void Compile_R4300i_SC (BLOCK_SECTION * Section){
 		MoveX86RegToX86Reg(TempReg1, TempReg2);
 		ShiftRightUnsignImmed(TempReg2,12);
 		MoveVariableDispToX86Reg(TLB_WriteMap,"TLB_WriteMap",TempReg2,TempReg2,4);
+		CompileWriteTLBMiss(Section, TempReg1, TempReg2);
 		//For tlb miss
 		//0041C522 85 C0                test        eax,eax
 		//0041C524 75 01                jne         0041C527
@@ -2708,6 +2720,7 @@ void Compile_R4300i_SD (BLOCK_SECTION * Section){
 		MoveX86RegToX86Reg(TempReg1, TempReg2);
 		ShiftRightUnsignImmed(TempReg2,12);
 		MoveVariableDispToX86Reg(TLB_WriteMap,"TLB_WriteMap",TempReg2,TempReg2,4);
+		CompileWriteTLBMiss(Section, TempReg1, TempReg2);
 		//For tlb miss
 		//0041C522 85 C0                test        eax,eax
 		//0041C524 75 01                jne         0041C527
