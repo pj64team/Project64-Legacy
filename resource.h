@@ -313,6 +313,19 @@
 #define ID_CURRENTSAVE_7                40120
 #define ID_CURRENTSAVE_8                40121
 #define ID_CURRENTSAVE_9                40122
+
+// Added an extra 10 save state slots with 10-19 on Shift+0-9 (Gent)
+
+#define ID_CURRENTSAVE_10               40203
+#define ID_CURRENTSAVE_11               40204
+#define ID_CURRENTSAVE_12               40205
+#define ID_CURRENTSAVE_13               40206
+#define ID_CURRENTSAVE_14               40207
+#define ID_CURRENTSAVE_15               40208
+#define ID_CURRENTSAVE_16               40209
+#define ID_CURRENTSAVE_17               40210
+#define ID_CURRENTSAVE_18               40211
+#define ID_CURRENTSAVE_19               40212
 #define ID_OPTIONS_FULLSCREEN           40123
 #define ID_DEBUGGER_SHOWDLISTALISTCOUNT 40124
 #define ID_OPTIONS_SETTINGS             40126

@@ -76,7 +76,19 @@ LANG_STR DefaultString[] = {
 			{ MENU_SLOT_7,      "Slot 7"             },
 			{ MENU_SLOT_8,      "Slot 8"             },
 			{ MENU_SLOT_9,      "Slot 9"             },
+
+			// Added an extra 10 save state slots with 10-19 on Shift+0-9 (Gent)
+
 			{ MENU_SLOT_10,     "Slot 10"            },
+			{ MENU_SLOT_11,     "Slot 11"            },
+			{ MENU_SLOT_12,     "Slot 12"            },
+			{ MENU_SLOT_13,     "Slot 13"            },
+			{ MENU_SLOT_14,     "Slot 14"            },
+			{ MENU_SLOT_15,     "Slot 15"            },
+			{ MENU_SLOT_16,     "Slot 16"            },
+			{ MENU_SLOT_17,     "Slot 17"            },
+			{ MENU_SLOT_18,     "Slot 18"            },
+			{ MENU_SLOT_19,     "Slot 19"            },
 		{ MENU_CHEAT,       "Cheats..."              },
 		{ MENU_GS_BUTTON,   "GS Button"              },
 	{ MENU_OPTIONS,  "&Options"  },

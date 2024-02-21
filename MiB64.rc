@@ -929,6 +929,19 @@ BEGIN
             MENUITEM "Slot 7\t7",                   ID_CURRENTSAVE_7
             MENUITEM "Slot 8\t8",                   ID_CURRENTSAVE_8
             MENUITEM "Slot 9\t9",                   ID_CURRENTSAVE_9
+			
+			// Added an extra 10 save state slots with 10-19 on Shift+0-9 (Gent)
+			
+            MENUITEM "Slot 10\tShift+0",            ID_CURRENTSAVE_10
+            MENUITEM "Slot 11\tShift+1",            ID_CURRENTSAVE_11
+            MENUITEM "Slot 12\tShift+2",            ID_CURRENTSAVE_12
+            MENUITEM "Slot 13\tShift+3",            ID_CURRENTSAVE_13
+            MENUITEM "Slot 14\tShift+4",            ID_CURRENTSAVE_14
+            MENUITEM "Slot 15\tShift+5",            ID_CURRENTSAVE_15
+            MENUITEM "Slot 16\tShift+6",            ID_CURRENTSAVE_16
+            MENUITEM "Slot 17\tShift+7",            ID_CURRENTSAVE_17
+            MENUITEM "Slot 18\tShift+8",            ID_CURRENTSAVE_18
+            MENUITEM "Slot 19\tShift+9",            ID_CURRENTSAVE_19
         END
         MENUITEM SEPARATOR
         MENUITEM "Cheats...\tCtrl+C",           ID_OPTIONS_CHEATS, GRAYED
