@@ -878,18 +878,18 @@ BEGIN
     POPUP "&File"
     BEGIN
         MENUITEM "&Open Rom\t Ctrl+O",          ID_FILE_OPEN_ROM
-        MENUITEM "Rom &Information\tCtrl+I",    ID_FILE_ROM_INFO, GRAYED
-        MENUITEM "&Game Information\tCtrl+G",   ID_FILE_GAMEINFORMATION, GRAYED
+        MENUITEM "Rom &Information\tCtrl+I",    ID_FILE_ROM_INFO
+        MENUITEM "&Game Information\tCtrl+G",   ID_FILE_GAMEINFORMATION
         MENUITEM SEPARATOR
-        MENUITEM "Start Emulation\tF10",        ID_FILE_STARTEMULATION, GRAYED
-        MENUITEM "&End Emulation\tF11",         ID_FILE_ENDEMULATION, GRAYED
+        MENUITEM "Start Emulation\tF10",        ID_FILE_STARTEMULATION
+        MENUITEM "&End Emulation\tF11",         ID_FILE_ENDEMULATION
         MENUITEM SEPARATOR
         MENUITEM "Language",                    1
         MENUITEM SEPARATOR
         MENUITEM "Choose Rom Directory...",     ID_FILE_ROMDIRECTORY
         MENUITEM "Refresh Rom List\tF5",        ID_FILE_REFRESHROMLIST
         MENUITEM SEPARATOR
-        MENUITEM "Recent Rom",                  65535
+        MENUITEM "Recent Rom",                  0
         POPUP "Recent Rom Directories"
         BEGIN
             MENUITEM "None Here",                   1100
@@ -899,18 +899,18 @@ BEGIN
     END
     POPUP "&System"
     BEGIN
-        MENUITEM "&Reset\tF1",                  ID_CPU_RESET, GRAYED
-        MENUITEM "&Pause\tF2",                  ID_CPU_PAUSE, GRAYED
-        MENUITEM "Screenshot Capture\tF3",      ID_SYSTEM_GENERATEBITMAP, GRAYED
+        MENUITEM "&Reset\tF1",                  ID_CPU_RESET
+        MENUITEM "&Pause\tF2",                  ID_CPU_PAUSE
+        MENUITEM "Screenshot Capture\tF3",      ID_SYSTEM_GENERATEBITMAP
         MENUITEM SEPARATOR
         MENUITEM "Limit FPS\tF4",               ID_SYSTEM_LIMITFPS
         MENUITEM SEPARATOR
-        MENUITEM "&Save\tF5",                   ID_CPU_SAVE, GRAYED
-        MENUITEM "Save As...\tCtrl+S",          ID_CPU_SAVEAS, GRAYED
-        MENUITEM "&Restore\tF7",                ID_CPU_RESTORE, GRAYED
-        MENUITEM "Restore From\tCtrl+L",        ID_CPU_LOAD, GRAYED
+        MENUITEM "&Save\tF5",                   ID_CPU_SAVE
+        MENUITEM "Save As...\tCtrl+S",          ID_CPU_SAVEAS
+        MENUITEM "&Restore\tF7",                ID_CPU_RESTORE
+        MENUITEM "Restore From\tCtrl+L",        ID_CPU_LOAD
         MENUITEM SEPARATOR
-        POPUP "Current Save S&tate", GRAYED
+        POPUP "Current Save S&tate"
         BEGIN
             MENUITEM "Default\t0",                  ID_CURRENTSAVE_DEFAULT
             MENUITEM SEPARATOR
@@ -923,21 +923,34 @@ BEGIN
             MENUITEM "Slot 7\t7",                   ID_CURRENTSAVE_7
             MENUITEM "Slot 8\t8",                   ID_CURRENTSAVE_8
             MENUITEM "Slot 9\t9",                   ID_CURRENTSAVE_9
+
+        // Added an extra 10 save state slots with 10-19 on Shift+0-9 (Gent)
+
+            MENUITEM "Slot 10\tShift+0",            ID_CURRENTSAVE_10
+            MENUITEM "Slot 11\tShift+1",            ID_CURRENTSAVE_11
+            MENUITEM "Slot 12\tShift+2",            ID_CURRENTSAVE_12
+            MENUITEM "Slot 13\tShift+3",            ID_CURRENTSAVE_13
+            MENUITEM "Slot 14\tShift+4",            ID_CURRENTSAVE_14
+            MENUITEM "Slot 15\tShift+5",            ID_CURRENTSAVE_15
+            MENUITEM "Slot 16\tShift+6",            ID_CURRENTSAVE_16
+            MENUITEM "Slot 17\tShift+7",            ID_CURRENTSAVE_17
+            MENUITEM "Slot 18\tShift+8",            ID_CURRENTSAVE_18
+            MENUITEM "Slot 19\tShift+9",            ID_CURRENTSAVE_19
         END
         MENUITEM SEPARATOR
-        MENUITEM "Cheats...\tCtrl+C",           ID_OPTIONS_CHEATS, GRAYED
-        MENUITEM "Cheat Search\tCtrl+R",        ID_SYSTEM_CHEATSEARCH, GRAYED
-        MENUITEM "GS Button\tF9",               ID_SYSTEM_GSBUTTON, GRAYED
+        MENUITEM "Cheats...\tCtrl+C",           ID_OPTIONS_CHEATS
+        MENUITEM "Cheat Search\tCtrl+R",        ID_SYSTEM_CHEATSEARCH
+        MENUITEM "GS Button\tF9",               ID_SYSTEM_GSBUTTON
     END
     POPUP "&Options"
     BEGIN
-        MENUITEM "&Full Screen\tAlt+Enter",     ID_OPTIONS_FULLSCREEN, GRAYED
-        MENUITEM "&Always On Top\tCtrl+A",      ID_OPTIONS_ALWAYSONTOP, GRAYED
+        MENUITEM "&Full Screen\tAlt+Enter",     ID_OPTIONS_FULLSCREEN
+        MENUITEM "&Always On Top\tCtrl+A",      ID_OPTIONS_ALWAYSONTOP
         MENUITEM SEPARATOR
-        MENUITEM "Configure &Graphics Plugin...\tCtrl+V", ID_OPTIONS_CONFIG_GFX, GRAYED
-        MENUITEM "Configure A&udio Plugin...\tCtrl+U", ID_OPTIONS_CONFIG_AUDIO, GRAYED
-        MENUITEM "Configure &Controller Plugin...\tCtrl+X", ID_OPTIONS_CONFIG_CONTROL, GRAYED
-        MENUITEM "Configure &RSP Plugin...\tCtrl-W", ID_OPTIONS_CONFIG_RSP, GRAYED
+        MENUITEM "Configure &Graphics Plugin...\tCtrl+V", ID_OPTIONS_CONFIG_GFX
+        MENUITEM "Configure A&udio Plugin...\tCtrl+U", ID_OPTIONS_CONFIG_AUDIO
+        MENUITEM "Configure &Controller Plugin...\tCtrl+X", ID_OPTIONS_CONFIG_CONTROL
+        MENUITEM "Configure &RSP Plugin...\tCtrl-W", ID_OPTIONS_CONFIG_RSP
         MENUITEM SEPARATOR
         MENUITEM "Show CPU usage %",            ID_OPTIONS_SHOWCPUUSAGE
         MENUITEM "&Settings...\tCtrl+T",        ID_OPTIONS_SETTINGS
@@ -949,10 +962,10 @@ BEGIN
         POPUP "&R4300i"
         BEGIN
             MENUITEM "R4300i &Commands...",         ID_DEBUGGER_R4300ICOMMANDS
-            MENUITEM "R4300i &Registers...",        ID_DEBUGGER_R4300IREGISTERS, GRAYED
+            MENUITEM "R4300i &Registers...",        ID_DEBUGGER_R4300IREGISTERS
         END
-        MENUITEM "Memory...",                   ID_DEBUGGER_MEMORY, GRAYED
-        MENUITEM "TLB Entries...",              ID_DEBUGGER_TLBENTRIES, GRAYED
+        MENUITEM "Memory...",                   ID_DEBUGGER_MEMORY
+        MENUITEM "TLB Entries...",              ID_DEBUGGER_TLBENTRIES
         MENUITEM SEPARATOR
         MENUITEM "Call Stack....",              ID_DEBUGGER_CALLSTACK
         MENUITEM SEPARATOR
@@ -974,7 +987,7 @@ BEGIN
         POPUP "&Mappings"
         BEGIN
             MENUITEM "&Open Map file ...",          ID_OPTIONS_MAPPINGS_OPENMAPFILE
-            MENUITEM "&Close Map File",             ID_OPTIONS_MAPPINGS_CLOSEMAPFILE, GRAYED
+            MENUITEM "&Close Map File",             ID_OPTIONS_MAPPINGS_CLOSEMAPFILE
             MENUITEM SEPARATOR
             MENUITEM "&Auto Load Map File",         ID_OPTIONS_MAPPINGS_AUTOLOADMAPFILE
         END
@@ -1093,6 +1106,7 @@ BEGIN
     VK_F1,          ID_CPU_RESET,           VIRTKEY, NOINVERT
     VK_F7,          ID_CPU_RESTORE,         VIRTKEY, NOINVERT
     VK_F5,          ID_CPU_SAVE,            VIRTKEY, NOINVERT
+    "0",            ID_CURRENTSAVE_DEFAULT, ASCII,  NOINVERT
     "1",            ID_CURRENTSAVE_1,       VIRTKEY, NOINVERT
     "2",            ID_CURRENTSAVE_2,       VIRTKEY, NOINVERT
     "3",            ID_CURRENTSAVE_3,       VIRTKEY, NOINVERT
@@ -1102,7 +1116,16 @@ BEGIN
     "7",            ID_CURRENTSAVE_7,       VIRTKEY, NOINVERT
     "8",            ID_CURRENTSAVE_8,       VIRTKEY, NOINVERT
     "9",            ID_CURRENTSAVE_9,       VIRTKEY, NOINVERT
-    "0",            ID_CURRENTSAVE_DEFAULT, ASCII,  NOINVERT
+    "0",            ID_CURRENTSAVE_10,      VIRTKEY, SHIFT, NOINVERT
+    "1",            ID_CURRENTSAVE_11,      VIRTKEY, SHIFT, NOINVERT
+    "2",            ID_CURRENTSAVE_12,      VIRTKEY, SHIFT, NOINVERT
+    "3",            ID_CURRENTSAVE_13,      VIRTKEY, SHIFT, NOINVERT
+    "4",            ID_CURRENTSAVE_14,      VIRTKEY, SHIFT, NOINVERT
+    "5",            ID_CURRENTSAVE_15,      VIRTKEY, SHIFT, NOINVERT
+    "6",            ID_CURRENTSAVE_16,      VIRTKEY, SHIFT, NOINVERT
+    "7",            ID_CURRENTSAVE_17,      VIRTKEY, SHIFT, NOINVERT
+    "8",            ID_CURRENTSAVE_18,      VIRTKEY, SHIFT, NOINVERT
+    "9",            ID_CURRENTSAVE_19,      VIRTKEY, SHIFT, NOINVERT
     VK_F11,         ID_FILE_ENDEMULATION,   VIRTKEY, NOINVERT
     "C",            ID_OPTIONS_CHEATS,      VIRTKEY, CONTROL, NOINVERT
     "U",            ID_OPTIONS_CONFIG_AUDIO, VIRTKEY, CONTROL, NOINVERT
