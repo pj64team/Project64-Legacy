@@ -29,12 +29,15 @@
 #include "Types.h"
 
 typedef enum {
-	WP_NONE,
-	WP_READ,
-	WP_WRITE,
-	WP_READ_WRITE,
-	WP_ENABLED,
+	WP_NONE,		// 0b0000
+	WP_READ,		// 0b0001
+	WP_WRITE,		// 0b0010
+	WP_READ_WRITE,	// 0b0011
+	WP_ENABLED,		// 0b0100
 } WATCH_TYPE;
+
+// The mask that defines "all bits enabled" in a WATCH_TYPE value.
+#define WATCH_TYPE_MASK 7
 
 void InitWatchPoints(void);
 BOOL AddWatchPoint(MIPS_DWORD Location, WATCH_TYPE Type);

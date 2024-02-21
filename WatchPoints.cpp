@@ -33,17 +33,24 @@ extern "C" {
 	#include "cpu.h"
 }
 
+// The slot mask splits each watchpoint into one of 8 slots: One for each byte of memory covered.
+const QWORD WATCHPOINT_SLOT_MASK = 7ULL;
+
+// The address mask chunks the address space into 64-bit blocks for each watchpoint.
+const QWORD WATCHPOINT_ADDRESS_MASK = ~WATCHPOINT_SLOT_MASK;
+
 // Each watchpoint covers 8 bytes of memory, aligned to 64-bit boundaries.
 // The 8 bytes stored in the map are bitflags with the following layout:
 //
-// ╭─────┬──────┬──────┬───┬───┬───╮
-// │ Bit │ 7..5 │ 4..3 │ 2 │ 1 │ 0 │
-// ╰─────┴───┬──┴───┬──┴─┬─┴─┬─┴─┬─╯
-//           ┆      ┆    ┆   ┆   ╰┄┄┄┄ Read access
-//           ┆      ┆    ┆   ╰┄┄┄┄┄┄┄┄ Write access
-//           ┆      ┆    ╰┄┄┄┄┄┄┄┄┄┄┄┄ Watchpoint enabled
-//           ┆      ╰┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄ RESERVED
-//           ╰┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄ Upper bits of original address
+// ```
+// ╭─────┬──────┬───┬───┬───╮
+// │ Bit │ 7..3 │ 2 │ 1 │ 0 │
+// ╰─────┴───┬──┴─┬─┴─┬─┴─┬─╯
+//           ┆    ┆   ┆   ╰┄┄┄┄ Read access
+//           ┆    ┆   ╰┄┄┄┄┄┄┄┄ Write access
+//           ┆    ╰┄┄┄┄┄┄┄┄┄┄┄┄ Watchpoint enabled
+//           ╰┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄┄ RESERVED
+// ```
 //
 std::unordered_map<QWORD, uint8_t[8]>* WatchPoints = NULL;
 
@@ -71,17 +78,18 @@ BOOL AddWatchPoint(MIPS_DWORD Location, WATCH_TYPE Type) {
 	}
 
 	MIPS_DWORD requested_location = Location;
-	uint8_t upper_bits = (Location.UDW >> 24) & 0xE0;
 	Location.UDW &= 0x1FFFFFFF;
-	auto search = WatchPoints->find(Location.UDW & ~7);
+	QWORD chunk = Location.UDW & WATCHPOINT_ADDRESS_MASK;
+	int slot = Location.UDW & WATCHPOINT_SLOT_MASK;
+	auto search = WatchPoints->find(chunk);
 	if (search == WatchPoints->end()) {
-		uint8_t *wp = (*WatchPoints)[Location.UDW & ~7];
+		uint8_t *wp = (*WatchPoints)[chunk];
 		for (int i = 0; i < 8; i++) {
 			wp[i] = WP_NONE;
 		}
 	}
 
-	(*WatchPoints)[Location.UDW & ~7][Location.UB[0] & 7] = (uint8_t)Type | WP_ENABLED | upper_bits;
+	(*WatchPoints)[chunk][slot] = (uint8_t)Type | WP_ENABLED;
 	WatchPointsAddresses[Location.UDW] = requested_location.UDW;
 
 	return TRUE;
@@ -89,10 +97,12 @@ BOOL AddWatchPoint(MIPS_DWORD Location, WATCH_TYPE Type) {
 
 void RemoveWatchPoint(MIPS_DWORD Location) {
 	Location.UDW &= 0x1FFFFFFF;
-	auto search = WatchPoints->find(Location.UDW & ~7);
+	QWORD chunk = Location.UDW & WATCHPOINT_ADDRESS_MASK;
+	int slot = Location.UDW & WATCHPOINT_SLOT_MASK;
+	auto search = WatchPoints->find(chunk);
 	if (search != WatchPoints->end()) {
 		uint8_t *wp = search->second;
-		wp[Location.UB[0] & 7] = WP_NONE;
+		wp[slot] = WP_NONE;
 		WatchPointsAddresses.erase(Location.UDW);
 
 		int i;
@@ -102,7 +112,7 @@ void RemoveWatchPoint(MIPS_DWORD Location) {
 			}
 		}
 		if (i == 8) {
-			WatchPoints->erase(Location.UDW & ~7);
+			WatchPoints->erase(chunk);
 		}
 	}
 }
@@ -114,20 +124,29 @@ void RemoveAllWatchPoints(void) {
 
 void ToggleWatchPoint(MIPS_DWORD Location) {
 	Location.UDW &= 0x1FFFFFFF;
+	// TODO: See note below regarding `HasWatchPoint` return value.
 	WATCH_TYPE Type = HasWatchPoint(Location);
 	if (Type != WP_NONE) {
-		(*WatchPoints)[Location.UDW & ~7][Location.UB[0] & 7] = (int)Type ^ WP_ENABLED;
+		QWORD chunk = Location.UDW & WATCHPOINT_ADDRESS_MASK;
+		int slot = Location.UDW & WATCHPOINT_SLOT_MASK;
+		(*WatchPoints)[chunk][slot] = (uint8_t)Type ^ WP_ENABLED;
 	}
 }
 
 WATCH_TYPE HasWatchPoint(MIPS_DWORD Location) {
 	Location.UDW &= 0x1FFFFFFF;
-	auto search = WatchPoints->find(Location.UDW & ~7);
+	QWORD chunk = Location.UDW & WATCHPOINT_ADDRESS_MASK;
+	int slot = Location.UDW & WATCHPOINT_SLOT_MASK;
+	auto search = WatchPoints->find(chunk);
 	if (search == WatchPoints->end()) {
 		return WP_NONE;
 	}
 
-	return (WATCH_TYPE)search->second[Location.UB[0] & 7];
+	// TODO: This returns WATCH_TYPE, which must be masked as a valid enum value.
+	// However, `ToggleWatchPoint` assumes this function returns the same value that exists in the slot.
+	// This function should either be updated to return the slot's full 8 bits, or make `ToggleWatchPoint`
+	// use a private lookup function to get the slot value.
+	return (WATCH_TYPE)(search->second[slot] & WATCH_TYPE_MASK);
 }
 
 BOOL CheckForWatchPoint(MIPS_DWORD Location, WATCH_TYPE Type, int Size) {
@@ -147,17 +166,17 @@ BOOL CheckForWatchPoint(MIPS_DWORD Location, WATCH_TYPE Type, int Size) {
 	}
 
 	while (Size > 0) {
-		int start = Location.UB[0] & 7;
+		int start = Location.UDW & WATCHPOINT_SLOT_MASK;
 		int end = min(start + Size, 8);
 
-		Location.UDW &= ~7;
+		Location.UDW &= WATCHPOINT_ADDRESS_MASK;
 
 		auto search = WatchPoints->find(Location.UDW);
 		if (search != WatchPoints->end()) {
 			uint8_t *wp = search->second;
 			for (int i = start; i < end; i++) {
-				int value = wp[i];
-				if ((value & WP_ENABLED) && (value & (int)Type)) {
+				uint8_t value = wp[i] & WATCH_TYPE_MASK;
+				if ((value & WP_ENABLED) && (value & (uint8_t)Type)) {
 					TriggerDebugger();
 
 					// Block the CPU thread until resumed by the debugger
@@ -197,7 +216,7 @@ void RefreshWatchPoints(HWND hList) {
 		QWORD key = iter.first;
 		uint8_t *wp = iter.second;
 		for (int i = 0; i < 8; i++) {
-			int value = wp[i];
+			uint8_t value = wp[i] & WATCH_TYPE_MASK;
 			if (value == WP_NONE) {
 				continue;
 			}
