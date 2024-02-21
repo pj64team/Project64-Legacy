@@ -692,8 +692,13 @@ LRESULT CALLBACK R4300i_Commands_ListViewKeys_Proc(HWND hWnd, UINT uMsg, WPARAM 
 
 void Scroll_R4300i_Commands(int lines) {
 	char value[20];
+	QWORD location;
 	GetWindowText(hAddress, value, sizeof(value));
-	QWORD location = AsciiToHex64(value);
+	if (strlen(value) <= 8) {
+		location = (int)AsciiToHex(value);
+	} else {
+		location = AsciiToHex64(value);
+	}
 
 	if (lines > 0) {
 		if (UINT_MAX - location >= R4300i_MaxCommandLines * 4) {
@@ -734,7 +739,7 @@ void R4300i_Commands_Setup ( HWND hDlg ) {
 		WS_BORDER | WS_TABSTOP,650,17,125,18, hDlg,(HMENU)IDC_ADDRESS,hInst, NULL );
 	if (hAddress) {
 		SendMessage(hAddress,WM_SETFONT, (WPARAM)GetStockObject(DEFAULT_GUI_FONT),0);
-		SendMessage(hAddress,EM_SETLIMITTEXT, (WPARAM)8,(LPARAM)0);
+		SendMessage(hAddress,EM_SETLIMITTEXT, (WPARAM)16,(LPARAM)0);
 	} 
 
 	hFunctionlist = CreateWindowEx(0,"COMBOBOX","", WS_CHILD | WS_VSCROLL |
@@ -1580,7 +1585,11 @@ void RefreshR4300iCommands ( void ) {
 	if (InR4300iCommandsWindow == FALSE) { return; }
 
 	GetWindowText(hAddress,AsciiAddress,sizeof(AsciiAddress));
-	location.UDW = AsciiToHex64(AsciiAddress) & ~3;
+	if (strlen(AsciiAddress) <= 8) {
+		location.DW = (int)AsciiToHex(AsciiAddress) & ~3;
+	} else {
+		location.UDW = AsciiToHex64(AsciiAddress) & ~3;
+	}
 
 	max_location.UDW = ULLONG_MAX - R4300i_MaxCommandLines * 4 + 1;
 	if (location.UDW > max_location.UDW) { location = max_location; }
@@ -1623,7 +1632,11 @@ void SetR4300iCommandViewto ( MIPS_DWORD NewLocation ) {
 	if (InR4300iCommandsWindow == FALSE) { return; }
 
 	GetWindowText(hAddress,Value,sizeof(Value));
-	location = AsciiToHex64(Value) & ~3;
+	if (strlen(Value) <= 8) {
+		location = (int)AsciiToHex(Value) & ~3;
+	} else {
+		location = AsciiToHex64(Value) & ~3;
+	}
 
 	if ( NewLocation.UDW < location || NewLocation.UDW >= location + R4300i_MaxCommandLines * 4 ) {
 		sprintf(Value,"%016llX",NewLocation.UDW);

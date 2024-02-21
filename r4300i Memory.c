@@ -420,7 +420,7 @@ LRESULT CALLBACK Memory_Window_Proc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM 
 			char Value[20];
 			GetWindowText(hAddrEdit, Value, sizeof(Value));
 			QWORD address = 0;
-			if (strlen(Value) == 8) {
+			if (strlen(Value) <= 8) {
 				address = (int)AsciiToHex(Value);
 			}
 			else {
@@ -960,12 +960,12 @@ INT_PTR CALLBACK Edit_Bookmark_Proc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM 
 		HWND hStart = GetDlgItem(hDlg, IDC_START);
 		sprintf(address, "%016llX", bookmarks[item].selection_range[0].UDW);
 		Edit_SetText(hStart, address);
-		Edit_LimitText(hStart, 8);
+		Edit_LimitText(hStart, 16);
 
 		HWND hEnd = GetDlgItem(hDlg, IDC_END);
 		sprintf(address, "%016llX", bookmarks[item].selection_range[1].UDW);
 		Edit_SetText(hEnd, address);
-		Edit_LimitText(hEnd, 8);
+		Edit_LimitText(hEnd, 16);
 
 		CheckRadioButton(hDlg, IDC_BOOKMARK_VADDR, IDC_BOOKMARK_PADDR, bookmarks[item].is_virtual ? IDC_BOOKMARK_VADDR : IDC_BOOKMARK_PADDR);
 
@@ -975,7 +975,7 @@ INT_PTR CALLBACK Edit_Bookmark_Proc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM 
 		switch (LOWORD(wParam)) {
 		case IDOK: {
 			char name[sizeof(bookmarks->name)] = { 0 };
-			char temp[9] = { 0 };
+			char temp[17] = { 0 };
 			char *end = NULL;
 			MIPS_DWORD start_address;
 			MIPS_DWORD end_address;
@@ -989,14 +989,22 @@ INT_PTR CALLBACK Edit_Bookmark_Proc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM 
 			}
 
 			Edit_GetText(GetDlgItem(hDlg, IDC_START), temp, sizeof(temp));
-			start_address.UDW = strtoul(temp, &end, 16);
+			if (strlen(temp) <= 8) {
+				start_address.UDW = (int)strtoul(temp, &end, 16);
+			} else {
+				start_address.UDW = _strtoui64(temp, &end, 16);
+			}
 			if (end == temp || *end != 0) {
 				DisplayError("Start address is invalid");
 				return FALSE;
 			}
 
 			Edit_GetText(GetDlgItem(hDlg, IDC_END), temp, sizeof(temp));
-			end_address.UDW = strtoul(temp, &end, 16);
+			if (strlen(temp) <= 8) {
+				end_address.UDW = (int)strtoul(temp, &end, 16);
+			} else {
+				end_address.UDW = _strtoui64(temp, &end, 16);
+			}
 			if (end == temp || *end != 0) {
 				DisplayError("End address is invalid");
 				return FALSE;
@@ -1059,7 +1067,10 @@ void Copy_Selection(void) {
 
 	MIPS_DWORD location;
 	location.UDW = selection.range[0].UDW & ~15;
-	int lines = (selection.range[1].UDW - location.UDW) / 16 + 1;
+	if ((selection.range[1].UDW - location.UDW) >= INT_MAX) {
+		return;
+	}
+	int lines = (int)(selection.range[1].UDW - location.UDW) / 16 + 1;
 
 	// Each line is exactly 79 bytes, plus the null terminator.
 	HGLOBAL hMemory = GlobalAlloc(GMEM_MOVEABLE, lines * 79 + 1);
@@ -1106,7 +1117,7 @@ void Scroll_Memory_View(int lines) {
 
 	GetWindowText(hAddrEdit, value, sizeof(value));
 	MIPS_DWORD location;
-	if (strlen(value) == 8) {
+	if (strlen(value) <= 8) {
 		location.DW = (int)AsciiToHex(value);
 	}
 	else {
@@ -1169,7 +1180,7 @@ void Refresh_Memory_With_Diff(BOOL ShowDiff) {
 	}
 
 	GetWindowText(hAddrEdit, Value, sizeof(Value));
-	if (strlen(Value) == 8) {
+	if (strlen(Value) <= 8) {
 		location.DW = (int)AsciiToHex(Value);
 		location.UDW >>= 4;
 	}

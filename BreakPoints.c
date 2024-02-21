@@ -111,10 +111,9 @@ void BPoint_AddButtonPressed (void) {
 		}
 
 		GetWindowText(hR4300iLocation, Address, sizeof(Address));
-		if (strlen(Address) == 8) {
+		if (strlen(Address) <= 8) {
 			Location.DW = (int)AsciiToHex(Address);
-		}
-		else {
+		} else {
 			Location.UDW = AsciiToHex64(Address);
 		}
 		if (BreakType == 0) {
