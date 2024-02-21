@@ -1232,10 +1232,8 @@ LRESULT CALLBACK Main_Proc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
 					char Directory[MAX_PATH], SaveFile[MAX_PATH];
 					OPENFILENAME openfilename;
 
-					// Made Save as available to use in Basic Mode (Gent)
-
-					/*if (BasicMode)
-						break;*/
+					if (BasicMode)
+						break;
 
 					memset(&SaveFile, 0, sizeof(SaveFile));
 					memset(&openfilename, 0, sizeof(openfilename));
@@ -1282,11 +1280,8 @@ LRESULT CALLBACK Main_Proc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
 					char Directory[MAX_PATH], SaveFile[MAX_PATH];
 					OPENFILENAME openfilename;
 
-					// Made Restore from available to use in Basic Mode (Gent)
-
-
-						/*	if (BasicMode)
-								break;*/
+					if (BasicMode)
+						break;
 
 					memset(&SaveFile, 0, sizeof(SaveFile));
 					memset(&openfilename, 0, sizeof(openfilename));
@@ -1369,48 +1364,6 @@ LRESULT CALLBACK Main_Proc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
 					break;
 
 				case ID_CURRENTSAVE_9:
-					SetCurrentSaveState(hWnd, LOWORD(wParam));
-					break;
-					
-				// Added an extra 10 save state slots with 10-19 on Shift+0-9 (Gent)
-
-				case ID_CURRENTSAVE_10:
-					SetCurrentSaveState(hWnd, LOWORD(wParam));
-					break;
-
-				case ID_CURRENTSAVE_11:
-					SetCurrentSaveState(hWnd, LOWORD(wParam));
-					break;
-
-				case ID_CURRENTSAVE_12:
-					SetCurrentSaveState(hWnd, LOWORD(wParam));
-					break;
-
-				case ID_CURRENTSAVE_13:
-					SetCurrentSaveState(hWnd, LOWORD(wParam));
-					break;
-
-				case ID_CURRENTSAVE_14:
-					SetCurrentSaveState(hWnd, LOWORD(wParam));
-					break;
-
-				case ID_CURRENTSAVE_15:
-					SetCurrentSaveState(hWnd, LOWORD(wParam));
-					break;
-
-				case ID_CURRENTSAVE_16:
-					SetCurrentSaveState(hWnd, LOWORD(wParam));
-					break;
-
-				case ID_CURRENTSAVE_17:
-					SetCurrentSaveState(hWnd, LOWORD(wParam));
-					break;
-
-				case ID_CURRENTSAVE_18:
-					SetCurrentSaveState(hWnd, LOWORD(wParam));
-					break;
-
-				case ID_CURRENTSAVE_19:
 					SetCurrentSaveState(hWnd, LOWORD(wParam));
 					break;
 
@@ -2134,14 +2087,8 @@ void DeleteAdvanceMenuOptions(HMENU hMenu) {
 
 	DeleteMenu(hMenu, ID_FILE_STARTEMULATION, MF_BYCOMMAND);
 		//DeleteMenu(hMenu, ID_SYSTEM_GENERATEBITMAP, MF_BYCOMMAND);
-		 
-		// Enabled Restore from & Save as in Basic Mode (Gent)
-		 
-	   //DeleteMenu(hMenu, ID_CPU_SAVEAS, MF_BYCOMMAND);
-	  //DeleteMenu(hMenu, ID_CPU_LOAD, MF_BYCOMMAND);
-
-	   //DeleteMenu(hMenu, ID_CPU_SAVEAS, MF_BYCOMMAND);
-	  //DeleteMenu(hMenu, ID_CPU_LOAD, MF_BYCOMMAND);
+	DeleteMenu(hMenu, ID_CPU_SAVEAS, MF_BYCOMMAND);
+	DeleteMenu(hMenu, ID_CPU_LOAD, MF_BYCOMMAND);
 	DeleteMenu(hMenu, ID_OPTIONS_ALWAYSONTOP, MF_BYCOMMAND);
 		//DeleteMenu(hMenu, ID_OPTIONS_SHOWCPUUSAGE, MF_BYCOMMAND);
 	    // DeleteMenu(hMenu, ID_HELP_ABOUTSETTINGFILES, MF_BYCOMMAND);
