@@ -26,7 +26,7 @@ LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
 
 IDB_BITMAP1             BITMAP                  "tri-state.bmp"
 
-IDB_BITMAP3             BITMAP                  "PJ64_3.bmp"
+IDB_BITMAP3             BITMAP                  "About_Image.bmp"
 
 
 /////////////////////////////////////////////////////////////////////////////
@@ -105,7 +105,7 @@ LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_UK
 // Bitmap
 //
 
-IDB_BITMAP2             BITMAP                  "PJ64.BMP"
+IDB_BITMAP2             BITMAP                  "mib64_banner.bmp"
 
 #endif    // English (United Kingdom) resources
 /////////////////////////////////////////////////////////////////////////////
@@ -123,7 +123,7 @@ LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_AUS
 // Bitmap
 //
 
-IDB_PJ64LOGO            BITMAP                  "PJ64_2.bmp"
+//IDB_PJ64LOGO            BITMAP                  "PJ64_2.bmp"
 
 
 /////////////////////////////////////////////////////////////////////////////
@@ -215,7 +215,7 @@ BEGIN
     PUSHBUTTON      "About",RSP_ABOUT,176,150,44,13,WS_DISABLED
 END
 
-IDD_TLB DIALOGEX 0, 0, 421, 408
+IDD_TLB DIALOGEX 0, 0, 290, 317
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | DS_CENTER | WS_MINIMIZEBOX | WS_POPUP | WS_CAPTION | WS_SYSMENU
 CAPTION "TLB"
 FONT 8, "MS Shell Dlg", 0, 0, 0x1
@@ -223,8 +223,8 @@ BEGIN
     LTEXT           "View:",IDC_STATIC,10,7,25,11
     CONTROL         "TLB Entries",IDC_TLB_ENTRIES,"Button",BS_AUTORADIOBUTTON,40,7,65,11
     CONTROL         "TLB Rules",IDC_TLB_RULES,"Button",BS_AUTORADIOBUTTON,111,7,55,11
-    CONTROL         "List1",IDC_LIST,"SysListView32",LVS_REPORT | LVS_SORTASCENDING | WS_BORDER | WS_TABSTOP,7,48,407,353
-    CONTROL         "List1",IDC_LIST2,"SysListView32",LVS_REPORT | LVS_SORTASCENDING | NOT WS_VISIBLE | WS_BORDER | WS_TABSTOP,7,48,407,353
+    CONTROL         "List1",IDC_LIST,"SysListView32",LVS_REPORT | LVS_SORTASCENDING | WS_BORDER | WS_TABSTOP,7,21,276,289
+    CONTROL         "List1",IDC_LIST2,"SysListView32",LVS_REPORT | LVS_SORTASCENDING | NOT WS_VISIBLE | WS_BORDER | WS_TABSTOP,7,21,276,289
 END
 
 IDD_Logging_Registers DIALOGEX 0, 0, 200, 154
@@ -574,14 +574,14 @@ BEGIN
     CONTROL         "",IDC_STATIC,"Static",SS_ETCHEDHORZ,3,107,260,1
 END
 
-IDD_About DIALOGEX 0, 0, 555, 198
+IDD_About DIALOGEX 0, 0, 366, 197
 STYLE DS_SETFONT | DS_MODALFRAME | DS_3DLOOK | DS_FIXEDSYS | DS_CENTER | WS_POPUP | WS_CAPTION | WS_SYSMENU
-EXSTYLE WS_EX_APPWINDOW
-CAPTION "About Project64 "
+EXSTYLE WS_EX_CLIENTEDGE | WS_EX_APPWINDOW
+CAPTION " "
 FONT 8, "MS Shell Dlg", 0, 0, 0x1
 BEGIN
-    CONTROL         IDB_BITMAP3,IDB_PJ64LOGO,"Static",SS_BITMAP | SS_REALSIZEIMAGE,0,0,554,197
-    PUSHBUTTON      "Close",IDOK,374,177,103,17
+    CONTROL         IDB_BITMAP3,IDB_PJ64LOGO,"Static",SS_BITMAP | SS_REALSIZEIMAGE,0,0,365,195
+    PUSHBUTTON      "Close",IDOK,273,178,89,14
 END
 
 
@@ -636,9 +636,9 @@ BEGIN
     IDD_TLB, DIALOG
     BEGIN
         LEFTMARGIN, 7
-        RIGHTMARGIN, 414
+        RIGHTMARGIN, 283
         TOPMARGIN, 7
-        BOTTOMMARGIN, 401
+        BOTTOMMARGIN, 310
     END
 
     IDD_Logging_Registers, DIALOG
@@ -792,7 +792,8 @@ BEGIN
 
     IDD_About, DIALOG
     BEGIN
-        RIGHTMARGIN, 299
+        RIGHTMARGIN, 365
+        BOTTOMMARGIN, 196
     END
 END
 #endif    // APSTUDIO_INVOKED
@@ -853,6 +854,11 @@ BEGIN
     0
 END
 
+IDD_LangSelect AFX_DIALOG_LAYOUT
+BEGIN
+    0
+END
+
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -865,7 +871,7 @@ IDI_RIGHT               ICON                    "right.ico"
 
 IDI_LEFT                ICON                    "left.ico"
 
-ICON                    ICON                    "pj64.ico"
+ICON                    ICON                    "mib64.ico"
 
 
 /////////////////////////////////////////////////////////////////////////////
@@ -932,12 +938,12 @@ BEGIN
     POPUP "&Options"
     BEGIN
         MENUITEM "&Full Screen\tAlt+Enter",     ID_OPTIONS_FULLSCREEN, GRAYED
-        MENUITEM "&Always On Top\tCtrl+A",      ID_OPTIONS_ALWAYSONTOP, GRAYED
+        MENUITEM "&Always On &Top\tCtrl+A",     ID_OPTIONS_ALWAYSONTOP, GRAYED
         MENUITEM SEPARATOR
-        MENUITEM "Configure &Graphics Plugin...\tCtrl+V", ID_OPTIONS_CONFIG_GFX, GRAYED
-        MENUITEM "Configure A&udio Plugin...\tCtrl+U", ID_OPTIONS_CONFIG_AUDIO, GRAYED
-        MENUITEM "Configure &Controller Plugin...\tCtrl+X", ID_OPTIONS_CONFIG_CONTROL, GRAYED
-        MENUITEM "Configure &RSP Plugin...\tCtrl-W", ID_OPTIONS_CONFIG_RSP, GRAYED
+        MENUITEM "Configure Graphics Plugin...", ID_OPTIONS_CONFIG_GFX, GRAYED
+        MENUITEM "Configure Audio Plugin...",   ID_OPTIONS_CONFIG_AUDIO, GRAYED
+        MENUITEM "Configure Controller Plugin...", ID_OPTIONS_CONFIG_CONTROL, GRAYED
+        MENUITEM "Configure RSP Plugin...",     ID_OPTIONS_CONFIG_RSP, GRAYED
         MENUITEM SEPARATOR
         MENUITEM "Show CPU usage %",            ID_OPTIONS_SHOWCPUUSAGE
         MENUITEM "&Settings...\tCtrl+T",        ID_OPTIONS_SETTINGS
@@ -997,7 +1003,7 @@ BEGIN
         MENUITEM "&Discord",                    ID_HELP_DISCORD
         MENUITEM SEPARATOR
         MENUITEM "About &INI Files",            ID_HELP_ABOUTSETTINGFILES
-        MENUITEM "&About Project 64",           ID_HELP_ABOUT
+        MENUITEM "&About MiB64",                ID_HELP_ABOUT
     END
 END
 
@@ -1077,13 +1083,9 @@ END
 IDR_ROMBROWSER ACCELERATORS
 BEGIN
     "O",            ID_FILE_OPEN_ROM,       VIRTKEY, CONTROL, NOINVERT
-    VK_F5,          ID_FILE_REFRESHROMLIST, VIRTKEY, NOINVERT
-    VK_F10,         ID_FILE_STARTEMULATION, VIRTKEY, NOINVERT
     "T",            ID_OPTIONS_SETTINGS,    VIRTKEY, CONTROL, NOINVERT
-    "V",            ID_OPTIONS_CONFIG_GFX,  VIRTKEY, CONTROL, NOINVERT
-    "U",            ID_OPTIONS_CONFIG_AUDIO, VIRTKEY, CONTROL, NOINVERT
-    "X",            ID_OPTIONS_CONFIG_CONTROL, VIRTKEY, CONTROL, NOINVERT
-    "W",            ID_OPTIONS_CONFIG_RSP,  VIRTKEY, CONTROL, NOINVERT
+    VK_F10,         ID_FILE_STARTEMULATION, VIRTKEY, NOINVERT
+    VK_F5,          ID_FILE_REFRESHROMLIST, VIRTKEY, NOINVERT
 END
 
 IDR_CPURUNNING ACCELERATORS
@@ -1105,17 +1107,11 @@ BEGIN
     "0",            ID_CURRENTSAVE_DEFAULT, ASCII,  NOINVERT
     VK_F11,         ID_FILE_ENDEMULATION,   VIRTKEY, NOINVERT
     "C",            ID_OPTIONS_CHEATS,      VIRTKEY, CONTROL, NOINVERT
-    "U",            ID_OPTIONS_CONFIG_AUDIO, VIRTKEY, CONTROL, NOINVERT
-    "X",            ID_OPTIONS_CONFIG_CONTROL, VIRTKEY, CONTROL, NOINVERT
-    "V",            ID_OPTIONS_CONFIG_GFX,  VIRTKEY, CONTROL, NOINVERT
-    "W",            ID_OPTIONS_CONFIG_RSP,  VIRTKEY, CONTROL, NOINVERT
     VK_ESCAPE,      ID_OPTIONS_FULLSCREEN,  VIRTKEY, NOINVERT
     VK_RETURN,      ID_OPTIONS_FULLSCREEN,  VIRTKEY, ALT, NOINVERT
-    "T",            ID_OPTIONS_SETTINGS,    VIRTKEY, CONTROL, NOINVERT
     VK_F3,          ID_SYSTEM_GENERATEBITMAP, VIRTKEY, NOINVERT
     VK_F9,          ID_SYSTEM_GSBUTTON,     VIRTKEY, NOINVERT
     VK_F4,          ID_SYSTEM_LIMITFPS,     VIRTKEY, NOINVERT
-    "R",            ID_SYSTEM_CHEATSEARCH,  VIRTKEY, CONTROL, NOINVERT
 END
 
 #endif    // English (Australia) resources

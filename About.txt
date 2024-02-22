@@ -1,4 +1,4 @@
-Project64 Team: (1998-2023)
+MiB64 Team: (1998-2023)
 
 Zilmar (Tooie):
 Founder. Core, Application programmer 1.0-1.4, (1.5), 1.6
@@ -34,4 +34,4 @@ Hacktarux, Nekokabu, Kimbjo, parasyte, Squall-Leonhart.
 
 Greets to:
 
-bodie, Gorxon, Clements, Trotterwatch, Quvack, NES_player4life, Pixi and all our friends and users at emutalk for thier help and support with Project64’s development over the years. We Thank You
+bodie, Gorxon, Clements, Trotterwatch, Quvack, NES_player4life, Pixi and all our friends and users at emutalk for thier help and support with MiB64’s development over the years. We Thank You

@@ -17,11 +17,11 @@
   <PropertyGroup Label="Globals">
     <SccProjectName>Svn</SccProjectName>
     <SccLocalPath>Svn</SccLocalPath>
-    <ProjectName>Project64</ProjectName>
+    <ProjectName>MiB64</ProjectName>
     <SccAuxPath>Svn</SccAuxPath>
     <SccProvider>SubversionScc</SccProvider>
     <ProjectGuid>{AC366B6C-F277-056E-0EE8-B3ED4CCDFDA5}</ProjectGuid>
-    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>7.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
@@ -29,7 +29,7 @@
     <UseOfMfc>false</UseOfMfc>
     <CharacterSet>MultiByte</CharacterSet>
     <WholeProgramOptimization>false</WholeProgramOptimization>
-    <PlatformToolset>v142</PlatformToolset>
+    <PlatformToolset>v140_xp</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release for XP|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
@@ -42,7 +42,7 @@
     <ConfigurationType>Application</ConfigurationType>
     <UseOfMfc>false</UseOfMfc>
     <CharacterSet>MultiByte</CharacterSet>
-    <PlatformToolset>v142</PlatformToolset>
+    <PlatformToolset>v141_xp</PlatformToolset>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
@@ -61,25 +61,25 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <OutDir>..\PJ64_1.6.2\</OutDir>
+    <OutDir>..\MiB64_1.0\</OutDir>
     <IntDir>.\Debug\</IntDir>
     <LinkIncremental>true</LinkIncremental>
     <TargetName>$(ProjectName)_Debug</TargetName>
     <RunCodeAnalysis>false</RunCodeAnalysis>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <OutDir>..\PJ64_1.6.2\</OutDir>
+    <OutDir>..\MiB64_1.0\</OutDir>
     <IntDir>.\Release_External\</IntDir>
     <LinkIncremental>false</LinkIncremental>
-    <TargetName>$(ProjectName)_1.6.2</TargetName>
+    <TargetName>$(ProjectName)_1.0</TargetName>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
     <RunCodeAnalysis>false</RunCodeAnalysis>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release for XP|Win32'">
-    <OutDir>..\PJ64_1.6.2\</OutDir>
+    <OutDir>..\MiB64_1.0\</OutDir>
     <IntDir>.\Release_External\</IntDir>
     <LinkIncremental>false</LinkIncremental>
-    <TargetName>$(ProjectName)_1.6.2_XP</TargetName>
+    <TargetName>$(ProjectName)_1.0_XP</TargetName>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
     <RunCodeAnalysis>false</RunCodeAnalysis>
     <EnableMicrosoftCodeAnalysis>true</EnableMicrosoftCodeAnalysis>
@@ -98,7 +98,7 @@
       <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_CRT_SECURE_NO_WARNINGS;Log_x86Code;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AssemblerListingLocation>.\Debug\</AssemblerListingLocation>
       <BrowseInformation>true</BrowseInformation>
-      <PrecompiledHeaderOutputFile>.\Debug\Project64.pch</PrecompiledHeaderOutputFile>
+      <PrecompiledHeaderOutputFile>.\Debug\MiB64.pch</PrecompiledHeaderOutputFile>
       <ObjectFileName>.\Debug\</ObjectFileName>
       <ProgramDataBaseFileName>.\Debug\</ProgramDataBaseFileName>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
@@ -113,7 +113,7 @@
     <Midl>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <TypeLibraryName>.\Debug\Project64.tlb</TypeLibraryName>
+      <TypeLibraryName>.\Debug\MiB64.tlb</TypeLibraryName>
       <MkTypLibCompatible>true</MkTypLibCompatible>
       <TargetEnvironment>Win32</TargetEnvironment>
     </Midl>
@@ -124,14 +124,14 @@
     </ResourceCompile>
     <Bscmake>
       <SuppressStartupBanner>true</SuppressStartupBanner>
-      <OutputFile>.\Debug\Project64.bsc</OutputFile>
+      <OutputFile>.\Debug\MiB64.bsc</OutputFile>
     </Bscmake>
     <Link>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Windows</SubSystem>
       <IgnoreSpecificDefaultLibraries>libc;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
-      <OutputFile>..\PJ64_1.6.2\Project64_Debug.exe</OutputFile>
+      <OutputFile>..\MiB64_1.0\MiB64_Debug.exe</OutputFile>
       <AdditionalLibraryDirectories>C:\Development\PJ64 Source C++ 6.0;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>Compression/zlibstat.lib;htmlhelp.lib;winmm.lib;comctl32.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <DataExecutionPrevention>false</DataExecutionPrevention>
@@ -151,7 +151,7 @@
       <PreprocessorDefinitions>EXTERNAL_RELEASE;WIN32;NDEBUG;_WINDOWS;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AssemblerListingLocation>.\Release_External\</AssemblerListingLocation>
       <BrowseInformation>true</BrowseInformation>
-      <PrecompiledHeaderOutputFile>.\Release_External\Project64.pch</PrecompiledHeaderOutputFile>
+      <PrecompiledHeaderOutputFile>.\Release_External\MiB64.pch</PrecompiledHeaderOutputFile>
       <ObjectFileName>.\Release_External\</ObjectFileName>
       <ProgramDataBaseFileName>.\Release_External\</ProgramDataBaseFileName>
       <CallingConvention>FastCall</CallingConvention>
@@ -168,7 +168,7 @@
     <Midl>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <TypeLibraryName>.\Release_External\Project64.tlb</TypeLibraryName>
+      <TypeLibraryName>.\Release_External\MiB64.tlb</TypeLibraryName>
       <MkTypLibCompatible>true</MkTypLibCompatible>
       <TargetEnvironment>Win32</TargetEnvironment>
     </Midl>
@@ -178,13 +178,13 @@
     </ResourceCompile>
     <Bscmake>
       <SuppressStartupBanner>true</SuppressStartupBanner>
-      <OutputFile>.\Release_External\Project64.bsc</OutputFile>
+      <OutputFile>.\Release_External\MiB64.bsc</OutputFile>
     </Bscmake>
     <Link>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <SubSystem>Windows</SubSystem>
       <IgnoreSpecificDefaultLibraries>LIBC;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
-      <OutputFile>..\PJ64_1.6.2\Project64_1.6.2.exe</OutputFile>
+      <OutputFile>..\MiB64_1.0\MiB64_1.0.exe</OutputFile>
       <AdditionalLibraryDirectories>C:\Development\PJ64 Source C++ 6.0;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>Compression/zlibstat.lib;htmlhelp.lib;winmm.lib;comctl32.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalOptions> /NXCOMPAT:NO %(AdditionalOptions)</AdditionalOptions>
@@ -206,7 +206,7 @@
       <PreprocessorDefinitions>EXTERNAL_RELEASE;WIN32;NDEBUG;_WINDOWS;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AssemblerListingLocation>.\Release_External\</AssemblerListingLocation>
       <BrowseInformation>true</BrowseInformation>
-      <PrecompiledHeaderOutputFile>.\Release_External\Project64.pch</PrecompiledHeaderOutputFile>
+      <PrecompiledHeaderOutputFile>.\Release_External\MiB64.pch</PrecompiledHeaderOutputFile>
       <ObjectFileName>.\Release_External\</ObjectFileName>
       <ProgramDataBaseFileName>.\Release_External\</ProgramDataBaseFileName>
       <CallingConvention>FastCall</CallingConvention>
@@ -222,7 +222,7 @@
     <Midl>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <TypeLibraryName>.\Release_External\Project64.tlb</TypeLibraryName>
+      <TypeLibraryName>.\Release_External\MiB64.tlb</TypeLibraryName>
       <MkTypLibCompatible>true</MkTypLibCompatible>
       <TargetEnvironment>Win32</TargetEnvironment>
     </Midl>
@@ -232,13 +232,13 @@
     </ResourceCompile>
     <Bscmake>
       <SuppressStartupBanner>true</SuppressStartupBanner>
-      <OutputFile>.\Release_External\Project64.bsc</OutputFile>
+      <OutputFile>.\Release_External\MiB64.bsc</OutputFile>
     </Bscmake>
     <Link>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <SubSystem>Windows</SubSystem>
       <IgnoreSpecificDefaultLibraries>LIBC;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
-      <OutputFile>..\PJ64_1.6.2\Project64_1.6.2_XP.exe</OutputFile>
+      <OutputFile>..\MiB64_1.0\MiB64_1.0_XP.exe</OutputFile>
       <AdditionalLibraryDirectories>C:\Development\PJ64 Source C++ 6.0;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>Compression/zlibstat.lib;htmlhelp.lib;winmm.lib;comctl32.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalOptions> /NXCOMPAT:NO %(AdditionalOptions)</AdditionalOptions>
@@ -401,19 +401,15 @@
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="left.ico" />
-    <CustomBuild Include="pj64.ico">
-      <DeploymentContent>true</DeploymentContent>
-    </CustomBuild>
     <CustomBuild Include="right.ico" />
     <CustomBuild Include="tri-state.bmp" />
   </ItemGroup>
   <ItemGroup>
-    <ResourceCompile Include="PJ64.rc" />
-    <ResourceCompile Include="PJ64_Cheat.rc" />
+    <ResourceCompile Include="MiB64.rc" />
+    <ResourceCompile Include="MiB64_Cheat.rc" />
   </ItemGroup>
   <ItemGroup>
     <None Include=".editorconfig" />
-    <None Include="PJ64.BMP" />
   </ItemGroup>
   <ItemGroup>
     <Library Include="Compression\zlibstat.lib">
@@ -422,19 +418,12 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release for XP|Win32'">true</ExcludedFromBuild>
     </Library>
   </ItemGroup>
-  <ItemGroup>
-    <Image Include="PJ64_2.bmp" />
-    <Image Include="PJ64_3.bmp" />
-  </ItemGroup>
-  <ItemGroup>
-    <Text Include="About.txt" />
-  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
   <ProjectExtensions>
     <VisualStudio>
-      <UserProperties RESOURCE_FILE="PJ64.rc" />
+      <UserProperties RESOURCE_FILE="MiB64.rc" />
     </VisualStudio>
   </ProjectExtensions>
 </Project>

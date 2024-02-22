@@ -1,13 +1,13 @@
 // This file contains a series of defines in an attempt to standardize strings
 
 // All the file names that will be used
-#define RDS_NAME "Project64.rds"
-#define RDN_NAME "Project64.rdn"
-#define RDI_NAME "Project64.rdi"
-#define CDB_NAME "Project64.cdb"
-#define LNG_NAME "Project64.lng"
-#define ROC_NAME "Project64.roc"
-#define APPS_NAME "Project64.apps"
+#define RDS_NAME "MiB64.rds"
+#define RDN_NAME "MiB64.rdn"
+#define RDI_NAME "MiB64.rdi"
+#define CDB_NAME "MiB64.cdb"
+#define LNG_NAME "MiB64.lng"
+#define ROC_NAME "MiB64.roc"
+#define APPS_NAME "MiB64.apps"
 #define INI_NAME "Jabo.ini" // Jabo Video Specific
 
 #define LINEFEED "\r\n"

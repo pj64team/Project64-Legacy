@@ -360,7 +360,7 @@ LANG_STR DefaultString[] = {
 	{ MSG_MSGBOX_TITLE,       "Error"},
 	{ MSG_PIF2_ERROR,         "Copyright sequence not found in LUT.  Game will no longer function."},
 	{ MSG_PIF2_TITLE,         "Copy Protection Failure"},
-	{ MSG_PLUGIN_CHANGE,      "Changing a plugin requires Project64 to reset a running ROM. \nIf you don't want to lose your place, answer No and make a state save first. \n\nChange plugins and restart game now?"},
+	{ MSG_PLUGIN_CHANGE,      "Changing a plugin requires MiB64 to reset a running ROM. \nIf you don't want to lose your place, answer No and make a state save first. \n\nChange plugins and restart game now?"},
 	{ MSG_PLUGIN_CHANGE_TITLE,"Change Plugins"},
 	{ MSG_EMULATION_ENDED,    "Emulation ended"},
 	{ MSG_EMULATION_STARTED,  "Emulation started"},
@@ -379,7 +379,7 @@ LANG_STR DefaultString[] = {
 	{ MSG_MAX_CHEATS,         "You Have reached the Maxiumn amount of cheats for this rom"},
 	{ MSG_NO_GAME_INFORMATION,"No game information available"},
 	{ MSG_FAIL_CREATE_TEMP,	  "Unable to create temporary ROM file"},
-	{ MSG_SAVESTATE_OLDFORMAT,"State isn't compatible with current version of Project64-Legacy. \n\nLoading this state may cause the game and/or emulator to crash. \n\nAre you sure you want to continue loading?"},
+	{ MSG_SAVESTATE_OLDFORMAT,"State isn't compatible with current version of MiB64. \n\nLoading this state may cause the game and/or emulator to crash. \n\nAre you sure you want to continue loading?"},
 };
 
 class CLanguage  {
