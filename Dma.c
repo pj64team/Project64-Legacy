@@ -63,6 +63,7 @@ void PI_DMA_READ (void) {
 		if (ShowDebugMessages)
 			DisplayError("PI_DMA_READ not in Memory");
 		PI_STATUS_REG &= ~PI_STATUS_DMA_BUSY;
+		PI_STATUS_REG |= PI_STATUS_INTR;
 		MI_INTR_REG |= MI_INTR_PI;
 		CheckInterrupts();
 		return;
@@ -84,6 +85,7 @@ void PI_DMA_READ (void) {
 				PI_RD_LEN_REG + 1
 				);
 			PI_STATUS_REG &= ~PI_STATUS_DMA_BUSY;
+			PI_STATUS_REG |= PI_STATUS_INTR;
 			MI_INTR_REG |= MI_INTR_PI;
 			CheckInterrupts();
 			break;
@@ -94,6 +96,7 @@ void PI_DMA_READ (void) {
 				PI_WR_LEN_REG + 1
 				);
 			PI_STATUS_REG &= ~PI_STATUS_DMA_BUSY;
+			PI_STATUS_REG |= PI_STATUS_INTR;
 			MI_INTR_REG |= MI_INTR_PI;
 			CheckInterrupts();
 			break;
@@ -105,6 +108,7 @@ void PI_DMA_READ (void) {
 		if (ShowDebugMessages)
 			DisplayError("**** FLashRam DMA Read address %X *****",PI_CART_ADDR_REG);
 		PI_STATUS_REG &= ~PI_STATUS_DMA_BUSY;
+		PI_STATUS_REG |= PI_STATUS_INTR;
 		MI_INTR_REG |= MI_INTR_PI;
 		CheckInterrupts();
 		return;
@@ -112,6 +116,7 @@ void PI_DMA_READ (void) {
 	if (ShowDebugMessages)
 		DisplayError("PI_DMA_READ where are you dmaing to ?");
 	PI_STATUS_REG &= ~PI_STATUS_DMA_BUSY;
+	PI_STATUS_REG |= PI_STATUS_INTR;
 	MI_INTR_REG |= MI_INTR_PI;
 	CheckInterrupts();
 	return;
@@ -140,6 +145,7 @@ void PI_DMA_WRITE (void) {
 		if (ShowDebugMessages)
 			DisplayError("PI_DMA_WRITE not in Memory");
 		PI_STATUS_REG &= ~PI_STATUS_DMA_BUSY;
+		PI_STATUS_REG |= PI_STATUS_INTR;
 		MI_INTR_REG |= MI_INTR_PI;
 		CheckInterrupts();
 		return;
@@ -161,6 +167,7 @@ void PI_DMA_WRITE (void) {
 				PI_WR_LEN_REG + 1
 				);
 			PI_STATUS_REG &= ~PI_STATUS_DMA_BUSY;
+			PI_STATUS_REG |= PI_STATUS_INTR;
 			MI_INTR_REG |= MI_INTR_PI;
 			CheckInterrupts();
 			break;
@@ -171,6 +178,7 @@ void PI_DMA_WRITE (void) {
 				PI_WR_LEN_REG + 1
 				);
 			PI_STATUS_REG &= ~PI_STATUS_DMA_BUSY;
+			PI_STATUS_REG |= PI_STATUS_INTR;
 			MI_INTR_REG |= MI_INTR_PI;
 			CheckInterrupts();
 			break;
@@ -206,6 +214,7 @@ void PI_DMA_WRITE (void) {
 			FirstDMA(); 
 		}
 		PI_STATUS_REG &= ~PI_STATUS_DMA_BUSY;
+		PI_STATUS_REG |= PI_STATUS_INTR;
 		MI_INTR_REG |= MI_INTR_PI;
 		CheckInterrupts();
 		//ChangeTimer(PiTimer,(int)(PI_WR_LEN_REG * 8.9) + 50);
@@ -242,6 +251,7 @@ void PI_DMA_WRITE (void) {
 			FirstDMA(); 
 		}
 		PI_STATUS_REG &= ~PI_STATUS_DMA_BUSY;
+		PI_STATUS_REG |= PI_STATUS_INTR;
 		MI_INTR_REG |= MI_INTR_PI;
 		CheckInterrupts();
 		//ChangeTimer(PiTimer,(int)(PI_WR_LEN_REG * 8.9) + 50);
@@ -251,6 +261,7 @@ void PI_DMA_WRITE (void) {
 	
 	if (HaveDebugger && ShowUnhandledMemory) { DisplayError("PI_DMA_WRITE not in ROM"); }
 	PI_STATUS_REG &= ~PI_STATUS_DMA_BUSY;
+	PI_STATUS_REG |= PI_STATUS_INTR;
 	MI_INTR_REG |= MI_INTR_PI;
 	CheckInterrupts();
 

@@ -322,6 +322,7 @@
 #define	PI_STATUS_DMA_BUSY		0x01
 #define	PI_STATUS_IO_BUSY		0x02
 #define	PI_STATUS_ERROR			0x04
+#define PI_STATUS_INTR			0x08
 
 #define	PI_SET_RESET			0x01
 #define	PI_CLR_INTR				0x02

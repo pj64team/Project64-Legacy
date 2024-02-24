@@ -3005,6 +3005,7 @@ int r4300i_SW_NonMemory ( DWORD PAddr, DWORD Value ) {
 		case 0x04600010:
 			//if ((Value & PI_SET_RESET) != 0 ) { DisplayError("reset Controller"); }
 			if ((Value & PI_CLR_INTR) != 0 ) {
+				PI_STATUS_REG &= ~PI_STATUS_INTR;
 				MI_INTR_REG &= ~MI_INTR_PI;
 				CheckInterrupts();
 			}
