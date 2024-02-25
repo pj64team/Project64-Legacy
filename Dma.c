@@ -126,11 +126,11 @@ void PI_DMA_WRITE (void) {
 	DWORD i;	
 	PI_DRAM_ADDR_REG &= 0x1FFFFFFF;
 
-	if (PI_WR_LEN_REG > 0x300)
+	if (PI_WR_LEN_REG >= 126)
 		PI_WR_LEN_REG = ((PI_WR_LEN_REG & 1)) ? PI_WR_LEN_REG : PI_WR_LEN_REG + 1;	// Fix for Ai Shogi 3
-	
-	int wr_len = PI_WR_LEN_REG;
-	int wr_len_cart = PI_WR_LEN_REG;
+
+	int wr_len = (PI_WR_LEN_REG + 7) & ~7;
+	int wr_len_cart = (PI_WR_LEN_REG + 1);
 
 	if (!wr_len) wr_len = 7;
 	if (!wr_len_cart) wr_len_cart = 1;
