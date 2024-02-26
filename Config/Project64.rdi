@@ -1,9 +1,9 @@
 // ----------------------------------------------------------------------------
-// PJ64 1.6.2 Official RDI (Rom Database Information) By PJ64Team
+// PJ64 1.6.3 Official RDI (Rom Database Information) By PJ64Team
 // Based On Our Original Project64 Official RDX by Smiff/Gent/Project64 team
 // ----------------------------------------------------------------------------
 // 
-// This file is only to be used with Project64 1.6.2 (Legacy) & higher
+// This file is only to be used with Project64 1.6.3 (Legacy) & higher
 // 
 //---- START OF RDI FILE HEADER -----------------------------------------------
 
@@ -17,7 +17,7 @@
 Author=PJ64LegacyTeam
 Date=9th July 2023 Version: 1
 Homepage=www.project64-legacy.com
-Version=Project64 1.6.2 (Legacy)
+Version=Project64 1.6.3 (Legacy)
 
 //-------------------------  0-9  --------------------------
 

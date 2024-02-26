@@ -3,7 +3,7 @@
 // Based On Our Original Project64 Official RDB by Smiff/Gent/Project64 team
 // ----------------------------------------------------------------------------
 //
-// This file is only to be used with Project64 1.6.2 (Legacy) & higher
+// This file is only to be used with Project64 1.6.3 (Legacy) & higher
 //
 // ----------------------------------------------------------------------------
 //
@@ -21,7 +21,7 @@
 Author=PJ64LegacyTeam
 Date=9th July 2023 Version: 1
 Homepage=www.project64-legacy.com
-Version=Project64 1.6.2 (Legacy)
+Version=Project64 1.6.3 (Legacy)
 
 [Rom Status]
 
