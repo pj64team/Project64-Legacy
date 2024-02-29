@@ -1,25 +1,25 @@
 // ----------------------------------------------------------------------------
-// Project64 Official RDS (Rom Database Information) by PJ64LegacyTeam
+// Project64 1.6.3 (Legacy) Final Official RDS (Rom Database Information) by PJ64LegacyTeam
 // Based On Our Original Project64 Official RDB by Smiff/Gent/Project64 team
 // ----------------------------------------------------------------------------
 //
-// This file is only to be used with Project64 1.6.3 (Legacy) & higher
+// This file is only to be used with Project64 1.6.3 (Legacy) Final
 //
-// ----------------------------------------------------------------------------
+// Please do not use for another Emulator Database or Web Site Viewing without asking permission prior.
+// If you are having any difficulties using this file or would like to ask a question
+// about this database you can contact us through the Discord Server.
 //
-//                       please check change.txt or Readme.txt
+// If you would wish to use or modify this file for your project, please contact The Team on https://discord.gg/ha7HWAFE8u
+// & kindly give credit to original project/file, author.
+//
+// Thank you and please enjoy your Project64 (Legacy) experience.
 //
 //---- START OF RDS FILE HEADER -----------------------------------------------
 
 [Meta] // Metadata: information for Project64 GUI, Help > About INI files
 
-// Be sure to edit this section if you release a modified RDS file!
-// Please also use "Author=" to credit, e.g. "[your name here], based on file by PJ64Team"
-// "Homepage=" if used, should be used to give users a source for updates to your file
-// Note that Project64 automatically prefixes "http://"
-
 Author=PJ64LegacyTeam
-Date=16th July 2023 Version: 1
+Date=29th July 2023
 Homepage=www.project64-legacy.com
 Version=Project64 1.6.3 (Legacy)
 
@@ -8476,7 +8476,7 @@ Linking=Global
 Plugin Note=[video] & [Audio]  (see GameFAQ)
 Save Type=First Save Type
 Self-modifying code Method=Check Memory & cache
-Status=Use GLideN64 Video
+Status=Use Icepir8s-Legacy-LLE & Parallel-RSP
 
 [845B0269-57DE9502-C:4A]
 Name=Top Gear Hyper Bike (J)
@@ -8488,7 +8488,7 @@ Linking=Global
 Plugin Note=[video] & [Audio]  (see GameFAQ)
 Save Type=First Save Type
 Self-modifying code Method=Check Memory & cache
-Status=Use GLideN64 Video
+Status=Use Icepir8s-Legacy-LLE & Parallel-RSP
 
 [8ECC02F0-7F8BDE81-C:45]
 Name=Top Gear Hyper Bike (U)
@@ -8500,7 +8500,7 @@ Linking=Global
 Plugin Note=[video] & [Audio]  (see GameFAQ)
 Save Type=First Save Type
 Self-modifying code Method=Check Memory & cache
-Status=Use GLideN64 Video
+Status=Use Icepir8s-Legacy-LLE & Parallel-RSP
 
 [D09BA538-1C1A5489-C:50]
 Name=Top Gear Overdrive (E)
@@ -8512,7 +8512,7 @@ Linking=Global
 Plugin Note=[video] & [Audio]  (see GameFAQ)
 Save Type=First Save Type
 Self-modifying code Method=Check Memory & cache
-Status=Use GLideN64 Video
+Status=Use Icepir8s-Legacy-LLE & Parallel-RSP
 Use Large Buffer
 
 [0578F24F-9175BF17-C:4A]
@@ -8525,7 +8525,7 @@ Linking=Global
 Plugin Note=[video] & [Audio] (see GameFAQ)
 Save Type=First Save Type
 Self-modifying code Method=Check Memory & cache
-Status=Use GLideN64 Video
+Status=Use Icepir8s-Legacy-LLE & Parallel-RSP
 
 [D741CD80-ACA9B912-C:45]
 Name=Top Gear Overdrive (U)
@@ -8537,7 +8537,7 @@ Linking=Global
 Plugin Note=[video] & [Audio] (see GameFAQ)
 Save Type=First Save Type
 Self-modifying code Method=Check Memory & cache
-Status=Use GLideN64 Video
+Status=Use Icepir8s-Legacy-LLE & Parallel-RSP
 Use Large Buffer
 
 [7F43E701-536328D1-C:50]
@@ -13796,13 +13796,13 @@ Status=Use 3rd party video
 
 [635A42C5-BDC58EDC-C:45]
 Name=Super Mario 64 (U) [T-Bra]
-CPU Type=Recompiler
-Counter Factor=2
+CPU Type=Default
+Counter Factor=Default
 ExpansionPak
 Linking=Global
 Plugin Note=[video] missing:dissolve effect (see GameFAQ)
 Save Type=First Save Type
-Self-modifying code Method=Cache
+Self-modifying code Method=Default
 Status=Compatible
 
 [997D29AE-C13FF636-C:4A]
@@ -14085,7 +14085,7 @@ Self-modifying code Method=Cache
 Status=Compatible
 
 [A04237B9-68F62C72-C:00]
-Name=WildWaters - Extreme Kayak (U) (Prototype)
+Name=Wildwaters (Unreleased)
 CPU Type=Recompiler
 Core Note=constant freezing/hanging
 Counter Factor=1
@@ -14672,160 +14672,6 @@ ExpansionPak
 Linking=Global
 Save Type=First Save Type
 Self-modifying code Method=Default
-Status=Compatible
-
-[FF95988A-548A491D-C:45]
-Name=Super Mario 64 - Kirby Edition (v1.1) (U)
-CPU Type=Recompiler
-Core Note=Hangs on Press Start
-Counter Factor=1
-ExpansionPak
-Linking=Global
-Save Type=First Save Type
-Self-modifying code Method=Check Memory Advance
-Status=Unsupported
-
-[824C5A80-43245C7E-C:45]
-Name=Super Mario 64 - Sonic Edition (v4.1) (U)
-CPU Type=Recompiler
-Counter Factor=2
-ExpansionPak
-Linking=Global
-Save Type=First Save Type
-Self-modifying code Method=Cache
-Status=Use GLideN64 Video
-
-[BB315072-27EBD8AA-C:45]
-Name=SUPER ICE 64 (U)
-CPU Type=Recompiler
-Counter Factor=2
-ExpansionPak
-Linking=Global
-Plugin Note=[video] missing:dissolve effect (see GameFAQ)
-SP Hack
-Save Type=First Save Type
-Self-modifying code Method=Check Memory Advance
-Status=Compatible
-
-[0ED61ED8-87F81B02-C:45]
-Name=SM64 Multiplayer 1.0 (U) (Hack)
-CPU Type=Recompiler
-Counter Factor=2
-ExpansionPak
-Linking=Global
-Plugin Note=[video] missing:dissolve effect (see GameFAQ)
-SP Hack
-Save Type=First Save Type
-Self-modifying code Method=Check Memory Advance
-Status=Compatible
-
-[7BFD81D7-1AD5F4B9-C:4A]
-Name=SM64 - Reduced Lag (J) (Hack) v1
-CPU Type=Recompiler
-Counter Factor=2
-ExpansionPak
-Linking=Global
-Plugin Note=[video] missing:dissolve effect (see GameFAQ)
-SP Hack
-Save Type=First Save Type
-Self-modifying code Method=Check Memory Advance
-Status=Compatible
-
-[041ACAB1-C239679B-C:45]
-Name=SM64 - Reduced Lag (U) (Hack) v1
-CPU Type=Recompiler
-Counter Factor=2
-ExpansionPak
-Linking=Global
-Plugin Note=[video] missing:dissolve effect (see GameFAQ)
-SP Hack
-Save Type=First Save Type
-Self-modifying code Method=Check Memory Advance
-Status=Compatible
-
-[3114B9B3-05DCE9CA-C:4A]
-Name=SM64 - Shindou Improvement (Hack) v1
-CPU Type=Recompiler
-Counter Factor=2
-ExpansionPak
-Linking=Global
-Plugin Note=[video] missing:dissolve effect (see GameFAQ)
-SP Hack
-Save Type=First Save Type
-Self-modifying code Method=Check Memory Advance
-Status=Compatible
-
-[7301E2C3-BE9383E5-C:45]
-Name=SM and the Marvel Adventure (Hack)
-CPU Type=Recompiler
-Core Note=Another one stuck after load screen
-Counter Factor=2
-ExpansionPak
-Linking=Global
-SP Hack
-Save Type=First Save Type
-Self-modifying code Method=Check Memory Advance
-Status=Compatible
-
-
-[80AA9870-0BEF5B37-C:45]
-Name=SUPER LUIGI 64 (U) v2.0 (Hack)
-CPU Type=Recompiler
-Counter Factor=2
-ExpansionPak
-Linking=Global
-Plugin Note=[video] missing:dissolve effect (see GameFAQ)
-SP Hack
-Save Type=First Save Type
-Self-modifying code Method=Check Memory Advance
-Status=Use GLideN64 Video
-
-[D0EEB49E-22A3C5CC-C:45]
-Name=SM64 Twisted Adventures (U) 1.0 (Hack)
-CPU Type=Recompiler
-Counter Factor=2
-ExpansionPak
-Linking=Global
-Plugin Note=[video] missing:dissolve effect (see GameFAQ)
-SP Hack
-Save Type=First Save Type
-Self-modifying code Method=Check Memory Advance
-Status=Compatible
-
-[5AE2B156-C43A321A-C:45]
-Name=SM64 Twisted Adventures (U) 2.0 (Hack)
-CPU Type=Recompiler
-Counter Factor=2
-ExpansionPak
-Linking=Global
-Plugin Note=[video] missing:dissolve effect (see GameFAQ)
-SP Hack
-Save Type=First Save Type
-Self-modifying code Method=Check Memory Advance
-Status=Compatible
-
-[2DBBF3CF-C685C65F-C:45]
-Name=SM64 Star Road (U) (Hack)
-CPU Type=Recompiler
-Core Note=Another one stuck after load screen
-Counter Factor=2
-ExpansionPak
-Linking=Global
-SP Hack
-Save Type=First Save Type
-Self-modifying code Method=Check Memory Advance
-Status=Compatible
-
-[EC0E7243-9814B50A-C:45]
-Name=SUPER MARIO 64 (U) - Smoke Fix (Hack) v2
-CPU Type=Recompiler
-Counter Factor=2
-ExpansionPak
-Linking=Global
-Plugin Note=[video] missing:dissolve effect (see GameFAQ)
-SP Hack
-Save Type=First Save Type
-Self-modifying code Method=Check Memory Advance
 Status=Compatible
 
 [D9042FBB-FCFF997C-C:46]
@@ -16523,6 +16369,27 @@ Save Type=First Save Type
 Self-modifying code Method=Check Memory Advance
 Status=Use GLideN64 Video
 
+[FF95988A-548A491D-C:45]
+Name=Super Mario 64 - Kirby Edition (v1.1) (U)
+CPU Type=Recompiler
+Core Note=Hangs on Press Start
+Counter Factor=1
+ExpansionPak
+Linking=Global
+Save Type=First Save Type
+Self-modifying code Method=Check Memory Advance
+Status=Unsupported
+
+[824C5A80-43245C7E-C:45]
+Name=Super Mario 64 - Sonic Edition (v4.1) (U)
+CPU Type=Recompiler
+Counter Factor=2
+ExpansionPak
+Linking=Global
+Save Type=First Save Type
+Self-modifying code Method=Cache
+Status=Use GLideN64 Video
+
 [59B4F567-AA977143-C:00]
 Name=Duck Dodgers Starring Daffy Duck (March 7 2000 Prototype)
 CPU Type=Recompiler
@@ -17841,30 +17708,13 @@ Status=Issues (plugin)
 //------ Homebrew --------
 
 [470112E9-53C66CB4-C:41]
-Name=XENO CRISIS 64 (JU)
+Name=XENO CRISIS 64
 CPU Type=Recompiler
-Counter Factor=2
+Counter Factor=Default
 Linking=Global
 Save Type=First Save Type
-Self-modifying code Method=Check Memory Advance
+Self-modifying code Method=Default
 Status=Use GLideN64 HLE Video
-
-[470112E9-53C66CB4-C:50]
-Name=XENO CRISIS 64 (E)
-CPU Type=Recompiler
-Counter Factor=2
-Linking=Global
-Save Type=First Save Type
-Self-modifying code Method=Check Memory Advance
-Status=Use GLideN64 HLE Video
-
-[7AABCF07-73F39DA2-C:20]
-Name=Dead Ritual (Home Brew)
-CPU Type=Recompiler
-Counter Factor=1
-Linking=Global
-Save Type=First Save Type
-Self-modifying code Method=Check Memory Advance
 
 //------ Nintendo LodgeNet 64 (Gateway System) --------
 
@@ -18205,23 +18055,61 @@ Status=Compatible
 //-------- Any entries below this point are for ROMs you have added yourself via the GUI [EOF] --------
 //
 
+[BB315072-27EBD8AA-C:45]
+Name=SUPER ICE 64 (U)
+CPU Type=Recompiler
+Counter Factor=2
+ExpansionPak
+Linking=Global
+Plugin Note=[video] missing:dissolve effect (see GameFAQ)
+SP Hack
+Save Type=First Save Type
+Self-modifying code Method=Check Memory Advance
+Status=Compatible
 
-[176EFEA7-A704929E-C:20]
-Name=Mission Lost Control (PD by NAN)
-CPU Type=Interpreter
+[DF6873B4-F129DD07-C:50]
+Name=SUPER ICE 64 (E)
+CPU Type=Recompiler
+Counter Factor=2
+ExpansionPak
+Linking=Global
+Plugin Note=[video] missing:dissolve effect (see GameFAQ)
+SP Hack
+Save Type=First Save Type
+Self-modifying code Method=Check Memory Advance
+Status=Compatible
+
+[DF687FB4-C56F6AA3-C:50]
+Name=SUPER_IC
+CPU Type=Recompiler
+Counter Factor=2
+ExpansionPak
+Linking=Global
+Plugin Note=[video] missing:dissolve effect (see GameFAQ)
+SP Hack
+Save Type=First Save Type
+Self-modifying code Method=Check Memory Advance
+Status=Compatible
+[5CB335ED-23C1B3ED-C:00]
+Name=sodium64 (PD)
+CPU Type=Recompiler
+Counter Factor=Default
+Linking=Global
+Save Type=First Save Type
+Self-modifying code Method=Default
+[A061C871-B3EDDA14-C:45]
+Name=Victory Download (U)
+CPU Type=Recompiler
 Counter Factor=2
 ExpansionPak
 Linking=Global
 Save Type=First Save Type
-Self-modifying code Method=Check Memory Advance
-
-[8CBEE2AC-3A60A8F3-C:50]
-Name=STARFOX64 (E)
+Self-modifying code Method=Cache
+[BD5F9470-3E81E3CE-C:45]
+Name=MYSTERY OF PS (U)
 CPU Type=Recompiler
-Cheat0=80000303 0000 //Sets Video Region to PAL
 Counter Factor=2
-Disable TLB
+ExpansionPak
 Linking=Global
 Save Type=First Save Type
-Self-modifying code Method=Protected Memory
-Status=Compatible
+Self-modifying code Method=Cache

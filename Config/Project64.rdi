@@ -1,21 +1,26 @@
+@ -1,9350 +0,0 @@
 // ----------------------------------------------------------------------------
-// PJ64 1.6.3 Official RDI (Rom Database Information) By PJ64Team
+// PJ64 1.6.3 Official Final RDI (Rom Database Information) By PJ64Team
 // Based On Our Original Project64 Official RDX by Smiff/Gent/Project64 team
 // ----------------------------------------------------------------------------
 // 
-// This file is only to be used with Project64 1.6.3 (Legacy) & higher
+// This file is only to be used with Project64 1.6.3 (Legacy) Final
 // 
+// Please do not use for another Emulator Database or Web Site Viewing without asking permission prior.
+// If you are having any difficulties using this file or would like to ask a question
+// about this database you can contact us through the Discord Server.
+//
+// If you would wish to use or modify this file for your project, please contact The Team on https://discord.gg/ha7HWAFE8u
+// & kindly give credit to original project/file, author.
+//
+// Thank you and please enjoy your Project64 (Legacy) experience.
+//
 //---- START OF RDI FILE HEADER -----------------------------------------------
 
 [Meta] // Metadata: information for Project64 GUI, Help > About INI files
 
-// Be sure to edit this section if you release a modified RDI file!
-// Please also use "Author=" to credit, e.g. "[your name here], based on file by PJ64Team"
-// "Homepage=" if used, should be used to give users a source for updates to your file
-// Note that Project64 automatically prefixes "http://"
-
 Author=PJ64LegacyTeam
-Date=16th July 2023 Version: 1
+Date=29th July 2023
 Homepage=www.project64-legacy.com
 Version=Project64 1.6.3 (Legacy)
 
@@ -3858,7 +3863,7 @@ ReleaseDate=1998/11/10
 Name=Knockout Kings 2000 (E) [!]
 Developer=Black Ops
 ForceFeedback=Yes
-GameInformation=
+GameInformation=knockout-kings-2000
 Genre=Sport-Boxing
 Players=2
 ReleaseDate=1999/10/10
@@ -3867,7 +3872,7 @@ ReleaseDate=1999/10/10
 Name=Knockout Kings 2000 (U) [!]
 Developer=Black Ops
 ForceFeedback=Yes
-GameInformation=
+GameInformation=knockout-kings-2000
 Genre=Sport-Boxing
 Players=2
 ReleaseDate=1999/10/03
@@ -8259,7 +8264,7 @@ ReleaseDate=1998/??/??
 Name=Turok - Legenden des Verlorenen Landes (Rage Wars) (G) [!]
 Developer=Acclaim Studios Austin
 ForceFeedback=Yes
-GameInformation=
+GameInformation=turok-legenden-des-verlorenen-landes-rage-wars/
 Genre=Action
 Players=4
 ReleaseDate=1999/11/23
@@ -8268,7 +8273,7 @@ ReleaseDate=1999/11/23
 Name=Turok - Rage Wars (E) [!]
 Developer=Acclaim Studios Austin
 ForceFeedback=Yes
-GameInformation=
+GameInformation=turok-legenden-des-verlorenen-landes-rage-wars/
 Genre=Action
 Players=4
 ReleaseDate=1999/11/23
@@ -8277,16 +8282,7 @@ ReleaseDate=1999/11/23
 Name=Turok - Rage Wars (E) (M3) (Eng-Fre-Ita)
 Developer=Acclaim Studios Austin
 ForceFeedback=Yes
-GameInformation=
-Genre=Action
-Players=4
-ReleaseDate=1999/11/23
-
-[2E0E7749-B8B49D59-C:58]
-Name=Turok 2 - Seeds of Evil (FIS)
-Developer=Acclaim Studios Austin
-ForceFeedback=Yes
-GameInformation=
+GameInformation=turok-legenden-des-verlorenen-landes-rage-wars/
 Genre=Action
 Players=4
 ReleaseDate=1999/11/23
@@ -8295,7 +8291,16 @@ ReleaseDate=1999/11/23
 Name=Turok - Rage Wars (U) [!]
 Developer=Acclaim Studios Austin
 ForceFeedback=Yes
-GameInformation=
+GameInformation=turok-legenden-des-verlorenen-landes-rage-wars/
+Genre=Action
+Players=4
+ReleaseDate=1999/11/23
+
+[2E0E7749-B8B49D59-C:58]
+Name=Turok 2 - Seeds of Evil (FIS)
+Developer=Acclaim Studios Austin
+ForceFeedback=Yes
+GameInformation=violence-killer-turok-new-generation-turok-2-seeds-of-evil/
 Genre=Action
 Players=4
 ReleaseDate=1999/11/23
@@ -8304,7 +8309,7 @@ ReleaseDate=1999/11/23
 Name=Turok 2 - Seeds of Evil - Kiosk (E) [!]
 Developer=Iguana Entertainment
 ForceFeedback=Yes
-GameInformation=
+GameInformation=violence-killer-turok-new-generation-turok-2-seeds-of-evil/
 Genre=Action
 Players=4
 ReleaseDate=1998/12/10
@@ -8313,7 +8318,7 @@ ReleaseDate=1998/12/10
 Name=Turok 2 - Seeds of Evil - Kiosk (U) [!]
 Developer=Iguana Entertainment
 ForceFeedback=Yes
-GameInformation=
+GameInformation=violence-killer-turok-new-generation-turok-2-seeds-of-evil/
 Genre=Action
 Players=4
 ReleaseDate=1998/12/10
@@ -8322,7 +8327,7 @@ ReleaseDate=1998/12/10
 Name=Turok 2 - Seeds of Evil (E) [!]
 Developer=Iguana Entertainment
 ForceFeedback=Yes
-GameInformation=
+GameInformation=violence-killer-turok-new-generation-turok-2-seeds-of-evil/
 Genre=Action
 Players=4
 ReleaseDate=1998/12/10
@@ -8331,7 +8336,7 @@ ReleaseDate=1998/12/10
 Name=Turok 2 - Seeds of Evil (G) [!]
 Developer=Iguana Entertainment
 ForceFeedback=Yes
-GameInformation=
+GameInformation=violence-killer-turok-new-generation-turok-2-seeds-of-evil/
 Genre=Action
 Players=4
 ReleaseDate=1998/12/10
@@ -8340,7 +8345,7 @@ ReleaseDate=1998/12/10
 Name=Turok 2 - Seeds of Evil (FIS)
 Developer=Iguana Entertainment
 ForceFeedback=Yes
-GameInformation=
+GameInformation=violence-killer-turok-new-generation-turok-2-seeds-of-evil/
 Genre=Action
 Players=4
 ReleaseDate=1998/12/10
@@ -8349,7 +8354,7 @@ ReleaseDate=1998/12/10
 Name=Turok 2 - Seeds of Evil (U) [!]
 Developer=Iguana Entertainment
 ForceFeedback=Yes
-GameInformation=
+GameInformation=violence-killer-turok-new-generation-turok-2-seeds-of-evil/
 Genre=Action
 Players=4
 ReleaseDate=1998/12/10
@@ -8358,7 +8363,7 @@ ReleaseDate=1998/12/10
 Name=Turok 2 - Seeds of Evil (U) (V1.1)
 Developer=Iguana Entertainment
 ForceFeedback=Yes
-GameInformation=
+GameInformation=violence-killer-turok-new-generation-turok-2-seeds-of-evil/
 Genre=Action
 Players=4
 ReleaseDate=1998/12/10
