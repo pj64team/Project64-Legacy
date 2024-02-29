@@ -1126,7 +1126,7 @@ LRESULT CALLBACK Main_Proc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
 					// FIXME: The CPU thread needs to be running to reset, but the threads have a ton of data races.
 					// Rapidly pressing F1 will cause the "Emulation thread failed to terminate plugins" error.
 					// This cannot be fixed without proper thread synchronization.
-					if (!CPU_Action.CloseCPU && CPURunning && hCPU) {
+					if (!CPU_Action.CloseCPU && CPURunning && hCPU && !inFullScreen) {
 						CloseCpu();
 						StartEmulation();
 					}
