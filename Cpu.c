@@ -1254,8 +1254,9 @@ void StartEmulation ( void ) {
 
 	if (inFullScreen) {
 		ResetAudio(hMainWindow);
-		SetupPlugins(hMainWindow);
 	}
+	// Required for EmulateAI to load with per rom settings
+	SetupPlugins(hMainWindow);
 
 	switch (CPU_Type) {
 	case CPU_Interpreter: hCPU = CreateThread(NULL,0,(LPTHREAD_START_ROUTINE)StartInterpreterCPU,NULL,0, &ThreadID); break;
