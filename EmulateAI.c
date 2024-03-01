@@ -67,11 +67,11 @@ void __cdecl EmuAI_AiLenChanged (void)
 	{
 		// Set the base
 		Start_COUNT = COUNT_REGISTER;
-		EmuAI_Buffer[0] = AI_LEN_REG&0x3FFF8;
+		EmuAI_Buffer[1] = AI_LEN_REG&0x3FFF8;
 		// Set our Status Register to DMA BUSY
 		AI_STATUS_REG |= 0x40000000;
 		// Set our timer
-		ChangeTimer(AiTimer, (int)(CountsPerByte * (double)(EmuAI_Buffer[0])));
+		ChangeTimer(AiTimer, (int)(CountsPerByte * 50));
 	} else if (EmuAI_Buffer[1] == 0) {
 		EmuAI_Buffer[1] = AI_LEN_REG&0x3FFF8;
 		// Set our Status Register to FIFO FULL
