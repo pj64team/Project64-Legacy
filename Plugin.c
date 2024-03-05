@@ -272,18 +272,24 @@ BOOL LoadRSPDll(char * RspDll) {
 
 void TerminateAudioThread()
 {
+	int sleepCnt = 0;
 	if (AiCloseDLL != NULL) {
 		AiCloseDLL();
-	} else if (AiUpdate != NULL) {
+	}
+
+	while (AiUpdate != NULL && !bAudioThreadExiting) {
 		bTerminateAudioThread = TRUE;
-		Sleep(1);
-		if (!bAudioThreadExiting) {
-			DisplayError("Audio thread failed to stop gracefully");
+		Sleep(10);
+		sleepCnt++;
+
+		if (!bAudioThreadExiting && sleepCnt >= 50) {
+			//DisplayError("Audio thread failed to stop gracefully");
 
 			// This is a last resort when the audio thread refuses to gracefully exit.
 			// Calling this function WILL cause problems!
 			// SEE: https://learn.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-terminatethread#remarks
 			TerminateThread(hAudioThread, 0);
+			break;
 		}
 	}
 	FreeLibrary(hAudioDll);
