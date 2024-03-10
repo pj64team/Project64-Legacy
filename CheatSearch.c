@@ -102,12 +102,28 @@ struct FIND_STATE find_state = { 0 };
 /////////////////////////////////////
 // Start of function implementation 
 /////////////////////////////////////
+void EnsureNotMinimized(HWND hWnd)
+{
+	WINDOWPLACEMENT placement;
+	placement.length = sizeof(placement);
+
+	if (!GetWindowPlacement(hWnd, &placement))
+		return;
+
+	BOOL minimized = (placement.showCmd & SW_SHOWMINIMIZED) != 0;
+	if (!minimized)
+		return;
+
+	placement.showCmd = SW_SHOWNORMAL;
+	SetWindowPlacement(hWnd, &placement);
+}
 
 void Show_CheatSearchDlg(HWND hParent) {
 	// Ignore unused parameter
 	(void)hParent;
 
 	if (hCheatSearchDlg != NULL) {	// Stop multiple instances
+		EnsureNotMinimized(hCheatSearchDlg);
 		SetForegroundWindow(hCheatSearchDlg);
 		return;
 	}
