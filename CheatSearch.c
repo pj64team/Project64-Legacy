@@ -134,6 +134,12 @@ void Show_CheatSearchDlg(HWND hParent) {
 	{
 		Setup_CheatSearch_Window(hCheatSearchDlg);
 		ShowWindow(hCheatSearchDlg, SW_SHOW);
+		{
+			ShowCursor(TRUE);
+			Sleep(0);
+			ShowCursor(TRUE);
+		}
+
 	}
 }
 
