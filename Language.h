@@ -106,7 +106,19 @@ char * GS               ( int StringID );
 #define MENU_SLOT_7				197
 #define MENU_SLOT_8				198
 #define MENU_SLOT_9				199
+
+// Added an extra 10 save state slots with 10-19 on Shift+0-9 (Gent)
+
 #define MENU_SLOT_10			200
+#define MENU_SLOT_11			2048
+#define MENU_SLOT_12			2049
+#define MENU_SLOT_13			2050
+#define MENU_SLOT_14			2051
+#define MENU_SLOT_15			2052
+#define MENU_SLOT_16			2053
+#define MENU_SLOT_17			2054
+#define MENU_SLOT_18			2055
+#define MENU_SLOT_19			2056
 
 //Pop up Menu
 #define POPUP_PLAY				210

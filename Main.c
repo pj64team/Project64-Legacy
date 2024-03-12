@@ -521,18 +521,29 @@ void FixMenuLang(HMENU hMenu) {
 
 	//Save Slot
 	hSubMenu = GetSubMenu(hMenu, 1);
-	hSubMenu = GetSubMenu(hSubMenu, 11);
+	hSubMenu = GetSubMenu(hSubMenu, 19);
 	MenuSetText(hSubMenu, 0, GS(MENU_SLOT_DEFAULT), "0");
-	MenuSetText(hSubMenu, 2, GS(MENU_SLOT_1), "1");
-	MenuSetText(hSubMenu, 3, GS(MENU_SLOT_2), "2");
-	MenuSetText(hSubMenu, 4, GS(MENU_SLOT_3), "3");
-	MenuSetText(hSubMenu, 5, GS(MENU_SLOT_4), "4");
-	MenuSetText(hSubMenu, 6, GS(MENU_SLOT_5), "5");
-	MenuSetText(hSubMenu, 7, GS(MENU_SLOT_6), "6");
-	MenuSetText(hSubMenu, 8, GS(MENU_SLOT_7), "7");
-	MenuSetText(hSubMenu, 9, GS(MENU_SLOT_8), "8");
-	MenuSetText(hSubMenu, 10, GS(MENU_SLOT_9), "9");
-	//MenuSetText(hSubMenu, 11, GS(MENU_SLOT_10), "0");
+	MenuSetText(hSubMenu, 1, GS(MENU_SLOT_1), "1");
+	MenuSetText(hSubMenu, 2, GS(MENU_SLOT_2), "2");
+	MenuSetText(hSubMenu, 3, GS(MENU_SLOT_3), "3");
+	MenuSetText(hSubMenu, 4, GS(MENU_SLOT_4), "4");
+	MenuSetText(hSubMenu, 5, GS(MENU_SLOT_5), "5");
+	MenuSetText(hSubMenu, 6, GS(MENU_SLOT_6), "6");
+	MenuSetText(hSubMenu, 7, GS(MENU_SLOT_7), "7");
+	MenuSetText(hSubMenu, 8, GS(MENU_SLOT_8), "8");
+	MenuSetText(hSubMenu, 9, GS(MENU_SLOT_9), "9");
+	MenuSetText(hSubMenu, 10, GS(MENU_SLOT_10), "Shift+0");
+	MenuSetText(hSubMenu, 11, GS(MENU_SLOT_11), "Shift+1");
+	MenuSetText(hSubMenu, 12, GS(MENU_SLOT_12), "Shift+2");
+	MenuSetText(hSubMenu, 13, GS(MENU_SLOT_13), "Shift+3");
+	MenuSetText(hSubMenu, 14, GS(MENU_SLOT_14), "Shift+4");
+	MenuSetText(hSubMenu, 15, GS(MENU_SLOT_15), "Shift+5");
+	MenuSetText(hSubMenu, 16, GS(MENU_SLOT_16), "Shift+6");
+	MenuSetText(hSubMenu, 17, GS(MENU_SLOT_17), "Shift+7");
+	MenuSetText(hSubMenu, 18, GS(MENU_SLOT_18), "Shift+8");
+	MenuSetText(hSubMenu, 19, GS(MENU_SLOT_19), "Shift+9");
+
+		//MenuSetText(hSubMenu, 11, GS(MENU_SLOT_10), "0");
 }
 
 int GetStoredWinPos(char* WinName, DWORD* X, DWORD* Y) {
@@ -1030,6 +1041,49 @@ LRESULT CALLBACK Main_Proc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
 					SendMessage(hStatusWnd, SB_SETTEXT, 0, (LPARAM)GS(MENUDES_GAME_SLOT));
 					break;
 
+				// Added an extra 10 save state slots with 10-19 on Shift+0-9 (Gent)
+
+				case ID_CURRENTSAVE_10:
+					SendMessage(hStatusWnd, SB_SETTEXT, 0, (LPARAM)GS(MENUDES_GAME_SLOT));
+					break;
+
+				case ID_CURRENTSAVE_11:
+					SendMessage(hStatusWnd, SB_SETTEXT, 0, (LPARAM)GS(MENUDES_GAME_SLOT));
+					break;
+
+				case ID_CURRENTSAVE_12:
+					SendMessage(hStatusWnd, SB_SETTEXT, 0, (LPARAM)GS(MENUDES_GAME_SLOT));
+					break;
+
+				case ID_CURRENTSAVE_13:
+					SendMessage(hStatusWnd, SB_SETTEXT, 0, (LPARAM)GS(MENUDES_GAME_SLOT));
+					break;
+
+				case ID_CURRENTSAVE_14:
+					SendMessage(hStatusWnd, SB_SETTEXT, 0, (LPARAM)GS(MENUDES_GAME_SLOT));
+					break;
+
+				case ID_CURRENTSAVE_15:
+					SendMessage(hStatusWnd, SB_SETTEXT, 0, (LPARAM)GS(MENUDES_GAME_SLOT));
+					break;
+
+				case ID_CURRENTSAVE_16:
+					SendMessage(hStatusWnd, SB_SETTEXT, 0, (LPARAM)GS(MENUDES_GAME_SLOT));
+					break;
+
+				case ID_CURRENTSAVE_17:
+					SendMessage(hStatusWnd, SB_SETTEXT, 0, (LPARAM)GS(MENUDES_GAME_SLOT));
+					break;
+
+				case ID_CURRENTSAVE_18:
+					SendMessage(hStatusWnd, SB_SETTEXT, 0, (LPARAM)GS(MENUDES_GAME_SLOT));
+					break;
+
+				case ID_CURRENTSAVE_19:
+					SendMessage(hStatusWnd, SB_SETTEXT, 0, (LPARAM)GS(MENUDES_GAME_SLOT));
+					break;
+
+
 					// Removed this as we now have 0 to 9 - Gent
 
 				/*case ID_CURRENTSAVE_0:
@@ -1231,8 +1285,11 @@ LRESULT CALLBACK Main_Proc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
 					char Directory[MAX_PATH], SaveFile[MAX_PATH];
 					OPENFILENAME openfilename;
 
-					if (BasicMode)
-						break;
+			// Made Save as available to use in Basic Mode (Gent)
+
+
+				/*	if (BasicMode)
+						break;*/
 
 					memset(&SaveFile, 0, sizeof(SaveFile));
 					memset(&openfilename, 0, sizeof(openfilename));
@@ -1279,8 +1336,10 @@ LRESULT CALLBACK Main_Proc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
 					char Directory[MAX_PATH], SaveFile[MAX_PATH];
 					OPENFILENAME openfilename;
 
-					if (BasicMode)
-						break;
+					// Made Restore from available to use in Basic Mode (Gent)
+
+					/*if (BasicMode)
+						break;*/
 
 					memset(&SaveFile, 0, sizeof(SaveFile));
 					memset(&openfilename, 0, sizeof(openfilename));
@@ -1363,6 +1422,48 @@ LRESULT CALLBACK Main_Proc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
 					break;
 
 				case ID_CURRENTSAVE_9:
+					SetCurrentSaveState(hWnd, LOWORD(wParam));
+					break;
+					
+				// Added an extra 10 save state slots with 10-19 on Shift+0-9 (Gent)
+
+				case ID_CURRENTSAVE_10:
+					SetCurrentSaveState(hWnd, LOWORD(wParam));
+					break;
+
+				case ID_CURRENTSAVE_11:
+					SetCurrentSaveState(hWnd, LOWORD(wParam));
+					break;
+
+				case ID_CURRENTSAVE_12:
+					SetCurrentSaveState(hWnd, LOWORD(wParam));
+					break;
+
+				case ID_CURRENTSAVE_13:
+					SetCurrentSaveState(hWnd, LOWORD(wParam));
+					break;
+
+				case ID_CURRENTSAVE_14:
+					SetCurrentSaveState(hWnd, LOWORD(wParam));
+					break;
+
+				case ID_CURRENTSAVE_15:
+					SetCurrentSaveState(hWnd, LOWORD(wParam));
+					break;
+
+				case ID_CURRENTSAVE_16:
+					SetCurrentSaveState(hWnd, LOWORD(wParam));
+					break;
+
+				case ID_CURRENTSAVE_17:
+					SetCurrentSaveState(hWnd, LOWORD(wParam));
+					break;
+
+				case ID_CURRENTSAVE_18:
+					SetCurrentSaveState(hWnd, LOWORD(wParam));
+					break;
+
+				case ID_CURRENTSAVE_19:
 					SetCurrentSaveState(hWnd, LOWORD(wParam));
 					break;
 
@@ -2086,8 +2187,12 @@ void DeleteAdvanceMenuOptions(HMENU hMenu) {
 
 	DeleteMenu(hMenu, ID_FILE_STARTEMULATION, MF_BYCOMMAND);
 		//DeleteMenu(hMenu, ID_SYSTEM_GENERATEBITMAP, MF_BYCOMMAND);
-	DeleteMenu(hMenu, ID_CPU_SAVEAS, MF_BYCOMMAND);
-	DeleteMenu(hMenu, ID_CPU_LOAD, MF_BYCOMMAND);
+		 
+		// Enabled Restore from & Save as in Basic Mode (Gent)
+		 
+	   //DeleteMenu(hMenu, ID_CPU_SAVEAS, MF_BYCOMMAND);
+	  //DeleteMenu(hMenu, ID_CPU_LOAD, MF_BYCOMMAND);
+
 	DeleteMenu(hMenu, ID_OPTIONS_ALWAYSONTOP, MF_BYCOMMAND);
 		//DeleteMenu(hMenu, ID_OPTIONS_SHOWCPUUSAGE, MF_BYCOMMAND);
 	    // DeleteMenu(hMenu, ID_HELP_ABOUTSETTINGFILES, MF_BYCOMMAND);
@@ -2294,6 +2399,16 @@ void SetCurrentSaveState(HWND hWnd, int State) {
 	CheckMenuItem(hMenu, ID_CURRENTSAVE_7, MF_BYCOMMAND | MFS_UNCHECKED);
 	CheckMenuItem(hMenu, ID_CURRENTSAVE_8, MF_BYCOMMAND | MFS_UNCHECKED);
 	CheckMenuItem(hMenu, ID_CURRENTSAVE_9, MF_BYCOMMAND | MFS_UNCHECKED);
+	CheckMenuItem(hMenu, ID_CURRENTSAVE_10, MF_BYCOMMAND | MFS_UNCHECKED);
+	CheckMenuItem(hMenu, ID_CURRENTSAVE_11, MF_BYCOMMAND | MFS_UNCHECKED);
+	CheckMenuItem(hMenu, ID_CURRENTSAVE_12, MF_BYCOMMAND | MFS_UNCHECKED);
+	CheckMenuItem(hMenu, ID_CURRENTSAVE_13, MF_BYCOMMAND | MFS_UNCHECKED);
+	CheckMenuItem(hMenu, ID_CURRENTSAVE_14, MF_BYCOMMAND | MFS_UNCHECKED);
+	CheckMenuItem(hMenu, ID_CURRENTSAVE_15, MF_BYCOMMAND | MFS_UNCHECKED);
+	CheckMenuItem(hMenu, ID_CURRENTSAVE_16, MF_BYCOMMAND | MFS_UNCHECKED);
+	CheckMenuItem(hMenu, ID_CURRENTSAVE_17, MF_BYCOMMAND | MFS_UNCHECKED);
+	CheckMenuItem(hMenu, ID_CURRENTSAVE_18, MF_BYCOMMAND | MFS_UNCHECKED);
+	CheckMenuItem(hMenu, ID_CURRENTSAVE_19, MF_BYCOMMAND | MFS_UNCHECKED);
 	CheckMenuItem(hMenu, State, MF_BYCOMMAND | MFS_CHECKED);
 
 	if (strlen(RomFullName) == 0)
@@ -2346,6 +2461,46 @@ void SetCurrentSaveState(HWND hWnd, int State) {
 
 		case ID_CURRENTSAVE_9:
 			strcat(CurrentSave, ".pj9");
+			break;
+
+		case ID_CURRENTSAVE_10:
+			strcat(CurrentSave, ".pj10");
+			break;
+
+		case ID_CURRENTSAVE_11:
+			strcat(CurrentSave, ".pj11");
+			break;
+
+		case ID_CURRENTSAVE_12:
+			strcat(CurrentSave, ".pj12");
+			break;
+
+		case ID_CURRENTSAVE_13:
+			strcat(CurrentSave, ".pj13");
+			break;
+
+		case ID_CURRENTSAVE_14:
+			strcat(CurrentSave, ".pj14");
+			break;
+
+		case ID_CURRENTSAVE_15:
+			strcat(CurrentSave, ".pj15");
+			break;
+
+		case ID_CURRENTSAVE_16:
+			strcat(CurrentSave, ".pj16");
+			break;
+
+		case ID_CURRENTSAVE_17:
+			strcat(CurrentSave, ".pj17");
+			break;
+
+		case ID_CURRENTSAVE_18:
+			strcat(CurrentSave, ".pj18");
+			break;
+
+		case ID_CURRENTSAVE_19:
+			strcat(CurrentSave, ".pj19");
 			break;
 	}
 
