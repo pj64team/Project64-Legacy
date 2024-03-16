@@ -23,7 +23,7 @@ Project64 Legacy is a free and open-source emulator for the Nintendo 64 and is a
 
 ## Installation
 
-Project64 Legacy - 1.6.2 (Beta) releases are available [here](https://github.com/pj64team/Project64-Legacy/releases).
+Project64 Legacy - 1.6.3 release can be found [here](https://github.com/pj64team/Project64-Legacy/releases).
 
 Project64 Legacy is a Portable Emulator and all you need to do is right click and Extract Here with your preferred file archiver software to a directory of your choosing and load and use. If you do not have a installed we recommend [7-zip](https://www.7-zip.org). As 7-Zip is free software with open source.
 
