@@ -663,7 +663,6 @@ BOOL CALLBACK PluginSelectProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lPara
 			index = SendMessage(GetDlgItem(hDlg, CONT_LIST), CB_GETITEMDATA, (WPARAM)index, 0);
 			sprintf(String, "%s", PluginNames[index]);
 			Settings_Write(APPS_NAME, "Plugins", "Controller", String);
-
 			if (CPURunning) {
 				CloseCpu();
 				ShutdownPlugins();
