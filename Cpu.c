@@ -537,6 +537,11 @@ void DoSomething ( void ) {
 		Machine_LoadState();
 	}
 
+	if (CPU_Action.ResetCPU) {
+		CPU_Action.ResetCPU = FALSE;
+		Reset_CPU();
+	}
+
 	if (CPU_Action.DoInterrupt == TRUE) {
 		CPU_Action.DoSomething = TRUE;
 	}
@@ -575,6 +580,80 @@ InterruptsDisabled:
 	DisplayFPS();
 	DisplayError(GS(MSG_PERM_LOOP));
 	ExitThread(0);
+}
+
+void Reset_CPU(void) {
+
+	memset(N64MEM, 0, RdramSize);
+
+	InitilizeTLB();
+	InitalizeR4300iRegisters(LoadPifRom(*(ROM + 0x3D)), *(ROM + 0x3D), GetCicChipID(ROM));
+
+	BuildInterpreter();
+	//UpdateCPUMode();
+
+	SetFpuLocations();
+	//CheckRdramStatus();
+
+	//memcpy(RomHeader,ROM,sizeof(RomHeader));
+	ChangeCompareTimer();
+	if (GfxRomClosed != NULL) { GfxRomClosed(); }
+	if (AiRomClosed != NULL) { AiRomClosed(); }
+	if (ContRomClosed != NULL) { ContRomClosed(); }
+	if (RSPRomClosed) { RSPRomClosed(); }
+	if (AiRomOpen != NULL) { AiRomOpen(); }
+	if (GfxRomOpen != NULL) { GfxRomOpen(); }
+	if (ContRomOpen != NULL) { ContRomOpen(); }
+	if (RSPRomOpen != NULL) { RSPRomOpen(); }
+	DlistCount = 0;
+	AlistCount = 0;
+	AI_STATUS_REG = 0;
+	EmuAI_ClearAudio();
+	AiDacrateChanged(SYSTEM_NTSC);
+	ViStatusChanged();
+	ViWidthChanged();
+	//SetupTLB();
+	ResetRecompCode();
+
+	//Fix up Memory stack location
+	MemoryStack = GPR[29].W[0];
+	TranslateVaddr(&MemoryStack);
+	MemoryStack += (DWORD)N64MEM;
+
+	CheckInterrupts();
+	DMAUsed = TRUE;
+
+	if (CPU_Type == CPU_SyncCores) {
+		Registers.PROGRAM_COUNTER = PROGRAM_COUNTER;
+		Registers.HI.DW = HI.DW;
+		Registers.LO.DW = LO.DW;
+		Registers.DMAUsed = DMAUsed;
+		memcpy(&SyncRegisters, &Registers, sizeof(Registers));
+		memcpy(SyncFastTlb, FastTlb, sizeof(FastTlb));
+		memcpy(SyncTlb, tlb, sizeof(tlb));
+		memcpy(SyncMemory, N64MEM, RdramSize);
+		memcpy(SyncMemory + 0x04000000, N64MEM + 0x04000000, 0x2000);
+		SwitchSyncRegisters();
+		SetupTLB();
+		SwitchSyncRegisters();
+		SyncNextInstruction = NORMAL;
+		SyncJumpToLocation = -1;
+		NextInstruction = NORMAL;
+		JumpToLocation = -1;
+		MemAddrUsedCount[0] = 0;
+		MemAddrUsedCount[1] = 0;
+		SyncToPC();
+		DisplayError("Loaded");
+	}
+#ifdef Log_x86Code
+	Stop_x86_Log();
+	Start_x86_Log();
+#endif
+	if (HaveDebugger) {
+		StopLog();
+		StartLog();
+	}
+	return;
 }
 
 BOOL Machine_LoadState(void) {
