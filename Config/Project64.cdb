@@ -10918,6 +10918,16 @@ Cheat4_N=Enable this as so as you load the game.This Unlocks Classic and Maniacl
 Cheat5="Secondary Weapon Select",800B519F 00??
 Cheat5_N=B Button Weapon infinite ammo
 Cheat5_O=$06 Vertical Burst,$0D Horizontal Right,$0C Horizontal Left,$1A Swarm Missiles,$20 Diagonal Burst
+Cheat6="Mothership Level Option",800E68E7 00??
+Cheat6_O=$00 Warp to mothership level,$02 Endless Motherships
+Cheat7="One mothership per level",D20E62DB 0000,800E62DB 0001
+Cheat7_N=When used with demo toggle demo mode will continue past allotted time
+Cheat8="Toggle demo mode",80070172 0000
+Cheat9="Holds missle fire",800DA5A0 0001
+Cheat10="Demo Timer",8006DF0E 0001
+Cheat10_N=Allows user to enter demo mode fast.
+Cheat11="One Shot kills bosses",D20B5B23 0000,800B5B23 0001,D20B5A5B 0000,800B5A5B 0001,D20B5A83 0000,800B5A83 0001,D20B5AAB 0000,800B5AAB 0001,D20E44E7 0000,800E44E7 0001,D20B5AFB 0000,800B5AFB 0001,D20B5AD3 0000,800B5AD3 0001,D20B5AE9 0000,800B5AE9 0001
+Cheat11_N=Bosses with segments require one shot each.
 
 //----
 
@@ -18981,6 +18991,16 @@ Cheat4_N=Enable this as so as you load the game.This Unlocks Classic and Maniacl
 Cheat5="Secondary Weapon Select",800B519F 00??
 Cheat5_N=B Button Weapon infinite ammo
 Cheat5_O=$06 Vertical Burst,$0D Horizontal Right,$0C Horizontal Left,$1A Swarm Missiles,$20 Diagonal Burst
+Cheat6="Mothership Level Option",800E68E7 00??
+Cheat6_O=$00 Warp to mothership level,$02 Endless Motherships
+Cheat7="One mothership per level",D20E62DB 0000,800E62DB 0001
+Cheat7_N=When used with demo toggle demo mode will continue past allotted time
+Cheat8="Toggle demo mode",80070172 0000
+Cheat9="Holds missle fire",800DA5A0 0001
+Cheat10="Demo Timer",8006DF0E 0001
+Cheat10_N=Allows user to enter demo mode fast.
+Cheat11="One Shot kills bosses",D20B5B23 0000,800B5B23 0001,D20B5A5B 0000,800B5A5B 0001,D20B5A83 0000,800B5A83 0001,D20B5AAB 0000,800B5AAB 0001,D20E44E7 0000,800E44E7 0001,D20B5AFB 0000,800B5AFB 0001,D20B5AD3 0000,800B5AD3 0001,D20B5AE9 0000,800B5AE9 0001
+Cheat11_N=Bosses with segments require one shot each.
 
 //----
 
@@ -27444,8 +27464,4 @@ Cheat12="Press F9 for Gent's Mega Score",891577AA FFFF,891577AB FFFF
 Cheat13="Always Have S Ranking",80158B31 0000
 
 
-
-
 //End Of File----------> Anything under here was put in by you <--------------------------------
-
-
