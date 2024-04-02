@@ -19,7 +19,7 @@
 [Meta] // Metadata: information for Project64 GUI, Help > About INI files
 
 Author=PJ64LegacyTeam
-Date=29th July 2023
+Date=2nd April 2024
 Homepage=www.project64-legacy.com
 Version=Project64 1.6.3 (Legacy)
 
@@ -805,24 +805,24 @@ Status=Use GLideN64 Video
 [FC7797BF-4A95E83C-C:50]
 Name=Automobili Lamborghini (E)
 CPU Type=Recompiler
+Cheat0=80001433 0001 //Framerate cap fix
 Counter Factor=2
 Disable TLB
 Linking=Global
 Save Type=First Save Type
 Self-modifying code Method=Cache
 Status=Compatible
-VI=1300
 
 [41B25DC4-1B726786-C:45]
 Name=Automobili Lamborghini (U)
 CPU Type=Recompiler
+Cheat0=8000140B 0001 //Framerate cap fix
 Counter Factor=2
 Disable TLB
 Linking=Global
 Save Type=First Save Type
 Self-modifying code Method=Cache
 Status=Compatible
-VI=1300
 
 [DB833E34-63548286-C:45]
 Name=Automobili Lamborghini (U)
@@ -3104,7 +3104,7 @@ CPU Type=Recompiler
 Counter Factor=2
 Linking=Global
 Save Type=First Save Type
-Self-modifying code Method=Change Memory
+Self-modifying code Method=Check Memory Advance
 Status=Compatible
 
 [B2C6D27F-2DA48CFD-C:4A]
@@ -3268,7 +3268,7 @@ Counter Factor=2
 Linking=Global
 Plugin Note=[video] errors:various in some levels
 Save Type=First Save Type
-Self-modifying code Method=Check Memory & cache
+Self-modifying code Method=Check Memory Advance
 Status=Compatible
 
 [4690FB1C-4CD56D44-C:45]
@@ -4686,6 +4686,7 @@ Status=Use 3rd party video
 [C3B6DE9D-65D2DE76-C:50]
 Name=Mario Kart 64 (E) (V1.0)
 CPU Type=Recompiler
+Cheat0=81001A1C 2409,81001A1E 0002,81001C74 240A,81001C76 0002 //Multiplayer timing fix
 Counter Factor=2
 Linking=Global
 Save Type=First Save Type
@@ -4695,6 +4696,7 @@ Status=Compatible
 [2577C7D4-D18FAAAE-C:50]
 Name=Mario Kart 64 (E) (V1.1)
 CPU Type=Recompiler
+Cheat0=81001A1C 2409,81001A1E 0002,81001C74 240A,81001C76 0002 //Multiplayer timing fix
 Counter Factor=2
 Linking=Global
 Save Type=First Save Type
@@ -4704,6 +4706,7 @@ Status=Compatible
 [6BFF4758-E5FF5D5E-C:4A]
 Name=Mario Kart 64 (J) (V1.0)
 CPU Type=Recompiler
+Cheat0=81001A1C 2409,81001A1E 0002,81001C74 240A,81001C76 0002 //Multiplayer timing fix
 Counter Factor=2
 Linking=Global
 Save Type=First Save Type
@@ -4713,6 +4716,7 @@ Status=Compatible
 [C9C3A987-5810344C-C:4A]
 Name=Mario Kart 64 (J) (V1.1)
 CPU Type=Recompiler
+Cheat0=81001A1C 2409,81001A1E 0002,81001C74 240A,81001C76 0002 //Multiplayer timing fix
 Counter Factor=2
 Linking=Global
 Save Type=First Save Type
@@ -4722,6 +4726,7 @@ Status=Compatible
 [3E5055B6-2E92DA52-C:45]
 Name=Mario Kart 64 (U)
 CPU Type=Recompiler
+Cheat0=81001A3C 2409,81001A3E 0002,81001C94 240A,81001C96 0002 //Multiplayer timing fix
 Counter Factor=2
 Linking=Global
 Save Type=First Save Type
@@ -5278,7 +5283,7 @@ CPU Type=Recompiler
 Counter Factor=1
 Linking=Global
 Save Type=First Save Type
-Self-modifying code Method=Check Memory & cache
+Self-modifying code Method=Check Memory Advance
 Status=Compatible
 
 [28705FA5-B509690E-C:50]
@@ -5553,6 +5558,7 @@ Plugin Note=[audio] (See Gamefaq)
 Save Type=FlashRam
 Self-modifying code Method=Check Memory & cache
 Status=Compatible
+VI=1350
 
 [147E0EDB-36C5B12C-C:4A]
 Name=Neon Genesis Evangelion (J)
@@ -7973,6 +7979,7 @@ Status=Compatible
 [9CE02E22-206EF1B0-C:4A]
 Name=Super Speed Race 64 (J)
 CPU Type=Recompiler
+Cheat0=800014A3 0001 //Framerate cap fix
 Counter Factor=2
 Disable TLB
 Linking=Global
