@@ -56,7 +56,12 @@ extern "C" {
 
 #define Default_AdvancedBlockLink	TRUE
 #define Default_AutoStart			TRUE
-#define Default_AutoSleep			TRUE
+
+	// Default_AutoSleep has been disabled  by default because of how it effects dialog's in window mode.
+	// Enabled it introduces a costent pasuing when opening and closing menus. (Gent)
+
+
+#define Default_AutoSleep			FALE
 #define Default_AutoFullScreen		FALSE
 #define Default_DisableRegCaching	FALSE
 #define Default_RdramSize			0x800000
