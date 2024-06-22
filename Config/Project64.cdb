@@ -1,11 +1,11 @@
 // ----------------------------------------------------------------------------
-// Project64 1.6.3 (Legacy) Final Official (Cheat Data Base) by Gent of PJ64LegacyTeam
+// Project64 Legacy 1.6.4 [The End] Official (Cheat Data Base) by Gent of PJ64LegacyTeam
 // Based On Our Original Project64 Official CHT by Gent/Project64 team
 // All Region Cheat Codes are a Collabaration of:
 // ARHQ, Codejunkies, Gameshark Central, Kodewerx, Kai666, Emucheats, Gent, Parasyte over the years.
 // ----------------------------------------------------------------------------
 //
-// This Cheat file is only to be used with Project64 1.6.3 (Legacy) Final
+// This Cheat file is only to be used with Project64 Legacy 1.6.4 [The End]
 //
 // All Action Replay and Game Shark cheats found in this file are specifically for Project64 (Legacy) Only
 // Please do not use for another Emulator Database or Web Site Viewing without asking permission prior.
@@ -22,9 +22,9 @@
 [Meta] // Metadata: information for Project64 GUI, Help > About INI files
 
 Author=PJ64LegacyTeam
-Date=29th July 2023
+Date=22nd June 2024
 Homepage=www.project64-legacy.com
-Version=Project64 1.6.3 (Legacy)
+Version=Project64 Legacy 1.6.4 [The End]
 
 //--------------- Global Options ----------------------------------------------
 
@@ -571,6 +571,15 @@ Complete Note=When enabled and while in game, either press start then Abort Leve
 Medals=$00 None,$01 Bronze Medal,$02 Silver Medal,$03 Gold Medal
 Medals Note=Press F9 at Select Level Menu. Once In-Game, Abort the Mission to have code Saved to Game Pak.
 Weapon=$01 Ion Cannon,$02 Missiles,$03 Seeker Missiles,$04 Bombs,$05 Proton Bombs,$07 Cluster Missiles,$08 Seeker Torpedos,$09 Seeker Cluster Missiles
+
+[B3313]
+Cap Note=Here you can Choose Options for Mario with His Cap on
+Coins Note=Press GS Once on a Level To Get that amount of Coins
+Level Note=Select a Level. Jump Into a Painting. Press A at the Stars Collected Screen. As Stats are fading hold L, and you'll jump to the level you've selected.
+Level Select=$01 Intro,$04 Big Boo's Haunt,$05 Cool Cool Mountain,$06 Mushroom Castle,$07 Hazy Maze Cave,$08 Shifting Sand Land,$09 Bob omb Battlefield,$0A Snowman's Land,$0B Wet Dry World,$0C Jolly Roger Bay,$0D Tiny Huge World,$0E Tick tock Clock,$0F Rainbow Ride,$10 Mushroom Castle Field,$11 Bowser In The Dark World,$12 Vanish Cap Under The Moat,$13 Bowser In The Fire Sea,$14 The Secret Aquarium,$15 Bowser In The Sky,$16 Lethal Lava Land,$17 Dire Dire Docks,$18 Whomp's Fortress,$19 The End,$1A Castle Courtyard,$1B The Princess's Secret Slide,$1C Cavern Of The Metal Cap,$1D Tower Of The Wing Cap,$1E Bowser In The Dark World Boss,$1F Wing Mario Over The Rainbow,$21 Bowser In The Fire Sea Boss,$22 Bowser In The Sky Boss,$24 Tall Tall Mountain
+Levitate Note=Press R to levitate & Let go to land
+Marios Cap=$09 No Hat,$10 Normal,$12 Invisible Mario,$15 Metal Mario,$16 Invisible Metal Mario,$19 Flying Mario
+Slot Note=Once the Code is activated, you will see it as a new option in the chosen Save Slot.This will have the Cannon open already to get upto Yoshi on the Roof. but make sure to save the game after collecting Red Coins and turn this code off before saving. you will now have it all saved to mempak
 
 [SuperMario]
 Cap Note=Here you can Choose Options for Mario with His Cap on
@@ -4715,6 +4724,34 @@ Cheat18="Character Creation\Max\Clutch",81115A54 4170
 
 //----
 
+[5446C6EF-E18E47BB-C:45]
+Name=All-Star Baseball 2001 (U)
+Cheat0="Infinite\Strikes",8006A279 0000
+Cheat1="Infinite\Balls",8006A277 0000
+Cheat2="Infinite\Outs",8006A27B 0000
+Cheat3="Infinite\Character Creation Points",81105340 42C8
+Cheat4="Infinite\Pitch Type Creation Points",81105A54 42C8
+Cheat5="Character Creation\Max\Accuracy",81117AF0
+Cheat6="Character Creation\Max\Stamina",81117AF4
+Cheat7="Character Creation\Max\Contact",81117AF8 4170
+Cheat8="Character Creation\Max\Power",81117AFC 4170
+Cheat9="Character Creation\Max\VS LHP",81117B00 4170
+Cheat10="Character Creation\Max\VS RHP",81117B04 4170
+Cheat11="Character Creation\Max\Bunting",81117B08 4170
+Cheat12="Character Creation\Max\VS LHB",81117B0C 4170
+Cheat13="Character Creation\Max\VS RHB",81117B10 4170
+Cheat14="Character Creation\Max\Speed",81117B14 4170
+Cheat15="Character Creation\Max\Defense",81117B18 4170
+Cheat16="Character Creation\Max\Arm Str.",81117B1C 4170
+Cheat17="Character Creation\Max\Streak",81117B20 4170
+Cheat18="Character Creation\Max\Clutch",81117B24 4170
+Cheat19="Score\The Home Team",81059982 ????
+Cheat19_O=[AllStarBaseball99]Score
+Cheat20="Score\The Away Team",81060D0A ????
+Cheat20_O=[AllStarBaseball99]Score
+
+//----
+
 [C43E23A7-40B1681A-C:45]
 Name=All-Star Baseball '99 (U)
 Cheat0="Infinite\Character Creation Points",800E2C31 00B0
@@ -5089,6 +5126,8 @@ Cheat11="Secret Level",80125AB2 0001
 Cheat12="Enable Models",80125AB3 0001
 Cheat13="Cassandra Gang",80125AB5 0001
 Cheat14="Brandon Gang",80125AB6 0001
+Cheat15="All Tanx & All Campaigns",50001370 0000,81120546 FFFF,50001370 0000,8112054A FFFF
+Cheat16="Infinite Edge Power",811A8D20 000A,8111AD08 000A,811AC1E4 000A,811ACB7E 000A,811AAEB4 000A,811AE378 000A,811AD514 000A,811AA51C 000A
 
 //----
 
@@ -5210,7 +5249,7 @@ Cheat6="Play As\Player 1",801ABB2B 00??
 Cheat6_O=$0A She-Freak,$0B PainMaster,$0C Mutilator,$0D ChainSaw
 Cheat7="Never Wins\Player 2",80152917 0000
 Cheat8="Needs 1 Match to Win\Player 2",D0152917 0000,80152917 0001
-Cheat9="Infinite Health\Player 2",811502AA 6400
+Cheat9="Infinite Health\Player 2",81152926 6400
 Cheat10="1-Hit Death\Player 2",D0152926 0064,81152926 0100
 Cheat11="Infinite Shield\Player 2",8115292A 6400
 Cheat12="Infinite Jetpack\Player 2",8115292E 3200
@@ -5222,11 +5261,13 @@ Name=Blast Corps (U) (V1.0)
 Cheat0="Infinite\Hydraulics Sidesweeper",803EDB51 0063
 Cheat1="Infinite\Missiles Motor Bike",803F8AC3 0063
 Cheat2="Infinite\Boosts Buggy Vehicle",803EE301 0064
-Cheat3="Ballista Can Drive Through Anything",803F8A68 0001
+Cheat3="Can Drive Through Anything",81?????? ????
+Cheat3_O=$3F8A68:0001 Ballista,$3EE688:1001 Bulldozer,$3EEA58:1001 Dump Truck
 Cheat4="Found All\RDUS",8036E9CC C350
 Cheat5="Found All\Survivors",8036E9C9 00FF
 Cheat6="Found All\Scientists",80364AD0 003F
-Cheat7="Infinite Time",D0315610 0000,81315610 0000,D0315612 0001,81315612 0000
+Cheat7="Freeze Timeer",81271394 2400
+Cheat7_N=Turn on before starting the level
 
 //----
 
@@ -6169,6 +6210,8 @@ Cheat33="Tons Of Ending Credits",81092E3C 0FFF,81092E3E FFFF
 Cheat34="Max Total Score",81092E42 FFFF
 Cheat35="Time Spent On Mission",80092E3B 00??
 Cheat35_O=$00 No Time,$FF Max Time
+Cheat36="Have All Missions",80137DB3 0001
+Cheat36_N=Select Replay Mission, and All Missions will be available for you to play.
 
 //----
 
@@ -6203,8 +6246,8 @@ Cheat18="Press L To Levitate\Player 3",D0042A25 0020,810CC948 41CB
 Cheat18_N=[Conkers]Levitate Note
 Cheat19="Press L To Levitate\Player 4",D0042A2D 0020,810CCC74 41CB
 Cheat19_N=[Conkers]Levitate Note
-Cheat20="Matrix Mode (Anywhere) ",D1042A14 0010,800BEA0C 0001,D1042A14 0010,810BE574 D202,D1042A14 0001,800BEA0C 0000,D1042A14 0001,810BE574 0000
-Cheat20_N=[Conkers]Matrix Note
+Cheat20="The Real Matrix Mode (Anywhere)",D0042A15 0030,810CC318 3E00,D0042A15 0010,810CC318 3F80
+Cheat20_N=[Conkers]Press L+R Buttons to enable & R Buttons to disable, do not use with onkers Speed Select.
 Cheat21="Conkers Speed Select",810CC318 ????
 Cheat21_O=[Conkers]Speed
 Cheat22="Weapon Select In Multi (On Pick Up)",80180873 00??
@@ -11304,6 +11347,44 @@ Cheat20_O=[SuperMario]Level Select
 
 //----
 
+[321A53A7-FF6C1805-C:4A]
+Name=Super Mario 64 Internal Plexus (B3313) (J) (V1.0) (Hack)
+Cheat0="Press GS For 255 Coins",8933B218 00FF
+Cheat0_N=[B3313]Coins Note
+Cheat1="Have\Level Select",A032D58C 00??
+Cheat1_O=@Off and On 1
+Cheat2="Don't Hurt Mario\Monsters",A033B197 0001
+Cheat3="Infinite\Lives",8033B21D 0064
+Cheat4="Infinite\Energy & Breath",8033B21E 0008
+Cheat5="Have\Debug Mode",A032D598 00??
+Cheat5_O=@Off and On 1
+Cheat6="Mario's Cap On Options",8033B177 00??
+Cheat6_N=[B3313]Cap Note
+Cheat6_O=[B3313]Marios Cap
+Cheat7="Press R To Levitate",D033AFA1 0010,8133B1BC 4220,D033B1BD 0020,8133B17C 0300,D033B1BD 0020,8133B17E 0880
+Cheat7_N=[B3313]Levitate Note
+Cheat8="[Slot A Codes]\Have All\120 Stars",80207723 0001,8020770B 00C7,50001101 0000,8020770C 00FF
+Cheat8_N=[B3313]Slot Note
+Cheat9="[Slot A Codes]\Have All\Key doors unlocked (and mote empty)",8020770A 007E
+Cheat10="[Slot A Codes]\Have All\Max 100 Coin Records For All Levels",50000F01 0000,80207725 0064
+Cheat11="[Slot B Codes]\Have All\120 Stars",80207793 0001,8020777B 00C7,50001101 0000,8020777C 00FF
+Cheat11_N=[B3313]Slot Note
+Cheat12="[Slot B Codes]\Have All\Key doors unlocked (and mote empty)",8020777A 007E
+Cheat13="[Slot B Codes]\Have All\Max 100 Coin Records For All Levels",50000F01 0000,80207795 0064
+Cheat14="[Slot C Codes]\Have All\120 Stars",80207803 0001,802077EB 00C7,50001101 0000,802077EC 00FF
+Cheat14_N=[B3313]Slot Note
+Cheat15="[Slot C Codes]\Have All\Key doors unlocked (and mote empty)",802077EA 007E
+Cheat16="[Slot C Codes]\Have All\Max 100 Coin Records For All Levels",50000F01 0000,80207805 0064
+Cheat17="[Slot D Codes]\Have All\120 Stars",80207873 0001,8020785B 00C7,50001101 0000,8020785C 00FF
+Cheat17_N=[B3313]Slot Note
+Cheat18="[Slot D Codes]\Have All\Key doors unlocked (and mote empty)",8020785A 007E
+Cheat19="[Slot D Codes]\Have All\Max 100 Coin Records For All Levels",50000F01 0000,80207875 0064
+Cheat20="Level Select",D033AFA1 0010,A032DDF9 00??
+Cheat20_N=[B3313]Level Note
+Cheat20_O=[B3313]Level Select
+
+//----
+
 [A2E8F35B-C9DC87D9-C:45]
 Name=Superman (U)
 Cheat0="Fly Through 1st & Last Ring Only To Complete Challenge",801442E9 0063
@@ -11660,6 +11741,80 @@ Cheat60_O=@Off and On 1
 Cheat61="Press R For Old Or Young Link",D01C84B5 0010,8011A5D7 00??
 Cheat61_N=To Activate this Cheat Hold The R Button when walking through a Doorway this will change you to the option on the other side, Disable this Cheat straight away after getting to the other side, in some places you might even get Access Violations. Just press ok untill you can carry on.
 Cheat61_O=$01 Link Young,$00 Link Old
+
+//----
+
+[7B52B80F-BDB444FA-C:45]
+Name=The Legend of Zelda - Ultimate Trial (U) [Hack]
+Cheat0="Infinite\Rupees",81135034 03E7
+Cheat0_N=[ZeldaOOT]Rupees Note
+Cheat1="Have\All Equipment",81135088 7777
+Cheat1_N=[ZeldaOOT]Have All
+Cheat2="Have\All Quest Status Items",8113508E 5059,81135090 30FF,81135092 FFFF
+Cheat2_N=[ZeldaOOT]Have All
+Cheat3="Time of Day Modifier",8113500C ????
+Cheat3_O=[ZeldaOOT]Day Mod
+Cheat4="Infinite\Energy",81135030 0140
+Cheat5="Infinite\Magic",D0135039 0008,8013503A 0001,8013503B 0001,80135033 0060
+Cheat6="Tunic & Boot Options",8013505E 00??
+Cheat6_N=[ZeldaOOT]TunicBoot Note
+Cheat6_O=$11 Kokiri Tunic & Kokiri Boots,$12 Hydrothermal Tunic & Kokiri Boots,$13 Rainbow Tunic & Kokiri Boots,$14 Black Tunic & Kokiri Boots,$15 White Tunic & Kokiri Boots,$16 Yellow Tunic & Kokiri Boots,$21 Kokiri Tunic & Iron Boots,$22 Hydrothermal Tunic & Iron Boots,$23 Rainbow Tunic & Iron Boots,$24 Black Tunic & Iron Boots,$25 White Tunic & Iron Boots,$26 Yellow Tunic & Iron Boots,$31 Kokiri Tunic & Hover Boots,$32 Hydrothermal Tunic & Hover Boots,$33 Rainbow Tunic & Hover Boots,$34 Black Tunic & Hover Boots,$35 White Tunic & Hover Boots,$36 Yellow Tunic & Hover Boots
+Cheat7="Infinite\Deku Nuts",80135079 0063
+Cheat8="Infinite\Bombs",8013507A 0063
+Cheat9="Infinite\Bombchu's",80135080 0063
+Cheat10="Have\Warp",80135067 0009
+Cheat11="Have\Boomerang Option",8013506C 00??
+Cheat11_O=$0F Boomerang,$10 Magic Boomerang
+Cheat12="Have\Unveiling Lid",8013506D 0011
+Cheat13="Have\Hammer Option",8013506F 00??
+Cheat13_O=$13 Megaton Hammer,$14 Platinum Hammer
+Cheat14="Have\Pinwheel",80135060 0000
+Cheat15="Have\Deku Nut",80135061 0001
+Cheat16="Have\Bombs",80135062 0002
+Cheat17="Have\Hunters Bow",80135063 0003
+Cheat18="Have\Chrono Clock Option",80135066 00??
+Cheat18_O=$06 Chrono Clock 1,$07 Chrono Clock 2
+Cheat19="Have\Bombchu",80135068 000A
+Cheat20="Infinite\Pinwheel",80135078 0063
+Cheat21="Have\Arrows\Ice Arrow",8013506A 000D
+Cheat22="Have\Arrows\Light Arrow",80135070 0015
+Cheat23="Have\Claw-Sling-Shot Option",80135069 00??
+Cheat23_O=$0B Clawshot,$0C Slingshot
+Cheat24="Have\Feather",8013506E 0012
+Cheat25="Have\Magic\Hylia's Blessing",8013506B 000E
+Cheat26="Have\Magic\Nayru's Love",80135071 0016
+Cheat27="Have\Magic\Din's Fire",80135065 0005
+Cheat28="Bottles\Bottle 1 Modifier",80135072 00??
+Cheat28_O=$17 Empty Bottle,$18 Red Potion,$19 Green Potion,$1A Blue Potion,$1B Bottled Fairy,$1C Fish,$1D Soup,$1E Letter,$1F Blue Fire,$20 Red Potion +,$21 Sword Beam,$22 Soup (Half),$23 Blue Potion +
+Cheat29="Bottles\Bottle 2 Modifier",80135073 00??
+Cheat29_O=$17 Empty Bottle,$18 Red Potion,$19 Green Potion,$1A Blue Potion,$1B Bottled Fairy,$1C Fish,$1D Soup,$1E Letter,$1F Blue Fire,$20 Red Potion +,$21 Sword Beam,$22 Soup (Half),$23 Blue Potion +
+Cheat30="Bottles\Bottle 3 Modifier",80135074 00??
+Cheat30_O=$17 Empty Bottle,$18 Red Potion,$19 Green Potion,$1A Blue Potion,$1B Bottled Fairy,$1C Fish,$1D Soup,$1E Letter,$1F Blue Fire,$20 Red Potion +,$21 Sword Beam,$22 Soup (Half),$23 Blue Potion +
+Cheat31="Trading\Adult Link Item",80135076 00??
+Cheat31_O=$30 Pocket Egg,$31 Pocket Cucco,$32 Lost Fairy,$33 Lute,$24 Weird Egg,$35 Pendant of Promise,$36 Nyla's Love Letter,$37 Soldier's Spear,$38 Special Map,$39 Eye Drops
+Cheat32="Trading\Young Link Item",80135077 00??
+Cheat32_O=$24 Weird Egg,$25 Chicken,$26 Zelda's Letter,$27 Keaton Mask,$28 Skull Mask,$29 Cursed Helmet,$2A Bunny Hood,$2B Explosive Arrow,$2C Zora Mask,$2D Gerudo Mask,$2F SOLD OUT
+Cheat33="Press L\To Levitate",D013C761 0020,8126C580 40CB
+Cheat33_N=[ZeldaOOT]Levitate Note
+Cheat34="Press L\For infinite Hover Boots",D013C761 0020,8126CDB2 000D
+Cheat34_N=[ZeldaOOT]Hover Note
+Cheat35="Press L\For Instant Step Hoover Boots",D013C761 0020,8126C580 40CB,D013C761 0000,8126CDB2 000D,8013505E 00??
+Cheat35_N=[ZeldaOOT]InstantStep Note
+Cheat35_O=$11 Kokiri Tunic & Kokiri Boots,$12 Hydrothermal Tunic & Kokiri Boots,$13 Rainbow Tunic & Kokiri Boots,$14 Black Tunic & Kokiri Boots,$15 White Tunic & Kokiri Boots,$16 Yellow Tunic & Kokiri Boots,$21 Kokiri Tunic & Iron Boots,$22 Hydrothermal Tunic & Iron Boots,$23 Rainbow Tunic & Iron Boots,$24 Black Tunic & Iron Boots,$25 White Tunic & Iron Boots,$26 Yellow Tunic & Iron Boots,$31 Kokiri Tunic & Hover Boots,$32 Hydrothermal Tunic & Hover Boots,$33 Rainbow Tunic & Hover Boots,$34 Black Tunic & Hover Boots,$35 White Tunic & Hover Boots,$36 Yellow Tunic & Hover Boots
+Cheat36="Nayru's Love is Always",81135AA6 ????
+Cheat36_N=[ZeldaOOT]NayrusLove Note
+Cheat36_O=$0000 Off,$FFFF On
+Cheat37="Press F9 to Play as Old Or Young Link",D8135007 0000,88135007 00??
+Cheat37_N=To Activate this Cheat Press F9 (GS Button) when walking through a Doorway this will change you to the option on the other side.
+Cheat37_O=$01 Link Young,$00 Link Old
+Cheat38="Have\Arrows\Fire Arrow",80135064 0004 
+Cheat39="Have\Equipment Modifier",80135075 00??
+Cheat39_O=$3E Master Sword,$3F Hatch Sword,$40 Giants Knife
+Cheat40="No Time Past",80135945 0000
+Cheat40_N=Overall Time Taken in-game that is displayed in the Records section.
+Cheat41="Have\Max Heart Containers",8113502E 0140
+Cheat42="Infinite\Hunters Bow",8013507B 0063
+Cheat42_N=Infinite for all arrows
 
 //----
 
@@ -14265,6 +14420,7 @@ Cheat10="All Boss Attack levels unlocked",80355701 003F
 Cheat10_N=Unlocks all planes in death match
 Cheat11="F-15J Eagle & X-29A A.T.D. planes unlocked",8035575C 00??
 Cheat11_O=[Aerofighters]Planes
+Cheat12="Ultra Fast Missile Recharge",8027ECB0 0001
 
 //----
 
@@ -14438,6 +14594,31 @@ Cheat13="All Street Work Levels Unlocked",50007801 0000,80050120 00??
 Cheat13_O=[AirBoarder]Street Work Levels
 
 //----
+
+[A19F8089-77884B51-C:50]
+Name=All-Star Baseball 2000 (E)
+Cheat0="Infinite\Strikes",8006E4A9 0000
+Cheat1="Infinite\Balls",8006E4A7 0000
+Cheat2="Infinite\Outs",8006E4AB 0000
+Cheat3="Infinite\Character Creation Points",81103318 4170
+Cheat4="Infinite\Pitch Type Creation Points",81103984 4170,81103988 4170
+Cheat5="Character Creation\Max\Accuracy",811159E8 4170
+Cheat6="Character Creation\Max\Stamina",811159EC 4170
+Cheat7="Character Creation\Max\Contact",811159F0 4170
+Cheat8="Character Creation\Max\Power",811159F4 4170
+Cheat9="Character Creation\Max\VS LHP",811159F8 4170
+Cheat10="Character Creation\Max\VS RHP",811159FC 4170
+Cheat11="Character Creation\Max\Bunting",81115A00 4170
+Cheat12="Character Creation\Max\VS LHB",81115A04 4170
+Cheat13="Character Creation\Max\VS RHB",81115A08 4170
+Cheat14="Character Creation\Max\Speed",81115A0C 4170
+Cheat15="Character Creation\Max\Defense",81115A10 4170
+Cheat16="Character Creation\Max\Arm Str.",81115A14 4170
+Cheat17="Character Creation\Max\Streak",81115A18 4170
+Cheat18="Character Creation\Max\Clutch",81115A1C 4170
+
+//----
+
 [D9EDD54D-6BB8E274-C:50]
 Name=All-Star Baseball '99 (E)
 Cheat0="Infinite\Character Creation Points",800E2BE9 00B0
@@ -14787,7 +14968,7 @@ Cheat0="Infinite\Health",801D7F3D 0064
 Cheat1="Infinite\99 Lives",801D7F3E 0064
 Cheat2="Infinite\99 Dark Knight Discus",801D7F4A 0063
 Cheat3="Infinite\Max Charge & Magnetic Nun Chaku",801D7F06 0064
-Cheat4="Press F9 to Have Key",D01BB5FE 0008,801D7D70 0020
+Cheat4="Press D-UP to Have Key",D01BB5FE 0008,801D7D70 0020
 Cheat5="Weapon Select",801D7F43 00??
 Cheat5_O=[BatmanReturn]Weapon
 Cheat6="Suit Select",801D7F40 00??
@@ -14965,13 +15146,16 @@ Cheat11="Player 1 Easily Defeated\Player Two",811507FA 0100,811507FE 0100
 
 [7C64E6DB-55B924DB-C:50]
 Name=Blast Corps (E)
-Cheat0="Infinite Hydraulics Sidesweeper",803EDB51 0063
-Cheat1="Infinite Missiles Motor Bike",803F8AC3 0063
-Cheat2="Infinite Boosts Buggy Vehicle",803EE301 0064
-Cheat3="Ballista Can Drive Through Anything",803F8A68 0001
-Cheat4="Found All RDUS",8036E9CC C350
-Cheat5="Found All Survivors",8036E9C9 00FF
-Cheat6="Found All Scientists",80364AD0 003F
+Cheat0="Infinite Hydraulics Sidesweeper",803ED881 0063
+Cheat1="Infinite Missiles Motor Bike",803F87F3 0063
+Cheat2="Infinite Boosts Buggy Vehicle",803EE031 0064
+Cheat3="Can Drive Through Anything",81?????? ????
+Cheat3_O=$3F8798:0001 Ballista,$3EE788:1001 Bulldozer,$3EE3B8:1001 Dump Truck
+Cheat4="Found All RDUS",80370F04 C350
+Cheat5="Found All Survivors",80370F01 00FF
+Cheat6="Found All Scientists",80367008 003F 
+Cheat7="Freeze Timeer",81272E64 2400
+Cheat7_N=Turn on before starting the level
 
 //----
 
@@ -15153,6 +15337,15 @@ Cheat3="Press R For Nitrous Boost",D013435F 0010,8112BD0C 43CB
 
 //----
 
+[CA2A7444-71DAB71C-C:50]
+Name=California Speed (E) (Prototype)
+Cheat0="Always Place 1st",80152D61 0000
+Cheat1="Have All\Tracks",8116A0EC FFFF
+Cheat2="Have All\Cars",50001504 0000,800AAD4B 0001
+Cheat3="Press R For Nitrous Boost",D01354BF 0010,8112CE6C 43CB
+
+//----
+
 [64F1B7CA-71A23755-C:50]
 Name=Castlevania (E) (M3)
 Cheat0="Infinite\Health",81389C42 0064
@@ -15298,8 +15491,6 @@ Cheat4="Level Select",8029097B 00??
 Cheat4_N=[ChameleonTwist]Level Note
 Cheat4_O=[ChameleonTwist]Level Select
 Cheat5="Have All Levels Completed",80208612 0019,80208613 0019,80208614 0015,80208615 0018,80208616 0017,80208617 0017
-Cheat6="Unlock All Costumes",8016451A 00FE
-Cheat7="Have All 6 Carrots",80164519 007E  
 
 //----
 
@@ -15313,8 +15504,6 @@ Cheat4="Level Select",8029097B 00??
 Cheat4_N=[ChameleonTwist]Level Note
 Cheat4_O=[ChameleonTwist]Level Select
 Cheat5="Have All Levels Completed",80208612 0019,80208613 0019,80208614 0015,80208615 0018,80208616 0017,80208617 0017
-Cheat6="Unlock All Costumes",8016451A 00FE
-Cheat7="Have All 6 Carrots",80164519 007E  
 
 //----
 
@@ -15526,14 +15715,90 @@ Cheat130="Rubbage Room Stage\Full Super Bar\Player 2",811FD65A 0200
 //----
 
 [AE5B9465-C54D6576-C:50]
-Name=Command & Conquer (E)
-Cheat0="Infinite Options\Power GDI",810C55D6 FFFF
-Cheat1="Infinite Options\Power NOD",810C577E FFFF
-Cheat2="Infinite Options\Health Commando",810B5364 0080
-Cheat3="Infinite Options\Money NOD",810C575E FFFF
-Cheat4="Infinite Options\Money GDI",810C55B6 FFFF
-Cheat5="Level Select",810901AA 0001
-Cheat5_N=Select Replay Mission, Press L To Display All Missions,And Press R To Select Your Team You can now press R+L+Up To Win A Battle
+Name=Command & Conquer (E) (M2)
+Cheat0="NOD\Max Cash",810C575E FFFF,810C5760 0001
+Cheat1="NOD\Max Power",810C577E FFFF,810C5780 0001
+Cheat2="NOD\Instant\Build Buildings",810C5776 FFFF
+Cheat3="NOD\Instant\Build Units",810C576E FFFF
+Cheat4="NOD\Instant\Build Vehicles",810C5772 FFFF
+Cheat5="NOD\Instant\Build Aircraft",810C576A FFFF
+Cheat6="NOD\Instant\Air Strike",80096954 0032,800C56A8 00FF
+Cheat7="NOD\Instant\Ion Cannon",80096955 0033,800C5688 00FF
+Cheat8="NOD\Instant\Nuclear Strike",80096956 0034,800C56C8 00FF
+Cheat9="GDI\Max Cash",810C55B6 FFFF,810C55B8 0001
+Cheat10="GDI\Max Power",810C55D6 FFFF,810C55D8 0001
+Cheat11="GDI\Instant\Build Buildings",810C55CE FFFF
+Cheat12="GDI\Instant\Build Units",810C55C6 FFFF
+Cheat13="GDI\Instant\Build Vehicles",810C55CA FFFF
+Cheat14="GDI\Instant\Build Aircraft",810C55C2 FFFF
+Cheat15="GDI\Instant\Air Strike",80096954 0032,800C5500 00FF
+Cheat16="GDI\Instant\Ion Cannon",80096955 0033,800C54E0 00FF
+Cheat17="GDI\Instant\Nuclear Strike",80096956 0034,800C5520 00FF
+Cheat18="GDI\Mission 4\Infinite Health Hum-Vee",800AC549 0096
+Cheat19="GDI\Mission 4\Infinite Health APC #1",800AC661 00C8
+Cheat20="GDI\Mission 4\Infinite Health APC #2",800AC6ED 00C8
+Cheat21="GDI\Mission 6\Infinite Health Commando",800B5D7D 0050
+Cheat22="GDI\Mission 6\Infinite Health Transportational Helicopter",800C0345 005A
+Cheat23="GDI\Maximum Killed",80093503 00C8
+Cheat24="NOD\Maximum Killed",800934FF 00C8
+Cheat25="GDI\None Killed",80093503 0000
+Cheat26="NOD\None Killed",800934FF 0000
+Cheat27="GDI\Maximum Buildings Lost",8009350F 00C8
+Cheat28="NOD\Maximum Buildings Lost",8009350B 00C8
+Cheat29="GDI\No Buildings Lost",8009350F 0000
+Cheat30="NOD\No Buildings Lost",8009350B 0000
+Cheat31="100% Efficiency",800934FB 0064
+Cheat32="100% Leadership",800934F7 0064
+Cheat33="Tons Of Ending Credits",810934EC 0FFF,810934EE FFFF
+Cheat34="Max Total Score",810934F2 FFFF
+Cheat35="Time Spent On Mission",800934EB 00??
+Cheat35_O=$00 No Time,$FF Max Time
+Cheat36="Have All Missions",80138A33 0001
+Cheat36_N=Select Replay Mission, and All Missions will be available for you to play.
+
+//----
+
+[B5025BAD-D32675FD-C:44]
+Name=Command & Conquer (G)
+Cheat0="NOD\Max Power",810C529E FFFF,810C52A0 0001
+Cheat1="NOD\Instant\Build Buildings",810C5776 FFFF
+Cheat2="NOD\Instant\Build Units",810C576E FFFF
+Cheat3="NOD\Instant\Build Vehicles",810C5772 FFFF
+Cheat4="NOD\Instant\Build Aircraft",810C576A FFFF
+Cheat5="NOD\Instant\Air Strike",80096474 0032,800C51C8 00FF
+Cheat6="NOD\Instant\Ion Cannon",80096475 0033,800C51A8 00FF
+Cheat7="NOD\Instant\Nuclear Strike",80096476 0034,800C51E8 00FF
+Cheat8="GDI\Max Cash",810C5426 FFFF,810C5428 0001
+Cheat9="GDI\Max Power",810C50F6 FFFF,810C50F8 0001
+Cheat10="GDI\Instant\Build Buildings",810C50EE FFFF
+Cheat11="GDI\Instant\Build Units",810C50E6 FFFF
+Cheat12="GDI\Instant\Build Vehicles",810C50EA FFFF
+Cheat13="GDI\Instant\Build Aircraft",810C50E2 FFFF
+Cheat14="GDI\Instant\Air Strike",80096474 0032,800C5020 00FF
+Cheat15="GDI\Instant\Ion Cannon",80096475 0033,800C5000 00FF
+Cheat16="GDI\Instant\Nuclear Strike",80096476 0034,800C5040 00FF
+Cheat17="GDI\Mission 4\Infinite Health Hum-Vee",800AC445 0096 
+Cheat18="GDI\Mission 4\Infinite Health APC #1",800AC181 00C8
+Cheat19="GDI\Mission 4\Infinite Health APC #2",800AC20D 00C8
+Cheat20="GDI\Mission 6\Infinite Health Commando",800B589D 0080
+Cheat21="GDI\Mission 6\Infinite Health Transportational Helicopter",800BF985 005A
+Cheat22="100% Efficiency",8009301B 0064
+Cheat23="100% Leadership",80093017 0064
+Cheat24="Tons Of Ending Credits",8109300C 0FFF,8109300E FFFF
+Cheat25="Max Total Score",81093012 FFFF
+Cheat26="Time Spent On Mission",8009300B 00??
+Cheat26_O=$00 No Time,$FF Max Time
+Cheat27="Have All Missions",80138803 0001
+Cheat27_N=Select Replay Mission, and All Missions will be available for you to play.
+Cheat28="GDI\Amount Killed Option",80093023 00??
+Cheat28_O=$00 None Killed,$C8 Maximum Killed
+Cheat29="NOD\Max Cash",810C527E FFFF,810C5280 0001
+Cheat30="NOD\Amount Killed Option",8009301F 00??
+Cheat30_O=$00 None Killed,$C8 Maximum Killed
+Cheat31="NOD\Building Option",8009302B 00??
+Cheat31_O=$00  No Buildings Lost,$C8 Maximum Buildings Lost
+Cheat32="GDI\Building Option",8009302F 00??
+Cheat32_O=$00 No Buildings Lost,$C8 Maximum Buildings Lost
 
 //----
 
@@ -15572,6 +15837,10 @@ Cheat19_N=[Conkers]Levitate Note
 Cheat20="Weapon Select In Multi (On Pick Up)",80180C4B 00??
 Cheat20_N=[Conkers]Weapon Note
 Cheat20_O=[Conkers]Weapon Multi
+Cheat21="The Real Matrix Mode (Anywhere)",D0042DA5 0030,810CC738 3E00,D0042DA5 0010,810CC738 3F80
+Cheat21_N=Press L+R Buttons to enable & R Buttons to disable, do not use with onkers Speed Select.
+Cheat22="Conkers Speed Select",810CC738 ????
+Cheat22_O=[Conkers]Speed
 
 //----
 
@@ -19682,7 +19951,7 @@ Cheat58="Beta\Interface always off/on",80119841 00FF,80119CB7 00??
 Cheat58_N=[ZeldaOOT]Beta Interface Note
 Cheat58_O=@Off and On 1
 Cheat59="Language Select",80119D61 00??
-Cheat59_O=[ZeldaOOT]E Lang
+Cheat59_O=$00 English,$01 German,$02 French
 Cheat60="Press L\For infinite Hover Boots",D011BB37 0020,811D9C32 000D
 Cheat60_N=Press L For Infinite Hover Boots & Let go to land,This Only works when you have the Boots on
 Cheat61="Press L\To Levitate",D011BB37 0020,811D9410 40CB
@@ -19796,7 +20065,7 @@ Cheat58="Beta\Interface always off/on",801192B9 00FF,8011972F 00??
 Cheat58_N=[ZeldaOOT]Beta Interface Note
 Cheat58_O=@Off and On 1
 Cheat59="Language Select",801197D9 00??
-Cheat59_O=[ZeldaOOT]E Lang
+Cheat59_O=$00 English,$01 German,$02 French
 Cheat60="Press R For Old Or Young Link",D01C64F5 0010,801183D7 00??
 Cheat60_N=[ZeldaOOT]OldYoung Note
 Cheat60_O=[ZeldaOOT]OldYoung
@@ -19910,7 +20179,7 @@ Cheat58="Beta\Interface always off/on",801192F9 00FF,8011976F 00??
 Cheat58_N=[ZeldaOOT]Beta Interface Note
 Cheat58_O=@Off and On 1
 Cheat59="Language Select",80119819 00??
-Cheat59_O=[ZeldaOOT]E Lang
+Cheat59_O=$00 English,$01 German,$02 French
 Cheat60="Press R For Old Or Young Link",D01C6535 0010,80118417 00??
 Cheat60_N=[ZeldaOOT]OldYoung Note
 Cheat60_O=[ZeldaOOT]OldYoung
@@ -20017,7 +20286,7 @@ Cheat54_O=[ZeldaOOT]BetaQuest
 Cheat55="Level Select",D01C6E35 0000,8111893A ????
 Cheat55_O=[ZeldaOOT]Level
 Cheat56="Language Select",80119D41 00??
-Cheat56_O=[ZeldaOOT]E Lang
+Cheat56_O=$00 English,$01 German,$02 French
 Cheat57="Press L\To Levitate",D011BB11 0020,811D93D0 40CB
 Cheat57_N=[ZeldaOOT]Levitate Note
 Cheat58="Press L\For Infinite Hover Boots",D011BB11 0020,811D9BF2 000D
@@ -22659,7 +22928,7 @@ Cheat58_N=[ZeldaOOT]Gannons Timer Note
 
 [7280E03F-497689BA-C:00]
 Name=Viewpoint2064 (J) [T-Eng]
-Cheat0="Infinite Max Health",8011249D 00A0
+Cheat0="Infinite Max Energy",8011249D 00A0,802903EC 0000
 Cheat1="Infinite Max Shield",801124A3 00A0
 Cheat2="Infinite Max Lives",801124B4 0009
 
@@ -23386,6 +23655,27 @@ Cheat13_N=This unlocks Special Assigment Dual and also the Classic Weapons for J
 
 //----
 
+[3E9385E0-7BDD1C1E-C:00]
+Name=Riqa1 (PD)
+Cheat0="Infinite Ammo",810E7048 4479
+Cheat1="Infinite 999 Frag Grenades",810E52F8 03E7
+Cheat2="Infinite 999 Grenades",810E52C0 03E7
+Cheat3="Infinite 999 Trip Wire",810E5448 03E7
+Cheat4="Infinite 999 3-Way Homing Shot",810E5368 03E7
+Cheat5="Infinite 500-500 Health",810E7034 43FA,810E7038 43FA
+
+//----
+
+
+[55CCFED4-2AE928F0-C:45]
+Name=Riqa (U) Final 1 (Prototype) [F1]
+Cheat0="Infinite Ammo",810E7048 4479
+Cheat1="Infinite 999 Frag Grenades",810E52F8 03E7
+Cheat2="Infinite 999 Grenades",810E52C0 03E7
+Cheat3="Infinite 999 Trip Wire",810E5448 03E7
+Cheat4="Infinite 999 3-Way Homing Shot",810E5368 03E7
+Cheat5="Infinite 500-500 Health",810E7034 43FA,810E7038 43FA
+
 [77233244-E374BB0F-C:50]
 Name=Rocket - Robot on Wheels (Prototype)
 Cheat0="Infinite & Max Health",8109FB82 000C,8109FB84 000A
@@ -23546,7 +23836,7 @@ Cheat3="Max Brightness",8016E91F 0080
 
 [5D40ED2C-10D6ABCF-C:00]
 Name=Viewpoint2064-Prototype
-Cheat0="Infinite Max Health",8011249D 00A0
+Cheat0="Infinite Max Energy",8011249D 00A0,802903EC 0000
 Cheat1="Infinite Max Shield",801124A3 00A0
 Cheat2="Infinite Max Lives",801124B4 0009
 
@@ -24470,6 +24760,7 @@ Cheat20_O=[SuperMario]Level Select
 //----
 
 [3728A23B-16401DFB-C:00]
+Name=Super Mario 64 (CHN)-03-10-15 iQue
 Cheat0="Press GS For 255 Coins",893566A0 00FF
 Cheat0_N=[SuperMario]Coins Note
 Cheat1="Have\Level Select",A030F21C 00??
@@ -24503,7 +24794,7 @@ Cheat19="[Slot D Codes]\Have All\Max 100 Coin Records For All Levels",50000F01 0
 Cheat20="Level Select",D0320611 0020,A030FA7F 00??
 Cheat20_N=[SuperMario]Level Note
 Cheat20_O=[SuperMario]Level Select
-Super Mario 64 (CHN)-03-10-15 iQue
+
 
 //----
 
@@ -25886,7 +26177,8 @@ Cheat0="Press GS For 255 Coins",8933B218 00FF
 Cheat0_N=[SuperIce]Coins Note
 Cheat1="Have\Level Select",A032D58C 00??
 Cheat1_O=@Off and On 1
-Cheat2="Monsters Don't Hurt Icepir8",A033B197 0001
+Cheat2="Monsters Don't Hurt Icepir8",A033B197 00??
+Cheat2_O=$00 Off,$01 On
 Cheat3="Infinite\Lives",8033B21D 0064
 Cheat4="Infinite\Energy & Breath",8033B21E 0008
 Cheat5="Have\Debug Mode",A032D598 00??
@@ -25912,11 +26204,11 @@ Cheat17="[Slot D Codes]\Have All\120 Stars",80207873 0001,8020785B 00C7,50001101
 Cheat17_N=[SuperIce]Slot Note
 Cheat18="[Slot D Codes]\Have All\Key doors unlocked (and mote empty)",8020785A 007E
 Cheat19="[Slot D Codes]\Have All\Max 100 Coin Records For All Levels",50000F01 0000,80207875 0064
-Cheat20="Level Select",D033AFA1 0020,8132DDF8 00??
+Cheat20="Monsters Don't Hurt Icepir8",A033B197 00??
 Cheat20_N=[SuperIce]Level Note
-Cheat20_O=Level Select
+Cheat20_O=$00 Off,$01 On
+Cheat21="Parasyte Bunny never runs off!",80341D17 0000
 Level Select=$01 Intro,$04 Big Amimers Haunt,$05 Cool Cool Mountain,$06 Mushroom Castle,$07 Hazy Maze Cave,$08 Shifting Sand Land,$09 Da-Bomb Battlefield,$0A Snowmans Land,$0B Wet Dry World,$0C Jolly Jabo Bay,$0D Tiny Huge World,$0E Tick tock Clock,$0F Rainbow Ride,$10 Mushroom Castle Field,$11 Boozer In The Dark World,$12 Vanish Cap Under The Moat,$13 Boozer In The Fire Sea,$14 The Secret Aquarium,$15 Boozer In The Sky,$16 Lethal Lava Land,$17 Dire Dire Docks,$18 Slougis Fortress,$19 The End,$1A Castle Courtyard,$1B The Princess Secret Slide,$1C Cavern Of The Metal Cap,$1D Tower Of The Wing Cap,$1E Boozer In The Dark World Boss,$1F Wing Mario Over The Rainbow,$21 Boozer In The Fire Sea Boss,$22 Boozer In The Sky Boss,$24 Tall Tall Mountain
-
 
 //----
 
@@ -27463,5 +27755,19 @@ Cheat11_O=$00 Assault Riffle,$01 Flamethrower,$02 Rocket Launcher,$03 Spread Sho
 Cheat12="Press F9 for Gent's Mega Score",891577AA FFFF,891577AB FFFF
 Cheat13="Always Have S Ranking",80158B31 0000
 
+[462D612A-4862147B-C:00]
+Name=Flappy Bird for N64 (PD)
+Cheat0="Play as",8009113B 00??
+Cheat0_O=$00 Yellow Bird,$01 Blue Bird,$02 Red Bird
+Cheat1="Have 9999  Score",81091156 03E7
+Cheat1_N=Score Display
+Cheat2="999 Best Score",81091E5A 03E7
+Cheat2_N=Score Display
+Score Display=This displays at the end of the round
+
+
 
 //End Of File----------> Anything under here was put in by you <--------------------------------
+
+[7B52B80F-BDB444FA-C:45]
+Name=The Legend of Zelda - Ultimate Trial (U) [Hack]
