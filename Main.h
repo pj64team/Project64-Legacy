@@ -56,6 +56,10 @@ extern "C" {
 
 #define Default_AdvancedBlockLink	TRUE
 #define Default_AutoStart			TRUE
+
+		// AutoSleep has been disabled  by default because of how it effects dialog's in window mode.
+		// Enabled it introduces a constant pausing when opening and closing menus. (Gent)
+	
 #define Default_AutoSleep			TRUE
 #define Default_AutoFullScreen		FALSE
 #define Default_DisableRegCaching	FALSE
@@ -64,7 +68,10 @@ extern "C" {
 #define Default_AutoZip				TRUE
 #define Default_LimitFPS			TRUE
 #define Default_AlwaysOnTop			FALSE
-#define Default_BasicMode			TRUE
+
+		// Enabled Advance Mode by default as it makes sense these days (Gent)
+
+#define Default_BasicMode			FALSE
 #define Default_RememberCheats		TRUE
 #define Default_RomsToRemember		4
 #define Default_RomsDirsToRemember	4
