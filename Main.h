@@ -60,7 +60,7 @@ extern "C" {
 	// Default_AutoSleep has been disabled  by default because how it effects dialog's in window mode.
 	// Enabled it introduces a costent pasuing when opening and closing menus. (Gent)
 
-#define Default_AutoSleep			FALE
+#define Default_AutoSleep			FALSE
 #define Default_AutoFullScreen		FALSE
 #define Default_DisableRegCaching	FALSE
 #define Default_RdramSize			0x800000
