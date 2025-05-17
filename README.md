@@ -58,7 +58,7 @@ Contributors are always welcome!
 - Smiff - Previous contributor
 - Witten - Current maintainer
 - RadeonUser - Previous contributor
-- Gent - Current maintainer
+- Gent  - Previous contributor
 - Azimer - Current contributor
 - Icepir8 - Current maintainer
 - Nekokabu - Current contributor
